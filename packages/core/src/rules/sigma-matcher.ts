@@ -94,7 +94,10 @@ function matchValue(actual: string, expected: string, modifier: string | null): 
   const actualLower = actual.toLowerCase();
   const expectedLower = expected.toLowerCase();
 
-  switch (modifier) {
+  // Handle chained modifiers (e.g., "contains|all") — use first modifier
+  const primaryModifier = modifier?.split('|')[0] ?? null;
+
+  switch (primaryModifier) {
     case 'contains':
       return actualLower.includes(expectedLower);
     case 'endswith':
@@ -108,6 +111,32 @@ function matchValue(actual: string, expected: string, modifier: string | null): 
         logger.warn(`Invalid regex pattern: "${expected}" / 無效的正規表達式: "${expected}"`);
         return false;
       }
+    case 'base64':
+    case 'base64offset': {
+      // Check if the actual value contains the expected value in base64 form
+      try {
+        const decoded = Buffer.from(actual, 'base64').toString('utf-8');
+        return decoded.toLowerCase().includes(expectedLower);
+      } catch {
+        return false;
+      }
+    }
+    case 'cidr': {
+      // Basic CIDR matching for IP addresses
+      return matchCIDR(actual, expected);
+    }
+    case 'gt':
+      return Number(actual) > Number(expected);
+    case 'gte':
+      return Number(actual) >= Number(expected);
+    case 'lt':
+      return Number(actual) < Number(expected);
+    case 'lte':
+      return Number(actual) <= Number(expected);
+    case 'utf8':
+    case 'wide':
+      // Encoding modifiers — perform basic string matching
+      return actualLower.includes(expectedLower);
     default: {
       // Default: exact match or wildcard match / 預設：精確比對或萬用字元比對
       if (expected.includes('*')) {
@@ -116,6 +145,38 @@ function matchValue(actual: string, expected: string, modifier: string | null): 
       return actualLower === expectedLower;
     }
   }
+}
+
+/**
+ * Basic CIDR matching for IP addresses
+ * 基本的 CIDR IP 位址比對
+ */
+function matchCIDR(ip: string, cidr: string): boolean {
+  const parts = cidr.split('/');
+  if (parts.length !== 2) return ip === cidr;
+
+  const cidrIP = parts[0]!;
+  const prefixLen = parseInt(parts[1]!, 10);
+  if (isNaN(prefixLen)) return false;
+
+  const ipNum = ipToNumber(ip);
+  const cidrNum = ipToNumber(cidrIP);
+  if (ipNum === null || cidrNum === null) return false;
+
+  const mask = prefixLen === 0 ? 0 : (~0 << (32 - prefixLen)) >>> 0;
+  return (ipNum & mask) === (cidrNum & mask);
+}
+
+function ipToNumber(ip: string): number | null {
+  const parts = ip.split('.');
+  if (parts.length !== 4) return null;
+  let num = 0;
+  for (const part of parts) {
+    const val = parseInt(part, 10);
+    if (isNaN(val) || val < 0 || val > 255) return null;
+    num = (num << 8) | val;
+  }
+  return num >>> 0;
 }
 
 /**
@@ -192,13 +253,61 @@ function tokenize(condition: string): string[] {
 }
 
 /**
+ * Resolve aggregation expressions like "1 of them", "all of them", "1 of selection*"
+ * 解析聚合表達式如 "1 of them"、"all of them"、"1 of selection*"
+ *
+ * Pre-processes the condition string to expand these into explicit OR/AND expressions.
+ *
+ * @param condition - The condition string / 條件字串
+ * @param selectionNames - Available selection names / 可用的選擇項名稱
+ * @returns Expanded condition string / 展開的條件字串
+ */
+function expandAggregations(condition: string, selectionNames: string[]): string {
+  let result = condition;
+
+  // "all of them" → (sel1 AND sel2 AND ...)
+  result = result.replace(/\ball\s+of\s+them\b/gi, () => {
+    if (selectionNames.length === 0) return 'false';
+    return '(' + selectionNames.join(' AND ') + ')';
+  });
+
+  // "1 of them" → (sel1 OR sel2 OR ...)
+  result = result.replace(/\b1\s+of\s+them\b/gi, () => {
+    if (selectionNames.length === 0) return 'false';
+    return '(' + selectionNames.join(' OR ') + ')';
+  });
+
+  // "<N> of them" → at least N selections match (expand as OR of AND combos is complex,
+  // so we treat as "1 of them" for simplicity — covers most real-world rules)
+  result = result.replace(/\b\d+\s+of\s+them\b/gi, () => {
+    if (selectionNames.length === 0) return 'false';
+    return '(' + selectionNames.join(' OR ') + ')';
+  });
+
+  // "all of <pattern>*" → AND of matching selections
+  result = result.replace(/\ball\s+of\s+(\w+)\*/gi, (_match, prefix: string) => {
+    const matching = selectionNames.filter(n => n.startsWith(prefix));
+    if (matching.length === 0) return 'false';
+    return '(' + matching.join(' AND ') + ')';
+  });
+
+  // "1 of <pattern>*" → OR of matching selections
+  result = result.replace(/\b1\s+of\s+(\w+)\*/gi, (_match, prefix: string) => {
+    const matching = selectionNames.filter(n => n.startsWith(prefix));
+    if (matching.length === 0) return 'false';
+    return '(' + matching.join(' OR ') + ')';
+  });
+
+  return result;
+}
+
+/**
  * Evaluate a condition expression given selection results
  * 根據選擇項結果評估條件表達式
  *
- * Supports simple AND/OR/NOT with parentheses.
- * Selection names reference keys in the selectionResults map.
- * 支援簡單的 AND/OR/NOT 搭配括號。
- * 選擇項名稱參考 selectionResults 映射中的鍵。
+ * Supports AND/OR/NOT with parentheses, plus Sigma aggregation expressions:
+ * "1 of them", "all of them", "1 of selection*", "all of filter*"
+ * 支援 AND/OR/NOT 搭配括號，以及 Sigma 聚合表達式。
  *
  * @param condition - The condition expression / 條件表達式
  * @param selectionResults - Map of selection name to match result / 選擇項名稱到比對結果的映射
@@ -208,11 +317,17 @@ function evaluateCondition(
   condition: string,
   selectionResults: Map<string, boolean>,
 ): boolean {
-  const tokens = tokenize(condition);
+  // Expand aggregation expressions / 展開聚合表達式
+  const selectionNames = Array.from(selectionResults.keys());
+  const expanded = expandAggregations(condition, selectionNames);
+
+  const tokens = tokenize(expanded);
 
   // Simple case: single selection name / 簡單情況：單一選擇項名稱
   if (tokens.length === 1) {
     const name = tokens[0]!;
+    if (name === 'false') return false;
+    if (name === 'true') return true;
     return selectionResults.get(name) ?? false;
   }
 
@@ -253,6 +368,8 @@ function evaluateCondition(
 
     // It is a selection name / 是選擇項名稱
     consume();
+    if (tok === 'false') return false;
+    if (tok === 'true') return true;
     return selectionResults.get(tok) ?? false;
   }
 

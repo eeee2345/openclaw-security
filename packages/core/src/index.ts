@@ -27,7 +27,7 @@ export { createLogger, setLogLevel, validateInput, sanitizeString, validateFileP
 export type { Logger } from './utils/index.js';
 
 // Discovery engine / 偵察引擎
-export { DISCOVERY_VERSION, detectOS, getNetworkInterfaces, scanOpenPorts, getActiveConnections, getGateway, getDnsServers, getDnsServersAsync, detectServices, detectSecurityTools, checkFirewall, auditUsers, calculateRiskScore, getRiskLevel } from './discovery/index.js';
+export { DISCOVERY_VERSION, detectOS, getNetworkInterfaces, scanOpenPorts, getActiveConnections, getGateway, getDnsServers, getDnsServersAsync, detectServices, detectSecurityTools, checkFirewall, auditUsers, calculateRiskScore, getRiskLevel, OsqueryProvider, createOsqueryProvider } from './discovery/index.js';
 export type {
   DiscoveryConfig,
   OSInfo,
@@ -44,6 +44,9 @@ export type {
   UserInfo,
   RiskFactor,
   DiscoveryResult,
+  OsqueryProcess,
+  OsqueryListeningPort,
+  OsqueryLoggedInUser,
 } from './discovery/index.js';
 
 // Rules engine / 規則引擎
