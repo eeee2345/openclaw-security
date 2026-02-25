@@ -16,7 +16,7 @@
  */
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import type { Socket } from 'node:net';
 import { createLogger } from '@openclaw/core';
 import type {
@@ -33,7 +33,20 @@ const logger = createLogger('panguard-guard:dashboard');
 interface WSClient {
   socket: Socket;
   alive: boolean;
+  connectedAt: number;
 }
+
+/** Rate limiter state per IP / 每個 IP 的速率限制狀態 */
+interface RateLimitEntry {
+  count: number;
+  resetAt: number;
+}
+
+/** Maximum requests per minute per IP / 每個 IP 每分鐘最大請求數 */
+const RATE_LIMIT_MAX = 120;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+/** Maximum concurrent WebSocket connections / 最大同時 WebSocket 連線數 */
+const MAX_WS_CLIENTS = 20;
 
 /**
  * Dashboard Server manages the HTTP + WebSocket real-time dashboard
@@ -48,9 +61,14 @@ export class DashboardServer {
   private readonly maxRecentEvents = 200;
   private readonly port: number;
   private getConfig: (() => GuardConfig) | null = null;
+  /** API authentication token / API 認證 token */
+  private readonly authToken: string;
+  /** Rate limiter state / 速率限制狀態 */
+  private rateLimits: Map<string, RateLimitEntry> = new Map();
 
   constructor(port: number) {
     this.port = port;
+    this.authToken = randomBytes(32).toString('hex');
     this.status = {
       mode: 'learning',
       uptime: 0,
@@ -86,6 +104,21 @@ export class DashboardServer {
           return;
         }
 
+        // Enforce max WebSocket connections / 限制最大 WebSocket 連線數
+        if (this.wsClients.size >= MAX_WS_CLIENTS) {
+          logger.warn('Max WebSocket connections reached / WebSocket 連線數已達上限');
+          socket.destroy();
+          return;
+        }
+
+        // Validate origin (localhost only) / 驗證來源（僅 localhost）
+        const origin = req.headers.origin ?? '';
+        if (origin && !origin.includes('127.0.0.1') && !origin.includes('localhost')) {
+          logger.warn(`Rejected WebSocket from origin: ${origin}`);
+          socket.destroy();
+          return;
+        }
+
         const key = req.headers['sec-websocket-key'];
         if (!key) {
           socket.destroy();
@@ -104,7 +137,7 @@ export class DashboardServer {
           '\r\n',
         );
 
-        const client: WSClient = { socket, alive: true };
+        const client: WSClient = { socket, alive: true, connectedAt: Date.now() };
         this.wsClients.add(client);
 
         // Send initial status / 發送初始狀態
@@ -130,10 +163,11 @@ export class DashboardServer {
         });
       });
 
-      this.server.listen(this.port, () => {
+      this.server.listen(this.port, '127.0.0.1', () => {
         logger.info(
-          `Dashboard started on http://localhost:${this.port} / 儀表板已啟動`,
+          `Dashboard started on http://127.0.0.1:${this.port} / 儀表板已啟動`,
         );
+        logger.info(`Dashboard auth token: ${this.authToken}`);
         resolve();
       });
     });
@@ -217,10 +251,23 @@ export class DashboardServer {
   // HTTP request handling / HTTP 請求處理
   // ---------------------------------------------------------------------------
 
+  /**
+   * Get the auth token for API access / 取得 API 認證 token
+   */
+  getAuthToken(): string {
+    return this.authToken;
+  }
+
   private handleRequest(req: IncomingMessage, res: ServerResponse): void {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Security headers / 安全標頭
+    res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:' + this.port);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:*");
 
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -228,12 +275,39 @@ export class DashboardServer {
       return;
     }
 
+    // Rate limiting / 速率限制
+    const clientIP = req.socket.remoteAddress ?? 'unknown';
+    if (!this.checkRateLimit(clientIP)) {
+      res.writeHead(429, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Rate limit exceeded' }));
+      return;
+    }
+
     const url = req.url ?? '/';
 
-    switch (url) {
-      case '/':
-        this.serveIndex(res);
-        break;
+    // The HTML page is public; API endpoints require auth token
+    // HTML 頁面公開；API 端點需要認證 token
+    if (url === '/') {
+      this.serveIndex(res);
+      return;
+    }
+
+    // Verify auth token for API endpoints / 驗證 API 端點的認證 token
+    if (url.startsWith('/api/')) {
+      const authHeader = req.headers.authorization ?? '';
+      const queryToken = new URL(url, `http://127.0.0.1:${this.port}`).searchParams.get('token');
+      const providedToken = authHeader.replace('Bearer ', '') || queryToken;
+
+      if (providedToken !== this.authToken) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Unauthorized' }));
+        return;
+      }
+    }
+
+    const pathname = url.split('?')[0];
+
+    switch (pathname) {
       case '/api/status':
         this.jsonResponse(res, this.status);
         break;
@@ -257,6 +331,18 @@ export class DashboardServer {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Not found' }));
     }
+  }
+
+  /** Check rate limit for IP / 檢查 IP 的速率限制 */
+  private checkRateLimit(ip: string): boolean {
+    const now = Date.now();
+    const entry = this.rateLimits.get(ip);
+    if (!entry || now > entry.resetAt) {
+      this.rateLimits.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+      return true;
+    }
+    entry.count++;
+    return entry.count <= RATE_LIMIT_MAX;
   }
 
   private serveIndex(res: ServerResponse): void {

@@ -233,12 +233,23 @@ Version: ${CLI_VERSION}
 }
 
 /**
- * Extract option value from args / 從引數中提取選項值
+ * Extract and validate option value from args / 從引數中提取並驗證選項值
  */
 function extractOption(args: string[], option: string): string | undefined {
   const idx = args.indexOf(option);
   if (idx !== -1 && idx + 1 < args.length) {
-    return args[idx + 1];
+    const value = args[idx + 1];
+    if (value === undefined) return undefined;
+    // Reject values starting with - (likely another flag) / 拒絕以 - 開頭的值
+    if (value.startsWith('-')) return undefined;
+    // Sanitize path traversal attempts / 清除路徑遍歷嘗試
+    if (option === '--data-dir') {
+      if (/\.\.[\\/]/.test(value) || /[;&|`$]/.test(value)) {
+        console.error(`Invalid ${option} value: contains unsafe characters / 不安全的字元`);
+        return undefined;
+      }
+    }
+    return value;
   }
   return undefined;
 }
