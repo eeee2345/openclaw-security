@@ -259,3 +259,6 @@ export { matchEvent, matchEventAgainstRules } from './sigma-matcher.js';
 
 // Re-export loader functions / 重新匯出載入器函式
 export { loadRulesFromDirectory, watchRulesDirectory } from './rule-loader.js';
+
+// Re-export YARA scanner / 重新匯出 YARA 掃描器
+export { YaraScanner, type YaraMatch, type YaraScanResult } from './yara-scanner.js';
