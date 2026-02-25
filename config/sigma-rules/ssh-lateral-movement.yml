@@ -1,0 +1,71 @@
+title: SSH Lateral Movement
+id: openclaw-006
+status: stable
+description: Detects SSH connections to multiple internal hosts within a short time window, indicating lateral movement via SSH
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: network_connection
+  product: any
+detection:
+  selection_ssh_connections:
+    category: 'network_connection'
+    metadata_destination_port:
+      - '22'
+      - '2222'
+      - '22222'
+    metadata_destination_ip|contains:
+      - '10.'
+      - '172.16.'
+      - '172.17.'
+      - '172.18.'
+      - '172.19.'
+      - '172.20.'
+      - '172.21.'
+      - '172.22.'
+      - '172.23.'
+      - '172.24.'
+      - '172.25.'
+      - '172.26.'
+      - '172.27.'
+      - '172.28.'
+      - '172.29.'
+      - '172.30.'
+      - '172.31.'
+      - '192.168.'
+  selection_ssh_process:
+    category: 'process_creation'
+    metadata_process_name|contains:
+      - 'ssh'
+      - 'sshpass'
+      - 'paramiko'
+      - 'plink'
+    metadata_command_line|contains:
+      - 'ssh '
+      - 'ssh -o StrictHostKeyChecking=no'
+      - 'sshpass -p'
+      - 'plink -ssh'
+  selection_ssh_key_spray:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'ssh -i'
+      - 'for host in'
+      - 'while read host'
+      - 'pssh'
+      - 'parallel-ssh'
+      - 'clusterssh'
+    description|contains:
+      - 'multiple ssh'
+      - 'ssh connection'
+      - 'lateral movement'
+  condition: selection_ssh_connections OR selection_ssh_process OR selection_ssh_key_spray
+level: high
+tags:
+  - attack.lateral_movement
+  - attack.t1021.004
+falsepositives:
+  - Legitimate system administration using SSH to manage multiple servers
+  - Automated deployment or configuration management tools (Ansible, Fabric)
+  - Monitoring systems performing health checks over SSH
+references:
+  - https://attack.mitre.org/techniques/T1021/004/

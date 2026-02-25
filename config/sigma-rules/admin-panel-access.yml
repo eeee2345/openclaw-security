@@ -1,0 +1,52 @@
+title: Unauthorized Admin Panel Access Attempt
+id: openclaw-040
+status: stable
+description: Detects attempts to access administrative panels, dashboards, and management interfaces that are commonly targeted by attackers for unauthorized access.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection:
+    cs-uri-stem|contains:
+      - '/admin'
+      - '/administrator'
+      - '/wp-admin'
+      - '/wp-login.php'
+      - '/phpmyadmin'
+      - '/phpMyAdmin'
+      - '/pma'
+      - '/adminer'
+      - '/cpanel'
+      - '/webmail'
+      - '/manager/html'
+      - '/solr/admin'
+      - '/jenkins'
+      - '/grafana'
+      - '/kibana'
+      - '/console'
+      - '/dashboard'
+      - '/manage'
+      - '/server-status'
+      - '/server-info'
+      - '/elmah.axd'
+      - '/actuator'
+      - '/swagger-ui'
+      - '/api-docs'
+      - '/_debug'
+      - '/debug/pprof'
+  filter_legitimate:
+    sc-status:
+      - 200
+      - 301
+      - 302
+  condition: selection and not filter_legitimate
+level: medium
+tags:
+  - attack.initial_access
+  - attack.t1190
+falsepositives:
+  - Legitimate administrators accessing management interfaces
+  - Web crawlers and search engine bots discovering admin paths
+  - Health check systems monitoring admin panel availability

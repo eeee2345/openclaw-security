@@ -1,0 +1,78 @@
+title: Ransomware Activity Indicators
+id: openclaw-014
+status: stable
+description: Detects file rename patterns associated with ransomware encryption, ransom note file creation, volume shadow copy deletion, and known ransomware process names
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_encrypted_extensions:
+    category: 'file_modification'
+    metadata_target_file|endswith:
+      - '.encrypted'
+      - '.locked'
+      - '.crypt'
+      - '.crypto'
+      - '.enc'
+      - '.crypted'
+      - '.locky'
+      - '.cerber'
+      - '.zepto'
+      - '.wcry'
+      - '.wncry'
+      - '.wncryt'
+      - '.crinf'
+      - '.r5a'
+      - '.XRNT'
+      - '.XTBL'
+    description|contains:
+      - 'file rename'
+      - 'file encrypted'
+      - 'ransomware'
+      - 'mass rename'
+  selection_ransom_notes:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - 'README_TO_DECRYPT'
+      - 'HOW_TO_DECRYPT'
+      - 'DECRYPT_INSTRUCTIONS'
+      - 'HELP_DECRYPT'
+      - 'YOUR_FILES_ARE_ENCRYPTED'
+      - 'RECOVERY_KEY'
+      - 'RANSOM_NOTE'
+      - 'HOW_TO_RECOVER'
+      - 'DECRYPT_YOUR_FILES'
+      - '_readme.txt'
+      - 'RECOVER-FILES.txt'
+  selection_vss_deletion:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'vssadmin delete shadows'
+      - 'vssadmin.exe delete shadows'
+      - 'wmic shadowcopy delete'
+      - 'bcdedit /set {default} recoveryenabled No'
+      - 'bcdedit /set {default} bootstatuspolicy ignoreallfailures'
+      - 'wbadmin delete catalog'
+      - 'wbadmin delete systemstatebackup'
+  selection_backup_destruction:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'del /s /f /q *.bak'
+      - 'del /s /f /q *.backup'
+      - 'rm -rf /backup'
+      - 'find / -name "*.bak" -delete'
+      - 'cipher /w:'
+  condition: selection_encrypted_extensions OR selection_ransom_notes OR selection_vss_deletion OR selection_backup_destruction
+level: critical
+tags:
+  - attack.impact
+  - attack.t1486
+falsepositives:
+  - Legitimate file encryption software (VeraCrypt, GPG)
+  - Backup rotation scripts that remove old backups
+  - Disk cleanup utilities
+references:
+  - https://attack.mitre.org/techniques/T1486/
+  - https://attack.mitre.org/techniques/T1490/

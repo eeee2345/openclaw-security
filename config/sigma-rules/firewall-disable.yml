@@ -1,0 +1,52 @@
+title: Firewall Disabled or Rules Flushed
+id: openclaw-032
+status: stable
+description: Detects attempts to disable host firewalls, flush firewall rules, or stop firewall services, which is a common defense evasion technique used by attackers to enable unrestricted network communication.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_iptables:
+    CommandLine|contains:
+      - 'iptables -F'
+      - 'iptables --flush'
+      - 'iptables -X'
+      - 'iptables -P INPUT ACCEPT'
+      - 'iptables -P FORWARD ACCEPT'
+      - 'iptables -P OUTPUT ACCEPT'
+      - 'ip6tables -F'
+      - 'ip6tables --flush'
+      - 'nft flush ruleset'
+      - 'nft delete table'
+  selection_ufw:
+    CommandLine|contains:
+      - 'ufw disable'
+      - 'ufw reset'
+      - 'ufw allow from any to any'
+  selection_firewalld:
+    CommandLine|contains:
+      - 'systemctl stop firewalld'
+      - 'systemctl disable firewalld'
+      - 'service firewalld stop'
+      - 'firewall-cmd --panic-off'
+      - 'firewall-cmd --set-default-zone=trusted'
+  selection_windows:
+    CommandLine|contains:
+      - 'netsh advfirewall set allprofiles state off'
+      - 'netsh advfirewall set currentprofile state off'
+      - 'netsh firewall set opmode disable'
+      - 'Set-NetFirewallProfile -Enabled False'
+      - 'Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False'
+      - 'sc stop MpsSvc'
+      - 'sc config MpsSvc start= disabled'
+  condition: selection_iptables or selection_ufw or selection_firewalld or selection_windows
+level: critical
+tags:
+  - attack.defense_evasion
+  - attack.t1562.004
+falsepositives:
+  - Legitimate firewall maintenance by system administrators
+  - Network reconfiguration during planned maintenance windows
+  - Automated provisioning scripts during initial server setup

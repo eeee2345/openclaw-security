@@ -1,0 +1,88 @@
+title: Container Escape Attempt
+id: openclaw-023
+status: stable
+description: Detects container breakout attempts including namespace manipulation, privileged container abuse, and host filesystem access from within containers
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_nsenter:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'nsenter '
+      - 'nsenter --target 1'
+      - 'nsenter -t 1'
+      - 'nsenter --mount'
+      - 'nsenter -m'
+      - 'nsenter --pid --mount'
+      - '/proc/1/ns/'
+  selection_mount_escape:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'mount -t proc'
+      - 'mount /dev/'
+      - 'mount -o bind /'
+      - 'mount --bind /'
+      - 'debugfs /dev/'
+      - 'mount /host'
+      - 'chroot /host'
+      - 'chroot /mnt'
+  selection_cgroup_escape:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '/sys/fs/cgroup/'
+      - 'release_agent'
+      - 'notify_on_release'
+      - 'cgroup.procs'
+      - '/proc/self/cgroup'
+      - '/proc/1/cgroup'
+    description|contains:
+      - 'container escape'
+      - 'container breakout'
+      - 'cgroup abuse'
+      - 'namespace escape'
+  selection_docker_socket:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '/var/run/docker.sock'
+      - 'docker.sock'
+      - 'docker -H unix://'
+      - 'curl --unix-socket /var/run/docker.sock'
+      - 'docker exec -it'
+      - 'docker run -v /:/host'
+      - 'docker run --privileged'
+      - 'docker run --pid=host'
+      - 'docker run --net=host'
+  selection_capability_abuse:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'capsh --print'
+      - 'SYS_ADMIN'
+      - 'SYS_PTRACE'
+      - 'DAC_READ_SEARCH'
+      - '--cap-add=ALL'
+      - 'setns('
+      - 'unshare '
+      - 'CAP_SYS_ADMIN'
+  selection_proc_exploit:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '/proc/sysrq-trigger'
+      - '/proc/self/exe'
+      - '/proc/1/root'
+      - '/proc/1/environ'
+      - 'core_pattern'
+      - '/proc/sys/kernel/core_pattern'
+  condition: selection_nsenter OR selection_mount_escape OR selection_cgroup_escape OR selection_docker_socket OR selection_capability_abuse OR selection_proc_exploit
+level: critical
+tags:
+  - attack.privilege_escalation
+  - attack.t1611
+falsepositives:
+  - Container orchestration tools performing legitimate management operations
+  - Debugging containers during development
+  - Privileged monitoring containers (Datadog, Prometheus node exporter)
+references:
+  - https://attack.mitre.org/techniques/T1611/

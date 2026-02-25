@@ -1,0 +1,51 @@
+title: SQL Injection Attempt in Web Logs
+id: openclaw-026
+status: stable
+description: Detects SQL injection attempts in web server access logs by matching common injection patterns such as UNION SELECT, OR 1=1, DROP TABLE, and other SQL manipulation keywords.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection_uri:
+    cs-uri-query|contains:
+      - 'UNION SELECT'
+      - 'UNION ALL SELECT'
+      - 'OR 1=1'
+      - "OR '1'='1"
+      - 'DROP TABLE'
+      - 'DROP DATABASE'
+      - 'INSERT INTO'
+      - 'UPDATE SET'
+      - 'DELETE FROM'
+      - '; SELECT'
+      - '/**/UNION'
+      - 'CONCAT(0x'
+      - 'GROUP_CONCAT('
+      - 'INFORMATION_SCHEMA'
+      - 'LOAD_FILE(0x'
+      - 'INTO OUTFILE'
+      - 'INTO DUMPFILE'
+      - 'BENCHMARK('
+      - 'SLEEP('
+      - 'WAITFOR DELAY'
+  selection_body:
+    cs-body|contains:
+      - 'UNION SELECT'
+      - 'UNION ALL SELECT'
+      - "OR '1'='1"
+      - 'OR 1=1'
+      - 'DROP TABLE'
+      - '; SELECT'
+      - 'INFORMATION_SCHEMA'
+      - 'SLEEP('
+      - 'BENCHMARK('
+  condition: selection_uri or selection_body
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1190
+falsepositives:
+  - Legitimate application queries containing SQL keywords in URL parameters
+  - Security scanners performing authorized vulnerability assessments

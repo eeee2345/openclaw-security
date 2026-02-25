@@ -1,0 +1,94 @@
+title: Supply Chain Attack Indicators
+id: openclaw-024
+status: stable
+description: Detects suspicious package installations, dependency confusion attacks, typosquatting indicators, and malicious build scripts in package managers
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_npm_suspicious:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'npm install --ignore-scripts=false'
+      - 'npm install --unsafe-perm'
+      - 'npm config set ignore-scripts false'
+      - 'preinstall'
+      - 'postinstall'
+    description|contains:
+      - 'suspicious package'
+      - 'dependency confusion'
+      - 'typosquatting'
+      - 'malicious package'
+  selection_pip_suspicious:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'pip install --index-url http://'
+      - 'pip install --extra-index-url'
+      - 'pip install --trusted-host'
+      - 'pip install -i http://'
+      - 'pip install --no-verify'
+      - 'easy_install http://'
+  selection_package_manager_abuse:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'gem install --source http://'
+      - 'composer config repositories'
+      - 'go get -insecure'
+      - 'cargo install --registry'
+      - 'nuget sources add'
+      - 'mvn deploy:deploy-file'
+  selection_build_script_exec:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'setup.py install'
+      - 'setup.py develop'
+      - 'setup.py egg_info'
+      - 'node -e "require'
+      - 'node -e "const http'
+      - 'eval(Buffer.from'
+    metadata_parent_process|contains:
+      - 'npm'
+      - 'pip'
+      - 'gem'
+      - 'cargo'
+  selection_registry_manipulation:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'npm config set registry'
+      - 'npm set registry'
+      - 'pip config set global.index-url'
+      - 'yarn config set registry'
+      - '.npmrc'
+      - '.pypirc'
+      - 'pip.conf'
+    description|contains:
+      - 'registry change'
+      - 'package source'
+      - 'supply chain'
+      - 'dependency hijack'
+  selection_curl_pipe_install:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'curl | bash'
+      - 'curl | sh'
+      - 'wget | bash'
+      - 'wget | sh'
+      - 'curl -s http'
+      - 'curl -sSL http'
+      - '| sudo bash'
+      - '| sudo sh'
+  condition: selection_npm_suspicious OR selection_pip_suspicious OR selection_package_manager_abuse OR selection_build_script_exec OR selection_registry_manipulation OR selection_curl_pipe_install
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1195
+falsepositives:
+  - Development teams using private package registries
+  - Legitimate use of alternative package mirrors
+  - CI/CD pipelines installing packages from internal sources
+  - Installation scripts from well-known projects
+references:
+  - https://attack.mitre.org/techniques/T1195/
+  - https://attack.mitre.org/techniques/T1195/001/

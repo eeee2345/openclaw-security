@@ -1,0 +1,55 @@
+title: Cross-Site Scripting Attempt Detected
+id: openclaw-027
+status: stable
+description: Detects cross-site scripting (XSS) attempts in web server logs by identifying common XSS payloads including script tags, javascript protocol handlers, and event handler injections.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection_uri:
+    cs-uri-query|contains:
+      - '<script>'
+      - '<script '
+      - '</script>'
+      - 'javascript:'
+      - 'vbscript:'
+      - 'onerror='
+      - 'onload='
+      - 'onmouseover='
+      - 'onfocus='
+      - 'onblur='
+      - 'onclick='
+      - 'onsubmit='
+      - 'eval('
+      - 'alert('
+      - 'prompt('
+      - 'confirm('
+      - 'document.cookie'
+      - 'document.write('
+      - 'String.fromCharCode('
+      - '<img src=x onerror='
+      - '<svg onload='
+      - '<body onload='
+      - '<iframe src='
+  selection_body:
+    cs-body|contains:
+      - '<script>'
+      - '<script '
+      - 'javascript:'
+      - 'onerror='
+      - 'onload='
+      - 'eval('
+      - 'document.cookie'
+      - 'document.write('
+      - '<svg onload='
+  condition: selection_uri or selection_body
+level: medium
+tags:
+  - attack.initial_access
+  - attack.t1189
+falsepositives:
+  - Web applications that legitimately contain script tags in URL parameters
+  - Content management systems with rich text editors
+  - Authorized penetration testing activities

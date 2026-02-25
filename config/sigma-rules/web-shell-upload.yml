@@ -1,0 +1,80 @@
+title: Web Shell Upload Detection
+id: openclaw-010
+status: stable
+description: Detects creation of web shell files in common web server directories, including PHP, JSP, ASPX, and other server-side script uploads
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: file_modification
+  product: any
+detection:
+  selection_php_webshell:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - '/var/www/'
+      - '/srv/www/'
+      - '/htdocs/'
+      - '/public_html/'
+      - '/wwwroot/'
+      - 'inetpub\\wwwroot'
+      - '/html/'
+    metadata_target_file|endswith:
+      - '.php'
+      - '.php5'
+      - '.php7'
+      - '.phtml'
+      - '.pht'
+  selection_jsp_webshell:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - '/webapps/'
+      - '/tomcat/'
+      - '/WEB-INF/'
+      - '/webapp/'
+      - '/jboss/'
+    metadata_target_file|endswith:
+      - '.jsp'
+      - '.jspx'
+      - '.war'
+  selection_aspx_webshell:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - 'inetpub'
+      - '/aspnet_client/'
+      - '/App_Data/'
+    metadata_target_file|endswith:
+      - '.aspx'
+      - '.ashx'
+      - '.asmx'
+      - '.asp'
+  selection_webshell_content:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'eval($_POST'
+      - 'eval($_GET'
+      - 'eval($_REQUEST'
+      - 'system($_GET'
+      - 'passthru('
+      - 'shell_exec('
+      - 'c99shell'
+      - 'r57shell'
+      - 'b374k'
+      - 'weevely'
+      - 'WSO '
+      - 'China Chopper'
+    description|contains:
+      - 'web shell'
+      - 'webshell'
+      - 'backdoor upload'
+      - 'malicious script upload'
+  condition: selection_php_webshell OR selection_jsp_webshell OR selection_aspx_webshell OR selection_webshell_content
+level: critical
+tags:
+  - attack.persistence
+  - attack.t1505.003
+falsepositives:
+  - Legitimate web application deployments
+  - CMS plugin or theme installations
+  - Automated CI/CD pipeline deployments to web directories
+references:
+  - https://attack.mitre.org/techniques/T1505/003/

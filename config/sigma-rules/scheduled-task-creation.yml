@@ -1,0 +1,53 @@
+title: Suspicious Scheduled Task Creation
+id: openclaw-033
+status: stable
+description: Detects creation of scheduled tasks via schtasks or cron that may be used by attackers to establish persistence or execute malicious payloads at regular intervals.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_schtasks:
+    CommandLine|contains:
+      - 'schtasks /create'
+      - 'schtasks.exe /create'
+      - 'schtasks /Create'
+  selection_schtasks_suspicious:
+    CommandLine|contains:
+      - '/sc onlogon'
+      - '/sc onstart'
+      - '/sc onidle'
+      - '/ru SYSTEM'
+      - '/ru "NT AUTHORITY\SYSTEM"'
+      - '/rl HIGHEST'
+      - 'powershell'
+      - 'cmd.exe /c'
+      - 'mshta'
+      - 'wscript'
+      - 'cscript'
+      - 'certutil'
+      - 'bitsadmin'
+      - 'regsvr32'
+      - 'rundll32'
+  selection_at_command:
+    CommandLine|contains:
+      - 'at /every:'
+      - 'at.exe'
+  selection_cron:
+    CommandLine|contains:
+      - 'crontab -e'
+      - 'crontab -l'
+      - '*/5 * * * *'
+      - '@reboot'
+      - 'echo * >> /etc/crontab'
+      - 'echo * >> /var/spool/cron'
+  condition: selection_schtasks or (selection_schtasks and selection_schtasks_suspicious) or selection_at_command or selection_cron
+level: medium
+tags:
+  - attack.persistence
+  - attack.t1053.005
+falsepositives:
+  - Legitimate system administration tasks
+  - Software installation scripts creating scheduled maintenance tasks
+  - Backup and monitoring tools using scheduled tasks

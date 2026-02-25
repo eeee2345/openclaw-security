@@ -1,0 +1,50 @@
+title: File Timestamp Modification (Timestomping)
+id: openclaw-038
+status: stable
+description: Detects attempts to modify file timestamps to evade forensic analysis. Attackers use timestomping to make malicious files appear as if they were created or modified at a different time.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_touch:
+    CommandLine|contains:
+      - 'touch -t '
+      - 'touch -d '
+      - 'touch --date='
+      - 'touch -r '
+      - 'touch --reference='
+      - 'touch -a -m -t'
+  selection_windows_timestomp:
+    CommandLine|contains:
+      - 'timestomp'
+      - 'SetFileTime'
+      - 'NtSetInformationFile'
+      - '$file.CreationTime ='
+      - '$file.LastWriteTime ='
+      - '$file.LastAccessTime ='
+      - 'Set-ItemProperty * -Name CreationTime'
+      - 'Set-ItemProperty * -Name LastWriteTime'
+      - 'Set-ItemProperty * -Name LastAccessTime'
+  selection_powershell_time:
+    CommandLine|contains:
+      - '[System.IO.File]::SetCreationTime'
+      - '[System.IO.File]::SetLastWriteTime'
+      - '[System.IO.File]::SetLastAccessTime'
+      - 'New-Object System.IO.FileInfo'
+  selection_tools:
+    CommandLine|contains:
+      - 'nTimestomp'
+      - 'SetMace'
+      - 'mace_edit'
+      - 'attribute.exe'
+  condition: selection_touch or selection_windows_timestomp or selection_powershell_time or selection_tools
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1070.006
+falsepositives:
+  - Build systems that normalize file timestamps for reproducible builds
+  - Backup restoration tools that preserve original file timestamps
+  - Version control systems adjusting timestamps during checkout

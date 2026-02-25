@@ -1,0 +1,95 @@
+title: Suspicious PowerShell Execution
+id: openclaw-016
+status: stable
+description: Detects PowerShell encoded commands, download cradles, AMSI bypass attempts, and other suspicious PowerShell usage patterns
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_encoded_commands:
+    category: 'process_creation'
+    metadata_process_name|contains:
+      - 'powershell'
+      - 'pwsh'
+    metadata_command_line|contains:
+      - '-EncodedCommand'
+      - '-enc '
+      - '-e '
+      - '-ec '
+      - 'FromBase64String'
+      - '-encodedcommand'
+      - '-EncodedArguments'
+  selection_download_cradles:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'Invoke-WebRequest'
+      - 'IWR '
+      - 'Invoke-RestMethod'
+      - 'wget '
+      - 'curl '
+      - 'Net.WebClient'
+      - 'DownloadString'
+      - 'DownloadFile'
+      - 'DownloadData'
+      - 'Start-BitsTransfer'
+      - 'New-Object System.Net.WebClient'
+      - 'iex(New-Object'
+      - 'IEX (New-Object'
+      - '[Net.ServicePointManager]'
+  selection_amsi_bypass:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'AmsiUtils'
+      - 'amsiInitFailed'
+      - 'AmsiScanBuffer'
+      - 'Disable-Amsi'
+      - 'Set-MpPreference -DisableRealtimeMonitoring'
+      - 'Set-MpPreference -DisableIOAVProtection'
+      - 'Unload-Module Amsi'
+  selection_suspicious_patterns:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '-WindowStyle Hidden'
+      - '-W Hidden'
+      - '-nop'
+      - '-NoProfile'
+      - '-NonInteractive'
+      - '-ExecutionPolicy Bypass'
+      - '-ep bypass'
+      - '-sta'
+      - 'Invoke-Expression'
+      - 'Invoke-Mimikatz'
+      - 'Invoke-Shellcode'
+      - 'Invoke-DllInjection'
+      - 'Invoke-TokenManipulation'
+    description|contains:
+      - 'powershell'
+      - 'encoded command'
+      - 'download cradle'
+      - 'obfuscated'
+  selection_reflection:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '[Reflection.Assembly]::Load'
+      - 'Reflection.Emit'
+      - 'GetType('
+      - 'GetMethod('
+      - 'Invoke('
+      - 'DynamicInvoke'
+      - 'CreateThread'
+      - 'VirtualAlloc'
+      - 'memset'
+  condition: selection_encoded_commands OR selection_download_cradles OR selection_amsi_bypass OR selection_suspicious_patterns OR selection_reflection
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
+falsepositives:
+  - Legitimate PowerShell administration scripts
+  - Software deployment tools that use encoded commands
+  - Configuration management systems (SCCM, DSC)
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://attack.mitre.org/techniques/T1562/001/

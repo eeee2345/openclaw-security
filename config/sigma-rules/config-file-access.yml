@@ -1,0 +1,48 @@
+title: Sensitive Configuration File Access Attempt
+id: openclaw-030
+status: stable
+description: Detects attempts to access sensitive configuration files through web requests that may expose credentials, database connection strings, API keys, or other secrets.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection:
+    cs-uri-stem|contains:
+      - '.env'
+      - 'wp-config.php'
+      - 'web.config'
+      - 'config.php'
+      - 'configuration.php'
+      - 'settings.py'
+      - 'database.yml'
+      - 'credentials.xml'
+      - 'appsettings.json'
+      - 'application.properties'
+      - 'application.yml'
+      - '.htaccess'
+      - '.htpasswd'
+      - 'phpinfo.php'
+      - 'info.php'
+      - '.git/config'
+      - '.git/HEAD'
+      - '.svn/entries'
+      - '.DS_Store'
+      - 'Thumbs.db'
+      - 'composer.json'
+      - 'package.json'
+      - '.npmrc'
+      - 'docker-compose.yml'
+      - 'Dockerfile'
+      - '.aws/credentials'
+      - '.kube/config'
+  condition: selection
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1552
+falsepositives:
+  - Legitimate developer access to configuration management endpoints
+  - Automated deployment tools accessing configuration files
+  - Monitoring systems checking configuration file availability

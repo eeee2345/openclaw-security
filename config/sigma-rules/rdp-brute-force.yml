@@ -1,0 +1,72 @@
+title: RDP Brute Force Attack
+id: openclaw-020
+status: stable
+description: Detects multiple failed RDP login attempts indicating brute force or password spraying attacks against Remote Desktop Protocol
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: authentication
+  product: any
+detection:
+  selection_rdp_failed:
+    category: 'authentication'
+    metadata_destination_port:
+      - '3389'
+      - '3390'
+      - '3391'
+    description|contains:
+      - 'failed login'
+      - 'authentication failure'
+      - 'logon failure'
+      - 'login failed'
+      - 'access denied'
+  selection_rdp_event:
+    category: 'authentication'
+    metadata_event_id|contains:
+      - '4625'
+      - '1006'
+      - '1007'
+    metadata_logon_type:
+      - '10'
+      - '3'
+    description|contains:
+      - 'RDP'
+      - 'remote desktop'
+      - 'Terminal Services'
+      - 'TermService'
+  selection_rdp_tools:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'hydra -s 3389'
+      - 'hydra rdp'
+      - 'ncrack -p 3389'
+      - 'crowbar -b rdp'
+      - 'patator rdp_login'
+      - 'medusa -M rdp'
+      - 'xfreerdp /cert-ignore'
+    metadata_process_name|contains:
+      - 'hydra'
+      - 'ncrack'
+      - 'crowbar'
+      - 'patator'
+  selection_rdp_spray:
+    category: 'authentication'
+    metadata_destination_port:
+      - '3389'
+    description|contains:
+      - 'multiple failed'
+      - 'brute force'
+      - 'password spray'
+      - 'repeated failure'
+  condition: selection_rdp_failed OR selection_rdp_event OR selection_rdp_tools OR selection_rdp_spray
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1110.001
+falsepositives:
+  - Users mistyping their password multiple times
+  - Password policy changes causing cached credentials to fail
+  - Automated scripts with expired or incorrect credentials
+references:
+  - https://attack.mitre.org/techniques/T1110/001/
+  - https://attack.mitre.org/techniques/T1021/001/

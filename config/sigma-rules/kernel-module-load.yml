@@ -1,0 +1,74 @@
+title: Suspicious Kernel Module Loading
+id: openclaw-012
+status: stable
+description: Detects loading of kernel modules via insmod or modprobe that may indicate rootkit installation or kernel-level persistence
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_insmod:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'insmod '
+      - 'insmod\t'
+      - '/sbin/insmod'
+    metadata_process_name|contains:
+      - 'insmod'
+  selection_modprobe:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'modprobe '
+      - '/sbin/modprobe'
+      - 'modprobe --force'
+      - 'modprobe -f'
+  selection_suspicious_module_paths:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '/tmp/'
+      - '/dev/shm/'
+      - '/var/tmp/'
+      - '/home/'
+      - '/root/'
+    metadata_command_line|endswith:
+      - '.ko'
+      - '.ko.xz'
+      - '.ko.gz'
+  selection_rootkit_indicators:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'diamorphine'
+      - 'reptile'
+      - 'suterusu'
+      - 'adore-ng'
+      - 'azazel'
+      - 'jynx'
+      - 'knark'
+      - 'enyelkm'
+      - 'override_creds'
+      - 'hide_module'
+    description|contains:
+      - 'kernel module'
+      - 'rootkit'
+      - 'module load'
+      - 'lkm load'
+  selection_dkms_suspicious:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'dkms install'
+      - 'dkms add'
+      - 'rmmod'
+      - 'lsmod | grep -v'
+      - 'depmod -a'
+  condition: selection_insmod OR selection_modprobe OR selection_suspicious_module_paths OR selection_rootkit_indicators OR selection_dkms_suspicious
+level: high
+tags:
+  - attack.persistence
+  - attack.t1547.006
+falsepositives:
+  - Legitimate kernel module installation during system setup
+  - Driver updates and hardware configuration changes
+  - Virtualization software installing kernel modules (VirtualBox, VMware)
+references:
+  - https://attack.mitre.org/techniques/T1547/006/

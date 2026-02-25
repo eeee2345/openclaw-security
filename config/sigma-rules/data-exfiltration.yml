@@ -1,0 +1,91 @@
+title: Data Exfiltration Indicators
+id: openclaw-013
+status: stable
+description: Detects large outbound data transfers, use of data exfiltration tools, and suspicious upload patterns via curl, wget, or cloud storage utilities
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_curl_upload:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'curl -X POST'
+      - 'curl -X PUT'
+      - 'curl --upload-file'
+      - 'curl -F "file=@'
+      - 'curl -d @'
+      - 'curl --data-binary @'
+      - 'curl -T '
+  selection_wget_exfil:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'wget --post-file'
+      - 'wget --post-data'
+      - 'wget --method=PUT'
+  selection_cloud_exfil:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'aws s3 cp'
+      - 'aws s3 sync'
+      - 'aws s3 mv'
+      - 'gsutil cp'
+      - 'gsutil rsync'
+      - 'az storage blob upload'
+      - 'azcopy'
+      - 'rclone copy'
+      - 'rclone sync'
+      - 'rclone move'
+      - 'mega-put'
+      - 'mega-cmd'
+  selection_archive_before_exfil:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'tar czf /tmp/'
+      - 'tar -czf /tmp/'
+      - 'zip -r /tmp/'
+      - '7z a /tmp/'
+      - 'rar a /tmp/'
+      - 'tar czf /dev/shm/'
+      - 'zip -r /dev/shm/'
+    description|contains:
+      - 'data exfiltration'
+      - 'large transfer'
+      - 'data staging'
+      - 'archive creation'
+  selection_exfil_tools:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'dnscat'
+      - 'iodine'
+      - 'dns2tcp'
+      - 'ptunnel'
+      - 'chisel'
+      - 'ngrok'
+      - 'packetwhisper'
+      - 'cloakify'
+  selection_paste_sites:
+    category: 'network_connection'
+    metadata_destination_host|contains:
+      - 'pastebin.com'
+      - 'paste.ee'
+      - 'transfer.sh'
+      - 'file.io'
+      - '0x0.st'
+      - 'hastebin.com'
+      - 'dpaste.org'
+      - 'ghostbin.com'
+  condition: selection_curl_upload OR selection_wget_exfil OR selection_cloud_exfil OR selection_archive_before_exfil OR selection_exfil_tools OR selection_paste_sites
+level: high
+tags:
+  - attack.exfiltration
+  - attack.t1048
+falsepositives:
+  - Legitimate cloud backup operations
+  - CI/CD pipelines uploading build artifacts
+  - Developers pushing files to cloud storage
+  - Automated log shipping to centralized storage
+references:
+  - https://attack.mitre.org/techniques/T1048/
+  - https://attack.mitre.org/techniques/T1567/

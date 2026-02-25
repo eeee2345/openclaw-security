@@ -1,0 +1,52 @@
+title: Suspicious File Permission Change
+id: openclaw-036
+status: stable
+description: Detects suspicious file permission changes such as setting world-writable permissions (chmod 777) or adding SUID/SGID bits that could be used for privilege escalation or defense evasion.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_world_writable:
+    CommandLine|contains:
+      - 'chmod 777'
+      - 'chmod 666'
+      - 'chmod a+rwx'
+      - 'chmod o+w'
+      - 'chmod -R 777'
+      - 'chmod -R 666'
+  selection_suid:
+    CommandLine|contains:
+      - 'chmod +s'
+      - 'chmod u+s'
+      - 'chmod g+s'
+      - 'chmod 4755'
+      - 'chmod 4777'
+      - 'chmod 2755'
+      - 'chmod 2777'
+      - 'chmod 6755'
+  selection_sensitive_dirs:
+    CommandLine|contains:
+      - 'chmod * /etc/'
+      - 'chmod * /usr/bin/'
+      - 'chmod * /usr/sbin/'
+      - 'chmod * /tmp/'
+      - 'chmod * /var/'
+      - 'chown root:root'
+      - 'chown -R root'
+  selection_acl:
+    CommandLine|contains:
+      - 'setfacl -m'
+      - 'icacls * /grant Everyone:F'
+      - 'icacls * /grant *S-1-1-0:F'
+      - 'cacls * /e /g Everyone:F'
+  condition: selection_world_writable or selection_suid or selection_sensitive_dirs or selection_acl
+level: medium
+tags:
+  - attack.defense_evasion
+  - attack.t1222.002
+falsepositives:
+  - Developers setting temporary permissions during debugging
+  - Deployment scripts that adjust file permissions as part of installation
+  - System administrators performing legitimate configuration changes

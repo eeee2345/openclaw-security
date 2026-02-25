@@ -1,0 +1,59 @@
+title: Process Injection Indicators Detected
+id: openclaw-037
+status: stable
+description: Detects indicators of process injection techniques including ptrace-based injection, proc filesystem memory access, and use of common injection tools and APIs that may indicate code injection into running processes.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_ptrace:
+    CommandLine|contains:
+      - 'ptrace'
+      - 'PTRACE_ATTACH'
+      - 'PTRACE_POKETEXT'
+      - 'PTRACE_POKEDATA'
+      - 'process_vm_writev'
+  selection_proc_mem:
+    CommandLine|contains:
+      - '/proc/*/mem'
+      - '/proc/*/maps'
+      - '/proc/*/cmdline'
+      - '/proc/self/mem'
+      - 'cat /proc/*/maps'
+      - 'dd if=/proc/'
+  selection_linux_inject:
+    CommandLine|contains:
+      - 'LD_PRELOAD='
+      - 'ld.so.preload'
+      - 'dlopen'
+      - 'dlsym'
+      - 'inject.so'
+      - 'libinject'
+  selection_windows_inject:
+    CommandLine|contains:
+      - 'CreateRemoteThread'
+      - 'NtCreateThreadEx'
+      - 'VirtualAllocEx'
+      - 'WriteProcessMemory'
+      - 'QueueUserAPC'
+      - 'SetWindowsHookEx'
+      - 'NtMapViewOfSection'
+      - 'RtlCreateUserThread'
+  selection_tools:
+    CommandLine|contains:
+      - 'minjector'
+      - 'psinject'
+      - 'shellcode_inject'
+      - 'reflective_dll'
+      - 'hollowing'
+  condition: selection_ptrace or selection_proc_mem or selection_linux_inject or selection_windows_inject or selection_tools
+level: critical
+tags:
+  - attack.defense_evasion
+  - attack.t1055
+falsepositives:
+  - Debugging tools such as gdb or strace using ptrace for legitimate purposes
+  - Application performance monitoring tools that read proc filesystem
+  - Security tools performing authorized runtime analysis

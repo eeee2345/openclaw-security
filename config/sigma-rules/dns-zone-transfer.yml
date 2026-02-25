@@ -1,0 +1,43 @@
+title: DNS Zone Transfer Attempt
+id: openclaw-041
+status: stable
+description: Detects DNS zone transfer (AXFR) attempts which can be used by attackers to enumerate all DNS records for a domain, revealing internal hostnames, IP addresses, and network architecture.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: dns_server
+  product: any
+detection:
+  selection_dns_query:
+    query_type|contains:
+      - 'AXFR'
+      - 'IXFR'
+  selection_process:
+    CommandLine|contains:
+      - 'dig axfr'
+      - 'dig AXFR'
+      - 'nslookup -type=axfr'
+      - 'nslookup -type=AXFR'
+      - 'nslookup -q=axfr'
+      - 'host -t axfr'
+      - 'host -l '
+      - 'dnsrecon -t axfr'
+      - 'dnsrecon -a'
+      - 'fierce -dns'
+      - 'dnsenum'
+      - 'dnsmap'
+      - 'dnswalk'
+  selection_network:
+    dst_port:
+      - 53
+    protocol:
+      - 'tcp'
+  condition: selection_dns_query or selection_process or (selection_network and selection_dns_query)
+level: high
+tags:
+  - attack.reconnaissance
+  - attack.t1590.002
+falsepositives:
+  - Legitimate DNS zone transfers between primary and secondary DNS servers
+  - DNS administrators performing zone maintenance
+  - DNS monitoring tools checking zone consistency

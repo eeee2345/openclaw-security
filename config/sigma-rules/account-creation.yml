@@ -1,0 +1,74 @@
+title: Unexpected User Account Creation
+id: openclaw-018
+status: stable
+description: Detects creation of new user accounts on Linux and Windows systems that may indicate persistence or unauthorized access
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_linux_useradd:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'useradd '
+      - 'useradd\t'
+      - 'adduser '
+      - 'adduser\t'
+      - '/usr/sbin/useradd'
+      - '/usr/sbin/adduser'
+  selection_linux_passwd_modify:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'passwd '
+      - 'chpasswd'
+      - 'echo *:* | chpasswd'
+    metadata_command_line|contains:
+      - 'useradd'
+      - 'adduser'
+      - 'usermod'
+  selection_windows_account:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'net user /add'
+      - 'net user /domain'
+      - 'New-LocalUser'
+      - 'New-ADUser'
+      - 'dsadd user'
+      - 'net localgroup administrators /add'
+  selection_hidden_account:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'useradd -o -u 0'
+      - 'useradd -M -N -r'
+      - 'useradd -s /bin/bash -g root'
+      - 'usermod -u 0'
+      - '-G root'
+      - '-G sudo'
+      - '-G wheel'
+    description|contains:
+      - 'account creation'
+      - 'new user'
+      - 'user added'
+      - 'local account'
+  selection_service_account:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'useradd -r'
+      - '--system'
+      - '-s /usr/sbin/nologin'
+      - '-s /bin/false'
+      - 'svc_'
+      - 'svc-'
+  condition: selection_linux_useradd OR selection_linux_passwd_modify OR selection_windows_account OR selection_hidden_account OR selection_service_account
+level: medium
+tags:
+  - attack.persistence
+  - attack.t1136
+falsepositives:
+  - Legitimate user onboarding by system administrators
+  - Automated provisioning systems
+  - Application installers creating service accounts
+references:
+  - https://attack.mitre.org/techniques/T1136/
+  - https://attack.mitre.org/techniques/T1136/001/

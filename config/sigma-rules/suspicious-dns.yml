@@ -1,0 +1,79 @@
+title: Suspicious DNS Activity
+id: openclaw-009
+status: stable
+description: Detects DNS queries to known malicious TLDs, unusually long subdomains indicating DNS tunneling, and queries to suspicious dynamic DNS providers
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: dns_query
+  product: any
+detection:
+  selection_malicious_tlds:
+    category: 'dns_query'
+    metadata_query_name|contains:
+      - '.tk'
+      - '.ml'
+      - '.ga'
+      - '.cf'
+      - '.gq'
+      - '.top'
+      - '.xyz'
+      - '.work'
+      - '.click'
+      - '.loan'
+      - '.download'
+      - '.racing'
+      - '.win'
+      - '.bid'
+      - '.stream'
+  selection_dns_tunneling:
+    category: 'dns_query'
+    metadata_query_name|contains:
+      - '.dnscat.'
+      - '.iodine.'
+      - '.dns2tcp.'
+      - 'aaaaaaaaa'
+    description|contains:
+      - 'dns tunnel'
+      - 'long subdomain'
+      - 'encoded dns'
+      - 'base64 dns'
+      - 'hex encoded subdomain'
+  selection_dyndns:
+    category: 'dns_query'
+    metadata_query_name|contains:
+      - '.duckdns.org'
+      - '.no-ip.org'
+      - '.no-ip.com'
+      - '.no-ip.biz'
+      - '.noip.com'
+      - '.dynu.com'
+      - '.afraid.org'
+      - '.changeip.com'
+      - '.ddns.net'
+      - '.hopto.org'
+      - '.zapto.org'
+      - '.sytes.net'
+      - '.servebeer.com'
+  selection_txt_record_abuse:
+    category: 'dns_query'
+    metadata_query_type:
+      - 'TXT'
+      - 'NULL'
+      - 'CNAME'
+    description|contains:
+      - 'unusual record type'
+      - 'high volume dns'
+      - 'frequent txt queries'
+  condition: selection_malicious_tlds OR selection_dns_tunneling OR selection_dyndns OR selection_txt_record_abuse
+level: medium
+tags:
+  - attack.command_and_control
+  - attack.t1071.004
+falsepositives:
+  - Legitimate use of dynamic DNS services for home networks
+  - Websites using newer or less common TLDs for legitimate purposes
+  - CDN or cloud services using long subdomain names
+references:
+  - https://attack.mitre.org/techniques/T1071/004/
+  - https://attack.mitre.org/techniques/T1568/

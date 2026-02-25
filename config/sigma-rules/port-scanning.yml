@@ -1,0 +1,78 @@
+title: Internal Port Scanning Detection
+id: openclaw-017
+status: stable
+description: Detects port scanning activity from internal network hosts, including use of common scanning tools and rapid connection attempts to multiple ports
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: network_connection
+  product: any
+detection:
+  selection_scan_tools:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'nmap '
+      - 'nmap.exe'
+      - 'masscan '
+      - 'masscan.exe'
+      - 'zmap '
+      - 'rustscan '
+      - 'unicornscan'
+      - 'angry_ip_scanner'
+      - 'Advanced Port Scanner'
+      - 'ScanLine'
+    metadata_process_name|contains:
+      - 'nmap'
+      - 'masscan'
+      - 'zmap'
+      - 'rustscan'
+  selection_nmap_flags:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '-sS '
+      - '-sT '
+      - '-sU '
+      - '-sV '
+      - '-sC '
+      - '-sn '
+      - '-sP '
+      - '-Pn '
+      - '--top-ports'
+      - '-p 1-65535'
+      - '-p-'
+      - '--script vuln'
+      - '-A '
+      - '--open'
+  selection_netcat_scan:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'nc -zv'
+      - 'nc -z '
+      - 'netcat -z'
+      - '/dev/tcp/'
+    description|contains:
+      - 'port scan'
+      - 'network scan'
+      - 'host discovery'
+      - 'service discovery'
+  selection_powershell_scan:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'Test-NetConnection'
+      - 'Test-Connection'
+      - 'TcpClient'
+      - 'Net.Sockets.TcpClient'
+      - '1..65535'
+      - '1..1024'
+      - 'Connect('
+  condition: selection_scan_tools OR selection_nmap_flags OR selection_netcat_scan OR selection_powershell_scan
+level: medium
+tags:
+  - attack.reconnaissance
+  - attack.t1046
+falsepositives:
+  - Authorized vulnerability scanning by security teams
+  - Network monitoring and inventory tools
+  - Health check systems that test port availability
+references:
+  - https://attack.mitre.org/techniques/T1046/

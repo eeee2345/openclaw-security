@@ -1,0 +1,46 @@
+title: Suspicious Scanner or Attack Tool User Agent
+id: openclaw-029
+status: stable
+description: Detects HTTP requests from known vulnerability scanners, attack tools, and reconnaissance utilities based on their user agent strings.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection:
+    cs-user-agent|contains:
+      - 'sqlmap'
+      - 'nikto'
+      - 'nmap'
+      - 'dirbuster'
+      - 'gobuster'
+      - 'wfuzz'
+      - 'ffuf'
+      - 'burpsuite'
+      - 'zap'
+      - 'w3af'
+      - 'acunetix'
+      - 'nessus'
+      - 'openvas'
+      - 'masscan'
+      - 'wpscan'
+      - 'joomscan'
+      - 'nuclei'
+      - 'httpx'
+      - 'subfinder'
+      - 'dalfox'
+      - 'whatweb'
+      - 'skipfish'
+      - 'arachni'
+      - 'commix'
+      - 'havij'
+  condition: selection
+level: medium
+tags:
+  - attack.reconnaissance
+  - attack.t1595
+falsepositives:
+  - Authorized vulnerability scanning by internal security teams
+  - Bug bounty participants using scanning tools with permission
+  - Legitimate security assessment activities

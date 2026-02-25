@@ -1,0 +1,54 @@
+title: Download from Suspicious Source
+id: openclaw-039
+status: stable
+description: Detects file downloads from known paste sites, file sharing services, and other suspicious sources commonly used by attackers to host malicious payloads.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_download_tools:
+    CommandLine|contains:
+      - 'wget '
+      - 'curl '
+      - 'Invoke-WebRequest'
+      - 'Invoke-RestMethod'
+      - 'Start-BitsTransfer'
+      - 'certutil -urlcache'
+      - 'certutil -split'
+      - 'bitsadmin /transfer'
+      - 'urlmon'
+  selection_suspicious_domains:
+    CommandLine|contains:
+      - 'pastebin.com'
+      - 'paste.ee'
+      - 'hastebin.com'
+      - 'ghostbin.com'
+      - 'transfer.sh'
+      - 'file.io'
+      - 'temp.sh'
+      - 'anonfiles.com'
+      - 'mega.nz'
+      - 'mediafire.com'
+      - 'sendspace.com'
+      - 'catbox.moe'
+      - 'pomf.cat'
+      - 'ix.io'
+      - 'sprunge.us'
+      - 'dpaste.org'
+      - 'ngrok.io'
+      - 'raw.githubusercontent.com'
+      - 'gist.githubusercontent.com'
+      - 'discord.com/api/webhooks'
+      - 'discordapp.com/api/webhooks'
+      - 'cdn.discordapp.com/attachments'
+  condition: selection_download_tools and selection_suspicious_domains
+level: medium
+tags:
+  - attack.command_and_control
+  - attack.t1105
+falsepositives:
+  - Developers downloading legitimate tools or scripts from GitHub
+  - System administrators using paste services for configuration sharing
+  - Automated build systems fetching dependencies from public sources

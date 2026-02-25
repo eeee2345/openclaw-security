@@ -1,0 +1,71 @@
+title: Suspicious Service Installation
+id: openclaw-019
+status: stable
+description: Detects creation of new services or systemd units that may be used as backdoors or persistence mechanisms
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_windows_service:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'sc create'
+      - 'sc.exe create'
+      - 'New-Service'
+      - 'Install-Service'
+      - 'sc config start= auto'
+      - 'reg add HKLM\\SYSTEM\\CurrentControlSet\\Services'
+  selection_systemd_unit:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - '/etc/systemd/system/'
+      - '/usr/lib/systemd/system/'
+      - '/lib/systemd/system/'
+      - '/run/systemd/system/'
+      - '/etc/init.d/'
+      - '/etc/rc.local'
+  selection_systemd_commands:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'systemctl enable'
+      - 'systemctl daemon-reload'
+      - 'update-rc.d'
+      - 'chkconfig --add'
+      - 'chkconfig --level'
+    description|contains:
+      - 'service creation'
+      - 'service install'
+      - 'new service'
+      - 'systemd unit'
+  selection_suspicious_binpath:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'binpath= "cmd'
+      - 'binpath= "powershell'
+      - 'binpath= "mshta'
+      - 'binpath= "wscript'
+      - 'binpath= "cscript'
+      - 'binpath= "rundll32'
+      - 'ExecStart=/tmp/'
+      - 'ExecStart=/dev/shm/'
+      - 'ExecStart=/var/tmp/'
+  selection_launchd:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - '/Library/LaunchDaemons/'
+      - '/Library/LaunchAgents/'
+      - '~/Library/LaunchAgents/'
+  condition: selection_windows_service OR selection_systemd_unit OR selection_systemd_commands OR selection_suspicious_binpath OR selection_launchd
+level: medium
+tags:
+  - attack.persistence
+  - attack.t1543.003
+falsepositives:
+  - Legitimate software installation creating services
+  - System administrators configuring new services
+  - Configuration management tools (Ansible, Puppet, Chef)
+references:
+  - https://attack.mitre.org/techniques/T1543/003/
+  - https://attack.mitre.org/techniques/T1543/004/

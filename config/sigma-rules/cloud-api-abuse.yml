@@ -1,0 +1,113 @@
+title: Cloud API Abuse Detection
+id: openclaw-025
+status: stable
+description: Detects unusual cloud API calls including unauthorized IAM modifications, suspicious S3 operations, security group changes, and access from unknown locations
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: cloud
+  product: any
+detection:
+  selection_iam_abuse:
+    category: 'cloud'
+    metadata_event_name|contains:
+      - 'CreateUser'
+      - 'CreateRole'
+      - 'CreateAccessKey'
+      - 'AttachUserPolicy'
+      - 'AttachRolePolicy'
+      - 'PutUserPolicy'
+      - 'PutRolePolicy'
+      - 'CreateLoginProfile'
+      - 'UpdateLoginProfile'
+      - 'AddUserToGroup'
+    description|contains:
+      - 'iam:CreateUser'
+      - 'iam:CreateRole'
+      - 'iam:AttachUserPolicy'
+      - 'iam:PutUserPolicy'
+      - 'unauthorized iam'
+      - 'privilege escalation'
+  selection_s3_abuse:
+    category: 'cloud'
+    metadata_event_name|contains:
+      - 'GetObject'
+      - 'PutBucketPolicy'
+      - 'PutBucketAcl'
+      - 'DeleteBucketPolicy'
+      - 'PutObjectAcl'
+      - 'ListBuckets'
+      - 'GetBucketAcl'
+      - 'PutBucketPublicAccessBlock'
+    description|contains:
+      - 's3:GetObject'
+      - 's3:PutBucketPolicy'
+      - 'bucket policy change'
+      - 'public access'
+      - 'data exposure'
+  selection_security_group:
+    category: 'cloud'
+    metadata_event_name|contains:
+      - 'AuthorizeSecurityGroupIngress'
+      - 'AuthorizeSecurityGroupEgress'
+      - 'CreateSecurityGroup'
+      - 'ModifySecurityGroupRules'
+    metadata_request_parameters|contains:
+      - '0.0.0.0/0'
+      - '::/0'
+      - 'port 22'
+      - 'port 3389'
+      - 'port 0-65535'
+  selection_suspicious_api:
+    category: 'cloud'
+    metadata_event_name|contains:
+      - 'StopLogging'
+      - 'DeleteTrail'
+      - 'UpdateTrail'
+      - 'DisableAlarmActions'
+      - 'DeleteFlowLogs'
+      - 'DisableKeyRotation'
+      - 'DeleteDetector'
+      - 'StopMonitoringMembers'
+    description|contains:
+      - 'cloudtrail disable'
+      - 'logging disabled'
+      - 'monitoring stopped'
+      - 'security bypass'
+  selection_gcp_azure:
+    category: 'cloud'
+    metadata_event_name|contains:
+      - 'google.iam.admin.v1.CreateServiceAccount'
+      - 'google.iam.admin.v1.CreateServiceAccountKey'
+      - 'google.iam.admin.v1.SetIamPolicy'
+      - 'Microsoft.Authorization/roleAssignments/write'
+      - 'Microsoft.Compute/virtualMachines/write'
+      - 'Microsoft.Network/networkSecurityGroups/write'
+    description|contains:
+      - 'service account creation'
+      - 'role assignment'
+      - 'security group modification'
+      - 'cloud api abuse'
+  selection_unusual_source:
+    category: 'cloud'
+    description|contains:
+      - 'unknown IP'
+      - 'unusual source'
+      - 'new geolocation'
+      - 'impossible travel'
+      - 'first seen'
+      - 'anomalous access'
+      - 'unauthorized region'
+  condition: selection_iam_abuse OR selection_s3_abuse OR selection_security_group OR selection_suspicious_api OR selection_gcp_azure OR selection_unusual_source
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1078.004
+falsepositives:
+  - Legitimate cloud infrastructure provisioning
+  - IaC deployments (Terraform, CloudFormation, Pulumi)
+  - Authorized security audits and compliance scans
+  - DevOps automation creating service accounts
+references:
+  - https://attack.mitre.org/techniques/T1078/004/
+  - https://attack.mitre.org/techniques/T1580/

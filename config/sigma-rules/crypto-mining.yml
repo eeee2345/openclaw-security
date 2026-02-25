@@ -1,0 +1,95 @@
+title: Cryptocurrency Mining Activity
+id: openclaw-022
+status: stable
+description: Detects cryptocurrency mining indicators including known miner process names, mining pool connections, and suspicious CPU-intensive processes
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_miner_processes:
+    category: 'process_creation'
+    metadata_process_name|contains:
+      - 'xmrig'
+      - 'cpuminer'
+      - 'cgminer'
+      - 'bfgminer'
+      - 'ethminer'
+      - 'minergate'
+      - 'minergate-cli'
+      - 'nbminer'
+      - 'phoenixminer'
+      - 'claymore'
+      - 'nanominer'
+      - 't-rex'
+      - 'gminer'
+      - 'lolminer'
+      - 'teamredminer'
+  selection_miner_commands:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - '--coin '
+      - '-o stratum+tcp://'
+      - '-o stratum+ssl://'
+      - '--stratum-server'
+      - '--donate-level'
+      - '--randomx'
+      - '--algo=rx'
+      - '--algo=cn'
+      - '--algo=ethash'
+      - '--algo=kawpow'
+      - '-a cryptonight'
+      - '-a randomx'
+      - 'pool.minergate.com'
+  selection_pool_connections:
+    category: 'network_connection'
+    metadata_destination_host|contains:
+      - 'pool.minergate.com'
+      - 'mine.moneropool.com'
+      - 'monerohash.com'
+      - 'minexmr.com'
+      - 'pool.hashvault.pro'
+      - 'xmrpool.eu'
+      - 'nanopool.org'
+      - '2miners.com'
+      - 'f2pool.com'
+      - 'ethermine.org'
+      - 'nicehash.com'
+      - 'unmineable.com'
+      - 'pool.supportxmr.com'
+    metadata_destination_port:
+      - '3333'
+      - '4444'
+      - '5555'
+      - '7777'
+      - '8888'
+      - '9999'
+      - '14433'
+      - '14444'
+  selection_coinhive_scripts:
+    category: 'network_connection'
+    metadata_destination_host|contains:
+      - 'coinhive.com'
+      - 'authedmine.com'
+      - 'jsecoin.com'
+      - 'cryptoloot.pro'
+      - 'coin-hive.com'
+      - 'webmine.cz'
+    description|contains:
+      - 'crypto mining'
+      - 'cryptocurrency'
+      - 'coin miner'
+      - 'mining pool'
+      - 'cryptojacking'
+  condition: selection_miner_processes OR selection_miner_commands OR selection_pool_connections OR selection_coinhive_scripts
+level: medium
+tags:
+  - attack.impact
+  - attack.t1496
+falsepositives:
+  - Authorized cryptocurrency mining operations
+  - Blockchain development and testing
+  - Mining benchmarking tools for hardware testing
+references:
+  - https://attack.mitre.org/techniques/T1496/

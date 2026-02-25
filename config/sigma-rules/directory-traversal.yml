@@ -1,0 +1,41 @@
+title: Directory Traversal Attempt Detected
+id: openclaw-028
+status: stable
+description: Detects path traversal attempts in web server logs by matching encoded and unencoded directory traversal sequences used to access files outside the web root.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection:
+    cs-uri-query|contains:
+      - '../'
+      - '..\'
+      - '..%2f'
+      - '..%5c'
+      - '%2e%2e/'
+      - '%2e%2e%2f'
+      - '%2e%2e\'
+      - '%2e%2e%5c'
+      - '..%c0%af'
+      - '..%c1%9c'
+      - '..%c0%9v'
+      - '..../'
+      - '....\'
+      - '/etc/passwd'
+      - '/etc/shadow'
+      - '/etc/hosts'
+      - '/proc/self/environ'
+      - 'C:\Windows\system32'
+      - 'C:/Windows/system32'
+      - 'boot.ini'
+      - 'win.ini'
+  condition: selection
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1190
+falsepositives:
+  - Legitimate relative path references in poorly designed web applications
+  - Automated vulnerability scanners during authorized security assessments

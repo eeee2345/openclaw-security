@@ -1,0 +1,62 @@
+title: VPN Connection from Unusual Location
+id: openclaw-043
+status: stable
+description: Detects VPN connection attempts from unusual geographic locations or through anonymization services that may indicate compromised credentials or unauthorized remote access.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: network_connection
+  product: any
+detection:
+  selection_vpn_services:
+    dst_port:
+      - 1194
+      - 1723
+      - 500
+      - 4500
+      - 443
+      - 51820
+  selection_vpn_processes:
+    Image|contains:
+      - 'openvpn'
+      - 'vpnclient'
+      - 'vpnagent'
+      - 'wireguard'
+      - 'wg-quick'
+      - 'strongswan'
+      - 'ipsec'
+      - 'pptp'
+      - 'l2tp'
+      - 'FortiClient'
+      - 'GlobalProtect'
+      - 'PanGPA'
+      - 'snx'
+      - 'vpnc'
+  selection_tor_proxy:
+    dst_ip|contains:
+      - '10.0.0.'
+    Image|contains:
+      - 'tor'
+      - 'proxychains'
+      - 'torsocks'
+  selection_anomaly_indicators:
+    EventType|contains:
+      - 'vpn_login'
+      - 'vpn_connect'
+      - 'remote_access'
+    SourceGeoCountry|contains:
+      - 'CN'
+      - 'RU'
+      - 'KP'
+      - 'IR'
+      - 'CU'
+      - 'SY'
+  condition: (selection_vpn_services and selection_anomaly_indicators) or selection_tor_proxy or (selection_vpn_processes and selection_anomaly_indicators)
+level: medium
+tags:
+  - attack.initial_access
+  - attack.t1133
+falsepositives:
+  - Employees traveling internationally connecting to corporate VPN
+  - Remote workers using VPN from new locations
+  - VPN infrastructure changes or migrations

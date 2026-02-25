@@ -1,0 +1,66 @@
+title: API Rate Limit Abuse or Enumeration Pattern
+id: openclaw-044
+status: stable
+description: Detects API rate limit violations, rapid sequential API calls, and enumeration patterns that may indicate brute force attacks, credential stuffing, or data scraping attempts.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: webserver
+  product: any
+detection:
+  selection_rate_limit_responses:
+    sc-status:
+      - 429
+      - 503
+  selection_enumeration_paths:
+    cs-uri-stem|contains:
+      - '/api/v1/users/'
+      - '/api/v1/accounts/'
+      - '/api/users/'
+      - '/api/account/'
+      - '/api/v2/users/'
+      - '/api/login'
+      - '/api/auth'
+      - '/api/token'
+      - '/api/reset-password'
+      - '/api/forgot-password'
+      - '/api/register'
+      - '/api/signup'
+      - '/api/verify'
+      - '/api/otp'
+      - '/oauth/token'
+      - '/oauth/authorize'
+      - '/graphql'
+      - '/api/v1/search'
+  selection_rapid_requests:
+    cs-uri-query|contains:
+      - 'page='
+      - 'offset='
+      - 'limit='
+      - 'id='
+      - 'user_id='
+      - 'account_id='
+      - 'email='
+      - 'username='
+      - 'phone='
+  selection_tools:
+    cs-user-agent|contains:
+      - 'python-requests'
+      - 'axios'
+      - 'Go-http-client'
+      - 'Java/'
+      - 'okhttp'
+      - 'libwww-perl'
+      - 'Postman'
+      - 'insomnia'
+      - 'httpie'
+  condition: selection_rate_limit_responses or (selection_enumeration_paths and selection_tools) or (selection_rapid_requests and selection_tools)
+level: medium
+tags:
+  - attack.reconnaissance
+  - attack.t1595.002
+falsepositives:
+  - Legitimate API clients experiencing temporary rate limiting
+  - Mobile applications with aggressive retry logic
+  - Integration testing frameworks making rapid API calls
+  - API load testing during authorized performance assessments

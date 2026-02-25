@@ -1,0 +1,43 @@
+title: Windows Registry Run Key Persistence
+id: openclaw-034
+status: stable
+description: Detects modifications to Windows registry Run and RunOnce keys commonly used by malware to achieve persistence across system reboots.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_reg_add:
+    CommandLine|contains:
+      - 'reg add'
+      - 'reg.exe add'
+      - 'REG ADD'
+  selection_run_keys:
+    CommandLine|contains:
+      - 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
+      - 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
+      - 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce'
+      - 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce'
+      - 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices'
+      - 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices'
+      - 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run'
+      - 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run'
+      - 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Shell'
+      - 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit'
+      - 'HKLM\SYSTEM\CurrentControlSet\Services'
+  selection_powershell:
+    CommandLine|contains:
+      - 'Set-ItemProperty*CurrentVersion\Run'
+      - 'New-ItemProperty*CurrentVersion\Run'
+      - 'Set-ItemProperty*CurrentVersion\RunOnce'
+      - 'New-ItemProperty*CurrentVersion\RunOnce'
+  condition: (selection_reg_add and selection_run_keys) or selection_powershell
+level: high
+tags:
+  - attack.persistence
+  - attack.t1547.001
+falsepositives:
+  - Legitimate software installation adding startup entries
+  - System administrators configuring startup applications via group policy
+  - Enterprise management tools modifying registry run keys

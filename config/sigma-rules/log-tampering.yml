@@ -1,0 +1,84 @@
+title: Log Tampering and Clearing
+id: openclaw-015
+status: stable
+description: Detects clearing of system logs, stopping of logging services, and log file deletion or truncation indicating evidence destruction
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_linux_log_clear:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'truncate -s 0 /var/log/'
+      - '> /var/log/syslog'
+      - '> /var/log/auth.log'
+      - '> /var/log/messages'
+      - '> /var/log/secure'
+      - '> /var/log/wtmp'
+      - '> /var/log/btmp'
+      - '> /var/log/lastlog'
+      - 'cat /dev/null > /var/log/'
+      - 'rm -f /var/log/'
+      - 'rm -rf /var/log/'
+      - 'shred /var/log/'
+      - 'shred -zu /var/log/'
+  selection_windows_log_clear:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'wevtutil cl'
+      - 'wevtutil clear-log'
+      - 'Clear-EventLog'
+      - 'Remove-EventLog'
+      - 'del /F /Q %systemroot%\\System32\\winevt\\Logs\\'
+  selection_stop_logging:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'systemctl stop rsyslog'
+      - 'systemctl stop syslog'
+      - 'systemctl stop auditd'
+      - 'service rsyslog stop'
+      - 'service syslog stop'
+      - 'service auditd stop'
+      - 'killall rsyslogd'
+      - 'killall syslogd'
+      - 'killall auditd'
+      - 'net stop eventlog'
+  selection_history_clear:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'history -c'
+      - 'history -w /dev/null'
+      - 'export HISTSIZE=0'
+      - 'export HISTFILESIZE=0'
+      - 'unset HISTFILE'
+      - 'rm ~/.bash_history'
+      - 'rm ~/.zsh_history'
+      - 'cat /dev/null > ~/.bash_history'
+      - 'ln -sf /dev/null ~/.bash_history'
+    description|contains:
+      - 'log clearing'
+      - 'log tampering'
+      - 'evidence destruction'
+      - 'history deletion'
+  selection_audit_disable:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'auditctl -e 0'
+      - 'auditctl -D'
+      - 'auditctl --reset-lost'
+      - 'setenforce 0'
+      - 'Set-MpPreference -DisableRealtimeMonitoring'
+  condition: selection_linux_log_clear OR selection_windows_log_clear OR selection_stop_logging OR selection_history_clear OR selection_audit_disable
+level: critical
+tags:
+  - attack.defense_evasion
+  - attack.t1070.002
+falsepositives:
+  - Log rotation scripts configured by system administrators
+  - Automated log management tools (logrotate)
+  - System maintenance windows with planned log archival
+references:
+  - https://attack.mitre.org/techniques/T1070/002/
+  - https://attack.mitre.org/techniques/T1070/003/

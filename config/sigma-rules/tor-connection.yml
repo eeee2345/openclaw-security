@@ -1,0 +1,75 @@
+title: Tor Network Connection
+id: openclaw-021
+status: stable
+description: Detects connections to known Tor entry and exit nodes, Tor browser execution, and Tor-related network traffic patterns
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: network_connection
+  product: any
+detection:
+  selection_tor_ports:
+    category: 'network_connection'
+    metadata_destination_port:
+      - '9001'
+      - '9030'
+      - '9040'
+      - '9050'
+      - '9051'
+      - '9150'
+      - '9151'
+  selection_tor_process:
+    category: 'process_creation'
+    metadata_process_name|contains:
+      - 'tor'
+      - 'tor.exe'
+      - 'tor.real'
+    metadata_command_line|contains:
+      - 'tor '
+      - 'tor.exe'
+      - '--SocksPort'
+      - '--ORPort'
+      - '--DirPort'
+      - 'torrc'
+  selection_tor_browser:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'Tor Browser'
+      - 'TorBrowser'
+      - 'torbrowser'
+      - 'start-tor-browser'
+    metadata_process_name|contains:
+      - 'firefox'
+      - 'firefox.real'
+    description|contains:
+      - 'tor connection'
+      - 'tor network'
+      - 'anonymization'
+      - 'onion routing'
+  selection_tor_domains:
+    category: 'dns_query'
+    metadata_query_name|contains:
+      - '.onion'
+      - '.exit'
+      - 'torproject.org'
+      - 'bridges.torproject.org'
+      - 'check.torproject.org'
+  selection_obfs_proxy:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'obfs4proxy'
+      - 'obfsproxy'
+      - 'meek-client'
+      - 'snowflake-client'
+      - 'pluggable-transport'
+  condition: selection_tor_ports OR selection_tor_process OR selection_tor_browser OR selection_tor_domains OR selection_obfs_proxy
+level: medium
+tags:
+  - attack.command_and_control
+  - attack.t1090.003
+falsepositives:
+  - Legitimate privacy-conscious users using Tor for personal browsing
+  - Security researchers testing anonymization tools
+  - Organizations that permit Tor usage for specific purposes
+references:
+  - https://attack.mitre.org/techniques/T1090/003/

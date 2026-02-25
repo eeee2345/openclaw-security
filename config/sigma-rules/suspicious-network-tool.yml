@@ -1,0 +1,56 @@
+title: Network Reconnaissance Tool Execution
+id: openclaw-035
+status: stable
+description: Detects execution of network scanning and reconnaissance tools that may indicate an attacker performing network discovery, port scanning, or lateral movement preparation.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_scanners:
+    CommandLine|contains:
+      - 'nmap '
+      - 'nmap.exe'
+      - 'masscan '
+      - 'masscan.exe'
+      - 'zmap '
+      - 'zmap.exe'
+  selection_netcat:
+    CommandLine|contains:
+      - 'netcat '
+      - 'nc -'
+      - 'nc.exe'
+      - 'ncat '
+      - 'ncat.exe'
+      - 'nc.traditional'
+  selection_recon:
+    CommandLine|contains:
+      - 'tcpdump '
+      - 'tcpdump.exe'
+      - 'wireshark'
+      - 'tshark'
+      - 'ettercap'
+      - 'arpspoof'
+      - 'responder'
+      - 'bettercap'
+      - 'mitmproxy'
+  selection_enum:
+    CommandLine|contains:
+      - 'enum4linux'
+      - 'smbclient -L'
+      - 'rpcclient'
+      - 'nbtscan'
+      - 'net view'
+      - 'net group'
+      - 'net localgroup'
+      - 'net user /domain'
+  condition: selection_scanners or selection_netcat or selection_recon or selection_enum
+level: medium
+tags:
+  - attack.reconnaissance
+  - attack.t1046
+falsepositives:
+  - Network administrators performing legitimate network diagnostics
+  - Security teams conducting authorized penetration tests
+  - Network monitoring tools used for infrastructure management

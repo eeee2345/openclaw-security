@@ -1,0 +1,56 @@
+title: Email-Based Data Exfiltration Indicators
+id: openclaw-042
+status: stable
+description: Detects unusual email sending patterns, large attachment transmissions, and use of command-line email utilities that may indicate data exfiltration through email channels.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_cli_email:
+    CommandLine|contains:
+      - 'sendmail '
+      - 'mail -s'
+      - 'mutt -a'
+      - 'mailx -a'
+      - 'swaks --to'
+      - 'sendemail -t'
+      - 'smtp-cli'
+      - 'mpack'
+  selection_powershell_email:
+    CommandLine|contains:
+      - 'Send-MailMessage'
+      - 'System.Net.Mail.SmtpClient'
+      - 'System.Net.Mail.MailMessage'
+      - 'New-Object Net.Mail.SmtpClient'
+      - 'Net.Mail.Attachment'
+  selection_attachment_patterns:
+    CommandLine|contains:
+      - '-a /etc/shadow'
+      - '-a /etc/passwd'
+      - '-attach *.zip'
+      - '-attach *.rar'
+      - '-attach *.7z'
+      - '-attach *.tar.gz'
+      - '-attach *.db'
+      - '-attach *.sql'
+      - '-attach *.csv'
+      - '-attach *.xlsx'
+  selection_smtp_direct:
+    CommandLine|contains:
+      - 'openssl s_client -connect *:587'
+      - 'openssl s_client -connect *:465'
+      - 'telnet * 25'
+      - 'telnet * 587'
+      - 'curl smtp://'
+      - 'curl smtps://'
+  condition: selection_cli_email or selection_powershell_email or selection_attachment_patterns or selection_smtp_direct
+level: medium
+tags:
+  - attack.exfiltration
+  - attack.t1048.003
+falsepositives:
+  - Legitimate automated email notifications from monitoring systems
+  - Scheduled report delivery via email
+  - System administrators using command-line email tools for testing

@@ -1,0 +1,54 @@
+title: SSH Key Theft or Unauthorized Key Modification
+id: openclaw-031
+status: stable
+description: Detects attempts to access SSH private keys, read authorized_keys files, or modify SSH authentication configuration, which may indicate credential theft or unauthorized persistence.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_read_keys:
+    CommandLine|contains:
+      - 'cat ~/.ssh/id_rsa'
+      - 'cat ~/.ssh/id_ed25519'
+      - 'cat ~/.ssh/id_ecdsa'
+      - 'cat ~/.ssh/id_dsa'
+      - 'cat /root/.ssh/id_rsa'
+      - 'cat /home/*/.ssh/id_rsa'
+      - 'type %USERPROFILE%\.ssh\id_rsa'
+      - 'cat ~/.ssh/authorized_keys'
+      - 'cat /root/.ssh/authorized_keys'
+  selection_copy_keys:
+    CommandLine|contains:
+      - 'cp ~/.ssh/id_rsa'
+      - 'cp ~/.ssh/id_ed25519'
+      - 'scp */.ssh/id_rsa'
+      - 'rsync */.ssh/id_rsa'
+      - 'tar */.ssh/'
+      - 'zip */.ssh/'
+  selection_modify_authorized:
+    CommandLine|contains:
+      - '>> ~/.ssh/authorized_keys'
+      - '>> /root/.ssh/authorized_keys'
+      - 'echo * >> *authorized_keys'
+      - 'tee -a *authorized_keys'
+      - 'ssh-copy-id'
+  selection_find_keys:
+    CommandLine|contains:
+      - 'find / -name id_rsa'
+      - 'find / -name id_ed25519'
+      - 'find / -name "*.pem"'
+      - 'find / -name authorized_keys'
+      - 'grep -r "BEGIN RSA PRIVATE KEY"'
+      - 'grep -r "BEGIN OPENSSH PRIVATE KEY"'
+      - 'grep -r "BEGIN EC PRIVATE KEY"'
+  condition: selection_read_keys or selection_copy_keys or selection_modify_authorized or selection_find_keys
+level: critical
+tags:
+  - attack.credential_access
+  - attack.t1552.004
+falsepositives:
+  - System administrators performing legitimate SSH key management
+  - Automated configuration management tools such as Ansible or Puppet
+  - Backup scripts that include SSH key directories

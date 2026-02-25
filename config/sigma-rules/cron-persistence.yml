@@ -1,0 +1,66 @@
+title: Cron Job Persistence
+id: openclaw-011
+status: stable
+description: Detects suspicious crontab modifications and creation of cron jobs that may indicate persistence mechanisms
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_crontab_edit:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'crontab -e'
+      - 'crontab -l'
+      - 'crontab -r'
+      - 'crontab -'
+  selection_cron_file_write:
+    category: 'file_modification'
+    metadata_target_file|contains:
+      - '/etc/crontab'
+      - '/var/spool/cron/'
+      - '/var/spool/cron/crontabs/'
+      - '/etc/cron.d/'
+      - '/etc/cron.daily/'
+      - '/etc/cron.hourly/'
+      - '/etc/cron.weekly/'
+      - '/etc/cron.monthly/'
+      - '/etc/anacrontab'
+  selection_suspicious_cron_content:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'echo "* * * * *'
+      - 'echo "*/1 * * * *'
+      - 'echo "*/5 * * * *'
+      - '| crontab -'
+      - 'crontab <<'
+      - '/dev/tcp/'
+      - 'curl http'
+      - 'wget http'
+      - 'bash -c'
+    description|contains:
+      - 'cron modification'
+      - 'scheduled task'
+      - 'crontab change'
+      - 'persistence via cron'
+  selection_at_job:
+    category: 'process_creation'
+    metadata_command_line|contains:
+      - 'at -f'
+      - 'at now'
+      - 'atq'
+      - 'batch'
+      - 'systemctl enable'
+      - 'systemd-run --on-calendar'
+  condition: selection_crontab_edit OR selection_cron_file_write OR selection_suspicious_cron_content OR selection_at_job
+level: high
+tags:
+  - attack.persistence
+  - attack.t1053.003
+falsepositives:
+  - Legitimate system administrator cron job management
+  - Automated backup scripts configured via crontab
+  - Package manager post-install scripts that configure cron jobs
+references:
+  - https://attack.mitre.org/techniques/T1053/003/

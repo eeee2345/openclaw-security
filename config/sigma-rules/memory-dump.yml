@@ -1,0 +1,80 @@
+title: Memory Dump Tool Execution
+id: openclaw-045
+status: stable
+description: Detects execution of memory dumping tools that can be used to extract credentials, encryption keys, and other sensitive data from process memory or system RAM.
+author: OpenClaw Security
+date: 2026/02/25
+logsource:
+  category: process_creation
+  product: any
+detection:
+  selection_procdump:
+    CommandLine|contains:
+      - 'procdump'
+      - 'procdump.exe'
+      - 'procdump64.exe'
+      - 'ProcDump'
+  selection_procdump_targets:
+    CommandLine|contains:
+      - 'lsass'
+      - 'lsass.exe'
+      - 'lsass.dmp'
+      - 'csrss.exe'
+      - 'winlogon.exe'
+      - 'svchost.exe'
+  selection_memdump_tools:
+    CommandLine|contains:
+      - 'memdump'
+      - 'dumpit'
+      - 'DumpIt.exe'
+      - 'winpmem'
+      - 'RamCapture'
+      - 'Magnet RAM'
+      - 'FTK Imager'
+      - 'belkasoft'
+  selection_volatility:
+    CommandLine|contains:
+      - 'volatility'
+      - 'vol.py'
+      - 'vol2'
+      - 'vol3'
+      - 'volatility3'
+      - 'rekall'
+  selection_linux_memdump:
+    CommandLine|contains:
+      - 'dd if=/dev/mem'
+      - 'dd if=/dev/kmem'
+      - 'dd if=/proc/kcore'
+      - 'LiME'
+      - 'insmod lime'
+      - 'avml'
+      - 'fmem'
+      - 'gcore '
+      - 'gdb -p * dump memory'
+  selection_mimikatz:
+    CommandLine|contains:
+      - 'mimikatz'
+      - 'sekurlsa::logonpasswords'
+      - 'sekurlsa::wdigest'
+      - 'sekurlsa::kerberos'
+      - 'lsadump::sam'
+      - 'lsadump::secrets'
+      - 'lsadump::cache'
+      - 'token::elevate'
+      - 'privilege::debug'
+  selection_comsvcs:
+    CommandLine|contains:
+      - 'comsvcs.dll'
+      - 'MiniDump'
+      - 'rundll32.exe comsvcs.dll'
+      - 'Task Manager'
+  condition: selection_procdump or (selection_procdump and selection_procdump_targets) or selection_memdump_tools or selection_volatility or selection_linux_memdump or selection_mimikatz or selection_comsvcs
+level: critical
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+falsepositives:
+  - Incident response teams performing authorized memory forensics
+  - System administrators using procdump for crash dump analysis
+  - Security researchers analyzing malware in sandboxed environments
+  - Digital forensics investigators during authorized investigations
