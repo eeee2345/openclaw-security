@@ -132,8 +132,9 @@ rule Suspicious_Base64 {
     expect(event!.category).toBe('malware_detection');
     expect(event!.severity).toBe('high');
     expect(event!.description).toContain('YARA match');
-    expect(event!.rawData?.sha256).toMatch(/^[a-f0-9]{64}$/);
-    expect(event!.rawData?.mitreTechnique).toBe('T1505.003');
+    const rawData = event!.raw as Record<string, unknown>;
+    expect(rawData?.sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(rawData?.mitreTechnique).toBe('T1505.003');
   });
 
   it('should return null SecurityEvent for clean file', async () => {

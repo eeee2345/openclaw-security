@@ -82,7 +82,7 @@ export async function executeScan(config: ScanConfig): Promise<void> {
       num: String(i + 1),
       severity: colorSeverity(finding.severity),
       title: finding.title,
-      status: finding.fixed ? c.safe('Fixed') : c.critical('Open'),
+      status: (finding as unknown as Record<string, unknown>)['fixed'] ? c.safe('Fixed') : c.critical('Open'),
     }));
 
     console.log(table(columns, coloredRows));

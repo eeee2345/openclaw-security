@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * PanguardGuard CLI
  * PanguardGuard 命令列介面
@@ -13,6 +14,7 @@ import { homedir } from 'node:os';
 import {
   c, banner, header, box, symbols, divider, statusPanel, spinner,
 } from '@openclaw/core';
+import type { StatusItem } from '@openclaw/core';
 import { GuardEngine } from '../guard-engine.js';
 import { loadConfig, DEFAULT_DATA_DIR } from '../config.js';
 import { PidFile } from '../daemon/index.js';
@@ -142,7 +144,7 @@ function commandStatus(dataDir: string): void {
   const pid = pidFile.read();
   const running = pidFile.isRunning();
 
-  const items = [
+  const items: StatusItem[] = [
     {
       label: 'Status',
       value: running ? c.safe('RUNNING') : c.critical('STOPPED'),
@@ -262,4 +264,20 @@ function extractOption(args: string[], option: string): string | undefined {
     return value;
   }
   return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// CLI entry point (when run directly)
+// CLI 進入點（直接執行時）
+// ---------------------------------------------------------------------------
+
+const isDirectRun = process.argv[1] &&
+  (process.argv[1].endsWith('/panguard-guard') ||
+   process.argv[1].includes('panguard-guard/dist/cli'));
+
+if (isDirectRun) {
+  runCLI(process.argv.slice(2)).catch((err) => {
+    console.error('Error:', err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  });
 }

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * PanguardReport CLI
  * PanguardReport 命令列介面
@@ -7,11 +8,17 @@
 
 import type {
   ComplianceFramework,
+  ComplianceFinding,
   ReportConfig,
   ReportFormat,
   ReportLanguage,
 } from '../types.js';
 import { DEFAULT_REPORT_CONFIG } from '../types.js';
+import {
+  generateComplianceReport,
+  reportToJSON,
+  generateSummaryText,
+} from '../generator/report-generator.js';
 
 /** Available CLI commands / 可用的 CLI 命令 */
 export type ReportCliCommand =
@@ -173,6 +180,49 @@ Examples / 範例:
 }
 
 /**
+ * Load findings from an input file or generate sample findings
+ * 從輸入檔案載入發現或產生範例發現
+ */
+async function loadFindings(inputFile?: string): Promise<ComplianceFinding[]> {
+  if (inputFile) {
+    const { readFile } = await import('node:fs/promises');
+    const raw = await readFile(inputFile, 'utf-8');
+    return JSON.parse(raw) as ComplianceFinding[];
+  }
+
+  // Generate sample findings for demo when no input file is provided
+  return [
+    {
+      findingId: 'FIND-001',
+      severity: 'high',
+      title: 'Missing information security policy',
+      description: 'No formal information security policy document found.',
+      category: 'policy',
+      timestamp: new Date(),
+      source: 'panguard-scan',
+    },
+    {
+      findingId: 'FIND-002',
+      severity: 'medium',
+      title: 'Unencrypted data at rest',
+      description: 'Database storage does not use encryption at rest.',
+      category: 'encryption',
+      timestamp: new Date(),
+      source: 'panguard-scan',
+    },
+    {
+      findingId: 'FIND-003',
+      severity: 'low',
+      title: 'Password policy not enforced',
+      description: 'Password complexity requirements are not enforced.',
+      category: 'access_control',
+      timestamp: new Date(),
+      source: 'panguard-scan',
+    },
+  ];
+}
+
+/**
  * Execute CLI command
  * 執行 CLI 命令
  */
@@ -194,33 +244,92 @@ export async function executeCli(args: string[]): Promise<void> {
       console.log(formatFrameworkList());
       break;
 
-    case 'generate':
+    case 'generate': {
+      const framework = options.framework ?? DEFAULT_REPORT_CONFIG.framework;
+      const language = options.language ?? DEFAULT_REPORT_CONFIG.language;
+      const format = options.format ?? DEFAULT_REPORT_CONFIG.format;
+
       console.log('Generating compliance report... / 產生合規報告中...');
-      console.log(`Framework / 框架: ${options.framework ?? DEFAULT_REPORT_CONFIG.framework}`);
-      console.log(`Language / 語言: ${options.language ?? DEFAULT_REPORT_CONFIG.language}`);
-      if (options.inputFile) {
-        console.log(`Input / 輸入: ${options.inputFile}`);
+      console.log(`Framework / 框架: ${framework}`);
+      console.log(`Language / 語言: ${language}`);
+
+      const findings = await loadFindings(options.inputFile);
+      console.log(`Findings loaded / 已載入發現: ${findings.length}`);
+
+      const report = generateComplianceReport(findings, framework, language, {
+        organizationName: options.organizationName,
+        includeRecommendations: true,
+      });
+
+      if (format === 'json') {
+        const json = reportToJSON(report);
+        if (options.outputDir) {
+          const { writeFile, mkdir } = await import('node:fs/promises');
+          await mkdir(options.outputDir, { recursive: true });
+          const filePath = `${options.outputDir}/${report.metadata.reportId}.json`;
+          await writeFile(filePath, json, 'utf-8');
+          console.log(`Report saved to / 報告已儲存至: ${filePath}`);
+        } else {
+          console.log('');
+          console.log(json);
+        }
+      } else {
+        // For non-JSON formats, output the summary text
+        const summary = generateSummaryText(report);
+        console.log('');
+        console.log(summary);
       }
+
+      console.log('');
       console.log('Report generated successfully. / 報告產生成功。');
       break;
+    }
 
     case 'validate':
       if (options.inputFile) {
         console.log(`Validating input file: ${options.inputFile}`);
-        console.log('Validation complete. / 驗證完成。');
+        try {
+          const findings = await loadFindings(options.inputFile);
+          console.log(`Valid: ${findings.length} findings found. / 有效: 找到 ${findings.length} 個發現。`);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error(`Validation failed: ${msg} / 驗證失敗: ${msg}`);
+        }
       } else {
         console.log('No input file specified. Use --input <file>.');
         console.log('未指定輸入檔案。請使用 --input <file>。');
       }
       break;
 
-    case 'summary':
-      console.log('No findings loaded. Use --input <file> to load findings.');
-      console.log('未載入發現。請使用 --input <file> 載入發現。');
+    case 'summary': {
+      const sumFramework = options.framework ?? DEFAULT_REPORT_CONFIG.framework;
+      const sumLanguage = options.language ?? DEFAULT_REPORT_CONFIG.language;
+      const findings = await loadFindings(options.inputFile);
+
+      const report = generateComplianceReport(findings, sumFramework, sumLanguage);
+      const summary = generateSummaryText(report);
+      console.log(summary);
       break;
+    }
 
     default:
       console.log(`Unknown command: ${options.command}`);
       console.log(getHelpText());
   }
+}
+
+// ---------------------------------------------------------------------------
+// CLI entry point (when run directly)
+// CLI 進入點（直接執行時）
+// ---------------------------------------------------------------------------
+
+const isDirectRun = process.argv[1] &&
+  (process.argv[1].endsWith('/panguard-report') ||
+   process.argv[1].includes('panguard-report/dist/cli'));
+
+if (isDirectRun) {
+  executeCli(process.argv.slice(2)).catch((err) => {
+    console.error('Error:', err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  });
 }

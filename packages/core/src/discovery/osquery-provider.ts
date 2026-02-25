@@ -165,6 +165,7 @@ export class OsqueryProvider {
       protocol: p.protocol as 'tcp' | 'udp',
       state: 'LISTEN',
       service: p.processName,
+      process: p.processName,
       pid: p.pid,
     }));
   }
@@ -185,8 +186,8 @@ export class OsqueryProvider {
 
     return rows.map(row => ({
       username: row.username,
-      uid: parseInt(row.uid, 10),
-      gid: parseInt(row.gid, 10),
+      uid: row.uid,
+      gid: row.gid,
       home: row.directory,
       shell: row.shell,
       groups: [],

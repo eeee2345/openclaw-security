@@ -101,9 +101,9 @@ export class OpenAIProvider extends LLMProviderBase {
 
     let OpenAI: OpenAIConstructor;
     try {
-      // @ts-expect-error -- optional dependency, loaded dynamically at runtime
-      const module = await import('openai');
-      OpenAI = (module.default ?? module) as unknown as OpenAIConstructor;
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const module = await (import('openai' as string) as Promise<Record<string, unknown>>);
+      OpenAI = (module['default'] ?? module) as unknown as OpenAIConstructor;
     } catch (error) {
       const message =
         error instanceof Error && error.message.includes('Cannot find')

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * PanguardChat CLI
  * PanguardChat 命令列介面
@@ -12,7 +13,9 @@
  */
 
 import { SETUP_STEPS, getWelcomeMessage } from '../onboarding/index.js';
-import type { MessageLanguage, ChannelType, UserType } from '../types.js';
+import type { MessageLanguage, ChannelType, UserType, WebhookConfig } from '../types.js';
+import { ChatAgent } from '../agent/chat-agent.js';
+import { WebhookChannel } from '../channels/webhook.js';
 
 /** CLI version / CLI 版本 */
 export const CLI_VERSION = '0.1.0';
@@ -97,10 +100,92 @@ async function commandSetup(args: string[]): Promise<void> {
  * Send a test notification / 發送測試通知
  */
 async function commandTest(args: string[]): Promise<void> {
-  const channel = extractOption(args, '--channel') ?? 'line';
-  console.log(`Sending test notification to ${channel}... / 正在發送測試通知到 ${channel}...`);
-  console.log('Test notification sent / 測試通知已發送');
-  console.log('(In production, this would send a real test message via the configured channel)');
+  const channelType = (extractOption(args, '--channel') ?? 'webhook') as ChannelType;
+  const lang: MessageLanguage = extractOption(args, '--lang') === 'en' ? 'en' : 'zh-TW';
+  const url = extractOption(args, '--url');
+
+  console.log(`Sending test notification via ${channelType}... / 正在透過 ${channelType} 發送測試通知...`);
+
+  if (channelType === 'webhook') {
+    if (!url) {
+      console.log('');
+      console.log(lang === 'zh-TW'
+        ? '使用 Webhook 需要指定 URL。範例:'
+        : 'Webhook requires a URL. Example:');
+      console.log('  panguard-chat test --channel webhook --url https://httpbin.org/post');
+      console.log('');
+      console.log(lang === 'zh-TW'
+        ? '或使用其他管道 (需先設定):'
+        : 'Or use other channels (setup required):');
+      console.log('  panguard-chat test --channel slack');
+      console.log('  panguard-chat test --channel telegram');
+      console.log('  panguard-chat test --channel line');
+      return;
+    }
+
+    const webhookConfig: WebhookConfig = {
+      endpoint: url,
+      secret: '',
+      authMethod: 'bearer_token',
+    };
+
+    const agent = new ChatAgent({
+      userProfile: {
+        type: 'it_admin',
+        language: lang,
+        notificationChannel: 'webhook',
+        preferences: {
+          criticalAlerts: true,
+          dailySummary: true,
+          weeklySummary: true,
+          peacefulReport: true,
+        },
+      },
+      channels: {
+        webhook: webhookConfig,
+      },
+      maxFollowUpTokens: 2000,
+    });
+
+    const webhook = new WebhookChannel(webhookConfig);
+    agent.registerChannel(webhook);
+
+    const result = await agent.sendAlert('cli-test', {
+      severity: 'medium',
+      conclusion: 'suspicious',
+      confidence: 0.95,
+      humanSummary: lang === 'zh-TW'
+        ? 'This is a test alert from Panguard AI / 這是 Panguard AI 的測試告警'
+        : 'This is a test alert from Panguard AI',
+      reasoning: 'CLI test command invoked',
+      recommendedAction: lang === 'zh-TW'
+        ? 'No action required - this is a test / 無需動作 - 這是測試'
+        : 'No action required - this is a test',
+      eventDescription: 'Test notification',
+      actionsTaken: [],
+      timestamp: new Date().toISOString(),
+    });
+
+    if (result.success) {
+      console.log(lang === 'zh-TW'
+        ? `Test notification sent successfully to ${url}`
+        : `Test notification sent successfully to ${url}`);
+      console.log(lang === 'zh-TW'
+        ? '測試通知已成功發送!'
+        : 'Test notification sent!');
+    } else {
+      console.error(lang === 'zh-TW'
+        ? `發送失敗: ${result.error}`
+        : `Send failed: ${result.error}`);
+    }
+  } else {
+    // For other channels, show setup instructions
+    console.log('');
+    console.log(lang === 'zh-TW'
+      ? `管道 ${channelType} 需要先完成設定。請執行:`
+      : `Channel ${channelType} requires setup first. Run:`);
+    console.log(`  panguard-chat setup --channel ${channelType}`);
+  }
 }
 
 /**
@@ -168,4 +253,20 @@ function extractOption(args: string[], option: string): string | undefined {
     return args[idx + 1];
   }
   return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// CLI entry point (when run directly)
+// CLI 進入點（直接執行時）
+// ---------------------------------------------------------------------------
+
+const isDirectRun = process.argv[1] &&
+  (process.argv[1].endsWith('/panguard-chat') ||
+   process.argv[1].includes('panguard-chat/dist/cli'));
+
+if (isDirectRun) {
+  runCLI(process.argv.slice(2)).catch((err) => {
+    console.error('Error:', err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  });
 }

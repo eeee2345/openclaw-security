@@ -99,7 +99,7 @@ export class WebhookServer {
       return;
     }
 
-    const channel = channelMatch[1];
+    const channel = channelMatch[1] ?? '';
 
     try {
       const body = await this.readBody(req);

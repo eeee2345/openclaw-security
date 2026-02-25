@@ -144,18 +144,19 @@ export class YaraScanner {
   toSecurityEvent(result: YaraScanResult): SecurityEvent | null {
     if (result.matches.length === 0) return null;
 
-    const topMatch = result.matches[0];
+    const topMatch = result.matches[0]!;
     const severity = this.inferSeverity(topMatch);
     const mitreTechnique = topMatch.meta['mitre'] ?? topMatch.meta['mitre_attack'] ?? undefined;
 
     return {
       id: `yara-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      timestamp: result.scannedAt,
+      timestamp: new Date(result.scannedAt),
       source: 'file',
       severity,
       category: 'malware_detection',
       description: `YARA match: ${result.matches.map(m => m.rule).join(', ')} in ${result.filePath}`,
-      rawData: {
+      host: '',
+      raw: {
         filePath: result.filePath,
         sha256: result.sha256,
         fileSize: result.fileSize,
@@ -163,6 +164,7 @@ export class YaraScanner {
         tags: result.matches.flatMap(m => m.tags),
         mitreTechnique,
       },
+      metadata: {},
     };
   }
 
@@ -170,7 +172,7 @@ export class YaraScanner {
 
   private async checkNativeYara(): Promise<boolean> {
     try {
-      await import('@automattic/yara');
+      await import('@automattic/yara' as string);
       return true;
     } catch {
       return false;
@@ -179,11 +181,13 @@ export class YaraScanner {
 
   private async scanWithNativeYara(filePath: string): Promise<YaraMatch[]> {
     try {
-      const yara = await import('@automattic/yara');
+      const yara = await (import('@automattic/yara' as string) as Promise<Record<string, unknown>>);
       const results: YaraMatch[] = [];
 
       for (const ruleFile of this.ruleFiles) {
-        const scanner = new yara.default.Scanner();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const yaraModule = yara as any;
+        const scanner = new yaraModule.default.Scanner();
         scanner.addRules(ruleFile.content);
         const scanResult = scanner.scanFile(filePath);
 
@@ -263,26 +267,30 @@ export class YaraScanner {
         const nameMatch = block.match(/^(\w+)\s*(?::\s*([\w\s]+))?\s*\{/);
         if (!nameMatch) continue;
 
-        const ruleName = nameMatch[1];
+        const ruleName = nameMatch[1] ?? 'unknown';
         const tags = (nameMatch[2] ?? '').trim().split(/\s+/).filter(Boolean);
 
         // Extract meta
         const meta: Record<string, string> = {};
         const metaBlock = block.match(/meta\s*:\s*([\s\S]*?)(?=strings\s*:|condition\s*:|$)/);
-        if (metaBlock) {
+        if (metaBlock?.[1]) {
           const metaLines = metaBlock[1].matchAll(/(\w+)\s*=\s*"([^"]*)"/g);
           for (const m of metaLines) {
-            meta[m[1]] = m[2];
+            if (m[1] && m[2] !== undefined) {
+              meta[m[1]] = m[2];
+            }
           }
         }
 
         // Extract strings
         const strings: Array<{ identifier: string; value: string }> = [];
         const stringsBlock = block.match(/strings\s*:\s*([\s\S]*?)(?=condition\s*:|$)/);
-        if (stringsBlock) {
+        if (stringsBlock?.[1]) {
           const stringDefs = stringsBlock[1].matchAll(/(\$\w+)\s*=\s*"([^"]*)"/g);
           for (const s of stringDefs) {
-            strings.push({ identifier: s[1], value: s[2] });
+            if (s[1] && s[2] !== undefined) {
+              strings.push({ identifier: s[1], value: s[2] });
+            }
           }
         }
 

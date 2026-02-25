@@ -5,6 +5,9 @@
   "description": "Smart honeypot for attacker profiling / 智慧蜜罐，誘捕並分析攻擊者",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "panguard-trap": "./dist/cli/index.js"
+  },
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",

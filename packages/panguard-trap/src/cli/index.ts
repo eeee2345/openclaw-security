@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * PanguardTrap CLI
  * PanguardTrap 命令列介面
@@ -7,6 +8,7 @@
 
 import type { TrapConfig, TrapServiceType, TrapStatistics } from '../types.js';
 import { DEFAULT_TRAP_CONFIG, DEFAULT_SERVICE_CONFIGS } from '../types.js';
+import { TrapEngine } from '../trap-engine.js';
 
 /** Available CLI commands / 可用的 CLI 命令 */
 export type TrapCliCommand = 'start' | 'stop' | 'status' | 'deploy' | 'profiles' | 'intel' | 'config' | 'help';
@@ -180,6 +182,9 @@ function formatDuration(ms: number): string {
   return `${hours}h ${minutes % 60}m`;
 }
 
+/** Singleton engine instance for the running process */
+let activeEngine: TrapEngine | null = null;
+
 /**
  * Execute CLI command
  * 執行 CLI 命令
@@ -207,36 +212,128 @@ export async function executeCli(args: string[]): Promise<void> {
       break;
     }
 
-    case 'start':
+    case 'start': {
+      const config = buildConfigFromOptions(options);
       console.log('Starting PanguardTrap... / 啟動 PanguardTrap...');
-      console.log('Use panguard-trap status to check / 使用 panguard-trap status 查看狀態');
+
+      const engine = new TrapEngine(config);
+      activeEngine = engine;
+
+      // Register session handler for verbose output
+      engine.onSession((session) => {
+        console.log(
+          `[Session] ${session.sourceIP}:${session.sourcePort} -> ${session.serviceType} ` +
+          `(creds=${session.credentials.length}, cmds=${session.commands.length})`,
+        );
+      });
+
+      await engine.start();
+
+      const running = engine.getRunningServices();
+      console.log(`Services running / 已啟動服務: ${running.join(', ') || '(none)'}`);
+      console.log('Press Ctrl+C to stop / 按 Ctrl+C 停止');
+
+      // Graceful shutdown
+      const shutdown = async () => {
+        console.log('\nStopping PanguardTrap... / 停止 PanguardTrap...');
+        await engine.stop();
+        console.log('PanguardTrap stopped / PanguardTrap 已停止');
+        process.exit(0);
+      };
+
+      process.on('SIGINT', shutdown);
+      process.on('SIGTERM', shutdown);
+
+      // Keep process alive
+      await new Promise(() => {});
       break;
+    }
 
     case 'stop':
-      console.log('Stopping PanguardTrap... / 停止 PanguardTrap...');
+      if (activeEngine) {
+        await activeEngine.stop();
+        activeEngine = null;
+        console.log('PanguardTrap stopped / PanguardTrap 已停止');
+      } else {
+        console.log('PanguardTrap is not running. / PanguardTrap 未運行。');
+      }
       break;
 
     case 'status':
-      console.log('PanguardTrap is not running. Use panguard-trap start to begin.');
-      console.log('PanguardTrap 未運行。使用 panguard-trap start 開始。');
+      if (activeEngine && activeEngine.status === 'running') {
+        const stats = activeEngine.getStatistics();
+        console.log(formatStatistics(stats));
+      } else {
+        console.log('PanguardTrap is not running. Use panguard-trap start to begin.');
+        console.log('PanguardTrap 未運行。使用 panguard-trap start 開始。');
+      }
       break;
 
-    case 'deploy':
+    case 'deploy': {
+      const deployConfig = buildConfigFromOptions(options);
       console.log('Deploying trap services... / 部署蜜罐服務...');
+      const deployEngine = new TrapEngine(deployConfig);
+      await deployEngine.start();
+      const deployRunning = deployEngine.getRunningServices();
+      console.log(`Deployed services / 已部署服務: ${deployRunning.join(', ') || '(none)'}`);
+      await deployEngine.stop();
+      console.log('Deploy test complete / 部署測試完成');
       break;
+    }
 
     case 'profiles':
-      console.log('No attacker profiles yet. Start PanguardTrap first.');
-      console.log('尚無攻擊者 profiles。請先啟動 PanguardTrap。');
+      if (activeEngine) {
+        const profiler = activeEngine.getProfiler();
+        const profiles = profiler.getAllProfiles();
+        if (profiles.length === 0) {
+          console.log('No attacker profiles yet. / 尚無攻擊者 profiles。');
+        } else {
+          console.log(`=== Attacker Profiles (${profiles.length}) / 攻擊者分析 ===`);
+          for (const p of profiles) {
+            console.log(`  [${p.profileId}] ${p.skillLevel} / ${p.intent} (risk=${p.riskScore})`);
+          }
+        }
+      } else {
+        console.log('PanguardTrap is not running. Start it first.');
+        console.log('PanguardTrap 未運行。請先啟動。');
+      }
       break;
 
     case 'intel':
-      console.log('No intel reports yet. Start PanguardTrap first.');
-      console.log('尚無情報報告。請先啟動 PanguardTrap。');
+      if (activeEngine) {
+        const reports = activeEngine.getIntelReports();
+        if (reports.length === 0) {
+          console.log('No intel reports yet. / 尚無情報報告。');
+        } else {
+          console.log(`=== Intel Reports (${reports.length}) / 情報報告 ===`);
+          for (const r of reports) {
+            console.log(`  [${r.serviceType}] ${r.sourceIP} - ${r.attackType} (${r.skillLevel}/${r.intent})`);
+          }
+        }
+      } else {
+        console.log('PanguardTrap is not running. Start it first.');
+        console.log('PanguardTrap 未運行。請先啟動。');
+      }
       break;
 
     default:
       console.log(`Unknown command: ${options.command}`);
       console.log(getHelpText());
   }
+}
+
+// ---------------------------------------------------------------------------
+// CLI entry point (when run directly)
+// CLI 進入點（直接執行時）
+// ---------------------------------------------------------------------------
+
+const isDirectRun = process.argv[1] &&
+  (process.argv[1].endsWith('/panguard-trap') ||
+   process.argv[1].includes('panguard-trap/dist/cli'));
+
+if (isDirectRun) {
+  executeCli(process.argv.slice(2)).catch((err) => {
+    console.error('Error:', err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  });
 }

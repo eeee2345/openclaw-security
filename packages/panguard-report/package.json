@@ -5,6 +5,9 @@
   "description": "AI-powered security incident report generator / AI 自動產生資安事件報告",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "panguard-report": "./dist/cli/index.js"
+  },
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",

@@ -233,7 +233,7 @@ export class ThreatIntelFeedManager {
         : item.ioc_type === 'domain' ? 'domain' as const
         : 'hash' as const;
 
-      const value = type === 'ip' ? item.ioc.split(':')[0] : item.ioc;
+      const value = type === 'ip' ? (item.ioc.split(':')[0] ?? item.ioc) : item.ioc;
 
       const ioc: IoC = {
         type,
@@ -444,7 +444,9 @@ export class ThreatIntelFeedManager {
 
     // Remove oldest entries (first inserted)
     for (let i = 0; i < toRemove; i++) {
-      const [key, ioc] = entries[i];
+      const entry = entries[i];
+      if (!entry) continue;
+      const [key, ioc] = entry;
       this.iocs.delete(key);
       if (ioc.type === 'ip') {
         this.ipIndex.delete(ioc.value);

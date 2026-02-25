@@ -95,9 +95,9 @@ export class ClaudeProvider extends LLMProviderBase {
 
     let Anthropic: AnthropicConstructor;
     try {
-      // @ts-expect-error -- optional dependency, loaded dynamically at runtime
-      const module = await import('@anthropic-ai/sdk');
-      Anthropic = (module.default ?? module.Anthropic ?? module) as unknown as AnthropicConstructor;
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const module = await (import('@anthropic-ai/sdk' as string) as Promise<Record<string, unknown>>);
+      Anthropic = (module['default'] ?? module['Anthropic'] ?? module) as unknown as AnthropicConstructor;
     } catch (error) {
       const message =
         error instanceof Error && error.message.includes('Cannot find')
