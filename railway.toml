@@ -1,6 +1,6 @@
 [build]
-builder = "dockerfile"
-dockerfilePath = "Dockerfile"
+builder = "nixpacks"
+buildCommand = "pnpm install --frozen-lockfile && pnpm -r run build"
 
 [deploy]
 startCommand = "node packages/panguard/dist/cli/index.js dashboard --no-open"
