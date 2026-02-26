@@ -30,7 +30,10 @@ import {
 // 輔助函式：將 PanguardScan 發現轉換為 PanguardReport 合規發現
 // ---------------------------------------------------------------------------
 
-function scanFindingToComplianceFinding(finding: Finding, source: 'panguard-scan' = 'panguard-scan'): ComplianceFinding {
+function scanFindingToComplianceFinding(
+  finding: Finding,
+  source: 'panguard-scan' = 'panguard-scan'
+): ComplianceFinding {
   return {
     findingId: finding.id,
     severity: finding.severity as ComplianceFinding['severity'],
@@ -175,14 +178,14 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
           expect(evaluated.length).toBe(controls.length);
           // Some controls should fail or be partial due to critical/high findings
           const failedOrPartial = evaluated.filter(
-            (c) => c.status === 'fail' || c.status === 'partial',
+            (c) => c.status === 'fail' || c.status === 'partial'
           );
           expect(failedOrPartial.length).toBeGreaterThan(0);
         });
 
         it(`should generate executive summary for ${framework}`, () => {
           const complianceFindings = createMockScanFindings().map((f) =>
-            scanFindingToComplianceFinding(f),
+            scanFindingToComplianceFinding(f)
           );
           const controls = getFrameworkControls(framework);
           const evaluated = evaluateControls(controls, complianceFindings);
@@ -199,7 +202,7 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
 
         it(`should generate statistics for ${framework}`, () => {
           const complianceFindings = createMockScanFindings().map((f) =>
-            scanFindingToComplianceFinding(f),
+            scanFindingToComplianceFinding(f)
           );
           const controls = getFrameworkControls(framework);
           const evaluated = evaluateControls(controls, complianceFindings);
@@ -214,7 +217,7 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
 
         it(`should generate recommendations for ${framework}`, () => {
           const complianceFindings = createMockScanFindings().map((f) =>
-            scanFindingToComplianceFinding(f),
+            scanFindingToComplianceFinding(f)
           );
           const controls = getFrameworkControls(framework);
           const evaluated = evaluateControls(controls, complianceFindings);
@@ -225,14 +228,14 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
           expect(recommendations.length).toBeGreaterThan(0);
           // Should have immediate/high priority due to critical findings
           const highPriorityCount = recommendations.filter(
-            (r) => r.priority === 'immediate' || r.priority === 'high',
+            (r) => r.priority === 'immediate' || r.priority === 'high'
           ).length;
           expect(highPriorityCount).toBeGreaterThan(0);
         });
 
         it(`should generate full compliance report for ${framework}`, () => {
           const complianceFindings = createMockScanFindings().map((f) =>
-            scanFindingToComplianceFinding(f),
+            scanFindingToComplianceFinding(f)
           );
 
           const report = generateComplianceReport(complianceFindings, framework, 'en', {
@@ -250,7 +253,7 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
 
         it(`should serialize report to JSON for ${framework}`, () => {
           const complianceFindings = createMockScanFindings().map((f) =>
-            scanFindingToComplianceFinding(f),
+            scanFindingToComplianceFinding(f)
           );
           const report = generateComplianceReport(complianceFindings, framework, 'en');
           const json = reportToJSON(report);
@@ -262,7 +265,7 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
 
         it(`should generate bilingual summary text for ${framework}`, () => {
           const complianceFindings = createMockScanFindings().map((f) =>
-            scanFindingToComplianceFinding(f),
+            scanFindingToComplianceFinding(f)
           );
           const enReport = generateComplianceReport(complianceFindings, framework, 'en');
           const zhReport = generateComplianceReport(complianceFindings, framework, 'zh-TW');
@@ -301,7 +304,7 @@ describe('PanguardScan -> PanguardReport Pipeline Integration', () => {
 
       // Each framework has different numbers of controls
       expect(controlCounts['tw_cyber_security_act']).toBe(10);
-      expect(controlCounts['iso27001']).toBe(12);
+      expect(controlCounts['iso27001']).toBe(30);
       expect(controlCounts['soc2']).toBe(10);
     });
 

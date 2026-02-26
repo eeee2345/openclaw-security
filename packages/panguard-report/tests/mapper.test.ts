@@ -102,7 +102,7 @@ describe('Compliance Mapper', () => {
       const controls = [createControl()];
       const result = evaluateControls(controls, []);
       expect(result[0]!.evidence.length).toBeGreaterThan(0);
-      expect(result[0]!.evidence[0]).toContain('No significant findings');
+      expect(result[0]!.evidence[0]).toContain('No issues detected');
     });
 
     it('should include evidence for fail', () => {
@@ -110,8 +110,9 @@ describe('Compliance Mapper', () => {
       const findings = [createFinding({ severity: 'critical', category: 'test', title: 'Critical Bug' })];
       const result = evaluateControls(controls, findings);
       expect(result[0]!.evidence.length).toBeGreaterThan(0);
-      expect(result[0]!.evidence[0]).toContain('CRITICAL');
-      expect(result[0]!.evidence[0]).toContain('Critical Bug');
+      // First evidence line is the summary, severity details follow
+      expect(result[0]!.evidence.some(e => e.includes('CRITICAL'))).toBe(true);
+      expect(result[0]!.evidence.some(e => e.includes('Critical Bug'))).toBe(true);
     });
 
     it('should include remediation for failed controls', () => {

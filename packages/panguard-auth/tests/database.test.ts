@@ -200,4 +200,51 @@ describe('AuthDB', () => {
       expect(db.getSession('tok-new')).toBeDefined();
     });
   });
+
+  // ── Report Purchases ──────────────────────────────────────────
+
+  describe('Report Purchases', () => {
+    let userId: number;
+
+    beforeEach(() => {
+      const user = db.createUser({ email: 'buyer@test.com', name: 'Buyer', password: 'p' }, 'hash');
+      userId = user.id;
+    });
+
+    it('should create a report purchase', () => {
+      const purchase = db.createReportPurchase(userId, 'iso27001', 'per_report');
+      expect(purchase.id).toBe(1);
+      expect(purchase.userId).toBe(userId);
+      expect(purchase.addonId).toBe('iso27001');
+      expect(purchase.pricingModel).toBe('per_report');
+      expect(purchase.status).toBe('active');
+    });
+
+    it('should retrieve purchases by user', () => {
+      db.createReportPurchase(userId, 'iso27001', 'per_report');
+      db.createReportPurchase(userId, 'soc2', 'per_report');
+      const purchases = db.getUserReportPurchases(userId);
+      expect(purchases).toHaveLength(2);
+      expect(purchases.map(p => p.addonId)).toContain('iso27001');
+      expect(purchases.map(p => p.addonId)).toContain('soc2');
+    });
+
+    it('should check active purchase exists', () => {
+      const future = new Date(Date.now() + 86400000).toISOString();
+      db.createReportPurchase(userId, 'iso27001', 'per_report', future);
+      expect(db.hasActiveReportPurchase(userId, 'iso27001')).toBe(true);
+      expect(db.hasActiveReportPurchase(userId, 'soc2')).toBe(false);
+    });
+
+    it('should return empty array for user with no purchases', () => {
+      expect(db.getUserReportPurchases(userId)).toHaveLength(0);
+    });
+
+    it('should get purchase by id', () => {
+      const created = db.createReportPurchase(userId, 'soc2', 'per_report');
+      const fetched = db.getReportPurchaseById(created.id);
+      expect(fetched).toBeDefined();
+      expect(fetched!.addonId).toBe('soc2');
+    });
+  });
 });

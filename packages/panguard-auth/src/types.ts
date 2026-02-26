@@ -31,7 +31,7 @@ export interface User {
   name: string;
   passwordHash: string;
   role: 'user' | 'admin';
-  tier: 'free' | 'starter' | 'pro' | 'enterprise';
+  tier: 'free' | 'solo' | 'starter' | 'team' | 'business' | 'enterprise';
   verified: number;
   createdAt: string;
   lastLogin: string | null;

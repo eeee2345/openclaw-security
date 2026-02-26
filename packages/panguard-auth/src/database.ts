@@ -53,10 +53,21 @@ export class AuthDB {
         created_at TEXT DEFAULT (datetime('now'))
       );
 
+      CREATE TABLE IF NOT EXISTS report_purchases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        addon_id TEXT NOT NULL,
+        pricing_model TEXT NOT NULL DEFAULT 'per_report',
+        status TEXT NOT NULL DEFAULT 'active',
+        purchased_at TEXT DEFAULT (datetime('now')),
+        expires_at TEXT
+      );
+
       CREATE INDEX IF NOT EXISTS idx_waitlist_email ON waitlist(email);
       CREATE INDEX IF NOT EXISTS idx_waitlist_status ON waitlist(status);
       CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
       CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token);
+      CREATE INDEX IF NOT EXISTS idx_report_purchases_user ON report_purchases(user_id);
     `);
 
     // Migration: add verify_token_expires_at column (safe to re-run)
@@ -210,7 +221,54 @@ export class AuthDB {
     return result.changes;
   }
 
+  // ── Report Purchases ─────────────────────────────────────────────
+
+  createReportPurchase(userId: number, addonId: string, pricingModel: string, expiresAt?: string): ReportPurchase {
+    const stmt = this.db.prepare(`
+      INSERT INTO report_purchases (user_id, addon_id, pricing_model, expires_at)
+      VALUES (?, ?, ?, ?)
+    `);
+    const result = stmt.run(userId, addonId, pricingModel, expiresAt ?? null);
+    return this.getReportPurchaseById(Number(result.lastInsertRowid))!;
+  }
+
+  getReportPurchaseById(id: number): ReportPurchase | undefined {
+    return this.db.prepare(`
+      SELECT id, user_id as userId, addon_id as addonId, pricing_model as pricingModel,
+             status, purchased_at as purchasedAt, expires_at as expiresAt
+      FROM report_purchases WHERE id = ?
+    `).get(id) as ReportPurchase | undefined;
+  }
+
+  getUserReportPurchases(userId: number): ReportPurchase[] {
+    return this.db.prepare(`
+      SELECT id, user_id as userId, addon_id as addonId, pricing_model as pricingModel,
+             status, purchased_at as purchasedAt, expires_at as expiresAt
+      FROM report_purchases WHERE user_id = ? AND status = 'active'
+      ORDER BY purchased_at DESC
+    `).all(userId) as ReportPurchase[];
+  }
+
+  hasActiveReportPurchase(userId: number, addonId: string): boolean {
+    const row = this.db.prepare(`
+      SELECT COUNT(*) as c FROM report_purchases
+      WHERE user_id = ? AND addon_id = ? AND status = 'active'
+        AND (expires_at IS NULL OR expires_at > datetime('now'))
+    `).get(userId, addonId) as { c: number };
+    return row.c > 0;
+  }
+
   close(): void {
     this.db.close();
   }
+}
+
+export interface ReportPurchase {
+  id: number;
+  userId: number;
+  addonId: string;
+  pricingModel: string;
+  status: string;
+  purchasedAt: string;
+  expiresAt: string | null;
 }

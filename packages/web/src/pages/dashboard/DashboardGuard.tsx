@@ -1,5 +1,6 @@
 import { useLanguage } from '../../context/LanguageContext';
 import { useApi } from '../../hooks/useApi';
+import FeatureGate from '../../components/FeatureGate';
 
 interface AgentInfo {
   name: string;
@@ -28,6 +29,13 @@ export default function DashboardGuard() {
   };
 
   return (
+    <FeatureGate
+      requiredTier="solo"
+      featureNameEn="Panguard Guard"
+      featureNameZh="Panguard Guard 守護引擎"
+      descriptionEn="Real-time endpoint monitoring with AI-powered threat detection and auto-response."
+      descriptionZh="即時端點監控，搭配 AI 驅動的威脅偵測與自動回應。"
+    >
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
@@ -114,5 +122,6 @@ export default function DashboardGuard() {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 }

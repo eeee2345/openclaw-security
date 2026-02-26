@@ -69,7 +69,32 @@ export interface ScenarioStory {
 // ---------------------------------------------------------------------------
 
 /** Pricing plan names / 方案名稱 */
-export type PricingPlan = 'free' | 'starter' | 'pro' | 'business';
+export type PricingPlan = 'free' | 'solo' | 'starter' | 'team' | 'business';
+
+/** Report add-on product / 報告加購產品 */
+export interface ReportAddon {
+  /** Report type ID / 報告類型 ID */
+  id: string;
+  /** Display name / 顯示名稱 */
+  nameEn: string;
+  nameZh: string;
+  /** Description / 描述 */
+  descriptionEn: string;
+  descriptionZh: string;
+  /** Pricing model / 計費模式 */
+  pricingModel: 'per_report' | 'subscription';
+  /** Price in USD / 美元價格 */
+  priceUsd: number;
+  /** Price display / 價格顯示 */
+  priceDisplayEn: string;
+  priceDisplayZh: string;
+  /** Annual price (for subscription model) / 年費（訂閱模式用） */
+  annualPriceUsd?: number;
+  annualPriceDisplayEn?: string;
+  annualPriceDisplayZh?: string;
+  /** Compliance framework ID / 合規框架 ID */
+  framework: string;
+}
 
 /** Feature entry in a pricing plan / 方案中的功能項 */
 export interface PlanFeature {

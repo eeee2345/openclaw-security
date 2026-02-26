@@ -65,7 +65,7 @@ export function whoamiCommand(): Command {
         {
           label: lang === 'zh-TW' ? '\u8A02\u95B1\u7B49\u7D1A' : 'Tier',
           value: tierDisplayName(creds.tier),
-          status: creds.tier === 'enterprise' ? 'safe' : creds.tier === 'pro' ? 'safe' : undefined,
+          status: creds.tier === 'enterprise' || creds.tier === 'business' || creds.tier === 'team' ? 'safe' : undefined,
         },
         {
           label: lang === 'zh-TW' ? '\u5230\u671F\u6642\u9593' : 'Expires',

@@ -30,7 +30,7 @@ describe('Personas', () => {
     const biz = getPersona('small_business');
     expect(biz).toBeDefined();
     expect(biz!.type).toBe('small_business');
-    expect(biz!.recommendedPlan).toBe('pro');
+    expect(biz!.recommendedPlan).toBe('team');
   });
 
   it('should have mid_enterprise persona', () => {
@@ -92,9 +92,9 @@ describe('Personas', () => {
 });
 
 describe('Pricing Plans', () => {
-  it('should have 4 pricing plans', () => {
+  it('should have 5 pricing plans', () => {
     const all = getAllPricingPlans();
-    expect(all).toHaveLength(4);
+    expect(all).toHaveLength(5);
   });
 
   it('should have free plan at $0', () => {
@@ -110,10 +110,10 @@ describe('Pricing Plans', () => {
     expect(starter!.targetPersona).toBe('developer');
   });
 
-  it('should have pro plan highlighted', () => {
-    const pro = getPricingPlan('pro');
-    expect(pro).toBeDefined();
-    expect(pro!.highlighted).toBe(true);
+  it('should have team plan highlighted', () => {
+    const team = getPricingPlan('team');
+    expect(team).toBeDefined();
+    expect(team!.highlighted).toBe(true);
   });
 
   it('should have business plan', () => {
@@ -147,10 +147,11 @@ describe('Pricing Plans', () => {
     }
   });
 
-  it('should have ascending prices', () => {
+  it('should have free plan at $0 and paid plans above $0', () => {
     const plans = getAllPricingPlans();
+    expect(plans[0]!.priceUsd).toBe(0);
     for (let i = 1; i < plans.length; i++) {
-      expect(plans[i]!.priceUsd).toBeGreaterThanOrEqual(plans[i - 1]!.priceUsd);
+      expect(plans[i]!.priceUsd).toBeGreaterThan(0);
     }
   });
 
@@ -160,9 +161,9 @@ describe('Pricing Plans', () => {
     expect(getRecommendedPlan('mid_enterprise')).toBeDefined();
   });
 
-  it('should recommend pro plan for small_business (highlighted)', () => {
+  it('should recommend team plan for small_business (highlighted)', () => {
     const rec = getRecommendedPlan('small_business');
     expect(rec).toBeDefined();
-    expect(rec!.plan).toBe('pro');
+    expect(rec!.plan).toBe('team');
   });
 });

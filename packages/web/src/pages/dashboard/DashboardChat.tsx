@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useApi } from '../../hooks/useApi';
+import FeatureGate from '../../components/FeatureGate';
 
 interface ChannelInfo {
   type: string;
@@ -65,6 +66,13 @@ export default function DashboardChat() {
   }, []);
 
   return (
+    <FeatureGate
+      requiredTier="solo"
+      featureNameEn="Panguard Chat"
+      featureNameZh="Panguard Chat 通知管道"
+      descriptionEn="Multi-channel security notifications via LINE, Telegram, Slack, and Email."
+      descriptionZh="透過 LINE、Telegram、Slack 和 Email 的多管道資安通知。"
+    >
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
@@ -193,5 +201,6 @@ export default function DashboardChat() {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 }

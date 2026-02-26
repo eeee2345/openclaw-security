@@ -117,8 +117,8 @@ describe('Compliance Frameworks', () => {
   });
 
   describe('ISO 27001 controls', () => {
-    it('should have 12 controls', () => {
-      expect(ISO27001_CONTROLS).toHaveLength(12);
+    it('should have 30 controls', () => {
+      expect(ISO27001_CONTROLS).toHaveLength(30);
     });
 
     it('should have bilingual titles for all controls', () => {

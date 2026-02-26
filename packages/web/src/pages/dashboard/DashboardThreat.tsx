@@ -1,5 +1,6 @@
 import { useLanguage } from '../../context/LanguageContext';
 import { useApi } from '../../hooks/useApi';
+import FeatureGate from '../../components/FeatureGate';
 
 interface ThreatStats {
   totalThreats: number;
@@ -23,6 +24,13 @@ export default function DashboardThreat() {
     : 1;
 
   return (
+    <FeatureGate
+      requiredTier="solo"
+      featureNameEn="Threat Intelligence"
+      featureNameZh="威脅情報"
+      descriptionEn="Global threat landscape with MITRE ATT&CK mapping and regional distribution."
+      descriptionZh="全球威脅態勢，含 MITRE ATT&CK 對照與區域分佈。"
+    >
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
@@ -128,5 +136,6 @@ export default function DashboardThreat() {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 }

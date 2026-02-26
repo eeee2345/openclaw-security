@@ -4,6 +4,7 @@
  */
 
 export { AuthDB } from './database.js';
+export type { ReportPurchase } from './database.js';
 export { hashPassword, verifyPassword, generateSessionToken, generateVerifyToken, sessionExpiry, hashToken } from './auth.js';
 export { extractToken, authenticateRequest, requireAdmin } from './middleware.js';
 export { createAuthHandlers } from './routes.js';

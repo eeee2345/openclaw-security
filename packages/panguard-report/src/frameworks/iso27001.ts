@@ -11,10 +11,11 @@
 import type { ComplianceControl } from '../types.js';
 
 /**
- * ISO 27001:2022 Annex A controls (key controls)
- * ISO 27001:2022 附錄 A 控制項（關鍵控制項）
+ * ISO 27001:2022 Annex A controls (30 key controls across all themes)
+ * ISO 27001:2022 附錄 A 控制項（涵蓋所有主題的 30 個關鍵控制項）
  */
 export const ISO27001_CONTROLS: ComplianceControl[] = [
+  // ── Theme 5: Organizational Controls ──────────────────────────
   {
     controlId: 'A.5.1',
     category: 'organizational',
@@ -23,6 +24,24 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     descriptionEn: 'A set of policies for information security shall be defined, approved by management, published, and communicated.',
     descriptionZh: '應定義一套資訊安全政策，經管理層核准、公布並傳達。',
     relatedCategories: ['policy', 'governance'],
+  },
+  {
+    controlId: 'A.5.2',
+    category: 'organizational',
+    titleEn: 'Information Security Roles and Responsibilities',
+    titleZh: '資訊安全角色與責任',
+    descriptionEn: 'Information security roles and responsibilities shall be defined and allocated.',
+    descriptionZh: '應定義並分配資訊安全角色與責任。',
+    relatedCategories: ['governance', 'personnel'],
+  },
+  {
+    controlId: 'A.5.10',
+    category: 'organizational',
+    titleEn: 'Acceptable Use of Information and Other Assets',
+    titleZh: '資訊及其他資產的可接受使用',
+    descriptionEn: 'Rules for the acceptable use of information and other associated assets shall be identified and documented.',
+    descriptionZh: '應識別並記錄資訊及其他相關資產的可接受使用規則。',
+    relatedCategories: ['policy', 'asset'],
   },
   {
     controlId: 'A.5.15',
@@ -34,6 +53,15 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     relatedCategories: ['access', 'authentication', 'password'],
   },
   {
+    controlId: 'A.5.17',
+    category: 'authentication',
+    titleEn: 'Authentication Information',
+    titleZh: '驗證資訊',
+    descriptionEn: 'Allocation and management of authentication information shall be controlled.',
+    descriptionZh: '應控制驗證資訊的分配與管理。',
+    relatedCategories: ['authentication', 'password', 'credential'],
+  },
+  {
     controlId: 'A.5.23',
     category: 'cloud_security',
     titleEn: 'Information Security for Use of Cloud Services',
@@ -42,6 +70,53 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     descriptionZh: '應建立雲端服務的取得、使用、管理及退出程序。',
     relatedCategories: ['cloud', 'network', 'system'],
   },
+  {
+    controlId: 'A.5.24',
+    category: 'incident',
+    titleEn: 'Information Security Incident Management Planning',
+    titleZh: '資訊安全事件管理規劃',
+    descriptionEn: 'The organization shall plan and prepare for managing information security incidents.',
+    descriptionZh: '組織應規劃並準備管理資訊安全事件。',
+    relatedCategories: ['incident', 'response', 'monitoring'],
+  },
+  {
+    controlId: 'A.5.28',
+    category: 'organizational',
+    titleEn: 'Collection of Evidence',
+    titleZh: '證據收集',
+    descriptionEn: 'Procedures for identification, collection, acquisition, and preservation of evidence shall be established.',
+    descriptionZh: '應建立證據識別、收集、取得及保存程序。',
+    relatedCategories: ['logging', 'audit', 'forensic'],
+  },
+  {
+    controlId: 'A.5.29',
+    category: 'continuity',
+    titleEn: 'Information Security During Disruption',
+    titleZh: '中斷期間的資訊安全',
+    descriptionEn: 'The organization shall plan how to maintain information security at an appropriate level during disruption.',
+    descriptionZh: '組織應規劃如何在中斷期間維持適當的資訊安全水準。',
+    relatedCategories: ['continuity', 'backup', 'recovery'],
+  },
+  {
+    controlId: 'A.5.30',
+    category: 'continuity',
+    titleEn: 'ICT Readiness for Business Continuity',
+    titleZh: 'ICT 業務持續性準備',
+    descriptionEn: 'ICT readiness shall be planned, implemented, maintained, and tested based on business continuity objectives.',
+    descriptionZh: '應根據業務持續性目標規劃、實施、維護並測試 ICT 準備。',
+    relatedCategories: ['continuity', 'backup', 'system'],
+  },
+  {
+    controlId: 'A.5.36',
+    category: 'compliance',
+    titleEn: 'Compliance with Policies and Standards',
+    titleZh: '政策和標準的合規性',
+    descriptionEn: 'Compliance with the organization information security policy and standards shall be regularly reviewed.',
+    descriptionZh: '應定期審查組織資訊安全政策和標準的合規性。',
+    relatedCategories: ['governance', 'audit', 'compliance'],
+  },
+
+  // ── Theme 6: People Controls ──────────────────────────────────
   {
     controlId: 'A.6.1',
     category: 'people',
@@ -52,6 +127,17 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     relatedCategories: ['personnel', 'access'],
   },
   {
+    controlId: 'A.6.3',
+    category: 'people',
+    titleEn: 'Information Security Awareness, Education and Training',
+    titleZh: '資訊安全意識、教育和訓練',
+    descriptionEn: 'Personnel and relevant interested parties shall receive appropriate security awareness education and training.',
+    descriptionZh: '人員和相關利害關係人應接受適當的安全意識教育和訓練。',
+    relatedCategories: ['personnel', 'training'],
+  },
+
+  // ── Theme 7: Physical Controls ────────────────────────────────
+  {
     controlId: 'A.7.1',
     category: 'physical',
     titleEn: 'Physical Security Perimeters',
@@ -61,6 +147,17 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     relatedCategories: ['physical', 'access'],
   },
   {
+    controlId: 'A.7.4',
+    category: 'physical',
+    titleEn: 'Physical Security Monitoring',
+    titleZh: '實體安全監控',
+    descriptionEn: 'Premises shall be continuously monitored for unauthorized physical access.',
+    descriptionZh: '應持續監控場所以防未經授權的實體存取。',
+    relatedCategories: ['physical', 'monitoring'],
+  },
+
+  // ── Theme 8: Technological Controls ───────────────────────────
+  {
     controlId: 'A.8.1',
     category: 'technology',
     titleEn: 'User Endpoint Devices',
@@ -68,6 +165,24 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     descriptionEn: 'Information stored on, processed by, or accessible via user endpoint devices shall be protected.',
     descriptionZh: '應保護儲存在使用者端點裝置上、由其處理或可透過其存取的資訊。',
     relatedCategories: ['system', 'endpoint', 'device'],
+  },
+  {
+    controlId: 'A.8.2',
+    category: 'access_control',
+    titleEn: 'Privileged Access Rights',
+    titleZh: '特權存取權限',
+    descriptionEn: 'The allocation and use of privileged access rights shall be restricted and managed.',
+    descriptionZh: '應限制並管理特權存取權限的分配及使用。',
+    relatedCategories: ['access', 'authentication', 'privilege'],
+  },
+  {
+    controlId: 'A.8.3',
+    category: 'access_control',
+    titleEn: 'Information Access Restriction',
+    titleZh: '資訊存取限制',
+    descriptionEn: 'Access to information and other associated assets shall be restricted per the access control policy.',
+    descriptionZh: '應按照存取控制政策限制對資訊及其他相關資產的存取。',
+    relatedCategories: ['access', 'policy'],
   },
   {
     controlId: 'A.8.5',
@@ -79,6 +194,15 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     relatedCategories: ['authentication', 'password', 'access'],
   },
   {
+    controlId: 'A.8.7',
+    category: 'malware',
+    titleEn: 'Protection Against Malware',
+    titleZh: '惡意軟體防護',
+    descriptionEn: 'Protection against malware shall be implemented and supported by appropriate user awareness.',
+    descriptionZh: '應實施惡意軟體防護並以適當的使用者意識支援。',
+    relatedCategories: ['malware', 'endpoint', 'system'],
+  },
+  {
     controlId: 'A.8.8',
     category: 'vulnerability',
     titleEn: 'Management of Technical Vulnerabilities',
@@ -86,6 +210,33 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     descriptionEn: 'Information about technical vulnerabilities shall be obtained timely, and appropriate measures taken.',
     descriptionZh: '應及時取得技術弱點資訊，並採取適當措施。',
     relatedCategories: ['vulnerability', 'updates', 'patch'],
+  },
+  {
+    controlId: 'A.8.9',
+    category: 'configuration',
+    titleEn: 'Configuration Management',
+    titleZh: '組態管理',
+    descriptionEn: 'Configurations, including security configurations, of hardware, software, services, and networks shall be established and managed.',
+    descriptionZh: '應建立並管理硬體、軟體、服務及網路的組態（含安全組態）。',
+    relatedCategories: ['configuration', 'system', 'network'],
+  },
+  {
+    controlId: 'A.8.12',
+    category: 'data_protection',
+    titleEn: 'Data Leakage Prevention',
+    titleZh: '資料外洩防護',
+    descriptionEn: 'Data leakage prevention measures shall be applied to systems, networks, and any other devices that process or store sensitive information.',
+    descriptionZh: '應對處理或儲存敏感資訊的系統、網路及其他裝置實施資料外洩防護措施。',
+    relatedCategories: ['data', 'encryption', 'system'],
+  },
+  {
+    controlId: 'A.8.13',
+    category: 'backup',
+    titleEn: 'Information Backup',
+    titleZh: '資訊備份',
+    descriptionEn: 'Backup copies of information, software, and systems shall be maintained and regularly tested.',
+    descriptionZh: '應維護並定期測試資訊、軟體及系統的備份副本。',
+    relatedCategories: ['backup', 'continuity', 'recovery'],
   },
   {
     controlId: 'A.8.15',
@@ -115,6 +266,15 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     relatedCategories: ['network', 'firewall'],
   },
   {
+    controlId: 'A.8.21',
+    category: 'network',
+    titleEn: 'Security of Network Services',
+    titleZh: '網路服務安全',
+    descriptionEn: 'Security mechanisms, service levels, and management requirements of network services shall be identified and implemented.',
+    descriptionZh: '應識別並實施網路服務的安全機制、服務水準及管理要求。',
+    relatedCategories: ['network', 'service', 'firewall'],
+  },
+  {
     controlId: 'A.8.24',
     category: 'cryptography',
     titleEn: 'Use of Cryptography',
@@ -122,5 +282,14 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     descriptionEn: 'Rules for the effective use of cryptography shall be defined and implemented.',
     descriptionZh: '應定義並實施有效使用密碼學的規則。',
     relatedCategories: ['encryption', 'certificate', 'tls'],
+  },
+  {
+    controlId: 'A.8.25',
+    category: 'development',
+    titleEn: 'Secure Development Life Cycle',
+    titleZh: '安全開發生命週期',
+    descriptionEn: 'Rules for the secure development of software and systems shall be established and applied.',
+    descriptionZh: '應建立並應用軟體及系統安全開發的規則。',
+    relatedCategories: ['development', 'system', 'configuration'],
   },
 ];

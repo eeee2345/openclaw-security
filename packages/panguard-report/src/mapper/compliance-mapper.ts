@@ -134,8 +134,9 @@ function determineControlStatus(findings: ComplianceFinding[]): ControlStatus {
 }
 
 /**
- * Build evidence strings for a control evaluation
- * 為控制項評估建構證據字串
+ * Build evidence strings for a control evaluation.
+ * Provides specific, descriptive evidence instead of generic placeholders.
+ * 為控制項評估建構證據字串。提供具體描述性證據而非通用佔位符。
  */
 function buildEvidence(
   control: ComplianceControl,
@@ -145,10 +146,26 @@ function buildEvidence(
   const evidence: string[] = [];
 
   if (status === 'pass') {
-    evidence.push(`No significant findings related to ${control.titleEn}`);
+    // Describe what was actually checked rather than a generic "no findings"
+    evidence.push(
+      `Automated scan of ${control.relatedCategories.join(', ')} controls completed. `
+      + `No issues detected for ${control.controlId} (${control.titleEn}).`,
+    );
+    evidence.push(
+      `自動掃描 ${control.relatedCategories.join('、')} 控制項完成。`
+      + `${control.controlId}（${control.titleZh}）未偵測到問題。`,
+    );
   } else {
+    evidence.push(
+      `${findings.length} finding(s) detected related to ${control.controlId} (${control.titleEn}):`,
+    );
+    evidence.push(
+      `偵測到 ${findings.length} 個與 ${control.controlId}（${control.titleZh}）相關的發現：`,
+    );
     for (const finding of findings) {
-      evidence.push(`[${finding.severity.toUpperCase()}] ${finding.title}: ${finding.description}`);
+      evidence.push(
+        `  [${finding.severity.toUpperCase()}] ${finding.title}: ${finding.description}`,
+      );
     }
   }
 
@@ -164,8 +181,11 @@ function buildRemediation(
   findings: ComplianceFinding[],
 ): string {
   const criticalCount = findings.filter((f) => f.severity === 'critical' || f.severity === 'high').length;
-  const prefix = criticalCount > 0 ? 'URGENT: ' : '';
-  return `${prefix}Address ${findings.length} finding(s) related to ${control.titleEn} (${control.controlId})`;
+  const prefix = criticalCount > 0 ? 'URGENT / 緊急: ' : '';
+  return (
+    `${prefix}Address ${findings.length} finding(s) related to ${control.titleEn} (${control.controlId}). `
+    + `處理與 ${control.titleZh}（${control.controlId}）相關的 ${findings.length} 個發現。`
+  );
 }
 
 /**

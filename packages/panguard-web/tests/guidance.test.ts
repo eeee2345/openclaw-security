@@ -134,16 +134,16 @@ describe('Guidance Wizard', () => {
   });
 
   describe('generateGuidanceResult', () => {
-    it('should recommend starter plan for developer', () => {
+    it('should recommend solo plan for developer', () => {
       const answers: GuidanceAnswers = { persona: 'developer' };
       const result = generateGuidanceResult(answers);
-      expect(result.recommendedPlan).toBe('starter');
+      expect(result.recommendedPlan).toBe('solo');
     });
 
-    it('should recommend pro plan for small_business', () => {
+    it('should recommend team plan for small_business', () => {
       const answers: GuidanceAnswers = { persona: 'small_business' };
       const result = generateGuidanceResult(answers);
-      expect(result.recommendedPlan).toBe('pro');
+      expect(result.recommendedPlan).toBe('team');
     });
 
     it('should recommend business plan for mid_enterprise', () => {
@@ -184,7 +184,7 @@ describe('Guidance Wizard', () => {
 
     it('should generate install command with plan', () => {
       const result = generateGuidanceResult({ persona: 'developer' });
-      expect(result.installCommand).toContain('--plan starter');
+      expect(result.installCommand).toContain('--plan solo');
     });
 
     it('should generate simple install command for free', () => {

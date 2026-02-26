@@ -212,9 +212,9 @@ export function getTotalSteps(): number {
 function determinePlan(persona: PersonaType | undefined): PricingPlan {
   switch (persona) {
     case 'developer':
-      return 'starter';
+      return 'solo';
     case 'small_business':
-      return 'pro';
+      return 'team';
     case 'mid_enterprise':
       return 'business';
     default:

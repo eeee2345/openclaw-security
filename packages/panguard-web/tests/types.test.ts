@@ -47,8 +47,8 @@ describe('Panguard Web Types', () => {
     });
 
     it('should support all pricing plans', () => {
-      const plans: PricingPlan[] = ['free', 'starter', 'pro', 'business'];
-      expect(plans).toHaveLength(4);
+      const plans: PricingPlan[] = ['free', 'solo', 'starter', 'team', 'business'];
+      expect(plans).toHaveLength(5);
     });
 
     it('should support all page IDs', () => {

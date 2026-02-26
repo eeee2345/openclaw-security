@@ -149,7 +149,7 @@ describe('HTML Templates', () => {
       expect(html).toContain(plan.nameEn);
     });
 
-    it('should highlight pro plan', () => {
+    it('should highlight team plan', () => {
       const pro = getAllPricingPlans().find((p) => p.highlighted)!;
       const html = generatePricingCard(pro, 'en');
       expect(html).toContain('pricing-highlighted');

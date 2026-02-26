@@ -1,5 +1,6 @@
 import { useLanguage } from '../../context/LanguageContext';
 import { useApi } from '../../hooks/useApi';
+import FeatureGate from '../../components/FeatureGate';
 
 interface TrapService {
   type: string;
@@ -25,6 +26,13 @@ export default function DashboardTrap() {
   const trap = useApi<TrapStatus>('/api/trap/status');
 
   return (
+    <FeatureGate
+      requiredTier="team"
+      featureNameEn="Panguard Trap"
+      featureNameZh="Panguard Trap 蜜罐系統"
+      descriptionEn="Deploy 8 honeypot services (SSH, HTTP, FTP, etc.) to detect and profile attackers."
+      descriptionZh="部署 8 種蜜罐服務（SSH、HTTP、FTP 等），偵測並分析攻擊者行為。"
+    >
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
@@ -107,5 +115,6 @@ export default function DashboardTrap() {
         </>
       )}
     </div>
+    </FeatureGate>
   );
 }

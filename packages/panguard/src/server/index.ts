@@ -177,12 +177,9 @@ export class PanguardDashboardServer {
     await this.serveStatic(path, res);
   }
 
-  /** Check if request has valid session. Supports Bearer header or ?token= query param (for SSE). */
-  private requireAuth(req: IncomingMessage, res: ServerResponse): boolean {
-    // Try Authorization header first
+  /** Authenticate request and return user, or null. Supports Bearer header or ?token= query param (for SSE). */
+  private getAuthUser(req: IncomingMessage): { id: number; email: string; name: string; role: string; tier: string } | null {
     let user = authenticateRequest(req, this.authDB);
-
-    // Fallback: check ?token= query param (needed for EventSource which can't set headers)
     if (!user) {
       const urlObj = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
       const queryToken = urlObj.searchParams.get('token');
@@ -191,8 +188,12 @@ export class PanguardDashboardServer {
         user = authenticateRequest(fakeReq, this.authDB);
       }
     }
+    return user;
+  }
 
-    if (!user) {
+  /** Check if request has valid session. */
+  private requireAuth(req: IncomingMessage, res: ServerResponse): boolean {
+    if (!this.getAuthUser(req)) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: false, error: 'Authentication required' }));
       return false;
@@ -273,6 +274,57 @@ export class PanguardDashboardServer {
             this.methodNotAllowed(res);
           }
           return;
+
+        // ── Report Purchases ──────────────────────────────────────
+        case '/api/report/purchases': {
+          if (!this.requireAuth(req, res)) return;
+          const rpUser = this.getAuthUser(req)!;
+          if (req.method === 'GET') {
+            const purchases = this.authDB.getUserReportPurchases(rpUser.id);
+            res.writeHead(200);
+            res.end(JSON.stringify({ ok: true, data: { purchases } }));
+          } else if (req.method === 'POST') {
+            const body = await this.readBody(req);
+            const parsed = JSON.parse(body) as { addonId?: string };
+            if (!parsed.addonId || typeof parsed.addonId !== 'string') {
+              res.writeHead(400);
+              res.end(JSON.stringify({ ok: false, error: 'addonId is required' }));
+              return;
+            }
+            // Calculate expiration for subscription add-ons (1 month)
+            const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+            const purchase = this.authDB.createReportPurchase(
+              rpUser.id,
+              parsed.addonId,
+              'per_report',
+              expiresAt,
+            );
+            res.writeHead(201);
+            res.end(JSON.stringify({ ok: true, data: { purchase } }));
+          } else {
+            this.methodNotAllowed(res);
+          }
+          return;
+        }
+
+        case '/api/report/access': {
+          if (!this.requireAuth(req, res)) return;
+          const raUser = this.getAuthUser(req)!;
+          // Business/Enterprise tiers get basic compliance included
+          const hasBusinessAccess = raUser.tier === 'business' || raUser.tier === 'enterprise';
+          const purchases = this.authDB.getUserReportPurchases(raUser.id);
+          const purchasedAddons = purchases.map(p => p.addonId);
+          res.writeHead(200);
+          res.end(JSON.stringify({
+            ok: true,
+            data: {
+              tier: raUser.tier,
+              hasBusinessAccess,
+              purchasedAddons,
+            },
+          }));
+          return;
+        }
 
         // ── Auth & Waitlist routes ────────────────────────────────
         case '/api/waitlist':
@@ -385,5 +437,26 @@ export class PanguardDashboardServer {
   private methodNotAllowed(res: ServerResponse): void {
     res.writeHead(405);
     res.end(JSON.stringify({ ok: false, error: 'Method not allowed' }));
+  }
+
+  /** Read request body as string with size limit */
+  private readBody(req: IncomingMessage): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      let size = 0;
+      const MAX_BODY = 64 * 1024; // 64KB
+
+      req.on('data', (chunk: Buffer) => {
+        size += chunk.length;
+        if (size > MAX_BODY) {
+          req.destroy();
+          reject(new Error('Request body too large'));
+          return;
+        }
+        chunks.push(chunk);
+      });
+      req.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+      req.on('error', reject);
+    });
   }
 }

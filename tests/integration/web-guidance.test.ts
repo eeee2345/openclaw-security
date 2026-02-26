@@ -10,11 +10,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import type {
-  PersonaType,
-  PricingPlan,
-  GuidanceAnswers,
-} from '@openclaw/panguard-web';
+import type { PersonaType, PricingPlan, GuidanceAnswers } from '@openclaw/panguard-web';
 import {
   getPersona,
   getAllPersonas,
@@ -46,8 +42,8 @@ import {
 describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
   describe('Persona to Plan Mapping Consistency', () => {
     const personaPlanMap: Record<PersonaType, PricingPlan> = {
-      developer: 'starter',
-      small_business: 'pro',
+      developer: 'solo',
+      small_business: 'team',
       mid_enterprise: 'business',
     };
 
@@ -71,7 +67,12 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
 
   describe('Product Recommendations Consistency', () => {
     it('should always include Panguard Scan in recommendations', () => {
-      const personas: (PersonaType | undefined)[] = ['developer', 'small_business', 'mid_enterprise', undefined];
+      const personas: (PersonaType | undefined)[] = [
+        'developer',
+        'small_business',
+        'mid_enterprise',
+        undefined,
+      ];
 
       for (const persona of personas) {
         const answers: GuidanceAnswers = persona ? { persona } : {};
@@ -130,8 +131,8 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
 
     it('should include plan flag for paid plans', () => {
       const plans: [PersonaType, string][] = [
-        ['developer', 'starter'],
-        ['small_business', 'pro'],
+        ['developer', 'solo'],
+        ['small_business', 'team'],
         ['mid_enterprise', 'business'],
       ];
 
@@ -170,12 +171,9 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
     });
 
     it('should include honeypot step for server users', () => {
-      const result = generateGuidanceResult(
-        { persona: 'developer', hasServer: true },
-        'en',
-      );
+      const result = generateGuidanceResult({ persona: 'developer', hasServer: true }, 'en');
       const hasTrapStep = result.configSteps.some(
-        (s) => s.includes('honeypot') || s.includes('Panguard Trap'),
+        (s) => s.includes('honeypot') || s.includes('Panguard Trap')
       );
       expect(hasTrapStep).toBe(true);
     });
@@ -234,17 +232,20 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
   });
 
   describe('Pricing Plan Consistency', () => {
-    it('should have ascending prices', () => {
+    it('should have free plan at $0 and all paid plans above $0', () => {
       const plans = getAllPricingPlans();
-      for (let i = 1; i < plans.length; i++) {
-        expect(plans[i]!.priceUsd).toBeGreaterThanOrEqual(plans[i - 1]!.priceUsd);
+      const freePlan = plans.find((p) => p.plan === 'free');
+      expect(freePlan!.priceUsd).toBe(0);
+      const paidPlans = plans.filter((p) => p.plan !== 'free');
+      for (const plan of paidPlans) {
+        expect(plan.priceUsd).toBeGreaterThan(0);
       }
     });
 
     it('should have highlighted plan matching small_business recommendation', () => {
       const highlighted = getAllPricingPlans().find((p) => p.highlighted);
       expect(highlighted).toBeDefined();
-      expect(highlighted!.plan).toBe('pro');
+      expect(highlighted!.plan).toBe('team');
 
       const sbRec = getRecommendedPlan('small_business');
       expect(sbRec!.plan).toBe(highlighted!.plan);

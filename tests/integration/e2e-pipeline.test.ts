@@ -11,16 +11,10 @@
 import { describe, it, expect } from 'vitest';
 
 // Core
-import {
-  CORE_VERSION,
-} from '@openclaw/core';
+import { CORE_VERSION } from '@openclaw/core';
 
 // PanguardScan
-import {
-  PANGUARD_SCAN_VERSION,
-  sortBySeverity,
-  SEVERITY_ORDER,
-} from '@openclaw/panguard-scan';
+import { PANGUARD_SCAN_VERSION, sortBySeverity, SEVERITY_ORDER } from '@openclaw/panguard-scan';
 import type { Finding } from '@openclaw/panguard-scan';
 
 // PanguardGuard
@@ -36,11 +30,7 @@ import {
 import type { ThreatVerdict } from '@openclaw/panguard-guard';
 
 // PanguardChat
-import {
-  PANGUARD_CHAT_VERSION,
-  formatAlert,
-  ALERT_TEMPLATES,
-} from '@openclaw/panguard-chat';
+import { PANGUARD_CHAT_VERSION, formatAlert, ALERT_TEMPLATES } from '@openclaw/panguard-chat';
 import type { ThreatAlert, UserType } from '@openclaw/panguard-chat';
 
 // PanguardTrap
@@ -274,7 +264,7 @@ describe('End-to-End Platform Pipeline', () => {
       // Step 2: Generate recommendations
       const result = generateGuidanceResult(answers, 'en');
 
-      expect(result.recommendedPlan).toBe('starter');
+      expect(result.recommendedPlan).toBe('solo');
       expect(result.recommendedProducts).toContain('Panguard Scan');
       expect(result.recommendedProducts).toContain('Panguard Guard');
       expect(result.recommendedProducts).toContain('Panguard Chat');
@@ -282,7 +272,7 @@ describe('End-to-End Platform Pipeline', () => {
 
       // Step 3: Verify install command
       expect(result.installCommand).toContain('curl -fsSL https://get.panguard.ai');
-      expect(result.installCommand).toContain('--plan starter');
+      expect(result.installCommand).toContain('--plan solo');
       expect(result.installCommand).toContain('--notify telegram');
 
       // Step 4: Verify config steps
@@ -477,8 +467,8 @@ describe('End-to-End Platform Pipeline', () => {
       expect(PRODUCT_FEATURES).toHaveLength(5);
     });
 
-    it('should have 4 pricing plans', () => {
-      expect(getAllPricingPlans()).toHaveLength(4);
+    it('should have 5 pricing plans', () => {
+      expect(getAllPricingPlans()).toHaveLength(5);
     });
 
     it('should have 3 compliance frameworks', () => {

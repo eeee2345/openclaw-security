@@ -19,7 +19,7 @@ export function reportCommand(): Command {
     .option('--output-dir <path>', 'Output directory / \u8F38\u51FA\u76EE\u9304')
     .option('--org <name>', 'Organization name / \u7D44\u7E54\u540D\u7A31')
     .option('--input <file>', 'Findings input file (JSON)')
-    .action(withAuth('pro', async (opts: Record<string, string | undefined>) => {
+    .action(withAuth('team', async (opts: Record<string, string | undefined>) => {
       const args = ['generate'];
       if (opts['framework']) args.push('--framework', opts['framework']);
       if (opts['language']) args.push('--language', opts['language']);
@@ -35,7 +35,7 @@ export function reportCommand(): Command {
     .option('--framework <name>', 'Compliance framework')
     .option('--language <lang>', 'Report language')
     .option('--input <file>', 'Findings input file (JSON)')
-    .action(withAuth('pro', async (opts: Record<string, string | undefined>) => {
+    .action(withAuth('team', async (opts: Record<string, string | undefined>) => {
       const args = ['summary'];
       if (opts['framework']) args.push('--framework', opts['framework']);
       if (opts['language']) args.push('--language', opts['language']);

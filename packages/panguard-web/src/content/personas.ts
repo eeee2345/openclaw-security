@@ -108,7 +108,7 @@ export const PERSONAS: Record<string, PersonaProfile> = {
       '忙著做產品，沒時間想資安',
       '完全不知道現在正在發生什麼攻擊',
     ],
-    recommendedPlan: 'starter',
+    recommendedPlan: 'solo',
     scenarios: DEVELOPER_SCENARIOS,
   },
 
@@ -130,7 +130,7 @@ export const PERSONAS: Record<string, PersonaProfile> = {
       '一次勒索軟體攻擊就可能讓公司倒閉',
       '負擔不起企業級資安解決方案',
     ],
-    recommendedPlan: 'pro',
+    recommendedPlan: 'team',
     scenarios: SMALL_BIZ_SCENARIOS,
   },
 

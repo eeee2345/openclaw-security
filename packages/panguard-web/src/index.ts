@@ -24,6 +24,7 @@ export type {
   PricingPlan,
   PlanFeature,
   PricingPlanDetails,
+  ReportAddon,
   PageId,
   PageMeta,
   GuidanceStepType,
@@ -45,9 +46,12 @@ export {
 // Content - Pricing
 export {
   PRICING_PLANS,
+  REPORT_ADDONS,
   getPricingPlan,
   getAllPricingPlans,
   getRecommendedPlan,
+  getAllReportAddons,
+  getReportAddon,
 } from './content/index.js';
 
 // Pages

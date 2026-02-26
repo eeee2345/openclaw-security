@@ -1,14 +1,24 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth, hasTierAccess } from '../context/AuthContext';
 
-const navItems = [
+interface NavItem {
+  path: string;
+  labelEn: string;
+  labelZh: string;
+  icon: string;
+  /** Minimum tier required — undefined means all tiers */
+  requiredTier?: string;
+}
+
+const navItems: NavItem[] = [
   { path: '/dashboard', labelEn: 'Overview', labelZh: '總覽', icon: 'grid' },
   { path: '/dashboard/scan', labelEn: 'Scan', labelZh: '掃描', icon: 'shield' },
   { path: '/dashboard/report', labelEn: 'Reports', labelZh: '報告', icon: 'file' },
-  { path: '/dashboard/threat', labelEn: 'Threats', labelZh: '威脅', icon: 'alert' },
-  { path: '/dashboard/guard', labelEn: 'Guard', labelZh: '守護', icon: 'eye' },
-  { path: '/dashboard/trap', labelEn: 'Trap', labelZh: '蜜罐', icon: 'target' },
-  { path: '/dashboard/chat', labelEn: 'Notify', labelZh: '通知', icon: 'bell' },
+  { path: '/dashboard/threat', labelEn: 'Threats', labelZh: '威脅', icon: 'alert', requiredTier: 'solo' },
+  { path: '/dashboard/guard', labelEn: 'Guard', labelZh: '守護', icon: 'eye', requiredTier: 'solo' },
+  { path: '/dashboard/trap', labelEn: 'Trap', labelZh: '蜜罐', icon: 'target', requiredTier: 'team' },
+  { path: '/dashboard/chat', labelEn: 'Notify', labelZh: '通知', icon: 'bell', requiredTier: 'solo' },
 ];
 
 const iconMap: Record<string, string> = {
@@ -19,10 +29,12 @@ const iconMap: Record<string, string> = {
   eye: 'M1 12s4-8 11-8 11 8-4 8-11 8-11-8z M12 9a3 3 0 100 6 3 3 0 000-6z',
   target: 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 18a6 6 0 100-12 6 6 0 000 12z M12 14a2 2 0 100-4 2 2 0 000 4z',
   bell: 'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 01-3.46 0',
+  lock: 'M19 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2z M7 11V7a5 5 0 0110 0v4',
 };
 
 export default function DashboardLayout() {
   const { language, toggleLanguage, t } = useLanguage();
+  const { tier } = useAuth();
   const location = useLocation();
 
   return (
@@ -44,6 +56,8 @@ export default function DashboardLayout() {
         <nav className="flex-1 p-3">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
+            const locked = item.requiredTier ? !hasTierAccess(tier, item.requiredTier) : false;
+
             return (
               <Link
                 key={item.path}
@@ -51,13 +65,22 @@ export default function DashboardLayout() {
                 className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
                   isActive
                     ? 'bg-brand-cyan/10 text-brand-cyan'
-                    : 'text-brand-muted hover:bg-brand-card hover:text-brand-text'
+                    : locked
+                      ? 'text-brand-muted/40 hover:bg-brand-card hover:text-brand-muted/60'
+                      : 'text-brand-muted hover:bg-brand-card hover:text-brand-text'
                 }`}
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d={iconMap[item.icon] ?? ''} />
                 </svg>
-                {language === 'en' ? item.labelEn : item.labelZh}
+                <span className="flex-1">
+                  {language === 'en' ? item.labelEn : item.labelZh}
+                </span>
+                {locked && (
+                  <svg className="h-3 w-3 text-brand-muted/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={iconMap['lock']} />
+                  </svg>
+                )}
               </Link>
             );
           })}
@@ -65,6 +88,12 @@ export default function DashboardLayout() {
 
         {/* Bottom controls */}
         <div className="border-t border-brand-border p-3">
+          <Link
+            to="/pricing"
+            className="mb-2 block w-full rounded-lg bg-brand-cyan/10 px-3 py-2 text-center text-xs font-semibold text-brand-cyan transition-colors hover:bg-brand-cyan/20"
+          >
+            {t('Upgrade Plan', '升級方案')}
+          </Link>
           <button
             onClick={toggleLanguage}
             className="w-full rounded-lg border border-brand-border px-3 py-2 text-xs text-brand-muted transition-colors hover:border-brand-cyan hover:text-brand-cyan"

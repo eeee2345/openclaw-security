@@ -9,6 +9,7 @@
  * @module @openclaw/panguard-scan/scanners/discovery-scanner
  */
 
+import { execSync } from 'node:child_process';
 import {
   detectOS,
   getNetworkInterfaces,
@@ -27,6 +28,59 @@ import {
 } from '@openclaw/core';
 
 const logger = createLogger('panguard-scan:discovery');
+
+/**
+ * Detect pending system updates based on platform.
+ * Returns { pendingUpdates, autoUpdateEnabled }.
+ */
+function detectUpdateStatus(): { pendingUpdates: number; autoUpdateEnabled: boolean } {
+  try {
+    const platform = process.platform;
+
+    if (platform === 'darwin') {
+      // macOS: check Software Update
+      const output = execSync('softwareupdate -l 2>&1', { timeout: 10000 }).toString();
+      const matches = output.match(/\* /g);
+      const pending = matches ? matches.length : 0;
+      // Check if auto-update is enabled
+      let autoEnabled = false;
+      try {
+        const autoOutput = execSync('defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled 2>/dev/null', { timeout: 5000 }).toString().trim();
+        autoEnabled = autoOutput === '1';
+      } catch {
+        // Ignore — cannot determine auto-update status
+      }
+      return { pendingUpdates: pending, autoUpdateEnabled: autoEnabled };
+    }
+
+    if (platform === 'linux') {
+      // Try apt (Debian/Ubuntu)
+      try {
+        const output = execSync('apt list --upgradable 2>/dev/null | grep -c upgradable', { timeout: 10000 }).toString().trim();
+        const count = parseInt(output, 10);
+        const autoEnabled = (() => {
+          try {
+            return execSync('systemctl is-enabled unattended-upgrades 2>/dev/null', { timeout: 5000 }).toString().trim() === 'enabled';
+          } catch { return false; }
+        })();
+        return { pendingUpdates: isNaN(count) ? 0 : count, autoUpdateEnabled: autoEnabled };
+      } catch { /* not apt-based */ }
+
+      // Try yum/dnf (RHEL/CentOS/Fedora)
+      try {
+        const output = execSync('yum check-update 2>/dev/null | tail -n +3 | wc -l', { timeout: 10000 }).toString().trim();
+        const count = parseInt(output, 10);
+        return { pendingUpdates: isNaN(count) ? 0 : count, autoUpdateEnabled: false };
+      } catch { /* not yum-based */ }
+    }
+
+    // Fallback: unknown
+    return { pendingUpdates: 0, autoUpdateEnabled: false };
+  } catch (err) {
+    logger.warn('Failed to detect update status', { error: err instanceof Error ? err.message : String(err) });
+    return { pendingUpdates: 0, autoUpdateEnabled: false };
+  }
+}
 
 /**
  * Run a complete environment discovery scan
@@ -97,6 +151,11 @@ export async function discover(config: DiscoveryConfig): Promise<DiscoveryResult
   logger.info('Auditing user accounts');
   const users = await auditUsers();
 
+  // Step 10b: Detect system update status
+  // 步驟 10b：偵測系統更新狀態
+  logger.info('Detecting system update status');
+  const updates = detectUpdateStatus();
+
   // Assemble partial result for risk scoring
   // 組裝部分結果用於風險評分
   const partialResult: Partial<DiscoveryResult> = {
@@ -114,10 +173,7 @@ export async function discover(config: DiscoveryConfig): Promise<DiscoveryResult
     security: {
       existingTools,
       firewall,
-      updates: {
-        pendingUpdates: 0,
-        autoUpdateEnabled: false,
-      },
+      updates,
       users,
     },
   };
@@ -144,10 +200,7 @@ export async function discover(config: DiscoveryConfig): Promise<DiscoveryResult
     security: {
       existingTools,
       firewall,
-      updates: {
-        pendingUpdates: 0,
-        autoUpdateEnabled: false,
-      },
+      updates,
       users,
     },
     vulnerabilities: factors,

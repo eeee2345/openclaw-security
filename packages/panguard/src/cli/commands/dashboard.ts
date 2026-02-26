@@ -15,7 +15,7 @@ export function dashboardCommand(): Command {
     .description('Start the dashboard web UI / \u555F\u52D5\u5100\u8868\u677F Web \u4ECB\u9762')
     .option('--port <number>', 'Server port / \u4F3A\u670D\u5668\u57E0', process.env['PORT'] ?? '3000')
     .option('--no-open', 'Do not auto-open browser / \u4E0D\u81EA\u52D5\u958B\u555F\u700F\u89BD\u5668')
-    .action(withAuth('pro', async (opts: { port: string; open: boolean }) => {
+    .action(withAuth('solo', async (opts: { port: string; open: boolean }) => {
       const port = parseInt(opts.port, 10);
 
       console.log(banner());
