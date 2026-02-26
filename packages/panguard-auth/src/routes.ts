@@ -10,6 +10,10 @@ import { hashPassword, verifyPassword, generateSessionToken, generateVerifyToken
 import { authenticateRequest, requireAdmin } from './middleware.js';
 import type { SmtpConfig } from './email-verify.js';
 import { sendVerificationEmail } from './email-verify.js';
+import type { GoogleOAuthConfig } from './google-oauth.js';
+import { getGoogleAuthUrl, exchangeCodeForTokens, getGoogleUserInfo } from './google-oauth.js';
+import type { GoogleSheetsConfig } from './google-sheets.js';
+import { syncWaitlistEntry, ensureSheetHeaders } from './google-sheets.js';
 import type { UserPublic } from './types.js';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -50,6 +54,8 @@ export interface AuthRouteConfig {
   db: AuthDB;
   smtp?: SmtpConfig;
   baseUrl?: string;
+  google?: GoogleOAuthConfig;
+  sheets?: GoogleSheetsConfig;
 }
 
 /**
@@ -101,6 +107,13 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     if (config.smtp && config.baseUrl) {
       sendVerificationEmail(config.smtp, email, verifyToken, config.baseUrl).catch(() => {
         // Log but don't fail - email delivery is best-effort
+      });
+    }
+
+    // Sync to Google Sheets (non-blocking)
+    if (config.sheets) {
+      syncWaitlistEntry(config.sheets, entry).catch(() => {
+        // Best-effort sync
       });
     }
 
@@ -290,6 +303,70 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: { user: toPublicUser(user) } });
   }
 
+  // ── Google OAuth ─────────────────────────────────────────────────
+
+  function handleGoogleAuth(_req: IncomingMessage, res: ServerResponse): void {
+    if (!config.google) {
+      json(res, 501, { ok: false, error: 'Google OAuth not configured' });
+      return;
+    }
+    const url = getGoogleAuthUrl(config.google);
+    res.writeHead(302, { Location: url });
+    res.end();
+  }
+
+  async function handleGoogleCallback(req: IncomingMessage, res: ServerResponse, code: string): Promise<void> {
+    if (!config.google) {
+      json(res, 501, { ok: false, error: 'Google OAuth not configured' });
+      return;
+    }
+
+    try {
+      const tokens = await exchangeCodeForTokens(config.google, code);
+      const googleUser = await getGoogleUserInfo(tokens.access_token);
+
+      if (!googleUser.email) {
+        json(res, 400, { ok: false, error: 'No email from Google account' });
+        return;
+      }
+
+      // Find or create user
+      let user = db.getUserByEmail(googleUser.email);
+      if (!user) {
+        // Auto-create user from Google profile (random password since they use OAuth)
+        const randomPw = generateSessionToken(); // Not used for login, just to fill the field
+        const pwHash = await hashPassword(randomPw);
+        user = db.createUser(
+          { email: googleUser.email, name: googleUser.name || googleUser.email, password: randomPw },
+          pwHash,
+        );
+      }
+
+      db.updateLastLogin(user.id);
+      const sessionToken = generateSessionToken();
+      const session = db.createSession(user.id, sessionToken, sessionExpiry());
+
+      // Redirect to frontend with token
+      const baseUrl = config.baseUrl ?? '';
+      const redirectUrl = `${baseUrl}/login?token=${session.token}&expires=${encodeURIComponent(session.expiresAt)}`;
+      res.writeHead(302, { Location: redirectUrl });
+      res.end();
+    } catch (err) {
+      json(res, 500, {
+        ok: false,
+        error: err instanceof Error ? err.message : 'Google OAuth failed',
+      });
+    }
+  }
+
+  // ── Init Google Sheets headers ──────────────────────────────────
+
+  if (config.sheets) {
+    ensureSheetHeaders(config.sheets).catch(() => {
+      // Best-effort header initialization
+    });
+  }
+
   return {
     handleWaitlistJoin,
     handleWaitlistVerify,
@@ -299,5 +376,7 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     handleLogin,
     handleLogout,
     handleMe,
+    handleGoogleAuth,
+    handleGoogleCallback,
   };
 }

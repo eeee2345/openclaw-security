@@ -54,9 +54,22 @@ export class PanguardDashboardServer {
     this.webDistPath = webDistPath;
     const authDbPath = dbPath ?? join(webDistPath, '..', 'panguard-auth.db');
     this.authDB = new AuthDB(authDbPath);
+    const baseUrl = process.env['PANGUARD_BASE_URL'] ?? `http://localhost:${port}`;
     this.authHandlers = createAuthHandlers({
       db: this.authDB,
-      baseUrl: process.env['PANGUARD_BASE_URL'] ?? `http://localhost:${port}`,
+      baseUrl,
+      // Google OAuth (optional - only enabled if env vars are set)
+      google: process.env['GOOGLE_CLIENT_ID'] ? {
+        clientId: process.env['GOOGLE_CLIENT_ID'],
+        clientSecret: process.env['GOOGLE_CLIENT_SECRET'] ?? '',
+        redirectUri: `${baseUrl}/api/auth/google/callback`,
+      } : undefined,
+      // Google Sheets sync (optional - only enabled if env vars are set)
+      sheets: process.env['GOOGLE_SHEETS_ID'] ? {
+        spreadsheetId: process.env['GOOGLE_SHEETS_ID'],
+        serviceAccountEmail: process.env['GOOGLE_SERVICE_ACCOUNT_EMAIL'] ?? '',
+        privateKey: (process.env['GOOGLE_SERVICE_ACCOUNT_KEY'] ?? '').replace(/\\n/g, '\n'),
+      } : undefined,
     });
   }
 
@@ -191,11 +204,27 @@ export class PanguardDashboardServer {
           this.authHandlers.handleMe(req, res);
           return;
 
+        case '/api/auth/google':
+          this.authHandlers.handleGoogleAuth(req, res);
+          return;
+
         default:
           // Handle /api/waitlist/verify/:token pattern
           if (path.startsWith('/api/waitlist/verify/')) {
             const token = path.slice('/api/waitlist/verify/'.length);
             this.authHandlers.handleWaitlistVerify(req, res, token);
+            return;
+          }
+          // Handle /api/auth/google/callback?code=xxx pattern
+          if (path === '/api/auth/google/callback') {
+            const urlObj = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
+            const code = urlObj.searchParams.get('code');
+            if (code) {
+              await this.authHandlers.handleGoogleCallback(req, res, code);
+            } else {
+              res.writeHead(400);
+              res.end(JSON.stringify({ ok: false, error: 'Missing code parameter' }));
+            }
             return;
           }
           res.writeHead(404);
