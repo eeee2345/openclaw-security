@@ -30,6 +30,7 @@ export default defineConfig({
       '@openclaw/panguard-report': resolve(__dirname, './packages/panguard-report/src'),
       '@openclaw/security-hardening': resolve(__dirname, './openclaw-fork/src'),
       '@openclaw/panguard-web': resolve(__dirname, './packages/panguard-web/src'),
+      '@openclaw/panguard-auth': resolve(__dirname, './packages/panguard-auth/src'),
     },
   },
 });

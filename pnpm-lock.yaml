@@ -97,6 +97,9 @@ importers:
       '@openclaw/core':
         specifier: workspace:*
         version: link:../core
+      '@openclaw/panguard-auth':
+        specifier: workspace:*
+        version: link:../panguard-auth
       '@openclaw/panguard-chat':
         specifier: workspace:*
         version: link:../panguard-chat
@@ -119,6 +122,22 @@ importers:
         specifier: ^12.0.0
         version: 12.1.0
     devDependencies:
+      '@types/node':
+        specifier: ^22.14.0
+        version: 22.19.11
+      typescript:
+        specifier: ~5.7.3
+        version: 5.7.3
+
+  packages/panguard-auth:
+    dependencies:
+      better-sqlite3:
+        specifier: ^11.0.0
+        version: 11.10.0
+    devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.8
+        version: 7.6.13
       '@types/node':
         specifier: ^22.14.0
         version: 22.19.11

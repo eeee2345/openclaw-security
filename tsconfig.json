@@ -30,7 +30,8 @@
       "@openclaw/panguard-trap": ["./packages/panguard-trap/src"],
       "@openclaw/panguard-report": ["./packages/panguard-report/src"],
       "@openclaw/panguard-web": ["./packages/panguard-web/src"],
-      "@openclaw/panguard": ["./packages/panguard/src"]
+      "@openclaw/panguard": ["./packages/panguard/src"],
+      "@openclaw/panguard-auth": ["./packages/panguard-auth/src"]
     }
   },
   "references": [
@@ -42,6 +43,7 @@
     { "path": "./packages/panguard-report" },
     { "path": "./packages/panguard-web" },
     { "path": "./packages/panguard" },
+    { "path": "./packages/panguard-auth" },
     { "path": "./openclaw-fork" }
   ],
   "include": [],

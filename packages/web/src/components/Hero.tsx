@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import CopyCommand from './CopyCommand';
+import WaitlistForm from './WaitlistForm';
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -30,11 +31,18 @@ export default function Hero() {
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link to="/guide" className="btn-primary text-base">
-            {t('Find Your Plan', '找到你的方案')}
+            {t('Find Your Plan', '\u627E\u5230\u4F60\u7684\u65B9\u6848')}
           </Link>
           <Link to="/features" className="btn-secondary text-base">
-            {t('See How It Works', '了解運作方式')}
+            {t('See How It Works', '\u4E86\u89E3\u904B\u4F5C\u65B9\u5F0F')}
           </Link>
+        </div>
+
+        <div className="mx-auto mt-12 max-w-md">
+          <p className="mb-4 text-sm text-brand-muted">
+            {t('Get early access - join the waitlist:', '\u6436\u5148\u9AD4\u9A57 - \u52A0\u5165\u767D\u540D\u55AE\uFF1A')}
+          </p>
+          <WaitlistForm />
         </div>
       </div>
     </section>

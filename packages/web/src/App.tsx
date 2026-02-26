@@ -11,6 +11,9 @@ import DashboardOverview from './pages/dashboard/DashboardOverview';
 import DashboardScan from './pages/dashboard/DashboardScan';
 import DashboardReport from './pages/dashboard/DashboardReport';
 import DashboardThreat from './pages/dashboard/DashboardThreat';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import WaitlistVerify from './pages/WaitlistVerify';
 
 export default function App() {
   return (
@@ -23,6 +26,9 @@ export default function App() {
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/waitlist/verify/:token" element={<WaitlistVerify />} />
       </Route>
 
       {/* Dashboard */}

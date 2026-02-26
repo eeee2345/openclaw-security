@@ -17,6 +17,7 @@ import { handleReportFrameworks, handleReportGenerate } from './api/report.js';
 import { handleThreatStats } from './api/threat.js';
 import { handleGuardStatus } from './api/guard.js';
 import { handleTrapStatus } from './api/trap.js';
+import { AuthDB, createAuthHandlers } from '@openclaw/panguard-auth';
 
 /** MIME type mapping / MIME 類型映射 */
 const MIME_TYPES: Record<string, string> = {
@@ -45,10 +46,18 @@ export class PanguardDashboardServer {
   private server: ReturnType<typeof createServer> | null = null;
   private readonly port: number;
   private readonly webDistPath: string;
+  private readonly authDB: AuthDB;
+  private readonly authHandlers: ReturnType<typeof createAuthHandlers>;
 
-  constructor(port: number, webDistPath: string) {
+  constructor(port: number, webDistPath: string, dbPath?: string) {
     this.port = port;
     this.webDistPath = webDistPath;
+    const authDbPath = dbPath ?? join(webDistPath, '..', 'panguard-auth.db');
+    this.authDB = new AuthDB(authDbPath);
+    this.authHandlers = createAuthHandlers({
+      db: this.authDB,
+      baseUrl: process.env['PANGUARD_BASE_URL'] ?? `http://localhost:${port}`,
+    });
   }
 
   /** Start the server / 啟動伺服器 */
@@ -66,6 +75,7 @@ export class PanguardDashboardServer {
 
   /** Stop the server / 停止伺服器 */
   async stop(): Promise<void> {
+    this.authDB.close();
     return new Promise((resolve) => {
       if (this.server) {
         this.server.close(() => resolve());
@@ -88,7 +98,7 @@ export class PanguardDashboardServer {
     // CORS for development
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -152,7 +162,42 @@ export class PanguardDashboardServer {
           handleTrapStatus(req, res);
           return;
 
+        // ── Auth & Waitlist routes ────────────────────────────────
+        case '/api/waitlist':
+          await this.authHandlers.handleWaitlistJoin(req, res);
+          return;
+
+        case '/api/waitlist/stats':
+          this.authHandlers.handleWaitlistStats(req, res);
+          return;
+
+        case '/api/waitlist/list':
+          this.authHandlers.handleWaitlistList(req, res);
+          return;
+
+        case '/api/auth/register':
+          await this.authHandlers.handleRegister(req, res);
+          return;
+
+        case '/api/auth/login':
+          await this.authHandlers.handleLogin(req, res);
+          return;
+
+        case '/api/auth/logout':
+          this.authHandlers.handleLogout(req, res);
+          return;
+
+        case '/api/auth/me':
+          this.authHandlers.handleMe(req, res);
+          return;
+
         default:
+          // Handle /api/waitlist/verify/:token pattern
+          if (path.startsWith('/api/waitlist/verify/')) {
+            const token = path.slice('/api/waitlist/verify/'.length);
+            this.authHandlers.handleWaitlistVerify(req, res, token);
+            return;
+          }
           res.writeHead(404);
           res.end(JSON.stringify({ ok: false, error: 'Not found' }));
       }

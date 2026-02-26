@@ -22,6 +22,7 @@
     "@openclaw/panguard-chat": "workspace:*",
     "@openclaw/panguard-trap": "workspace:*",
     "@openclaw/threat-cloud": "workspace:*",
+    "@openclaw/panguard-auth": "workspace:*",
     "commander": "^12.0.0"
   },
   "devDependencies": {

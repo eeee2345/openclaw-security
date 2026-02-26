@@ -12,7 +12,8 @@
     { "path": "../panguard-report" },
     { "path": "../panguard-chat" },
     { "path": "../panguard-trap" },
-    { "path": "../threat-cloud" }
+    { "path": "../threat-cloud" },
+    { "path": "../panguard-auth" }
   ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

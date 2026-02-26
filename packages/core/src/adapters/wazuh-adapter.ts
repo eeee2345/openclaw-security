@@ -22,9 +22,9 @@ import { BaseAdapter } from './base-adapter.js';
  */
 const DEFAULT_WAZUH_CONFIG: AdapterConfig = {
   enabled: true,
-  endpoint: 'https://localhost:55000',
-  username: 'wazuh-wui',
-  password: 'wazuh-wui',
+  endpoint: process.env['WAZUH_API_URL'] ?? 'https://localhost:55000',
+  username: process.env['WAZUH_API_USER'] ?? '',
+  password: process.env['WAZUH_API_PASS'] ?? '',
   pollInterval: 30000,
 };
 
@@ -187,8 +187,8 @@ export class WazuhAdapter extends BaseAdapter {
       return this.authToken;
     }
 
-    const username = this.config.username ?? 'wazuh-wui';
-    const password = this.config.password ?? 'wazuh-wui';
+    const username = this.config.username ?? '';
+    const password = this.config.password ?? '';
     const credentials = Buffer.from(`${username}:${password}`).toString('base64');
 
     const url = `${this.endpoint}/security/user/authenticate`;
