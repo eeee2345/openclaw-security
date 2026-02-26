@@ -12,8 +12,11 @@
  * @module @openclaw/panguard-chat/cli
  */
 
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 import { SETUP_STEPS, getWelcomeMessage } from '../onboarding/index.js';
-import type { MessageLanguage, ChannelType, UserType, WebhookConfig } from '../types.js';
+import type { ChatConfig, MessageLanguage, ChannelType, UserType, WebhookConfig } from '../types.js';
 import { ChatAgent } from '../agent/chat-agent.js';
 import { WebhookChannel } from '../channels/webhook.js';
 
@@ -188,18 +191,48 @@ async function commandTest(args: string[]): Promise<void> {
   }
 }
 
+/** Default config directory / 預設配置目錄 */
+const CONFIG_DIR = join(homedir(), '.panguard-chat');
+const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
+
+/** Load saved config if it exists / 讀取已儲存的配置 */
+function loadConfig(): ChatConfig | null {
+  const configPath = process.env['PANGUARD_CHAT_CONFIG'] ?? CONFIG_FILE;
+  if (!existsSync(configPath)) return null;
+  try {
+    const raw = readFileSync(configPath, 'utf-8');
+    return JSON.parse(raw) as ChatConfig;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Show channel status / 顯示管道狀態
  */
 function commandStatus(): void {
   console.log('PanguardChat Status / PanguardChat 狀態');
   console.log('================================');
-  console.log('Configured channels: (none)');
-  console.log('Active conversations: 0');
-  console.log('Pending confirmations: 0');
-  console.log('');
-  console.log('Run "panguard-chat setup" to configure notification channels.');
-  console.log('執行 "panguard-chat setup" 來配置通知管道。');
+
+  const config = loadConfig();
+  if (!config) {
+    console.log('Configured channels: (none)');
+    console.log('');
+    console.log('Run "panguard-chat setup" to configure notification channels.');
+    console.log('執行 "panguard-chat setup" 來配置通知管道。');
+    return;
+  }
+
+  const channels = config.channels;
+  const configuredChannels = Object.keys(channels).filter(
+    (k) => channels[k as keyof typeof channels] != null,
+  );
+
+  console.log(`User type: ${config.userProfile.type}`);
+  console.log(`Language: ${config.userProfile.language}`);
+  console.log(`Notification channel: ${config.userProfile.notificationChannel}`);
+  console.log(`Configured channels: ${configuredChannels.length > 0 ? configuredChannels.join(', ') : '(none)'}`);
+  console.log(`Max follow-up tokens: ${config.maxFollowUpTokens}`);
 }
 
 /**
@@ -208,8 +241,15 @@ function commandStatus(): void {
 function commandConfig(): void {
   console.log('PanguardChat Configuration / PanguardChat 配置');
   console.log('========================================');
-  console.log('No configuration found. Run "panguard-chat setup" first.');
-  console.log('找不到配置。請先執行 "panguard-chat setup"。');
+
+  const config = loadConfig();
+  if (!config) {
+    console.log('No configuration found. Run "panguard-chat setup" first.');
+    console.log('找不到配置。請先執行 "panguard-chat setup"。');
+    return;
+  }
+
+  console.log(JSON.stringify(config, null, 2));
 }
 
 /**

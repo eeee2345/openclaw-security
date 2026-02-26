@@ -1,5 +1,6 @@
 /**
  * /api/report/* - Compliance report endpoints
+ * Uses REAL scan findings (not hardcoded samples).
  */
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -11,6 +12,7 @@ import {
   generateSummaryText,
 } from '@openclaw/panguard-report';
 import type { ComplianceFramework, ReportLanguage } from '@openclaw/panguard-report';
+import { latestScanResult } from './scan.js';
 
 /** Framework metadata for the API */
 const FRAMEWORK_DESCRIPTIONS: Record<string, string> = {
@@ -37,7 +39,7 @@ export function handleReportFrameworks(_req: IncomingMessage, res: ServerRespons
 }
 
 /**
- * POST /api/report/generate - Generate a compliance report
+ * POST /api/report/generate - Generate a compliance report using real scan findings
  *
  * Body: { framework: string, language: string }
  */
@@ -47,36 +49,26 @@ export async function handleReportGenerate(req: IncomingMessage, res: ServerResp
   const framework = (body?.['framework'] as string) ?? 'iso27001';
   const language = (body?.['language'] as string) ?? 'en';
 
-  // Sample findings for demo
-  const findings = [
-    {
-      findingId: 'API-001',
-      severity: 'high' as const,
-      title: 'Missing information security policy',
-      description: 'No formal information security policy document found.',
-      category: 'policy',
-      timestamp: new Date(),
-      source: 'panguard-scan' as const,
-    },
-    {
-      findingId: 'API-002',
-      severity: 'medium' as const,
-      title: 'Unencrypted data at rest',
-      description: 'Database storage does not use encryption at rest.',
-      category: 'encryption',
-      timestamp: new Date(),
-      source: 'panguard-scan' as const,
-    },
-    {
-      findingId: 'API-003',
-      severity: 'low' as const,
-      title: 'Password policy not enforced',
-      description: 'Password complexity requirements are not enforced.',
-      category: 'access_control',
-      timestamp: new Date(),
-      source: 'panguard-scan' as const,
-    },
-  ];
+  // Use real scan findings if available
+  if (!latestScanResult || latestScanResult.findings.length === 0) {
+    res.writeHead(400);
+    res.end(JSON.stringify({
+      ok: false,
+      error: 'No scan results available. Run a scan first (POST /api/scan/start).',
+    }));
+    return;
+  }
+
+  // Convert real scan findings to report finding format
+  const findings = latestScanResult.findings.map((f, i) => ({
+    findingId: f.id ?? `SCAN-${String(i + 1).padStart(3, '0')}`,
+    severity: f.severity as 'critical' | 'high' | 'medium' | 'low' | 'info',
+    title: f.title,
+    description: f.description,
+    category: f.category ?? 'general',
+    timestamp: new Date(),
+    source: 'panguard-scan' as const,
+  }));
 
   try {
     const report = generateComplianceReport(
@@ -95,6 +87,9 @@ export async function handleReportGenerate(req: IncomingMessage, res: ServerResp
       data: {
         report: JSON.parse(json),
         summary,
+        scanRiskScore: latestScanResult.riskScore,
+        scanRiskLevel: latestScanResult.riskLevel,
+        totalFindings: findings.length,
       },
     }));
   } catch (err) {

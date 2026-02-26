@@ -172,7 +172,7 @@ export class PanguardDashboardServer {
           return;
 
         case '/api/trap/status':
-          handleTrapStatus(req, res);
+          await handleTrapStatus(req, res);
           return;
 
         // ── Auth & Waitlist routes ────────────────────────────────

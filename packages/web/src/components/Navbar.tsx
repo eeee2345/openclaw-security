@@ -1,11 +1,43 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getNavItems } from '@openclaw/panguard-web';
 import { useLanguage } from '../context/LanguageContext';
+
+/** Read auth state from localStorage */
+function getAuthState(): { token: string; email: string } | null {
+  const token = localStorage.getItem('panguard_token');
+  const email = localStorage.getItem('panguard_email');
+  if (token && email) return { token, email };
+  return null;
+}
 
 export default function Navbar() {
   const { language, toggleLanguage, t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
   const navItems = getNavItems();
+  const [auth, setAuth] = useState(getAuthState);
+
+  // Re-check auth on route change (e.g. after login redirect)
+  useEffect(() => {
+    setAuth(getAuthState());
+  }, [location.pathname]);
+
+  const handleLogout = useCallback(async () => {
+    const token = localStorage.getItem('panguard_token');
+    if (token) {
+      try {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch { /* ignore */ }
+    }
+    localStorage.removeItem('panguard_token');
+    localStorage.removeItem('panguard_email');
+    setAuth(null);
+    navigate('/');
+  }, [navigate]);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-brand-border bg-brand-dark/95 backdrop-blur-sm">
@@ -44,9 +76,30 @@ export default function Navbar() {
           >
             {language === 'zh-TW' ? 'EN' : 'ZH'}
           </button>
-          <Link to="/guide" className="btn-primary text-sm">
-            {t('Get Started', '立即開始')}
-          </Link>
+
+          {auth ? (
+            <>
+              <span className="text-xs text-brand-muted">{auth.email}</span>
+              <button
+                onClick={handleLogout}
+                className="rounded-md border border-brand-border px-3 py-1.5 text-xs text-brand-muted transition-colors hover:border-red-500 hover:text-red-400"
+              >
+                {t('Logout', '登出')}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="rounded-md border border-brand-border px-3 py-1.5 text-xs text-brand-muted transition-colors hover:border-brand-cyan hover:text-brand-cyan"
+              >
+                {t('Login', '登入')}
+              </Link>
+              <Link to="/register" className="btn-primary text-sm">
+                {t('Sign Up', '註冊')}
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

@@ -6,8 +6,8 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { runScan } from '@openclaw/panguard-scan';
 import type { ScanResult } from '@openclaw/panguard-scan';
 
-/** Cache latest scan result in memory */
-let latestScanResult: ScanResult | null = null;
+/** Cache latest scan result in memory (exported for report API) */
+export let latestScanResult: ScanResult | null = null;
 let scanInProgress = false;
 
 /**
