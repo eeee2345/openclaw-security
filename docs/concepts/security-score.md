@@ -96,9 +96,9 @@ Guard 持續計算即時分數，可透過 `status` 查看：
 panguard guard status
 ```
 
-### Dashboard
+### CLI 查詢
 
-Pro 和 Enterprise 用戶可透過 WebSocket Dashboard（port 3100）查看即時分數視覺化。
+透過 `panguard guard status` 即時查看分數和安全狀態。
 
 ---
 

@@ -12,7 +12,7 @@
  * @module @openclaw/panguard-chat/cli
  */
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { SETUP_STEPS, getWelcomeMessage } from '../onboarding/index.js';
@@ -43,6 +43,9 @@ export async function runCLI(args: string[]): Promise<void> {
       break;
     case 'config':
       commandConfig();
+      break;
+    case 'prefs':
+      commandPrefs(args);
       break;
     case 'help':
     default:
@@ -253,6 +256,73 @@ function commandConfig(): void {
 }
 
 /**
+ * Show and update notification preferences / 顯示及更新通知偏好
+ */
+function commandPrefs(args: string[]): void {
+  const config = loadConfig();
+  if (!config) {
+    console.log('No configuration found. Run "panguard chat setup" first.');
+    console.log('找不到配置。請先執行 "panguard chat setup"。');
+    return;
+  }
+
+  const prefs = config.userProfile.preferences;
+  const updates: Record<string, boolean> = {};
+  let hasUpdates = false;
+
+  // Parse --critical, --daily, --weekly, --peaceful flags
+  for (const [flag, key] of [
+    ['--critical', 'criticalAlerts'],
+    ['--daily', 'dailySummary'],
+    ['--weekly', 'weeklySummary'],
+    ['--peaceful', 'peacefulReport'],
+  ] as const) {
+    const val = extractOption(args, flag);
+    if (val === 'on' || val === 'true') {
+      updates[key] = true;
+      hasUpdates = true;
+    } else if (val === 'off' || val === 'false') {
+      updates[key] = false;
+      hasUpdates = true;
+    }
+  }
+
+  if (hasUpdates) {
+    const newPrefs = { ...prefs, ...updates };
+    const newConfig: ChatConfig = {
+      ...config,
+      userProfile: {
+        ...config.userProfile,
+        preferences: newPrefs,
+      },
+    };
+    const configPath = process.env['PANGUARD_CHAT_CONFIG'] ?? CONFIG_FILE;
+    mkdirSync(CONFIG_DIR, { recursive: true });
+    writeFileSync(configPath, JSON.stringify(newConfig, null, 2), 'utf-8');
+    console.log('Notification preferences updated / 通知偏好已更新');
+    console.log('');
+    showPrefs(newPrefs);
+  } else {
+    showPrefs(prefs);
+  }
+}
+
+function showPrefs(prefs: { criticalAlerts: boolean; dailySummary: boolean; weeklySummary: boolean; peacefulReport: boolean }): void {
+  const on = '\x1b[32mON\x1b[0m';
+  const off = '\x1b[31mOFF\x1b[0m';
+  console.log('Notification Preferences / 通知偏好');
+  console.log('====================================');
+  console.log(`  Critical Alerts  : ${prefs.criticalAlerts ? on : off}`);
+  console.log(`  Daily Summary    : ${prefs.dailySummary ? on : off}`);
+  console.log(`  Weekly Summary   : ${prefs.weeklySummary ? on : off}`);
+  console.log(`  Peaceful Report  : ${prefs.peacefulReport ? on : off}`);
+  console.log('');
+  console.log('Update: panguard chat prefs --critical on --daily off');
+  console.log('更新: panguard chat prefs --critical on --daily off');
+  console.log('');
+}
+
+/**
  * Print help message / 列印幫助訊息
  */
 function printHelp(): void {
@@ -267,6 +337,7 @@ Commands:
   test              Send a test notification / 發送測試通知
   status            Show channel status / 顯示管道狀態
   config            Show current configuration / 顯示當前配置
+  prefs             View/update notification preferences / 查看/更新通知偏好
   help              Show this help / 顯示此說明
 
 Options:

@@ -182,6 +182,7 @@ panguard chat <command> [options]
 | `test` | Starter | 發送測試通知 |
 | `status` | Free | 顯示管道狀態 |
 | `config` | Free | 顯示目前設定 |
+| `prefs` | Starter | 查看/更新通知偏好 |
 
 #### 選項
 
@@ -200,6 +201,12 @@ panguard chat setup --channel line --user-type boss --lang zh-TW
 
 # 測試通知
 panguard chat test
+
+# 查看通知偏好
+panguard chat prefs
+
+# 更新偏好
+panguard chat prefs --critical on --daily off
 ```
 
 ---
@@ -299,31 +306,6 @@ panguard report summary --framework soc2
 
 ---
 
-## 儀表板
-
-### panguard dashboard `[PRO]`
-
-啟動 Web 儀表板。
-
-```bash
-panguard dashboard [options]
-```
-
-| 選項 | 類型 | 預設值 | 說明 |
-|------|------|--------|------|
-| `--port <number>` | number | `3000` | 伺服器 port |
-| `--no-open` | boolean | `false` | 不自動開啟瀏覽器 |
-
-```bash
-# 啟動儀表板
-panguard dashboard
-
-# 指定 port
-panguard dashboard --port 8080
-```
-
----
-
 ## 蜜罐系統
 
 ### panguard trap `[PRO]`
@@ -381,6 +363,7 @@ panguard threat <command> [options]
 | 子指令 | 等級 | 說明 |
 |--------|------|------|
 | `start` | Enterprise | 啟動 Threat Cloud API 伺服器 |
+| `stats` | Solo | 顯示威脅情報統計 |
 
 #### 選項
 
@@ -396,6 +379,9 @@ panguard threat start
 
 # 自訂 port 和 host
 panguard threat start --port 9090 --host 0.0.0.0
+
+# 查看威脅統計
+panguard threat stats
 ```
 
 ---
@@ -437,6 +423,5 @@ panguard demo
 | `chat setup` | - | v | v | v |
 | `deploy` | - | v | v | v |
 | `report generate` | - | - | v | v |
-| `dashboard` | - | - | v | v |
 | `trap start` | - | - | v | v |
 | `threat start` | - | - | - | v |

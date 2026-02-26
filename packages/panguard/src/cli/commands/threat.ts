@@ -4,9 +4,9 @@
  */
 
 import { Command } from 'commander';
-import { ThreatCloudServer } from '@openclaw/threat-cloud';
+import { ThreatCloudServer, ThreatCloudDB } from '@openclaw/threat-cloud';
 import type { ServerConfig } from '@openclaw/threat-cloud';
-import { c, spinner, statusPanel, symbols } from '@openclaw/core';
+import { c, spinner, statusPanel, divider, table, symbols } from '@openclaw/core';
 import { withAuth } from '../auth-guard.js';
 
 export function threatCommand(): Command {
@@ -55,6 +55,63 @@ export function threatCommand(): Command {
 
       // Keep process alive
       await new Promise(() => {});
+    }));
+
+  cmd.command('stats')
+    .description('Show threat intelligence statistics / 顯示威脅情報統計')
+    .option('--db <path>', 'SQLite database path / 資料庫路徑', './threat-cloud.db')
+    .action(withAuth('solo', async (opts: { db: string }) => {
+      const sp = spinner('Loading threat intelligence data...');
+      const db = new ThreatCloudDB(opts.db);
+      const stats = db.getStats();
+      db.close();
+      sp.succeed('Threat intelligence loaded');
+
+      console.log(statusPanel('PANGUARD AI Threat Intelligence', [
+        { label: 'Total Threats', value: String(stats.totalThreats), status: stats.totalThreats > 0 ? 'caution' : 'safe' },
+        { label: 'Detection Rules', value: String(stats.totalRules) },
+        { label: 'Last 24h', value: String(stats.last24hThreats), status: stats.last24hThreats > 10 ? 'critical' : stats.last24hThreats > 0 ? 'caution' : 'safe' },
+      ]));
+
+      if (stats.topAttackTypes.length > 0) {
+        console.log(divider('Top Attack Types'));
+        console.log('');
+        const attackColumns = [
+          { header: '#', key: 'rank', width: 4, align: 'right' as const },
+          { header: 'Attack Type', key: 'type', width: 30 },
+          { header: 'Count', key: 'count', width: 10, align: 'right' as const },
+        ];
+        const attackRows = stats.topAttackTypes.map((a, i) => ({
+          rank: String(i + 1),
+          type: a.type,
+          count: String(a.count),
+        }));
+        console.log(table(attackColumns, attackRows));
+        console.log('');
+      }
+
+      if (stats.topMitreTechniques.length > 0) {
+        console.log(divider('Top MITRE ATT&CK Techniques'));
+        console.log('');
+        const mitreColumns = [
+          { header: '#', key: 'rank', width: 4, align: 'right' as const },
+          { header: 'Technique', key: 'technique', width: 30 },
+          { header: 'Count', key: 'count', width: 10, align: 'right' as const },
+        ];
+        const mitreRows = stats.topMitreTechniques.map((t, i) => ({
+          rank: String(i + 1),
+          technique: t.technique,
+          count: String(t.count),
+        }));
+        console.log(table(mitreColumns, mitreRows));
+        console.log('');
+      }
+
+      if (stats.totalThreats === 0) {
+        console.log(`  ${symbols.info} ${c.dim('No threat data yet. Start Threat Cloud to collect intelligence.')}`);
+        console.log(`  ${symbols.info} ${c.dim('尚無威脅資料。啟動 Threat Cloud 以收集情報。')}`);
+        console.log('');
+      }
     }));
 
   return cmd;

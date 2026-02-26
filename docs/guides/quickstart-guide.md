@@ -223,26 +223,6 @@ Guard 的運作方式：
 
 ---
 
-## Web Dashboard（Solo 以上）
-
-### 啟動 Dashboard
-
-```bash
-./bin/panguard dashboard
-```
-
-瀏覽器會自動開啟 `http://localhost:3100`。
-
-Dashboard 提供：
-- 安全評分總覽
-- 掃描結果視覺化
-- Guard 即時監控狀態
-- 威脅事件時間軸
-- 通知管道管理
-- 合規報告產生與下載
-
----
-
 ## 方案功能對照
 
 | 功能 | Scan ($0) | Solo ($9) | Starter ($19) | Team ($14/ep) | Business ($10/ep) |
@@ -251,7 +231,6 @@ Dashboard 提供：
 | 完整掃描 | - | v | v | v | v |
 | Guard 防護 | - | v | v | v | v |
 | 通知管道 | - | 1 個 | 3 個 | 不限 | 不限 |
-| Dashboard | - | v | v | v | v |
 | Trap 蜜罐 | - | - | - | v | v |
 | 合規報告 | - | 加購 | 加購 | 加購 | 含基礎 |
 | 端點數 | 0 | 1 | 5 | 5-50 | 50-500 |

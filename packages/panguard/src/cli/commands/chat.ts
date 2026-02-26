@@ -49,5 +49,20 @@ export function chatCommand(): Command {
       await runCLI(['config']);
     });
 
+  cmd.command('prefs')
+    .description('View/update notification preferences / 查看/更新通知偏好')
+    .option('--critical <on|off>', 'Critical alerts / 緊急警報')
+    .option('--daily <on|off>', 'Daily summary / 每日摘要')
+    .option('--weekly <on|off>', 'Weekly summary / 每週摘要')
+    .option('--peaceful <on|off>', 'Peaceful report / 平安報告')
+    .action(withAuth('starter', async (opts: Record<string, string | undefined>) => {
+      const args = ['prefs'];
+      if (opts['critical']) args.push('--critical', opts['critical']);
+      if (opts['daily']) args.push('--daily', opts['daily']);
+      if (opts['weekly']) args.push('--weekly', opts['weekly']);
+      if (opts['peaceful']) args.push('--peaceful', opts['peaceful']);
+      await runCLI(args);
+    }));
+
   return cmd;
 }

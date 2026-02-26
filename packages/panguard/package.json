@@ -2,7 +2,7 @@
   "name": "@openclaw/panguard",
   "version": "0.1.0",
   "type": "module",
-  "description": "Panguard AI - Unified security CLI and dashboard",
+  "description": "Panguard AI - Unified security CLI",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {

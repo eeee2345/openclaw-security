@@ -120,7 +120,6 @@ CLI 會印出認證 URL，你可以複製到有瀏覽器的裝置開啟：
 | `panguard guard start` | Solo | 即時防護 |
 | `panguard chat setup` | Solo | 通知設定 |
 | `panguard deploy` | Solo | 部署服務 |
-| `panguard dashboard` | Solo | Web 儀表板 |
 | `panguard trap` | Team | 蜜罐系統 |
 | `panguard report` | Team | 合規報告（需加價購或 Business 方案） |
 | `panguard threat` | Business | 威脅情報 API |

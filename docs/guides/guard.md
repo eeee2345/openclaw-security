@@ -238,14 +238,16 @@ Guard 持續計算 0-100 安全分數，並追蹤 12 個成就徽章。
 
 ---
 
-## Dashboard
+## Internal Monitoring (WebSocket)
 
-Pro 和 Enterprise 用戶可啟用 WebSocket Dashboard：
+Guard 引擎內建 WebSocket 監控介面，供進階除錯使用：
 
 - 預設 port：3100
 - 即時事件流
 - 安全分數視覺化
 - WebSocket 安全（CSRF + Origin 驗證）
+
+此為內部工具，非面向使用者的介面。主要操作請使用 CLI (`panguard guard status`)。
 
 ---
 
@@ -261,7 +263,6 @@ Guard 功能依訂閱等級分級：
 | Chat 通知 | - | v | v | v |
 | AI 深度分析 | - | v | v | v |
 | 自動回應 | - | v | v | v |
-| Dashboard | - | - | v | v |
 | YARA 掃描 | - | v | v | v |
 | Threat Cloud | - | - | - | v |
 | Investigation | - | - | - | v |

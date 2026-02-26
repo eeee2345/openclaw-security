@@ -114,9 +114,8 @@ This monorepo contains 12 packages:
 | [`@openclaw/panguard-trap`](packages/panguard-trap) | Honeypot system: 8 service types (SSH/HTTP/FTP/SMB/MySQL/RDP/Telnet/Redis), attacker profiling, threat intelligence |
 | [`@openclaw/panguard-report`](packages/panguard-report) | Compliance reports: Taiwan Cyber Security Act (10 controls), ISO 27001 (12 controls), SOC 2 (10 controls) |
 | [`@openclaw/panguard-auth`](packages/panguard-auth) | Authentication: Google OAuth (PKCE), scrypt password hashing, session management, SQLite, rate limiting |
-| [`@openclaw/panguard`](packages/panguard) | Unified CLI: 14 commands (login/scan/guard/trap/report/threat/dashboard/...), interactive menu, setup wizard |
+| [`@openclaw/panguard`](packages/panguard) | Unified CLI: 13 commands (login/scan/guard/trap/report/threat/...), interactive menu, setup wizard |
 | [`@openclaw/panguard-web`](packages/panguard-web) | Website content engine: personas, pricing, guidance wizard, HTML templates |
-| [`@openclaw/web`](packages/web) | React frontend: Vite + TailwindCSS, login/register/pricing/dashboard, bilingual (en/zh-TW) |
 | [`openclaw-fork`](openclaw-fork) | Security hardening: WebSocket security, credential storage, sandbox, permissions, audit logging |
 
 ---
