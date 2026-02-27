@@ -543,6 +543,156 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: { redirectUrl } });
   }
 
+  // ── Admin: User Management ──────────────────────────────────────
+
+  function handleAdminUsers(req: IncomingMessage, res: ServerResponse): void {
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
+
+    const users = db.getAllUsers().map(u => toPublicUser(u));
+    json(res, 200, { ok: true, data: users });
+  }
+
+  async function handleAdminUpdateTier(req: IncomingMessage, res: ServerResponse, userId: string): Promise<void> {
+    if (req.method !== 'PATCH') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
+
+    const result = await readBody(req);
+    if (!result.ok) {
+      json(res, result.status, { ok: false, error: 'Invalid JSON body' });
+      return;
+    }
+
+    const { tier } = result.data;
+    const validTiers = ['free', 'solo', 'starter', 'pro', 'team', 'business', 'enterprise'];
+    if (typeof tier !== 'string' || !validTiers.includes(tier)) {
+      json(res, 400, { ok: false, error: `Invalid tier. Must be one of: ${validTiers.join(', ')}` });
+      return;
+    }
+
+    const target = db.getUserById(Number(userId));
+    if (!target) {
+      json(res, 404, { ok: false, error: 'User not found' });
+      return;
+    }
+
+    db.updateUserTier(target.id, tier);
+    const updated = db.getUserById(target.id)!;
+    json(res, 200, { ok: true, data: toPublicUser(updated) });
+  }
+
+  async function handleAdminUpdateRole(req: IncomingMessage, res: ServerResponse, userId: string): Promise<void> {
+    if (req.method !== 'PATCH') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
+
+    const result = await readBody(req);
+    if (!result.ok) {
+      json(res, result.status, { ok: false, error: 'Invalid JSON body' });
+      return;
+    }
+
+    const { role } = result.data;
+    if (typeof role !== 'string' || !['user', 'admin'].includes(role)) {
+      json(res, 400, { ok: false, error: 'Invalid role. Must be "user" or "admin"' });
+      return;
+    }
+
+    const target = db.getUserById(Number(userId));
+    if (!target) {
+      json(res, 404, { ok: false, error: 'User not found' });
+      return;
+    }
+
+    db.updateUserRole(target.id, role);
+    const updated = db.getUserById(target.id)!;
+    json(res, 200, { ok: true, data: toPublicUser(updated) });
+  }
+
+  function handleAdminStats(req: IncomingMessage, res: ServerResponse): void {
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
+
+    const userStats = db.getUserStats();
+    const waitlistStats = db.getWaitlistStats();
+    json(res, 200, { ok: true, data: { users: userStats, waitlist: waitlistStats } });
+  }
+
+  async function handleAdminWaitlistApprove(req: IncomingMessage, res: ServerResponse, entryId: string): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
+
+    const entry = db.getWaitlistById(Number(entryId));
+    if (!entry) {
+      json(res, 404, { ok: false, error: 'Waitlist entry not found' });
+      return;
+    }
+
+    db.approveWaitlistEntry(entry.id);
+    json(res, 200, { ok: true, data: { id: entry.id, status: 'approved' } });
+  }
+
+  async function handleAdminWaitlistReject(req: IncomingMessage, res: ServerResponse, entryId: string): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
+
+    const entry = db.getWaitlistById(Number(entryId));
+    if (!entry) {
+      json(res, 404, { ok: false, error: 'Waitlist entry not found' });
+      return;
+    }
+
+    db.rejectWaitlistEntry(entry.id);
+    json(res, 200, { ok: true, data: { id: entry.id, status: 'rejected' } });
+  }
+
   // ── Init Google Sheets headers ──────────────────────────────────
 
   if (config.sheets) {
@@ -564,5 +714,12 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     handleGoogleCallback,
     handleCliAuth,
     handleCliExchange,
+    // Admin
+    handleAdminUsers,
+    handleAdminUpdateTier,
+    handleAdminUpdateRole,
+    handleAdminStats,
+    handleAdminWaitlistApprove,
+    handleAdminWaitlistReject,
   };
 }

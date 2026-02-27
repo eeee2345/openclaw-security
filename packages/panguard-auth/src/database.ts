@@ -258,6 +258,59 @@ export class AuthDB {
     return row.c > 0;
   }
 
+  // ── Admin: User Management ──────────────────────────────────────
+
+  getAllUsers(): User[] {
+    return this.db.prepare(`
+      SELECT id, email, name, password_hash as passwordHash, role, tier, verified,
+             created_at as createdAt, last_login as lastLogin
+      FROM users ORDER BY created_at DESC
+    `).all() as User[];
+  }
+
+  updateUserTier(userId: number, tier: string): void {
+    this.db.prepare('UPDATE users SET tier = ? WHERE id = ?').run(tier, userId);
+  }
+
+  updateUserRole(userId: number, role: string): void {
+    this.db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, userId);
+  }
+
+  getUserStats(): { total: number; byTier: Record<string, number>; byRole: Record<string, number>; recentSignups: number } {
+    const total = (this.db.prepare('SELECT COUNT(*) as c FROM users').get() as { c: number }).c;
+    const recentSignups = (this.db.prepare(
+      "SELECT COUNT(*) as c FROM users WHERE created_at > datetime('now', '-7 day')"
+    ).get() as { c: number }).c;
+
+    const tierRows = this.db.prepare(
+      'SELECT tier, COUNT(*) as c FROM users GROUP BY tier'
+    ).all() as { tier: string; c: number }[];
+    const byTier: Record<string, number> = {};
+    for (const row of tierRows) byTier[row.tier] = row.c;
+
+    const roleRows = this.db.prepare(
+      'SELECT role, COUNT(*) as c FROM users GROUP BY role'
+    ).all() as { role: string; c: number }[];
+    const byRole: Record<string, number> = {};
+    for (const row of roleRows) byRole[row.role] = row.c;
+
+    return { total, byTier, byRole, recentSignups };
+  }
+
+  // ── Admin: Waitlist Management ─────────────────────────────────
+
+  approveWaitlistEntry(id: number): void {
+    this.db.prepare(
+      "UPDATE waitlist SET status = 'approved', updated_at = datetime('now') WHERE id = ?"
+    ).run(id);
+  }
+
+  rejectWaitlistEntry(id: number): void {
+    this.db.prepare(
+      "UPDATE waitlist SET status = 'rejected', updated_at = datetime('now') WHERE id = ?"
+    ).run(id);
+  }
+
   close(): void {
     this.db.close();
   }

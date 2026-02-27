@@ -22,6 +22,9 @@ figma-plugin-mobile/
 figma-plugin-website/
 panguard design/
 
+# Admin dashboard (local only, not published)
+packages/admin/
+
 # Next.js
 packages/website/.next/
 .next/
