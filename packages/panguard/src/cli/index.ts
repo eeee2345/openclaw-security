@@ -27,6 +27,7 @@ import { whoamiCommand } from './commands/whoami.js';
 import { serveCommand } from './commands/serve.js';
 import { adminCommand } from './commands/admin.js';
 import { startInteractive } from './interactive.js';
+import { refreshTierInBackground } from './auth-guard.js';
 
 const program = new Command();
 
@@ -54,6 +55,9 @@ program.addCommand(adminCommand());
 // If no subcommand given (just `panguard` or `panguard --lang zh-TW`),
 // launch interactive mode. Check before commander parses so that
 // `panguard help` and `panguard --help` still work normally.
+// Refresh tier from server in background (non-blocking)
+refreshTierInBackground();
+
 const userArgs = process.argv.slice(2);
 const helpFlags = new Set(['-h', '--help', '-V', '--version']);
 const hasSubcommand = userArgs.some(a => !a.startsWith('-'));

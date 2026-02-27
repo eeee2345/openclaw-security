@@ -49,8 +49,12 @@ function buildMime(from: string, to: string, subject: string, bodyHtml: string):
  */
 function sendSmtp(config: SmtpConfig, to: string, mime: string): Promise<void> {
   return new Promise((resolve, reject) => {
+    let commandIndex = -1;
+    let dataPhase = false;
+    let starttlsUpgraded = false;
+    let socket: net.Socket;
+
     const commands = [
-      'EHLO localhost',
       'AUTH LOGIN',
       Buffer.from(config.auth.user).toString('base64'),
       Buffer.from(config.auth.pass).toString('base64'),
@@ -58,9 +62,6 @@ function sendSmtp(config: SmtpConfig, to: string, mime: string): Promise<void> {
       `RCPT TO:<${to}>`,
       'DATA',
     ];
-
-    let commandIndex = -1;
-    let dataPhase = false;
 
     const onData = (data: Buffer) => {
       const response = data.toString();
@@ -80,6 +81,25 @@ function sendSmtp(config: SmtpConfig, to: string, mime: string): Promise<void> {
         return;
       }
 
+      // After EHLO, attempt STARTTLS if not already secure and server supports it
+      if (!config.secure && !starttlsUpgraded && response.includes('STARTTLS')) {
+        starttlsUpgraded = true;
+        socket.write('STARTTLS\r\n');
+        return;
+      }
+
+      // Handle STARTTLS 220 response: upgrade to TLS
+      if (starttlsUpgraded && code === 220 && response.includes('TLS')) {
+        const tlsSocket = tls.connect({ socket, host: config.host }, () => {
+          // Re-EHLO after TLS upgrade
+          tlsSocket.write('EHLO localhost\r\n');
+        });
+        tlsSocket.on('data', onData);
+        tlsSocket.on('error', reject);
+        socket = tlsSocket;
+        return;
+      }
+
       commandIndex++;
       if (commandIndex < commands.length) {
         const cmd = commands[commandIndex]!;
@@ -92,11 +112,26 @@ function sendSmtp(config: SmtpConfig, to: string, mime: string): Promise<void> {
       }
     };
 
-    const socket: net.Socket = config.secure
-      ? tls.connect({ host: config.host, port: config.port }, () => {})
-      : net.connect({ host: config.host, port: config.port }, () => {});
+    if (config.secure) {
+      // Direct TLS connection (port 465)
+      socket = tls.connect({ host: config.host, port: config.port }, () => {});
+    } else {
+      // Plain connection (port 587) with STARTTLS upgrade
+      socket = net.connect({ host: config.host, port: config.port }, () => {});
+    }
 
-    socket.on('data', onData);
+    // Send initial EHLO after connection greeting
+    socket.once('data', (greeting: Buffer) => {
+      const code = parseInt(greeting.toString().slice(0, 3), 10);
+      if (code >= 400) {
+        socket.destroy();
+        reject(new Error(`SMTP greeting error: ${greeting.toString().trim()}`));
+        return;
+      }
+      socket.write('EHLO localhost\r\n');
+      socket.on('data', onData);
+    });
+
     socket.on('error', reject);
     socket.setTimeout(30000, () => {
       socket.destroy();
