@@ -9,6 +9,7 @@ import { Link } from "@/navigation";
 const installCmd = "curl -fsSL https://get.panguard.ai | sh";
 
 function InstallBar() {
+  const t = useTranslations("home.hero");
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(installCmd);
@@ -32,7 +33,7 @@ function InstallBar() {
       </button>
       {copied && (
         <span className="toast-copied absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-status-safe bg-surface-1 border border-border rounded px-2 py-1">
-          Copied!
+          {t("copied")}
         </span>
       )}
     </div>

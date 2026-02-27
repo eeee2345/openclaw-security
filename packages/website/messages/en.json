@@ -144,7 +144,8 @@
         "tests": "1,068 Tests Passing",
         "typescript": "TypeScript Strict Mode",
         "taiwan": "Made in Taiwan"
-      }
+      },
+      "copied": "Copied!"
     },
     "painPoint": {
       "line1": "Your AI just shipped an API to a VPS.",
@@ -231,7 +232,9 @@
       "noSsl": "Not detected",
       "scanAnother": "Scan another",
       "privacyNote": "Scan results are not stored. Your privacy is protected.",
-      "freeScanButton": "Free Scan"
+      "freeScanButton": "Free Scan",
+      "noIssues": "No issues found",
+      "copied": "Copied!"
     },
     "vision": {
       "line1": "We believe in one thing:",

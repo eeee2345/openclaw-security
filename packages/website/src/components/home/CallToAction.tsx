@@ -48,7 +48,7 @@ export default function CallToAction() {
   const handleCopy = () => {
     navigator.clipboard.writeText(installCmd);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1500);
   };
 
   async function handleScan(e: React.FormEvent) {
@@ -117,7 +117,7 @@ export default function CallToAction() {
             </button>
             {copied && (
               <span className="toast-copied absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-status-safe bg-surface-1 border border-border rounded px-2 py-1">
-                Copied!
+                {t("copied")}
               </span>
             )}
           </div>
@@ -233,7 +233,7 @@ export default function CallToAction() {
               {result.findings.length === 0 && (
                 <div className="flex items-center gap-2 text-status-safe text-sm">
                   <BrandCheck className="w-4 h-4" />
-                  No issues found
+                  {t("noIssues")}
                 </div>
               )}
 

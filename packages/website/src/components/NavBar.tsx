@@ -82,15 +82,25 @@ export default function NavBar() {
 
       {/* Desktop nav */}
       <div className="hidden lg:flex items-center gap-1">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
-          >
-            {link.label}
-          </Link>
-        ))}
+        {navLinks.map((link) =>
+          link.href.startsWith("/#") ? (
+            <a
+              key={link.href}
+              href={link.href}
+              className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              {link.label}
+            </a>
+          ) : (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              {link.label}
+            </Link>
+          )
+        )}
         <a
           href="https://github.com/eeee2345/openclaw-security"
           target="_blank"
@@ -128,16 +138,27 @@ export default function NavBar() {
             <div className="flex justify-center">
               <LocaleSwitcher />
             </div>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block py-2 text-sm text-text-secondary hover:text-text-primary"
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.href.startsWith("/#") ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="block py-2 text-sm text-text-secondary hover:text-text-primary"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block py-2 text-sm text-text-secondary hover:text-text-primary"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
             <a
               href="https://github.com/eeee2345/openclaw-security"
               target="_blank"
