@@ -12,7 +12,7 @@
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import {
-  c, banner, header, box, symbols, divider, statusPanel, spinner,
+  c, banner, header, symbols, divider, statusPanel, spinner,
   setLogLevel,
 } from '@panguard-ai/core';
 import type { StatusItem } from '@panguard-ai/core';

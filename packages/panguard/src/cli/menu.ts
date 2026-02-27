@@ -7,7 +7,7 @@
  * @module @panguard-ai/panguard/cli/menu
  */
 
-import { c, visLen, stripAnsi } from '@panguard-ai/core';
+import { c, visLen } from '@panguard-ai/core';
 import { tierLabel } from './theme.js';
 import type { Tier } from './credentials.js';
 import { getLicense } from './auth-guard.js';

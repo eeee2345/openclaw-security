@@ -15,7 +15,7 @@ import { createLogger } from '../utils/logger.js';
 import type { SecurityEvent } from '../types.js';
 import type { SigmaRule, RuleMatch, RuleEngineConfig } from './types.js';
 import { matchEventAgainstRules } from './sigma-matcher.js';
-import { loadRulesFromDirectory, loadRulesRecursive, watchRulesDirectory } from './rule-loader.js';
+import { loadRulesRecursive, watchRulesDirectory } from './rule-loader.js';
 
 const logger = createLogger('rule-engine');
 

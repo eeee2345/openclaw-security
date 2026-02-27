@@ -136,7 +136,7 @@ interface CallbackServer {
 
 function startCallbackServer(expectedState: string): Promise<CallbackServer> {
   return new Promise((resolve, reject) => {
-    let settled = false;
+    const settled = false;
     let callbackResolve: (creds: StoredCredentials) => void;
     let callbackReject: (err: Error) => void;
 
@@ -262,8 +262,6 @@ function callbackHtml(success: boolean, error?: string): string {
   const message = success
     ? 'You can close this tab and return to your terminal.'
     : `Error: ${error ?? 'Unknown error'}`;
-  const emoji = success ? '' : '';
-
   return `<!DOCTYPE html>
 <html lang="en">
 <head>

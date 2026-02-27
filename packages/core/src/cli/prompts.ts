@@ -277,7 +277,7 @@ function readLine(prompt: string): Promise<string | null> {
 }
 
 async function promptSensitiveText(config: TextConfig): Promise<string | null> {
-  const { validate, defaultValue, lang, allowBack = true } = config;
+  const { validate, defaultValue, allowBack = true } = config;
 
   process.stdout.write(`  ${c.sage('panguard')} ${c.dim('\u203A')} `);
 

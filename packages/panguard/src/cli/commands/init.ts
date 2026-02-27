@@ -7,7 +7,7 @@
 
 import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
-import { c, symbols, spinner } from '@panguard-ai/core';
+import { spinner } from '@panguard-ai/core';
 import { runInitWizard, writeConfig } from '../../init/index.js';
 import type { PanguardConfig } from '../../init/types.js';
 

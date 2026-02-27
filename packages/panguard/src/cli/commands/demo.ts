@@ -15,7 +15,7 @@ export function demoCommand(): Command {
   return new Command('demo')
     .description('Run an automated demo sequence / 執行自動化展示')
     .option('--lang <language>', 'Language: en or zh-TW / 語言', 'en')
-    .action(async (opts: { lang: string }) => {
+    .action(async (_opts: { lang: string }) => {
       console.log(banner());
       console.log(`  ${symbols.info} ${c.bold('Panguard AI - Automated Demo')}`);
       console.log(`  ${c.dim('Running through all security modules...')}`);

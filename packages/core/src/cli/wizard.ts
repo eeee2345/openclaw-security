@@ -8,8 +8,8 @@
  * @module @panguard-ai/core/cli/wizard
  */
 
-import { c, divider, symbols } from './index.js';
-import { promptSelect, promptText, promptConfirm, visLen } from './prompts.js';
+import { c, symbols } from './index.js';
+import { promptSelect, promptText, promptConfirm } from './prompts.js';
 import type { SelectOption } from './prompts.js';
 
 type Lang = 'en' | 'zh-TW';

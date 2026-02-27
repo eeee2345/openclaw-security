@@ -5,11 +5,11 @@
  * @module @panguard-ai/panguard/init/config-writer
  */
 
-import { mkdirSync, writeFileSync, chmodSync } from 'node:fs';
+import { mkdirSync, writeFileSync, chmodSync, readFileSync } from 'node:fs';
 import * as os from 'node:os';
 import { join } from 'node:path';
 import { createLogger } from '@panguard-ai/core';
-import type { WizardAnswers, PanguardConfig, ProtectionLevel, AiPreference, OrgSize, DeployEnv } from './types.js';
+import type { WizardAnswers, PanguardConfig, ProtectionLevel, AiPreference } from './types.js';
 
 const logger = createLogger('panguard:init:config');
 
@@ -107,7 +107,6 @@ export function writeConfig(config: PanguardConfig): string {
 export function readConfig(): PanguardConfig | null {
   const configPath = join(os.homedir(), '.panguard', 'config.json');
   try {
-    const { readFileSync } = require('node:fs') as typeof import('node:fs');
     const json = readFileSync(configPath, 'utf-8');
     return JSON.parse(json) as PanguardConfig;
   } catch {

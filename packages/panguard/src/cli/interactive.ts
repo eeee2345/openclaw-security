@@ -11,9 +11,8 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import {
-  c, spinner, scoreDisplay, colorSeverity, divider, formatDuration,
+  c, spinner, colorSeverity,
 } from '@panguard-ai/core';
-import type { TableColumn, StatusItem } from '@panguard-ai/core';
 import { PANGUARD_VERSION } from '../index.js';
 import { renderLogo, theme } from './theme.js';
 import {
@@ -21,7 +20,7 @@ import {
   renderCompactMenu, waitForCompactChoice,
 } from './menu.js';
 import type { MenuItem, Lang } from './menu.js';
-import { checkFeatureAccess, showUpgradePrompt, getLicense, FEATURE_TIER } from './auth-guard.js';
+import { checkFeatureAccess, showUpgradePrompt, getLicense } from './auth-guard.js';
 import { tierDisplayName } from './credentials.js';
 
 // ---------------------------------------------------------------------------
@@ -108,7 +107,9 @@ function renderStartup(): void {
   const tagline = c.dim('  Headless Defense Platform');
   const version = c.dim(`v${PANGUARD_VERSION}`);
   // Right-align version
+  // eslint-disable-next-line no-control-regex
   const tagLen = tagline.replace(/\x1b\[[0-9;]*m/g, '').length;
+  // eslint-disable-next-line no-control-regex
   const verLen = version.replace(/\x1b\[[0-9;]*m/g, '').length;
   const totalWidth = Math.max(60, (process.stdout.columns ?? 60));
   const gap = Math.max(2, totalWidth - tagLen - verLen - 4);

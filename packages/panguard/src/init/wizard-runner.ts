@@ -7,7 +7,7 @@
 
 import {
   banner, box, c, symbols, statusPanel, divider, spinner,
-  WizardEngine, promptConfirm, promptText,
+  WizardEngine, promptConfirm,
 } from '@panguard-ai/core';
 import type { WizardAnswers as CoreWizardAnswers } from '@panguard-ai/core';
 import { getWizardSteps } from './steps.js';

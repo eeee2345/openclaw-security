@@ -228,7 +228,7 @@ function commandStatus(): void {
 
   const channels = config.channels;
   const configuredChannels = Object.keys(channels).filter(
-    (k) => channels[k as keyof typeof channels] != null,
+    (k) => channels[k as keyof typeof channels] !== null,
   );
 
   console.log(`User type: ${config.userProfile.type}`);

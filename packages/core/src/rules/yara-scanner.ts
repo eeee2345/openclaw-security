@@ -332,7 +332,7 @@ export class YaraScanner {
    * Fallback pattern-based scanning / 退路：基於模式的掃描
    * Extracts string patterns from YARA rules and matches against file content
    */
-  private scanWithPatterns(content: string, filePath: string): YaraMatch[] {
+  private scanWithPatterns(content: string, _filePath: string): YaraMatch[] {
     const matches: YaraMatch[] = [];
     const lowerContent = content.toLowerCase();
 

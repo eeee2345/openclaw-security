@@ -30,7 +30,7 @@ export function logoutCommand(): Command {
 
       // Best-effort server-side logout
       try {
-        const res = await fetch(`${creds.apiUrl}/api/auth/logout`, {
+        await fetch(`${creds.apiUrl}/api/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${creds.token}`,

@@ -255,6 +255,7 @@ export function showUpgradePrompt(feature: string, lang: string = 'en'): void {
   const V = '\u2502'; // │
 
   const pad = (s: string, w: number) => {
+    // eslint-disable-next-line no-control-regex
     const len = s.replace(/\x1b\[[0-9;]*m/g, '').length;
     return s + ' '.repeat(Math.max(0, w - len));
   };
@@ -314,6 +315,7 @@ export function showScanUpgradeHint(fixableCount: number, lang: string = 'en'): 
     const l2 = `     \u5347\u7D1A\u5230 Solo ($9/\u6708) \u5373\u53EF\u4E00\u9375\u4FEE\u5FA9\uFF1A`;
     const l3 = `     $ panguard scan --fix`;
     for (const l of [l1, l2, l3]) {
+      // eslint-disable-next-line no-control-regex
       const vLen = l.replace(/\x1b\[[0-9;]*m/g, '').length;
       console.log(`  ${c.sage(V)}${l}${' '.repeat(Math.max(0, W - vLen))}${c.sage(V)}`);
     }
@@ -322,6 +324,7 @@ export function showScanUpgradeHint(fixableCount: number, lang: string = 'en'): 
     const l2 = `     Upgrade to Solo ($9/mo) for one-click fix:`;
     const l3 = `     $ panguard scan --fix`;
     for (const l of [l1, l2, l3]) {
+      // eslint-disable-next-line no-control-regex
       const vLen = l.replace(/\x1b\[[0-9;]*m/g, '').length;
       console.log(`  ${c.sage(V)}${l}${' '.repeat(Math.max(0, W - vLen))}${c.sage(V)}`);
     }

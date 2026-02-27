@@ -40,7 +40,7 @@ export default function SocialProof() {
             <div className="bg-surface-1 rounded-xl border border-border p-6 text-center card-glow">
               <s.icon size={20} className="text-brand-sage mx-auto mb-3" />
               <p className="text-2xl sm:text-3xl font-extrabold text-text-primary">
-                {s.numericValue != null ? (
+                {s.numericValue !== null && s.numericValue !== undefined ? (
                   <CountUp target={s.numericValue} suffix={s.suffix} />
                 ) : (
                   s.textValue

@@ -6,12 +6,12 @@
  */
 
 import { Command } from 'commander';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import {
-  c, symbols, banner, divider, statusPanel, scoreDisplay, table,
-  formatDuration, timeAgo, header,
+  c, symbols, divider, statusPanel, scoreDisplay, table,
+  timeAgo, header,
 } from '@panguard-ai/core';
 import type { StatusItem, TableColumn } from '@panguard-ai/core';
 import { readConfig } from '../../init/config-writer.js';

@@ -110,7 +110,7 @@ async function runDeploy(opts: { config?: string; dryRun?: boolean; lang?: strin
     mkdirSync(join(homedir(), '.panguard-guard'), { recursive: true });
     mkdirSync(join(homedir(), '.panguard', 'logs'), { recursive: true });
     dirSp.succeed(`[${step}/${totalSteps}] ${lang === 'zh-TW' ? '\u8CC7\u6599\u76EE\u9304\u5DF2\u521D\u59CB\u5316' : 'Data directory initialized'}`);
-  } catch (err) {
+  } catch {
     dirSp.warn(`[${step}/${totalSteps}] ${lang === 'zh-TW' ? '\u8CC7\u6599\u76EE\u9304\u521D\u59CB\u5316\u5931\u6557' : 'Directory init failed'}`);
   }
   step++;

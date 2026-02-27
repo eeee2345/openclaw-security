@@ -6,7 +6,7 @@
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { AuthDB } from './database.js';
-import { hashPassword, verifyPassword, generateSessionToken, generateVerifyToken, sessionExpiry, hashToken } from './auth.js';
+import { hashPassword, verifyPassword, generateSessionToken, generateVerifyToken, sessionExpiry } from './auth.js';
 import { authenticateRequest, requireAdmin } from './middleware.js';
 import type { SmtpConfig } from './email-verify.js';
 import { sendVerificationEmail } from './email-verify.js';
