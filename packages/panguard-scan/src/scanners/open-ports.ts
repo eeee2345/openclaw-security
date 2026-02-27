@@ -21,19 +21,19 @@ const logger = createLogger('panguard-scan:open-ports');
  * Each entry contains the service name, risk description, and recommended remediation.
  * 每個條目包含服務名稱、風險描述和建議的修復措施。
  */
-const UNNECESSARY_PORTS: Map<number, { name: string; risk: string; remediation: string }> = new Map([
-  [21, { name: 'FTP', risk: 'Unencrypted file transfer', remediation: 'Use SFTP instead' }],
-  [23, { name: 'Telnet', risk: 'Unencrypted remote access', remediation: 'Use SSH instead' }],
-  [135, { name: 'MSRPC', risk: 'Windows RPC exploitation', remediation: 'Block with firewall' }],
-  [139, { name: 'NetBIOS', risk: 'SMB relay attacks', remediation: 'Disable NetBIOS over TCP/IP' }],
-  [445, { name: 'SMB', risk: 'EternalBlue and SMB attacks', remediation: 'Restrict SMB access' }],
-  [1433, { name: 'MSSQL', risk: 'Database exposure', remediation: 'Bind to localhost only' }],
-  [3306, { name: 'MySQL', risk: 'Database exposure', remediation: 'Bind to localhost only' }],
-  [3389, { name: 'RDP', risk: 'Brute force and BlueKeep', remediation: 'Use VPN for remote access' }],
-  [5432, { name: 'PostgreSQL', risk: 'Database exposure', remediation: 'Bind to localhost only' }],
-  [5900, { name: 'VNC', risk: 'Unencrypted remote desktop', remediation: 'Use SSH tunnel' }],
-  [6379, { name: 'Redis', risk: 'Unauthenticated access', remediation: 'Enable AUTH and bind to localhost' }],
-  [27017, { name: 'MongoDB', risk: 'Unauthenticated access', remediation: 'Enable auth and bind to localhost' }],
+const UNNECESSARY_PORTS: Map<number, { name: string; risk: string; remediation: string; manualFix?: string[] }> = new Map([
+  [21, { name: 'FTP', risk: 'Unencrypted file transfer', remediation: 'Use SFTP instead', manualFix: ['sudo ufw deny 21', 'sudo systemctl disable vsftpd'] }],
+  [23, { name: 'Telnet', risk: 'Unencrypted remote access', remediation: 'Use SSH instead', manualFix: ['sudo ufw deny 23', 'sudo systemctl disable telnetd'] }],
+  [135, { name: 'MSRPC', risk: 'Windows RPC exploitation', remediation: 'Block with firewall', manualFix: ['sudo ufw deny 135'] }],
+  [139, { name: 'NetBIOS', risk: 'SMB relay attacks', remediation: 'Disable NetBIOS over TCP/IP', manualFix: ['sudo ufw deny 139'] }],
+  [445, { name: 'SMB', risk: 'EternalBlue and SMB attacks', remediation: 'Restrict SMB access', manualFix: ['sudo ufw deny 445'] }],
+  [1433, { name: 'MSSQL', risk: 'Database exposure', remediation: 'Bind to localhost only', manualFix: ['sudo ufw deny 1433'] }],
+  [3306, { name: 'MySQL', risk: 'Database exposure', remediation: 'Bind to localhost only', manualFix: ["sudo sed -i 's/bind-address.*/bind-address = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf", 'sudo systemctl restart mysql'] }],
+  [3389, { name: 'RDP', risk: 'Brute force and BlueKeep', remediation: 'Use VPN for remote access', manualFix: ['sudo ufw deny 3389'] }],
+  [5432, { name: 'PostgreSQL', risk: 'Database exposure', remediation: 'Bind to localhost only', manualFix: ["sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = 'localhost'/\" /etc/postgresql/*/main/postgresql.conf", 'sudo systemctl restart postgresql'] }],
+  [5900, { name: 'VNC', risk: 'Unencrypted remote desktop', remediation: 'Use SSH tunnel', manualFix: ['sudo ufw deny 5900'] }],
+  [6379, { name: 'Redis', risk: 'Unauthenticated access', remediation: 'Enable AUTH and bind to localhost', manualFix: ["sudo sed -i 's/# requirepass.*/requirepass YOUR_STRONG_PASSWORD/' /etc/redis/redis.conf", "sudo sed -i 's/bind .*/bind 127.0.0.1/' /etc/redis/redis.conf", 'sudo systemctl restart redis'] }],
+  [27017, { name: 'MongoDB', risk: 'Unauthenticated access', remediation: 'Enable auth and bind to localhost', manualFix: ["sudo sed -i 's/bindIp:.*/bindIp: 127.0.0.1/' /etc/mongod.conf", 'sudo systemctl restart mongod'] }],
 ]);
 
 /**
@@ -88,6 +88,7 @@ export function checkUnnecessaryPorts(ports: PortInfo[]): Finding[] {
         `Port: ${portInfo.port}, Protocol: ${portInfo.protocol}, ` +
         `State: ${portInfo.state}, PID: ${portInfo.pid ?? 'N/A'}, ` +
         `Process: ${portInfo.process || 'N/A'}, Service: ${portInfo.service || 'N/A'}`,
+      manualFix: unnecessary.manualFix,
     };
 
     logger.info(`Found unnecessary port: ${portInfo.port} (${unnecessary.name})`, {

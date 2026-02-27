@@ -444,9 +444,11 @@
         "audience": "Get started instantly",
         "endpoints": "1 endpoint",
         "features": [
-          "Unlimited scans",
-          "Guard basic (detect only, no auto-fix)",
+          "Full security scan (unlimited)",
           "PDF report with risk score",
+          "Guard real-time protection (Layer 1)",
+          "Auto-block known attacks",
+          "Manual fix instructions",
           "Community support"
         ],
         "cta": "Scan Free"
@@ -456,12 +458,12 @@
         "audience": "Solo developers & freelancers",
         "endpoints": "1 endpoint",
         "features": [
-          "Full Scan",
-          "Guard full (auto-fix + AI)",
-          "Chat notifications",
+          "Everything in Free",
+          "3-layer AI defense (Layer 1+2+3)",
+          "One-click auto-fix vulnerabilities",
           "LINE / Telegram alerts",
-          "7-day log retention",
-          "Email support"
+          "Chat AI assistant",
+          "7-day log retention"
         ],
         "cta": "Join Waitlist"
       },

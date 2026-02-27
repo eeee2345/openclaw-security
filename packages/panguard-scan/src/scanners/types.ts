@@ -89,6 +89,12 @@ export interface Finding {
    * 額外技術詳情
    */
   details?: string;
+
+  /**
+   * Manual fix commands for free-tier users
+   * 免費版用戶的手動修復指令
+   */
+  manualFix?: string[];
 }
 
 /**

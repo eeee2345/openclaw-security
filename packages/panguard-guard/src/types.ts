@@ -274,9 +274,9 @@ export interface LicenseInfo {
 
 /** Feature gates per tier / 各等級功能閘 */
 export const TIER_FEATURES: Record<LicenseTier, string[]> = {
-  free: ['basic_monitoring', 'rule_matching', 'log_only', 'threat_cloud_upload'],
-  pro: ['basic_monitoring', 'rule_matching', 'ai_analysis', 'auto_respond', 'notifications', 'context_memory', 'threat_cloud_upload'],
-  enterprise: ['basic_monitoring', 'rule_matching', 'ai_analysis', 'auto_respond', 'notifications', 'context_memory', 'threat_cloud', 'threat_cloud_upload', 'multi_endpoint', 'priority_support'],
+  free: ['basic_monitoring', 'rule_matching', 'auto_respond', 'threat_cloud_upload'],
+  pro: ['basic_monitoring', 'rule_matching', 'ai_analysis', 'auto_respond', 'auto_fix', 'notifications', 'context_memory', 'threat_cloud_upload', 'custom_rules'],
+  enterprise: ['basic_monitoring', 'rule_matching', 'ai_analysis', 'auto_respond', 'auto_fix', 'notifications', 'context_memory', 'threat_cloud', 'threat_cloud_upload', 'multi_endpoint', 'priority_support', 'custom_rules', 'webhook_api'],
 };
 
 // ===== LLM interface for PanguardGuard =====

@@ -117,6 +117,11 @@ async function commandStart(dataDir: string, verbose = false): Promise<void> {
   console.log(`  ${c.dim('  Disable: panguard config set threat-cloud.upload false')}`);
   console.log('');
 
+  // Free tier: show what's enabled/disabled
+  console.log(`  ${c.safe('\u2713')} Auto-blocking: known attack patterns (Layer 1 rules)`);
+  console.log(`  ${symbols.info} Monitoring...`);
+  console.log('');
+
   // Quiet mode: register human-friendly event callback
   // Status summary every 60s, threat alerts immediately
   if (!verbose) {

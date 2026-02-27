@@ -29,6 +29,7 @@ export const FEATURE_TIER: Record<string, Tier> = {
   guard: 'free',
   trap: 'pro',
   notifications: 'solo',
+  notify: 'solo',
   'threat-cloud': 'enterprise',
   demo: 'free',
 };
@@ -188,34 +189,140 @@ export function checkFeatureAccess(feature: string): boolean {
   return checkAccess(requiredTier);
 }
 
+/* ── Feature display names (bilingual) ── */
+
+const FEATURE_DISPLAY: Record<string, Record<string, string>> = {
+  scan: { en: 'Security Scan', 'zh-TW': '\u5B89\u5168\u6383\u63CF' },
+  guard: { en: 'Guard Engine', 'zh-TW': '\u5B88\u8B77\u5F15\u64CE' },
+  report: { en: 'Compliance Report', 'zh-TW': '\u5408\u898F\u5831\u544A' },
+  trap: { en: 'Honeypot System', 'zh-TW': '\u871C\u7F50\u7CFB\u7D71' },
+  notifications: { en: 'Notifications', 'zh-TW': '\u901A\u77E5\u7CFB\u7D71' },
+  notify: { en: 'Notifications', 'zh-TW': '\u901A\u77E5\u7CFB\u7D71' },
+  'threat-cloud': { en: 'Threat Intelligence', 'zh-TW': '\u5A01\u8105\u60C5\u5831' },
+  setup: { en: 'Setup Wizard', 'zh-TW': '\u521D\u59CB\u8A2D\u5B9A' },
+  demo: { en: 'Feature Demo', 'zh-TW': '\u529F\u80FD\u5C55\u793A' },
+};
+
 /**
  * Display a branded upgrade prompt for a locked feature.
+ * Accepts feature KEY (e.g. 'report', not 'Compliance Report').
  */
-export function showUpgradePrompt(feature: string, requiredTier?: Tier): void {
-  const tier = requiredTier ?? FEATURE_TIER[feature] ?? 'free';
+export function showUpgradePrompt(feature: string, lang: string = 'en'): void {
+  const tier = FEATURE_TIER[feature] ?? 'free';
   const { tier: userTier } = getLicense();
   const tierName = tierDisplayName(tier);
+  const userTierName = tierDisplayName(userTier);
   const pricing = PRICING_TIERS[tier];
   const priceStr = pricing
-    ? (pricing.price === 'custom' ? '\u5BA2\u88FD\u5316\u5831\u50F9' : `$${pricing.price}${pricing.unit}`)
+    ? (pricing.price === 'custom'
+      ? (lang === 'zh-TW' ? '\u5BA2\u88FD\u5316\u5831\u50F9' : 'Custom pricing')
+      : `$${pricing.price}${pricing.unit}`)
     : '';
+  const featureName = FEATURE_DISPLAY[feature]?.[lang] ?? FEATURE_DISPLAY[feature]?.['en'] ?? feature;
+
+  // Minimalist upgrade prompt with brand-colored border
+  const W = 53;
+  const H = '\u2500'; // ─
+  const TL = '\u250C'; // ┌
+  const TR = '\u2510'; // ┐
+  const BL = '\u2514'; // └
+  const BR = '\u2518'; // ┘
+  const V = '\u2502'; // │
+
+  const pad = (s: string, w: number) => {
+    const len = s.replace(/\x1b\[[0-9;]*m/g, '').length;
+    return s + ' '.repeat(Math.max(0, w - len));
+  };
+
+  const lines: string[] = lang === 'zh-TW' ? [
+    `  \uD83D\uDD12  \u300C${featureName}\u300D\u9700\u8981 ${tierName} \u65B9\u6848`,
+    priceStr ? `      ${priceStr}` : '',
+    '',
+    `  \u76EE\u524D\u65B9\u6848:  ${c.sage(userTierName)}`,
+    `  \u9700\u8981\u65B9\u6848:  ${c.sage(tierName)}`,
+    '',
+    `  \u2192 ${c.underline('https://panguard.ai/pricing')}`,
+    `  \u2192 ${c.sage('panguard activate <license-key>')}`,
+    '',
+    c.dim('  \u6240\u6709\u4ED8\u8CBB\u65B9\u6848\u4EAB 30 \u5929\u514D\u8CBB\u8A66\u7528\u3002'),
+  ] : [
+    `  \uD83D\uDD12  ${featureName} requires ${tierName} plan`,
+    priceStr ? `      ${priceStr}` : '',
+    '',
+    `  Current:   ${c.sage(userTierName)}`,
+    `  Required:  ${c.sage(tierName)}`,
+    '',
+    `  \u2192 ${c.underline('https://panguard.ai/pricing')}`,
+    `  \u2192 ${c.sage('panguard activate <license-key>')}`,
+    '',
+    c.dim('  All paid plans include 30-day free trial.'),
+  ];
+
+  // Filter empty lines only if priceStr is empty
+  const content = lines.filter(l => l !== '' || priceStr !== '');
 
   console.log('');
-  console.log(box(
-    [
-      `${symbols.warn} \u6B64\u529F\u80FD\u9700\u8981 ${tierName} \u65B9\u6848${priceStr ? ` (${priceStr})` : ''}`,
-      `   This feature requires ${tierName} plan`,
-      '',
-      `  \u76EE\u524D\u65B9\u6848: ${c.sage(tierDisplayName(userTier))}`,
-      `  \u9700\u8981\u65B9\u6848: ${c.sage(tierName)}`,
-      '',
-      `  \u5347\u7D1A\u65B9\u6848: ${c.underline('https://panguard.ai/pricing')}`,
-      `  \u6216\u57F7\u884C:   ${c.sage('panguard activate <license-key>')}`,
-      '',
-      `  \u6240\u6709\u4ED8\u8CBB\u65B9\u6848\u4EAB 30 \u5929\u514D\u8CBB\u8A66\u7528`,
-    ].join('\n'),
-    { borderColor: c.caution, title: '\u9700\u8981\u5347\u7D1A / Upgrade Required' },
-  ));
+  console.log(`  ${c.sage(TL + H.repeat(W) + TR)}`);
+  for (const line of content) {
+    if (line === '') {
+      console.log(`  ${c.sage(V)}${' '.repeat(W)}${c.sage(V)}`);
+    } else {
+      console.log(`  ${c.sage(V)}${pad(line, W)}${c.sage(V)}`);
+    }
+  }
+  console.log(`  ${c.sage(BL + H.repeat(W) + BR)}`);
+  console.log('');
+}
+
+/**
+ * Show a contextual upgrade hint for scan auto-fix.
+ * Used after scan results when fixable issues are found.
+ */
+export function showScanUpgradeHint(fixableCount: number, lang: string = 'en'): void {
+  const W = 49;
+  const TL = '\u250C'; const TR = '\u2510'; const BL = '\u2514'; const BR = '\u2518';
+  const H = '\u2500'; const V = '\u2502';
+  console.log('');
+  console.log(`  ${c.sage(TL + H.repeat(W) + TR)}`);
+  if (lang === 'zh-TW') {
+    const l1 = `  \u26A1 \u767C\u73FE ${fixableCount} \u500B\u53EF\u81EA\u52D5\u4FEE\u5FA9\u7684\u554F\u984C\u3002`;
+    const l2 = `     \u5347\u7D1A\u5230 Solo ($9/\u6708) \u5373\u53EF\u4E00\u9375\u4FEE\u5FA9\uFF1A`;
+    const l3 = `     $ panguard scan --fix`;
+    for (const l of [l1, l2, l3]) {
+      const vLen = l.replace(/\x1b\[[0-9;]*m/g, '').length;
+      console.log(`  ${c.sage(V)}${l}${' '.repeat(Math.max(0, W - vLen))}${c.sage(V)}`);
+    }
+  } else {
+    const l1 = `  \u26A1 ${fixableCount} issue(s) can be auto-fixed.`;
+    const l2 = `     Upgrade to Solo ($9/mo) for one-click fix:`;
+    const l3 = `     $ panguard scan --fix`;
+    for (const l of [l1, l2, l3]) {
+      const vLen = l.replace(/\x1b\[[0-9;]*m/g, '').length;
+      console.log(`  ${c.sage(V)}${l}${' '.repeat(Math.max(0, W - vLen))}${c.sage(V)}`);
+    }
+  }
+  console.log(`  ${c.sage(BL + H.repeat(W) + BR)}`);
+}
+
+/**
+ * Show a contextual upgrade hint for Guard AI analysis.
+ * Used when a suspicious event needs AI analysis.
+ */
+export function showGuardAIHint(threatType: string, confidence: number, lang: string = 'en'): void {
+  console.log('');
+  if (lang === 'zh-TW') {
+    console.log(`  ${c.caution('[?]')} \u5075\u6E2C\u5230\u53EF\u7591\u6D3B\u52D5\uFF08\u4FE1\u5FC3\u5EA6 ${confidence}%\uFF09`);
+    console.log(`      \u985E\u578B: ${threatType}`);
+    console.log('');
+    console.log(c.dim(`      \u9700\u8981 AI \u5206\u6790\u624D\u80FD\u5224\u65B7\u662F\u5426\u70BA\u5A01\u8105\u3002`));
+    console.log(c.dim(`      \u5347\u7D1A\u5230 Solo ($9/\u6708) \u89E3\u9396 AI \u6DF1\u5EA6\u5206\u6790\u3002`));
+  } else {
+    console.log(`  ${c.caution('[?]')} Suspicious activity detected (confidence ${confidence}%)`);
+    console.log(`      Type: ${threatType}`);
+    console.log('');
+    console.log(c.dim(`      AI analysis required to determine if this is a threat.`));
+    console.log(c.dim(`      Upgrade to Solo ($9/mo) for AI-powered analysis.`));
+  }
   console.log('');
 }
 

@@ -359,10 +359,10 @@ describe('End-to-End Platform Pipeline', () => {
       const pro = validateLicense(proKey)!;
       const ent = validateLicense(entKey)!;
 
-      // Free: basic monitoring only
+      // Free: basic monitoring + auto-respond (Layer 1 rules)
       expect(hasFeature(free, 'basic_monitoring')).toBe(true);
       expect(hasFeature(free, 'notifications')).toBe(false);
-      expect(hasFeature(free, 'auto_respond')).toBe(false);
+      expect(hasFeature(free, 'auto_respond')).toBe(true);
 
       // Pro: monitoring + notifications + auto-response
       expect(hasFeature(pro, 'basic_monitoring')).toBe(true);

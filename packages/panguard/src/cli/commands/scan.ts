@@ -142,6 +142,7 @@ export function scanCommand(): Command {
             category: f.category,
             description: f.description,
             remediation: f.remediation,
+            manual_fix: f.manualFix ?? null,
           })),
           system: {
             os: `${result.discovery.os.distro} ${result.discovery.os.version}`,
@@ -220,6 +221,30 @@ export function scanCommand(): Command {
         }));
 
         console.log(table(columns, rows));
+
+        // Show manual fix commands for free tier
+        const check = requireAuth('solo');
+        if (!check.authorized) {
+          let fixableCount = 0;
+          console.log('');
+          for (const f of result.findings) {
+            if (f.manualFix && f.manualFix.length > 0) {
+              fixableCount++;
+              console.log(`  ${colorSeverity(f.severity).padEnd(10)} ${f.title}`);
+              console.log(c.dim('          Manual fix:'));
+              for (const cmd of f.manualFix) {
+                console.log(c.dim(`          $ ${cmd}`));
+              }
+              console.log('');
+            }
+          }
+          if (fixableCount > 0) {
+            console.log(box(
+              `\u26A1 Upgrade to Solo ($9/mo) to auto-fix all ${fixableCount} issues:\n  $ panguard scan --fix`,
+              { borderColor: c.sage, title: 'Panguard AI' },
+            ));
+          }
+        }
         console.log('');
       } else {
         console.log(box(

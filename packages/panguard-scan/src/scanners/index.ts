@@ -47,6 +47,36 @@ const RISK_FACTOR_TITLES: Record<string, string> = {
 };
 
 /**
+ * Category-to-manual-fix mapping for risk factor conversion
+ * 風險因素轉換的類別到手動修復指令對應表
+ */
+const RISK_FACTOR_MANUAL_FIX: Record<string, string[]> = {
+  noFirewall: [
+    'sudo ufw enable',
+    'sudo ufw default deny incoming',
+  ],
+  dangerousPorts: [
+    'sudo ufw deny <port>',
+    'sudo iptables -A INPUT -p tcp --dport <port> -j DROP',
+  ],
+  noUpdates: [
+    'sudo apt update && sudo apt upgrade -y',
+  ],
+  noSecurityTools: [
+    'sudo apt install fail2ban -y',
+    'sudo systemctl enable fail2ban && sudo systemctl start fail2ban',
+  ],
+  defaultPasswords: [
+    "sudo sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config",
+    'sudo systemctl restart sshd',
+  ],
+  excessiveServices: [
+    'sudo systemctl list-units --type=service --state=running',
+    'sudo systemctl disable <service-name>',
+  ],
+};
+
+/**
  * Category-to-remediation mapping for risk factor conversion
  * 風險因素轉換的類別到修復建議對應表
  *
@@ -96,6 +126,8 @@ function riskFactorToFinding(factor: RiskFactor): Finding {
     'Review and address this risk factor according to your security policy. / ' +
     '根據您的安全策略審查並處理此風險因素。';
 
+  const manualFix = RISK_FACTOR_MANUAL_FIX[factor.category];
+
   return {
     id: `DISC-${factor.category}`,
     title,
@@ -104,6 +136,7 @@ function riskFactorToFinding(factor: RiskFactor): Finding {
     category: factor.category,
     remediation,
     details: factor.details,
+    manualFix,
   };
 }
 
@@ -136,6 +169,32 @@ function calculateEnhancedRiskScore(baseScore: number, additionalFindings: Findi
   // Cap the enhanced score at 100
   // 增強評分上限為 100
   return Math.min(100, Math.max(0, baseScore + extraPoints));
+}
+
+/**
+ * Fallback manual fix commands by finding category/keyword
+ * 依據發現類別/關鍵字的備用手動修復指令
+ */
+const CATEGORY_MANUAL_FIX: Record<string, string[]> = {
+  password: [
+    "sudo passwd -e $(whoami)",
+    "sudo apt install libpam-pwquality -y",
+  ],
+  ssl: [
+    "sudo sed -i 's/TLSv1.1/TLSv1.3/' /etc/nginx/nginx.conf",
+    "sudo nginx -t && sudo systemctl reload nginx",
+  ],
+};
+
+/**
+ * Enrich a finding with manual fix commands if not already present
+ * 若尚未存在，為發現補充手動修復指令
+ */
+function enrichManualFix(finding: Finding): Finding {
+  if (finding.manualFix && finding.manualFix.length > 0) return finding;
+  const fix = CATEGORY_MANUAL_FIX[finding.category];
+  if (fix) return { ...finding, manualFix: fix };
+  return finding;
 }
 
 /**
@@ -236,12 +295,12 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
     logger.info('Skipping full-depth checks in quick mode');
   }
 
-  // Step 6: Merge and sort all findings
-  // 步驟 6：合併並排序所有發現
+  // Step 6: Merge, enrich with manual fix commands, and sort all findings
+  // 步驟 6：合併、補充手動修復指令，並排序所有發現
   const allFindings: Finding[] = [
     ...discoveryFindings,
     ...additionalFindings,
-  ].sort(sortBySeverity);
+  ].map(enrichManualFix).sort(sortBySeverity);
 
   logger.info(`Total findings: ${allFindings.length}`);
 

@@ -1,221 +1,212 @@
 /**
  * Panguard AI - Interactive CLI Mode
  *
- * Launches when user runs `panguard` without subcommands.
- * Provides a menu-driven terminal interface with brand styling.
+ * Minimalist arrow-key menu interface inspired by Claude Code / Vercel CLI.
+ * Single-language display, no box borders, brand sage green theme.
  *
  * @module @openclaw/panguard/cli/interactive
  */
 
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 import {
-  c, banner, spinner, statusPanel, divider, scoreDisplay,
-  colorSeverity, table, box, symbols, formatDuration,
+  c, spinner, scoreDisplay, colorSeverity, divider, formatDuration,
 } from '@openclaw/core';
 import type { TableColumn, StatusItem } from '@openclaw/core';
 import { PANGUARD_VERSION } from '../index.js';
+import { renderLogo, theme } from './theme.js';
 import {
-  renderMenu, renderCompactMenu, renderStatusBox,
-  waitForChoice, pressAnyKey, showHelp, cleanupTerminal,
+  runArrowMenu, pressAnyKey, cleanupTerminal,
+  renderCompactMenu, waitForCompactChoice,
 } from './menu.js';
-import type { MenuItem } from './menu.js';
-import { checkFeatureAccess, showUpgradePrompt } from './auth-guard.js';
-
-type Lang = 'en' | 'zh-TW';
-
-let currentLang: Lang = 'zh-TW';
+import type { MenuItem, Lang } from './menu.js';
+import { checkFeatureAccess, showUpgradePrompt, getLicense, FEATURE_TIER } from './auth-guard.js';
+import { tierDisplayName } from './credentials.js';
 
 // ---------------------------------------------------------------------------
-// Main menu items
+// Language management
 // ---------------------------------------------------------------------------
 
-const MAIN_MENU_ITEMS: MenuItem[] = [
-  {
-    key: '0',
-    icon: symbols.arrow,
-    label: { 'zh-TW': '\u521D\u59CB\u8A2D\u5B9A', en: 'Setup Wizard' },
-    description: {
-      'zh-TW': '\u554F\u5377\u5F0F\u5F15\u5C0E\uFF0C\u81EA\u52D5\u914D\u7F6E\u6240\u6709\u6A21\u7D44',
-      en: 'Guided questionnaire to configure all modules',
-    },
-  },
-  {
-    key: '1',
-    icon: symbols.scan,
-    label: { 'zh-TW': '\u5B89\u5168\u6383\u63CF', en: 'Security Scan' },
-    description: {
-      'zh-TW': '\u6383\u63CF\u7CFB\u7D71\u5B89\u5168\u72C0\u614B\uFF0C\u5206\u6790\u6F5B\u5728\u98A8\u96AA',
-      en: 'Scan your system for security issues and risks',
-    },
-  },
-  {
-    key: '2',
-    icon: symbols.shield,
-    label: { 'zh-TW': '\u5408\u898F\u5831\u544A [PRO]', en: 'Compliance Report [PRO]' },
-    description: {
-      'zh-TW': '\u7522\u751F ISO 27001\u3001SOC 2\u3001\u8CC7\u901A\u5B89\u5168\u7BA1\u7406\u6CD5\u5831\u544A',
-      en: 'Generate ISO 27001, SOC 2, or TW Cyber Security Act reports',
-    },
-  },
-  {
-    key: '3',
-    icon: symbols.pass,
-    label: { 'zh-TW': '\u5B88\u8B77\u5F15\u64CE', en: 'Guard Engine' },
-    description: {
-      'zh-TW': '\u5373\u6642\u76E3\u63A7\u8207\u9632\u8B77\u7CFB\u7D71',
-      en: 'Real-time monitoring and protection system',
-    },
-  },
-  {
-    key: '4',
-    label: { 'zh-TW': '\u871C\u7F50\u7CFB\u7D71 [PRO]', en: 'Honeypot System [PRO]' },
-    description: {
-      'zh-TW': '\u90E8\u7F72\u871C\u7F50\u670D\u52D9\uFF0C\u5206\u6790\u653B\u64CA\u8005\u884C\u70BA',
-      en: 'Deploy honeypot services for attacker profiling',
-    },
-  },
-  {
-    key: '5',
-    label: { 'zh-TW': '\u901A\u77E5\u7CFB\u7D71 [SOLO]', en: 'Notifications [SOLO]' },
-    description: {
-      'zh-TW': 'LINE\u3001Telegram\u3001Slack\u3001Email\u3001Webhook \u901A\u77E5\u7BA1\u9053',
-      en: 'Notification channels: LINE, Telegram, Slack, Email, Webhook',
-    },
-  },
-  {
-    key: '6',
-    label: { 'zh-TW': '\u5A01\u8105\u60C5\u5831 [ENT]', en: 'Threat Cloud [ENT]' },
-    description: {
-      'zh-TW': '\u5A01\u8105\u60C5\u5831 REST API \u4F3A\u670D\u5668',
-      en: 'Threat intelligence REST API server',
-    },
-  },
-  {
-    key: '7',
-    label: { 'zh-TW': '\u81EA\u52D5\u5C55\u793A', en: 'Auto Demo' },
-    description: {
-      'zh-TW': '\u81EA\u52D5\u57F7\u884C\u6240\u6709\u529F\u80FD\u5C55\u793A',
-      en: 'Run through all features automatically',
-    },
-  },
+const CONFIG_DIR = join(homedir(), '.panguard');
+const CONFIG_PATH = join(CONFIG_DIR, 'config.json');
+
+function detectLang(): Lang {
+  // 1. Read saved preference
+  if (existsSync(CONFIG_PATH)) {
+    try {
+      const data = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
+      if (data.lang === 'zh-TW' || data.lang === 'en') return data.lang;
+    } catch { /* ignore */ }
+  }
+  // 2. Detect from system locale
+  const sysLang = process.env['LANG'] ?? process.env['LC_ALL'] ?? '';
+  if (sysLang.includes('zh')) return 'zh-TW';
+  return 'en';
+}
+
+function saveLang(lang: Lang): void {
+  try {
+    let config: Record<string, unknown> = {};
+    if (existsSync(CONFIG_PATH)) {
+      config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
+    }
+    config['lang'] = lang;
+    if (!existsSync(CONFIG_DIR)) mkdirSync(CONFIG_DIR, { recursive: true });
+    writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
+  } catch { /* best effort */ }
+}
+
+let currentLang: Lang = 'en';
+
+// ---------------------------------------------------------------------------
+// Menu data
+// ---------------------------------------------------------------------------
+
+interface MenuDef {
+  key: string;
+  en: string;
+  zh: string;
+  tier: string;
+}
+
+const MENU_DEFS: MenuDef[] = [
+  { key: 'scan',         en: 'Security scan',                         zh: '\u5B89\u5168\u6383\u63CF',                     tier: 'free' },
+  { key: 'guard',        en: 'Real-time protection',                  zh: '\u5373\u6642\u9632\u8B77',                     tier: 'free' },
+  { key: 'report',       en: 'Compliance report (ISO 27001, SOC 2)',  zh: '\u5408\u898F\u5831\u544A (ISO 27001, SOC 2)',   tier: 'pro' },
+  { key: 'trap',         en: 'Honeypot system',                       zh: '\u871C\u7F50\u7CFB\u7D71',                     tier: 'pro' },
+  { key: 'notify',       en: 'Notifications (LINE, Telegram, Slack)', zh: '\u901A\u77E5\u7CFB\u7D71 (LINE, Telegram, Slack)', tier: 'solo' },
+  { key: 'threat-cloud', en: 'Threat intelligence API',               zh: '\u5A01\u8105\u60C5\u5831 API',                 tier: 'enterprise' },
+  { key: '__sep__',      en: '',                                       zh: '',                                             tier: '' },
+  { key: 'setup',        en: 'Initial configuration',                 zh: '\u521D\u59CB\u8A2D\u5B9A',                     tier: 'free' },
+  { key: 'demo',         en: 'Feature demo',                          zh: '\u529F\u80FD\u5C55\u793A',                     tier: 'free' },
 ];
+
+function buildMenuItems(lang: Lang): MenuItem[] {
+  return MENU_DEFS.map((def) => {
+    if (def.key === '__sep__') return { key: '__sep__', label: '', separator: true };
+    return {
+      key: def.key,
+      label: lang === 'zh-TW' ? def.zh : def.en,
+      tier: def.tier || undefined,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Startup screen
+// ---------------------------------------------------------------------------
+
+function renderStartup(): void {
+  console.clear();
+
+  // Brand logo
+  renderLogo();
+  console.log('');
+
+  // Tagline + version
+  const tagline = c.dim('  Headless Defense Platform');
+  const version = c.dim(`v${PANGUARD_VERSION}`);
+  // Right-align version
+  const tagLen = tagline.replace(/\x1b\[[0-9;]*m/g, '').length;
+  const verLen = version.replace(/\x1b\[[0-9;]*m/g, '').length;
+  const totalWidth = Math.max(60, (process.stdout.columns ?? 60));
+  const gap = Math.max(2, totalWidth - tagLen - verLen - 4);
+  console.log(`${tagline}${' '.repeat(gap)}${version}`);
+  console.log('');
+
+  // Status info
+  const { tier } = getLicense();
+  const tierName = tierDisplayName(tier);
+  const tierColor = tier === 'free' ? c.caution : c.safe;
+
+  const statusLabel = currentLang === 'zh-TW' ? '\u72C0\u614B' : 'Status';
+  const licenseLabel = currentLang === 'zh-TW' ? '\u6388\u6B0A' : 'License';
+  const modulesLabel = currentLang === 'zh-TW' ? '\u6A21\u7D44' : 'Modules';
+  const modulesValue = currentLang === 'zh-TW' ? '6 \u500B\u53EF\u7528' : '6 available';
+
+  console.log(`  ${c.dim(statusLabel.padEnd(10))} ${c.safe('Ready')}`);
+  console.log(`  ${c.dim(licenseLabel.padEnd(10))} ${tierColor(tierName)}`);
+  console.log(`  ${c.dim(modulesLabel.padEnd(10))} ${modulesValue}`);
+  console.log('');
+}
 
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
 
 export async function startInteractive(lang?: string): Promise<void> {
-  currentLang = lang === 'en' ? 'en' : 'zh-TW';
+  currentLang = lang === 'en' ? 'en' : lang === 'zh-TW' ? 'zh-TW' : detectLang();
 
   const exit = () => {
     cleanupTerminal();
     const msg = currentLang === 'zh-TW'
-      ? `\u611F\u8B1D\u4F7F\u7528 Panguard AI\uFF0C\u518D\u898B\uFF01`
-      : 'Goodbye from Panguard AI!';
-    console.log(`\n  ${symbols.pass} ${c.sage(msg)}\n`);
+      ? '\u611F\u8B1D\u4F7F\u7528 Panguard AI\uFF01'
+      : 'Goodbye!';
+    console.log(`\n  ${c.sage(msg)}\n`);
     process.exit(0);
   };
   process.on('SIGINT', exit);
   process.on('SIGTERM', exit);
 
-  // Welcome screen
-  console.clear();
-  console.log(banner());
-  console.log('');
-
-  // System status dashboard
-  renderStatusBox([
-    {
-      label: currentLang === 'zh-TW' ? '\u9632\u8B77\u72C0\u614B' : 'Protection',
-      value: currentLang === 'zh-TW' ? '\u5DF2\u5C31\u7DD2' : 'Ready',
-      color: c.safe,
-    },
-    {
-      label: currentLang === 'zh-TW' ? '\u53EF\u7528\u6A21\u7D44' : 'Modules',
-      value: currentLang === 'zh-TW' ? '6 \u500B\u6A21\u7D44\u53EF\u7528' : '6 modules available',
-      color: c.sage,
-    },
-    {
-      label: currentLang === 'zh-TW' ? '\u7248\u672C' : 'Version',
-      value: `v${PANGUARD_VERSION}`,
-      color: c.dim,
-    },
-  ], currentLang);
-  console.log('');
+  renderStartup();
 
   // Main loop
   while (true) {
-    renderMenu(
-      { en: 'Main Menu', 'zh-TW': '\u4E3B\u9078\u55AE' },
-      MAIN_MENU_ITEMS,
-      currentLang,
-    );
+    const title = currentLang === 'zh-TW' ? '  \u6307\u4EE4' : '  Commands';
+    console.log(theme.title(title));
+    console.log('');
 
-    const choice = await waitForChoice(MAIN_MENU_ITEMS, {
-      quitLabel: { en: 'Quit', 'zh-TW': '\u9000\u51FA' },
-      lang: currentLang,
-    });
+    const items = buildMenuItems(currentLang);
+    const choice = await runArrowMenu(items, { lang: currentLang });
 
-    if (choice === null) {
+    if (!choice) {
       exit();
       return;
     }
 
     if (choice.key === '__lang__') {
       currentLang = currentLang === 'zh-TW' ? 'en' : 'zh-TW';
-      console.clear();
-      console.log(banner());
-      console.log('');
-      const langName = currentLang === 'zh-TW' ? '\u7E41\u9AD4\u4E2D\u6587' : 'English';
-      console.log(`  ${symbols.info} ${currentLang === 'zh-TW' ? '\u8A9E\u8A00\u5DF2\u5207\u63DB\u70BA' : 'Language switched to'}: ${c.sage(langName)}`);
-      console.log('');
+      saveLang(currentLang);
+      renderStartup();
       continue;
     }
 
-    if (choice.key === '__help__') {
-      showHelp(currentLang);
+    // Feature gate check
+    if (!checkFeatureAccess(choice.key)) {
+      showUpgradePrompt(choice.key, currentLang);
       await pressAnyKey(currentLang);
-      console.clear();
-      console.log(banner());
-      console.log('');
+      renderStartup();
       continue;
     }
 
     console.clear();
     try {
-      switch (choice.key) {
-        case '0': await actionInit(); break;
-        case '1': await actionScan(); break;
-        case '2':
-          if (!checkFeatureAccess('report')) { showUpgradePrompt('Compliance Report'); break; }
-          await actionReport();
-          break;
-        case '3': await actionGuard(); break;
-        case '4':
-          if (!checkFeatureAccess('trap')) { showUpgradePrompt('Honeypot System'); break; }
-          await actionTrap();
-          break;
-        case '5':
-          if (!checkFeatureAccess('notifications')) { showUpgradePrompt('Notifications'); break; }
-          await actionChat();
-          break;
-        case '6':
-          if (!checkFeatureAccess('threat-cloud')) { showUpgradePrompt('Threat Cloud'); break; }
-          await actionThreat();
-          break;
-        case '7': await actionDemo(); break;
-      }
+      await dispatch(choice.key);
     } catch (err) {
       console.log('');
-      console.log(box(
-        `${symbols.fail} ${err instanceof Error ? err.message : String(err)}`,
-        { borderColor: c.critical, title: currentLang === 'zh-TW' ? '\u932F\u8AA4' : 'Error' },
-      ));
+      console.log(`  ${c.critical('Error:')} ${err instanceof Error ? err.message : String(err)}`);
     }
 
     await pressAnyKey(currentLang);
-    console.clear();
-    console.log(banner());
-    console.log('');
+    renderStartup();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Action dispatch
+// ---------------------------------------------------------------------------
+
+async function dispatch(key: string): Promise<void> {
+  switch (key) {
+    case 'scan': await actionScan(); break;
+    case 'guard': await actionGuard(); break;
+    case 'report': await actionReport(); break;
+    case 'trap': await actionTrap(); break;
+    case 'notify': await actionChat(); break;
+    case 'threat-cloud': await actionThreat(); break;
+    case 'setup': await actionInit(); break;
+    case 'demo': await actionDemo(); break;
   }
 }
 
@@ -233,46 +224,29 @@ async function actionInit(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionScan(): Promise<void> {
-  console.log(banner());
-  console.log(divider(currentLang === 'zh-TW' ? '\u5B89\u5168\u6383\u63CF / Security Scan' : 'Security Scan'));
+  const scanTitle = currentLang === 'zh-TW' ? '\u5B89\u5168\u6383\u63CF' : 'Security Scan';
+  console.log(`  ${theme.brandBold(scanTitle)}`);
   console.log('');
 
+  // Scan depth selection
   const depthItems: MenuItem[] = [
     {
       key: '1',
-      label: {
-        'zh-TW': '\u5FEB\u901F\u6383\u63CF',
-        en: 'Quick Scan',
-      },
-      description: {
-        'zh-TW': '\u5FEB\u901F\u6383\u63CF (~30 \u79D2)',
-        en: 'Fast scan (~30 seconds)',
-      },
+      label: currentLang === 'zh-TW' ? '\u5FEB\u901F\u6383\u63CF (~30 \u79D2)' : 'Quick Scan (~30 seconds)',
     },
     {
       key: '2',
-      label: {
-        'zh-TW': '\u5B8C\u6574\u6383\u63CF',
-        en: 'Full Scan',
-      },
-      description: {
-        'zh-TW': '\u5B8C\u6574\u7CFB\u7D71\u6383\u63CF',
-        en: 'Complete system scan',
-      },
+      label: currentLang === 'zh-TW' ? '\u5B8C\u6574\u6383\u63CF' : 'Full Scan',
     },
   ];
 
   renderCompactMenu(
-    { en: 'Scan Mode', 'zh-TW': '\u6383\u63CF\u6A21\u5F0F' },
+    currentLang === 'zh-TW' ? '\u6383\u63CF\u6A21\u5F0F' : 'Scan Mode',
     depthItems,
-    currentLang,
   );
 
-  const choice = await waitForChoice(depthItems, {
-    backLabel: { en: 'Back', 'zh-TW': '\u8FD4\u56DE' },
-    lang: currentLang,
-  });
-  if (!choice || choice.key.startsWith('__')) return;
+  const choice = await waitForCompactChoice(depthItems, currentLang);
+  if (!choice) return;
 
   const depth = choice.key === '1' ? 'quick' : 'full';
   console.log('');
@@ -280,7 +254,7 @@ async function actionScan(): Promise<void> {
   const { runScan } = await import('@openclaw/panguard-scan');
   const sp = spinner(currentLang === 'zh-TW'
     ? '\u6B63\u5728\u6383\u63CF\u7CFB\u7D71\u5B89\u5168...'
-    : 'Scanning system security...');
+    : 'Scanning system...');
   const result = await runScan({ depth, lang: currentLang, verbose: false });
   sp.succeed(currentLang === 'zh-TW'
     ? `\u6383\u63CF\u5B8C\u6210 ${c.dim(`(${formatDuration(result.scanDuration)})`)}`
@@ -288,47 +262,59 @@ async function actionScan(): Promise<void> {
 
   const safetyScore = Math.max(0, 100 - result.riskScore);
   const grade = safetyScore >= 90 ? 'A' : safetyScore >= 75 ? 'B' : safetyScore >= 60 ? 'C' : safetyScore >= 40 ? 'D' : 'F';
-  console.log(scoreDisplay(safetyScore, grade));
 
-  const statusItems: StatusItem[] = [
-    {
-      label: currentLang === 'zh-TW' ? '\u72C0\u614B' : 'Status',
-      value: result.riskScore <= 25
-        ? c.safe(currentLang === 'zh-TW' ? '\u5B89\u5168' : 'PROTECTED')
-        : result.riskScore <= 50
-        ? c.caution(currentLang === 'zh-TW' ? '\u6CE8\u610F' : 'AT RISK')
-        : c.critical(currentLang === 'zh-TW' ? '\u5371\u96AA' : 'VULNERABLE'),
-      status: result.riskScore <= 25 ? 'safe' as const : result.riskScore <= 50 ? 'caution' as const : 'critical' as const,
-    },
-    { label: currentLang === 'zh-TW' ? '\u98A8\u96AA\u5206\u6578' : 'Risk Score', value: `${result.riskScore}/100` },
-    { label: currentLang === 'zh-TW' ? '\u767C\u73FE\u554F\u984C' : 'Issues Found', value: String(result.findings.length) },
-    { label: currentLang === 'zh-TW' ? '\u6383\u63CF\u6642\u9577' : 'Duration', value: formatDuration(result.scanDuration) },
-  ];
-  console.log(statusPanel(
-    currentLang === 'zh-TW' ? 'PANGUARD AI \u5B89\u5168\u72C0\u614B' : 'PANGUARD AI Security Status',
-    statusItems,
-  ));
+  // Compact score display
+  console.log('');
+  const scoreLabel = currentLang === 'zh-TW' ? '\u6383\u63CF\u5B8C\u6210' : 'Scan Complete';
+  console.log(`  ${theme.title(scoreLabel)}${' '.repeat(30)}Score: ${c.bold(`${safetyScore}/100`)} (${grade})`);
+  console.log('');
+
+  const { tier } = getLicense();
+  let fixableCount = 0;
 
   if (result.findings.length > 0) {
-    console.log(divider(`${result.findings.length} ${currentLang === 'zh-TW' ? '\u500B\u554F\u984C' : 'Finding(s)'}`));
+    for (const f of result.findings) {
+      const sev = colorSeverity(f.severity).padEnd(10);
+      console.log(`  ${sev} ${f.title}`);
+
+      // Show manual fix commands for free tier
+      if (tier === 'free' && f.manualFix && f.manualFix.length > 0) {
+        const fixLabel = currentLang === 'zh-TW' ? '\u624B\u52D5\u4FEE\u5FA9:' : 'Manual fix:';
+        console.log(c.dim(`          ${fixLabel}`));
+        for (const cmd of f.manualFix) {
+          console.log(c.dim(`          $ ${cmd}`));
+        }
+        fixableCount++;
+      }
+    }
     console.log('');
 
-    const columns: TableColumn[] = [
-      { header: '#', key: 'num', width: 4, align: 'right' },
-      { header: currentLang === 'zh-TW' ? '\u56B4\u91CD\u7A0B\u5EA6' : 'Severity', key: 'severity', width: 10 },
-      { header: currentLang === 'zh-TW' ? '\u554F\u984C' : 'Finding', key: 'title', width: 42 },
-    ];
-    const rows = result.findings.map((f, i) => ({
-      num: String(i + 1),
-      severity: colorSeverity(f.severity),
-      title: f.title,
-    }));
-    console.log(table(columns, rows));
+    const issuesText = currentLang === 'zh-TW'
+      ? `${result.findings.length} \u500B\u554F\u984C`
+      : `${result.findings.length} issue(s) found`;
+    console.log(c.dim(`  ${issuesText}`));
+
+    // Upgrade prompt for free tier
+    if (tier === 'free' && fixableCount > 0) {
+      console.log('');
+      const W = 49;
+      const TL = '\u250C'; const TR = '\u2510'; const BL = '\u2514'; const BR = '\u2518';
+      const H = '\u2500'; const V = '\u2502';
+      console.log(`  ${c.sage(TL + H.repeat(W) + TR)}`);
+      if (currentLang === 'zh-TW') {
+        console.log(`  ${c.sage(V)}  \u26A1 \u5347\u7D1A\u5230 Solo ($9/\u6708) \u5373\u53EF\u4E00\u9375\u4FEE\u5FA9:${' '.repeat(W - 29)}${c.sage(V)}`);
+        console.log(`  ${c.sage(V)}     $ panguard scan --fix${' '.repeat(W - 26)}${c.sage(V)}`);
+      } else {
+        console.log(`  ${c.sage(V)}  \u26A1 Upgrade to Solo ($9/mo) to auto-fix all:${' '.repeat(W - 43)}${c.sage(V)}`);
+        console.log(`  ${c.sage(V)}     $ panguard scan --fix${' '.repeat(W - 26)}${c.sage(V)}`);
+      }
+      console.log(`  ${c.sage(BL + H.repeat(W) + BR)}`);
+    }
   } else {
-    console.log(box(
-      `${symbols.pass} ${currentLang === 'zh-TW' ? '\u672A\u767C\u73FE\u5B89\u5168\u554F\u984C\uFF01' : 'No security issues found!'}`,
-      { borderColor: c.safe, title: currentLang === 'zh-TW' ? '\u5B89\u5168' : 'All Clear' },
-    ));
+    const noIssues = currentLang === 'zh-TW'
+      ? '\u672A\u767C\u73FE\u5B89\u5168\u554F\u984C'
+      : 'No security issues found';
+    console.log(`  ${c.safe(noIssues)}`);
   }
 }
 
@@ -337,95 +323,43 @@ async function actionScan(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionReport(): Promise<void> {
-  console.log(banner());
-  console.log(divider(currentLang === 'zh-TW' ? '\u5408\u898F\u5831\u544A / Compliance Report' : 'Compliance Report'));
+  const title = currentLang === 'zh-TW' ? '\u5408\u898F\u5831\u544A' : 'Compliance Report';
+  console.log(`  ${theme.brandBold(title)}`);
   console.log('');
 
   const frameworkItems: MenuItem[] = [
-    {
-      key: '1',
-      label: { 'zh-TW': 'ISO 27001', en: 'ISO 27001' },
-      description: {
-        'zh-TW': '\u570B\u969B\u8CC7\u8A0A\u5B89\u5168\u7BA1\u7406\u6A19\u6E96',
-        en: 'International information security management',
-      },
-    },
-    {
-      key: '2',
-      label: { 'zh-TW': 'SOC 2', en: 'SOC 2' },
-      description: {
-        'zh-TW': '\u670D\u52D9\u7D44\u7E54\u4FE1\u4EFB\u6E96\u5247',
-        en: 'Service organization trust criteria',
-      },
-    },
-    {
-      key: '3',
-      label: {
-        'zh-TW': '\u8CC7\u901A\u5B89\u5168\u7BA1\u7406\u6CD5',
-        en: 'TW Cyber Security Act',
-      },
-      description: {
-        'zh-TW': '\u53F0\u7063\u8CC7\u901A\u5B89\u5168\u5408\u898F\u6A19\u6E96',
-        en: 'Taiwan information security compliance',
-      },
-    },
+    { key: '1', label: 'ISO 27001' },
+    { key: '2', label: 'SOC 2' },
+    { key: '3', label: currentLang === 'zh-TW' ? '\u8CC7\u901A\u5B89\u5168\u7BA1\u7406\u6CD5' : 'TW Cyber Security Act' },
   ];
 
   renderCompactMenu(
-    { en: 'Select Framework', 'zh-TW': '\u9078\u64C7\u5408\u898F\u6846\u67B6' },
+    currentLang === 'zh-TW' ? '\u9078\u64C7\u5408\u898F\u6846\u67B6' : 'Select Framework',
     frameworkItems,
-    currentLang,
   );
 
-  const fwChoice = await waitForChoice(frameworkItems, {
-    backLabel: { en: 'Back', 'zh-TW': '\u8FD4\u56DE' },
-    lang: currentLang,
-  });
-  if (!fwChoice || fwChoice.key.startsWith('__')) return;
+  const fwChoice = await waitForCompactChoice(frameworkItems, currentLang);
+  if (!fwChoice) return;
 
   const frameworkMap: Record<string, string> = { '1': 'iso27001', '2': 'soc2', '3': 'tw_cyber_security_act' };
   const framework = frameworkMap[fwChoice.key] ?? 'iso27001';
 
   const langItems: MenuItem[] = [
-    {
-      key: '1',
-      label: {
-        'zh-TW': '\u7E41\u9AD4\u4E2D\u6587 (zh-TW)',
-        en: 'Chinese (zh-TW)',
-      },
-      description: {
-        'zh-TW': '\u7522\u751F\u4E2D\u6587\u5831\u544A',
-        en: 'Generate report in Traditional Chinese',
-      },
-    },
-    {
-      key: '2',
-      label: {
-        'zh-TW': '\u82F1\u6587 (en)',
-        en: 'English (en)',
-      },
-      description: {
-        'zh-TW': '\u7522\u751F\u82F1\u6587\u5831\u544A',
-        en: 'Generate report in English',
-      },
-    },
+    { key: '1', label: currentLang === 'zh-TW' ? '\u7E41\u9AD4\u4E2D\u6587 (zh-TW)' : 'Chinese (zh-TW)' },
+    { key: '2', label: currentLang === 'zh-TW' ? '\u82F1\u6587 (en)' : 'English (en)' },
   ];
 
   console.log('');
   renderCompactMenu(
-    { en: 'Report Language', 'zh-TW': '\u5831\u544A\u8A9E\u8A00' },
+    currentLang === 'zh-TW' ? '\u5831\u544A\u8A9E\u8A00' : 'Report Language',
     langItems,
-    currentLang,
   );
-  const langChoice = await waitForChoice(langItems, {
-    backLabel: { en: 'Back', 'zh-TW': '\u8FD4\u56DE' },
-    lang: currentLang,
-  });
-  if (!langChoice || langChoice.key.startsWith('__')) return;
+  const langChoice = await waitForCompactChoice(langItems, currentLang);
+  if (!langChoice) return;
 
   const reportLang = langChoice.key === '1' ? 'zh-TW' : 'en';
-
   console.log('');
+
   const { executeCli } = await import('@openclaw/panguard-report');
   await executeCli(['generate', '--framework', framework, '--language', reportLang]);
 }
@@ -435,55 +369,24 @@ async function actionReport(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionGuard(): Promise<void> {
-  console.log(banner());
-  console.log(divider(currentLang === 'zh-TW' ? '\u5B88\u8B77\u5F15\u64CE / Guard Engine' : 'Guard Engine'));
+  const title = currentLang === 'zh-TW' ? '\u5B88\u8B77\u5F15\u64CE' : 'Guard Engine';
+  console.log(`  ${theme.brandBold(title)}`);
   console.log('');
 
   const items: MenuItem[] = [
-    {
-      key: '1',
-      label: { 'zh-TW': '\u67E5\u770B\u72C0\u614B', en: 'Status' },
-      description: {
-        'zh-TW': '\u986F\u793A\u5B88\u8B77\u5F15\u64CE\u76EE\u524D\u72C0\u614B',
-        en: 'Show guard engine status',
-      },
-    },
-    {
-      key: '2',
-      label: { 'zh-TW': '\u555F\u52D5\u5F15\u64CE', en: 'Start' },
-      description: {
-        'zh-TW': '\u555F\u52D5\u5373\u6642\u76E3\u63A7\u8207\u9632\u8B77',
-        en: 'Start the guard engine',
-      },
-    },
-    {
-      key: '3',
-      label: { 'zh-TW': '\u505C\u6B62\u5F15\u64CE', en: 'Stop' },
-      description: {
-        'zh-TW': '\u505C\u6B62\u5B88\u8B77\u5F15\u64CE',
-        en: 'Stop the guard engine',
-      },
-    },
-    {
-      key: '4',
-      label: { 'zh-TW': '\u7522\u751F\u91D1\u9470', en: 'Generate Key' },
-      description: {
-        'zh-TW': '\u7522\u751F\u6E2C\u8A66\u7528 Pro \u6388\u6B0A\u91D1\u9470',
-        en: 'Generate a test Pro license key',
-      },
-    },
+    { key: '1', label: currentLang === 'zh-TW' ? '\u67E5\u770B\u72C0\u614B' : 'Status' },
+    { key: '2', label: currentLang === 'zh-TW' ? '\u555F\u52D5\u5F15\u64CE' : 'Start' },
+    { key: '3', label: currentLang === 'zh-TW' ? '\u505C\u6B62\u5F15\u64CE' : 'Stop' },
+    { key: '4', label: currentLang === 'zh-TW' ? '\u7522\u751F\u6E2C\u8A66\u91D1\u9470' : 'Generate Test Key' },
   ];
 
   renderCompactMenu(
-    { en: 'Guard Engine', 'zh-TW': '\u5B88\u8B77\u5F15\u64CE' },
+    currentLang === 'zh-TW' ? '\u5B88\u8B77\u5F15\u64CE' : 'Guard Engine',
     items,
-    currentLang,
   );
-  const choice = await waitForChoice(items, {
-    backLabel: { en: 'Back', 'zh-TW': '\u8FD4\u56DE' },
-    lang: currentLang,
-  });
-  if (!choice || choice.key.startsWith('__')) return;
+
+  const choice = await waitForCompactChoice(items, currentLang);
+  if (!choice) return;
 
   console.log('');
   const { runCLI } = await import('@openclaw/panguard-guard');
@@ -491,13 +394,22 @@ async function actionGuard(): Promise<void> {
   switch (choice.key) {
     case '1': await runCLI(['status']); break;
     case '2': {
-      if (!checkFeatureAccess('notifications')) {
-        console.log(`  ${symbols.info} ${currentLang === 'zh-TW'
-          ? '\u514D\u8CBB\u7248 Guard\uFF1A\u50C5\u555F\u7528 Layer 1 \u898F\u5247\u5F15\u64CE\u5075\u6E2C\u3002'
-          : 'Free Guard: Layer 1 rule engine detection only.'}`);
-        console.log(`  ${c.dim(currentLang === 'zh-TW'
-          ? '\u5347\u7D1A\u5230 Solo ($9/\u6708) \u89E3\u9396\u5B8C\u6574\u4E09\u5C64\u9632\u79A6 + \u81EA\u52D5\u56DE\u61C9\u3002'
-          : 'Upgrade to Solo ($9/mo) for full 3-layer defense + auto-response.')}`);
+      // Free tier hint
+      const { tier } = getLicense();
+      if (tier === 'free') {
+        console.log(`  ${c.sage('\u25C6')} Guard active${' '.repeat(30)}Layer 1 \u00B7 Free`);
+        console.log('');
+        if (currentLang === 'zh-TW') {
+          console.log(`  ${c.safe('\u2713')} \u5DF2\u77E5\u653B\u64CA\u6A21\u5F0F\u81EA\u52D5\u5C01\u9396`);
+          console.log(`  ${c.critical('\u2717')} AI \u5206\u6790\u5DF2\u505C\u7528 ${c.dim('(Solo \u65B9\u6848)')}`);
+          console.log(`  ${c.critical('\u2717')} \u901A\u77E5\u5DF2\u505C\u7528 ${c.dim('(Solo \u65B9\u6848)')}`);
+          console.log(`  ${c.critical('\u2717')} \u65E5\u8A8C\u4FDD\u7559: \u50C5\u7576\u6B21 session`);
+        } else {
+          console.log(`  ${c.safe('\u2713')} Auto-blocking enabled for known attack patterns`);
+          console.log(`  ${c.critical('\u2717')} AI analysis disabled ${c.dim('(Solo plan)')}`);
+          console.log(`  ${c.critical('\u2717')} Notifications disabled ${c.dim('(Solo plan)')}`);
+          console.log(`  ${c.critical('\u2717')} Log retention: this session only`);
+        }
         console.log('');
       }
       await runCLI(['start']);
@@ -513,55 +425,23 @@ async function actionGuard(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionTrap(): Promise<void> {
-  console.log(banner());
-  console.log(divider(currentLang === 'zh-TW' ? '\u871C\u7F50\u7CFB\u7D71 / Honeypot System' : 'Honeypot System'));
+  const title = currentLang === 'zh-TW' ? '\u871C\u7F50\u7CFB\u7D71' : 'Honeypot System';
+  console.log(`  ${theme.brandBold(title)}`);
   console.log('');
 
   const items: MenuItem[] = [
-    {
-      key: '1',
-      label: { 'zh-TW': '\u57FA\u672C\u914D\u7F6E (SSH + HTTP)', en: 'Config (SSH + HTTP)' },
-      description: {
-        'zh-TW': '\u986F\u793A SSH \u548C HTTP \u871C\u7F50\u914D\u7F6E',
-        en: 'Show SSH + HTTP honeypot configuration',
-      },
-    },
-    {
-      key: '2',
-      label: { 'zh-TW': '\u5B8C\u6574\u914D\u7F6E (8 \u7A2E\u670D\u52D9)', en: 'Config (All 8 Services)' },
-      description: {
-        'zh-TW': '\u986F\u793A\u5168\u90E8 8 \u7A2E\u871C\u7F50\u670D\u52D9\u914D\u7F6E',
-        en: 'Show all 8 honeypot service configurations',
-      },
-    },
-    {
-      key: '3',
-      label: { 'zh-TW': '\u67E5\u770B\u72C0\u614B', en: 'Status' },
-      description: {
-        'zh-TW': '\u986F\u793A\u871C\u7F50\u7CFB\u7D71\u76EE\u524D\u72C0\u614B',
-        en: 'Show honeypot system status',
-      },
-    },
-    {
-      key: '4',
-      label: { 'zh-TW': '\u653B\u64CA\u8005\u5206\u6790', en: 'Attacker Profiles' },
-      description: {
-        'zh-TW': '\u986F\u793A\u653B\u64CA\u8005\u884C\u70BA\u5206\u6790\u5831\u544A',
-        en: 'Show attacker behavior analysis profiles',
-      },
-    },
+    { key: '1', label: currentLang === 'zh-TW' ? '\u57FA\u672C\u914D\u7F6E (SSH + HTTP)' : 'Config (SSH + HTTP)' },
+    { key: '2', label: currentLang === 'zh-TW' ? '\u5B8C\u6574\u914D\u7F6E (8 \u7A2E\u670D\u52D9)' : 'Config (All 8 Services)' },
+    { key: '3', label: currentLang === 'zh-TW' ? '\u67E5\u770B\u72C0\u614B' : 'Status' },
+    { key: '4', label: currentLang === 'zh-TW' ? '\u653B\u64CA\u8005\u5206\u6790' : 'Attacker Profiles' },
   ];
 
   renderCompactMenu(
-    { en: 'Honeypot System', 'zh-TW': '\u871C\u7F50\u7CFB\u7D71' },
+    currentLang === 'zh-TW' ? '\u871C\u7F50\u7CFB\u7D71' : 'Honeypot System',
     items,
-    currentLang,
   );
-  const choice = await waitForChoice(items, {
-    backLabel: { en: 'Back', 'zh-TW': '\u8FD4\u56DE' },
-    lang: currentLang,
-  });
-  if (!choice || choice.key.startsWith('__')) return;
+  const choice = await waitForCompactChoice(items, currentLang);
+  if (!choice) return;
 
   console.log('');
   const { executeCli } = await import('@openclaw/panguard-trap');
@@ -579,47 +459,22 @@ async function actionTrap(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionChat(): Promise<void> {
-  console.log(banner());
-  console.log(divider(currentLang === 'zh-TW' ? '\u901A\u77E5\u7CFB\u7D71 / Notifications' : 'Notifications'));
+  const title = currentLang === 'zh-TW' ? '\u901A\u77E5\u7CFB\u7D71' : 'Notifications';
+  console.log(`  ${theme.brandBold(title)}`);
   console.log('');
 
   const items: MenuItem[] = [
-    {
-      key: '1',
-      label: { 'zh-TW': '\u8A2D\u5B9A\u901A\u77E5', en: 'Setup' },
-      description: {
-        'zh-TW': '\u4E92\u52D5\u5F0F\u901A\u77E5\u7BA1\u9053\u8A2D\u5B9A',
-        en: 'Interactive notification channel setup',
-      },
-    },
-    {
-      key: '2',
-      label: { 'zh-TW': '\u67E5\u770B\u72C0\u614B', en: 'Status' },
-      description: {
-        'zh-TW': '\u986F\u793A\u901A\u77E5\u7BA1\u9053\u72C0\u614B',
-        en: 'Show notification channel status',
-      },
-    },
-    {
-      key: '3',
-      label: { 'zh-TW': '\u67E5\u770B\u914D\u7F6E', en: 'Config' },
-      description: {
-        'zh-TW': '\u986F\u793A\u76EE\u524D\u901A\u77E5\u914D\u7F6E',
-        en: 'Show current notification configuration',
-      },
-    },
+    { key: '1', label: currentLang === 'zh-TW' ? '\u8A2D\u5B9A\u901A\u77E5' : 'Setup' },
+    { key: '2', label: currentLang === 'zh-TW' ? '\u67E5\u770B\u72C0\u614B' : 'Status' },
+    { key: '3', label: currentLang === 'zh-TW' ? '\u67E5\u770B\u914D\u7F6E' : 'Config' },
   ];
 
   renderCompactMenu(
-    { en: 'Notifications', 'zh-TW': '\u901A\u77E5\u7CFB\u7D71' },
+    currentLang === 'zh-TW' ? '\u901A\u77E5\u7CFB\u7D71' : 'Notifications',
     items,
-    currentLang,
   );
-  const choice = await waitForChoice(items, {
-    backLabel: { en: 'Back', 'zh-TW': '\u8FD4\u56DE' },
-    lang: currentLang,
-  });
-  if (!choice || choice.key.startsWith('__')) return;
+  const choice = await waitForCompactChoice(items, currentLang);
+  if (!choice) return;
 
   console.log('');
   const { runCLI } = await import('@openclaw/panguard-chat');
@@ -636,16 +491,13 @@ async function actionChat(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionThreat(): Promise<void> {
-  console.log(banner());
-  console.log(divider(currentLang === 'zh-TW' ? '\u5A01\u8105\u60C5\u5831 / Threat Cloud' : 'Threat Cloud'));
+  const title = currentLang === 'zh-TW' ? '\u5A01\u8105\u60C5\u5831' : 'Threat Cloud';
+  console.log(`  ${theme.brandBold(title)}`);
   console.log('');
 
-  console.log(`  ${symbols.info} ${currentLang === 'zh-TW'
-    ? '\u5373\u5C07\u555F\u52D5\u5A01\u8105\u60C5\u5831 REST API \u4F3A\u670D\u5668 (port 8080)'
-    : 'Starting Threat Cloud REST API server (port 8080)...'}`);
-  console.log(`  ${c.dim(currentLang === 'zh-TW'
-    ? '\u6309\u4EFB\u610F\u9375\u505C\u6B62\u4F3A\u670D\u5668\u4E26\u8FD4\u56DE\u9078\u55AE'
-    : 'Press any key to stop the server and return to menu.')}`);
+  console.log(c.dim(currentLang === 'zh-TW'
+    ? '  \u5373\u5C07\u555F\u52D5\u5A01\u8105\u60C5\u5831 REST API \u4F3A\u670D\u5668 (port 8080)'
+    : '  Starting Threat Cloud REST API server (port 8080)...'));
   console.log('');
 
   const { ThreatCloudServer } = await import('@openclaw/threat-cloud');
@@ -665,24 +517,24 @@ async function actionThreat(): Promise<void> {
   try {
     await server.start();
     sp.succeed(currentLang === 'zh-TW'
-      ? 'Threat Cloud API \u4F3A\u670D\u5668\u5DF2\u555F\u52D5'
-      : 'Threat Cloud API server started');
+      ? 'Threat Cloud API \u5DF2\u555F\u52D5'
+      : 'Threat Cloud API started');
 
-    console.log(statusPanel('PANGUARD AI Threat Cloud', [
-      { label: 'URL', value: c.underline('http://127.0.0.1:8080') },
-      { label: 'Health', value: c.sage('http://127.0.0.1:8080/health') },
-      { label: 'API', value: c.sage('http://127.0.0.1:8080/api/stats') },
-    ]));
+    console.log('');
+    console.log(`  URL       ${c.underline('http://127.0.0.1:8080')}`);
+    console.log(`  Health    ${c.sage('http://127.0.0.1:8080/health')}`);
+    console.log(`  API       ${c.sage('http://127.0.0.1:8080/api/stats')}`);
+    console.log('');
 
-    console.log(`  ${c.dim(currentLang === 'zh-TW'
-      ? '\u4F3A\u670D\u5668\u904B\u884C\u4E2D\uFF0C\u6309\u4EFB\u610F\u9375\u505C\u6B62...'
-      : 'Server running. Press any key to stop...')}`);
+    console.log(c.dim(currentLang === 'zh-TW'
+      ? '  \u6309\u4EFB\u610F\u9375\u505C\u6B62\u4F3A\u670D\u5668...'
+      : '  Press any key to stop...'));
 
     await pressAnyKey(currentLang);
     await server.stop();
-    console.log(`  ${symbols.pass} ${currentLang === 'zh-TW'
-      ? 'Threat Cloud \u4F3A\u670D\u5668\u5DF2\u505C\u6B62'
-      : 'Threat Cloud server stopped'}`);
+    console.log(`  ${c.safe(currentLang === 'zh-TW'
+      ? 'Threat Cloud \u5DF2\u505C\u6B62'
+      : 'Threat Cloud stopped')}`);
   } catch (err) {
     sp.fail(`${err instanceof Error ? err.message : String(err)}`);
   }
@@ -696,51 +548,39 @@ async function actionDemo(): Promise<void> {
   const { runScan } = await import('@openclaw/panguard-scan');
   const { generateComplianceReport, generateSummaryText } = await import('@openclaw/panguard-report');
 
-  console.log(banner());
-  console.log(`  ${symbols.info} ${c.bold('Panguard AI - ' + (currentLang === 'zh-TW' ? '\u81EA\u52D5\u5C55\u793A' : 'Automated Demo'))}`);
-  console.log(`  ${c.dim(currentLang === 'zh-TW'
-    ? '\u6B63\u5728\u57F7\u884C\u6240\u6709\u5B89\u5168\u6A21\u7D44...'
-    : 'Running through all security modules...')}`);
+  const title = currentLang === 'zh-TW' ? '\u529F\u80FD\u5C55\u793A' : 'Feature Demo';
+  console.log(`  ${theme.brandBold(title)}`);
+  console.log(c.dim(currentLang === 'zh-TW'
+    ? '  \u6B63\u5728\u57F7\u884C\u6240\u6709\u5B89\u5168\u6A21\u7D44...'
+    : '  Running through all security modules...'));
   console.log('');
 
   // 1. Security Scan
-  console.log(divider(currentLang === 'zh-TW' ? '1. \u5B89\u5168\u6383\u63CF' : '1. Security Scan'));
+  console.log(c.dim(currentLang === 'zh-TW' ? '  1. \u5B89\u5168\u6383\u63CF' : '  1. Security Scan'));
   console.log('');
 
   const scanSp = spinner(currentLang === 'zh-TW'
-    ? '\u6B63\u5728\u57F7\u884C\u5FEB\u901F\u5B89\u5168\u6383\u63CF...'
-    : 'Running quick security scan...');
+    ? '\u6B63\u5728\u57F7\u884C\u5FEB\u901F\u6383\u63CF...'
+    : 'Running quick scan...');
   try {
     const result = await runScan({ depth: 'quick', lang: currentLang, verbose: false });
     scanSp.succeed(`${currentLang === 'zh-TW' ? '\u6383\u63CF\u5B8C\u6210' : 'Scan complete'} ${c.dim(`(${formatDuration(result.scanDuration)})`)}`);
 
     const safetyScore = Math.max(0, 100 - result.riskScore);
     const grade = safetyScore >= 90 ? 'A' : safetyScore >= 75 ? 'B' : safetyScore >= 60 ? 'C' : safetyScore >= 40 ? 'D' : 'F';
-    console.log(scoreDisplay(safetyScore, grade));
-
-    console.log(statusPanel(currentLang === 'zh-TW' ? '\u6383\u63CF\u7D50\u679C' : 'Scan Results', [
-      {
-        label: currentLang === 'zh-TW' ? '\u98A8\u96AA\u5206\u6578' : 'Risk Score',
-        value: `${result.riskScore}/100`,
-        status: result.riskScore <= 25 ? 'safe' as const : result.riskScore <= 50 ? 'caution' as const : 'critical' as const,
-      },
-      {
-        label: currentLang === 'zh-TW' ? '\u767C\u73FE\u554F\u984C' : 'Findings',
-        value: String(result.findings.length),
-        status: result.findings.length === 0 ? 'safe' as const : 'caution' as const,
-      },
-    ]));
+    console.log(`  Score: ${c.bold(`${safetyScore}/100`)} (${grade}) | Findings: ${result.findings.length}`);
   } catch (err) {
     scanSp.fail(`${err instanceof Error ? err.message : err}`);
   }
+  console.log('');
 
   // 2. Compliance Report
-  console.log(divider(currentLang === 'zh-TW' ? '2. \u5408\u898F\u5831\u544A (ISO 27001)' : '2. Compliance Report (ISO 27001)'));
+  console.log(c.dim(currentLang === 'zh-TW' ? '  2. \u5408\u898F\u5831\u544A (ISO 27001)' : '  2. Compliance Report (ISO 27001)'));
   console.log('');
 
   const reportSp = spinner(currentLang === 'zh-TW'
-    ? '\u6B63\u5728\u7522\u751F ISO 27001 \u5408\u898F\u5831\u544A...'
-    : 'Generating ISO 27001 compliance report...');
+    ? '\u6B63\u5728\u7522\u751F ISO 27001 \u5831\u544A...'
+    : 'Generating ISO 27001 report...');
   try {
     const findings = [
       {
@@ -771,66 +611,67 @@ async function actionDemo(): Promise<void> {
       ? 'ISO 27001 \u5831\u544A\u5DF2\u7522\u751F'
       : 'ISO 27001 report generated');
 
-    const summaryLines = summary.split('\n').slice(0, 15);
-    console.log('');
+    const summaryLines = summary.split('\n').slice(0, 10);
     for (const line of summaryLines) {
       console.log(`  ${c.dim(line)}`);
     }
-    console.log(`  ${c.dim('...')}`);
-    console.log('');
+    console.log(c.dim('  ...'));
   } catch (err) {
     reportSp.fail(`${err instanceof Error ? err.message : err}`);
   }
+  console.log('');
 
   // 3. Guard Engine
-  console.log(divider(currentLang === 'zh-TW' ? '3. \u5B88\u8B77\u5F15\u64CE' : '3. Guard Engine'));
+  console.log(c.dim(currentLang === 'zh-TW' ? '  3. \u5B88\u8B77\u5F15\u64CE' : '  3. Guard Engine'));
   console.log('');
 
   try {
     const { runCLI: guardCLI } = await import('@openclaw/panguard-guard');
     await guardCLI(['status']);
   } catch {
-    console.log(`  ${symbols.info} ${c.dim(currentLang === 'zh-TW'
-      ? '\u5B88\u8B77\u5F15\u64CE: \u672A\u904B\u884C (\u5C55\u793A\u6B63\u5E38)'
-      : 'Guard engine: not running (normal for demo)')}`);
+    console.log(c.dim(currentLang === 'zh-TW'
+      ? '  \u5B88\u8B77\u5F15\u64CE: \u672A\u904B\u884C (\u5C55\u793A\u6B63\u5E38)'
+      : '  Guard engine: not running (normal for demo)'));
   }
   console.log('');
 
   // 4. Honeypot
-  console.log(divider(currentLang === 'zh-TW' ? '4. \u871C\u7F50\u7CFB\u7D71' : '4. Honeypot System'));
+  console.log(c.dim(currentLang === 'zh-TW' ? '  4. \u871C\u7F50\u7CFB\u7D71' : '  4. Honeypot System'));
   console.log('');
 
   try {
     const { executeCli: trapCLI } = await import('@openclaw/panguard-trap');
     await trapCLI(['config', '--services', 'ssh,http']);
   } catch (err) {
-    console.log(`  ${symbols.fail} ${err instanceof Error ? err.message : err}`);
+    console.log(`  ${c.critical(err instanceof Error ? err.message : String(err))}`);
   }
   console.log('');
 
   // 5. Notifications
-  console.log(divider(currentLang === 'zh-TW' ? '5. \u901A\u77E5\u7CFB\u7D71' : '5. Notification System'));
+  console.log(c.dim(currentLang === 'zh-TW' ? '  5. \u901A\u77E5\u7CFB\u7D71' : '  5. Notification System'));
   console.log('');
 
   try {
     const { runCLI: chatCLI } = await import('@openclaw/panguard-chat');
     await chatCLI(['status']);
   } catch {
-    console.log(`  ${symbols.info} ${c.dim(currentLang === 'zh-TW'
-      ? '\u901A\u77E5\u7CFB\u7D71: \u5C1A\u672A\u914D\u7F6E'
-      : 'Notification system: not configured')}`);
+    console.log(c.dim(currentLang === 'zh-TW'
+      ? '  \u901A\u77E5\u7CFB\u7D71: \u5C1A\u672A\u914D\u7F6E'
+      : '  Notification system: not configured'));
   }
   console.log('');
 
   // Summary
-  console.log(divider(currentLang === 'zh-TW' ? '\u5C55\u793A\u5B8C\u6210' : 'Demo Complete'));
+  console.log(`  ${theme.brandBold(currentLang === 'zh-TW' ? '\u5C55\u793A\u5B8C\u6210' : 'Demo Complete')}`);
   console.log('');
-
-  console.log(statusPanel('PANGUARD AI - ' + (currentLang === 'zh-TW' ? '\u5C55\u793A\u6458\u8981' : 'Demo Summary'), [
-    { label: currentLang === 'zh-TW' ? '\u5B89\u5168\u6383\u63CF' : 'Security Scan', value: c.safe('OK'), status: 'safe' },
-    { label: currentLang === 'zh-TW' ? '\u5408\u898F\u5831\u544A' : 'Compliance Report', value: c.safe('OK'), status: 'safe' },
-    { label: currentLang === 'zh-TW' ? '\u5B88\u8B77\u5F15\u64CE' : 'Guard Engine', value: c.safe('OK'), status: 'safe' },
-    { label: currentLang === 'zh-TW' ? '\u871C\u7F50\u7CFB\u7D71' : 'Honeypot System', value: c.safe('OK'), status: 'safe' },
-    { label: currentLang === 'zh-TW' ? '\u901A\u77E5\u7CFB\u7D71' : 'Notification System', value: c.safe('OK'), status: 'safe' },
-  ]));
+  const modules = [
+    currentLang === 'zh-TW' ? '\u5B89\u5168\u6383\u63CF' : 'Scan',
+    currentLang === 'zh-TW' ? '\u5408\u898F\u5831\u544A' : 'Report',
+    currentLang === 'zh-TW' ? '\u5B88\u8B77\u5F15\u64CE' : 'Guard',
+    currentLang === 'zh-TW' ? '\u871C\u7F50\u7CFB\u7D71' : 'Trap',
+    currentLang === 'zh-TW' ? '\u901A\u77E5\u7CFB\u7D71' : 'Notify',
+  ];
+  for (const m of modules) {
+    console.log(`  ${c.safe('\u2713')} ${m}`);
+  }
 }
