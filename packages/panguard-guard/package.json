@@ -16,7 +16,8 @@
     "dev": "tsc --build --watch"
   },
   "dependencies": {
-    "@panguard-ai/core": "workspace:*"
+    "@panguard-ai/core": "workspace:*",
+    "@panguard-ai/security-hardening": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

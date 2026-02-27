@@ -54,6 +54,12 @@ import { ThreatCloudClient } from './threat-cloud/index.js';
 import { DashboardServer } from './dashboard/index.js';
 import { PidFile, Watchdog } from './daemon/index.js';
 import { validateLicense, hasFeature } from './license/index.js';
+import {
+  loadSecurityPolicy,
+  runSecurityAudit,
+  logAuditEvent,
+  SyslogAdapter,
+} from '@panguard-ai/security-hardening';
 
 const logger = createLogger('panguard-guard:engine');
 
@@ -153,6 +159,7 @@ export class GuardEngine {
   private readonly pidFile: PidFile;
   private watchdog: Watchdog | null = null;
   private monitorEngine: MonitorEngine | null = null;
+  private syslogAdapter: SyslogAdapter | null = null;
 
   // State / 狀態
   private running = false;
@@ -266,6 +273,30 @@ export class GuardEngine {
     // Write PID file / 寫入 PID 檔案
     this.pidFile.write();
 
+    // Security self-audit on startup / 啟動時安全自檢
+    try {
+      const policy = loadSecurityPolicy({});
+      const auditReport = runSecurityAudit(policy);
+      const unfixed = auditReport.findings.filter((f) => !f.fixed);
+      if (unfixed.length > 0) {
+        logger.warn(
+          `Security audit: ${unfixed.length} issue(s) found (risk score: ${auditReport.riskScore})`
+        );
+      } else {
+        logger.info('Security audit: all checks passed');
+      }
+    } catch (err: unknown) {
+      logger.warn(`Security audit skipped: ${err instanceof Error ? err.message : String(err)}`);
+    }
+
+    // Initialize syslog adapter if configured / 如有設定則初始化 Syslog 轉送器
+    const syslogServer = process.env['PANGUARD_SYSLOG_SERVER'];
+    if (syslogServer) {
+      const syslogPort = parseInt(process.env['PANGUARD_SYSLOG_PORT'] ?? '514', 10);
+      this.syslogAdapter = new SyslogAdapter(syslogServer, syslogPort);
+      logger.info(`Syslog adapter initialized: ${syslogServer}:${syslogPort}`);
+    }
+
     // Start threat intel feeds (non-blocking, best-effort)
     this.feedManager
       .start()
@@ -373,6 +404,7 @@ export class GuardEngine {
     if (this.monitorEngine) this.monitorEngine.stop();
     if (this.dashboard) await this.dashboard.stop();
     if (this.watchdog) this.watchdog.stop();
+    if (this.syslogAdapter) this.syslogAdapter = null;
 
     // Save baseline / 儲存基線
     saveBaseline(this.baselinePath, this.baseline);
@@ -394,6 +426,26 @@ export class GuardEngine {
    */
   async processEvent(event: SecurityEvent): Promise<void> {
     this.eventsProcessed++;
+
+    // Audit log every event / 稽核日誌記錄每個事件
+    logAuditEvent({
+      level: 'info',
+      action: 'policy_check',
+      target: event.id,
+      result: 'success',
+      context: { source: event.source, category: event.category },
+    });
+    if (this.syslogAdapter) {
+      this.syslogAdapter.send({
+        level: 'info',
+        action: 'policy_check',
+        target: event.id,
+        result: 'success',
+        module: 'panguard-guard',
+        context: { source: event.source, description: event.description },
+        timestamp: new Date().toISOString(),
+      });
+    }
 
     try {
       // Stage 1: Detect / 階段 1: 偵測

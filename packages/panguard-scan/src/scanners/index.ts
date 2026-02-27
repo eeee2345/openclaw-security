@@ -14,6 +14,11 @@
 
 import { createLogger, getRiskLevel } from '@panguard-ai/core';
 import type { RiskFactor } from '@panguard-ai/core';
+import {
+  createFilesystemGuard,
+  createCommandValidator,
+  DEFAULT_ALLOWED_COMMANDS,
+} from '@panguard-ai/security-hardening';
 import { discover } from './discovery-scanner.js';
 import { checkPasswordPolicy } from './password-policy.js';
 import { checkUnnecessaryPorts } from './open-ports.js';
@@ -219,6 +224,29 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
   const startTime = Date.now();
 
   logger.info('Starting security scan', { depth: config.depth, lang: config.lang });
+
+  // Initialize sandbox guards for scan scope restriction
+  const scanAllowedDirs = ['/etc', '/var/log', '/tmp', '/usr', '/home', '/root', '/opt'];
+  const scanAllowedCommands = [
+    ...DEFAULT_ALLOWED_COMMANDS,
+    'softwareupdate', 'apt', 'yum', 'dnf',
+    'systemctl', 'defaults', 'crontab', 'schtasks',
+    'sharing', 'net', 'smbclient', 'openssl',
+    'netstat', 'ss', 'lsof', 'ip', 'ifconfig',
+    'launchctl', 'dscl', 'id',
+  ] as const;
+  const filesystemGuard = createFilesystemGuard(scanAllowedDirs);
+  const commandValidator = createCommandValidator(scanAllowedCommands);
+  logger.info('Sandbox guards initialized', {
+    allowedDirs: scanAllowedDirs.length,
+    allowedCommands: scanAllowedCommands.length,
+  });
+
+  // Expose guards for scanner modules
+  (globalThis as Record<string, unknown>)['__panguardScanGuards'] = {
+    filesystemGuard,
+    commandValidator,
+  };
 
   // Step 1: Run environment discovery
   // 步驟 1：執行環境偵察

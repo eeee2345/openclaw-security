@@ -29,6 +29,7 @@ import type { GoogleSheetsConfig } from './google-sheets.js';
 import { syncWaitlistEntry, ensureSheetHeaders } from './google-sheets.js';
 import { RateLimiter } from './rate-limiter.js';
 import type { UserPublic } from './types.js';
+import { logAuditEvent } from '@panguard-ai/security-hardening';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -316,6 +317,14 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     const token = generateSessionToken();
     const session = db.createSession(user.id, token, sessionExpiry());
 
+    logAuditEvent({
+      level: 'info',
+      action: 'credential_access',
+      target: email,
+      result: 'success',
+      context: { details: 'User registered' },
+    });
+
     json(res, 201, {
       ok: true,
       data: {
@@ -365,6 +374,13 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) {
+      logAuditEvent({
+        level: 'warn',
+        action: 'credential_access',
+        target: email,
+        result: 'failure',
+        context: { details: 'Invalid password' },
+      });
       json(res, 401, { ok: false, error: 'Invalid email or password' });
       return;
     }
@@ -372,6 +388,14 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     db.updateLastLogin(user.id);
     const token = generateSessionToken();
     const session = db.createSession(user.id, token, sessionExpiry());
+
+    logAuditEvent({
+      level: 'info',
+      action: 'credential_access',
+      target: email,
+      result: 'success',
+      context: { details: 'User logged in' },
+    });
 
     json(res, 200, {
       ok: true,
@@ -654,6 +678,13 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     // Audit log
     db.addAuditLog('tier_change', user!.id, target.id, JSON.stringify({ from: oldTier, to: tier }));
+    logAuditEvent({
+      level: 'info',
+      action: 'policy_check',
+      target: `user:${target.id}`,
+      result: 'success',
+      context: { details: `Tier changed: ${oldTier} -> ${tier}` },
+    });
 
     // Invalidate all sessions for this user so they pick up the new tier
     db.deleteSessionsByUserId(target.id);
@@ -701,6 +732,13 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     // Audit log
     db.addAuditLog('role_change', user!.id, target.id, JSON.stringify({ from: oldRole, to: role }));
+    logAuditEvent({
+      level: 'info',
+      action: 'policy_check',
+      target: `user:${target.id}`,
+      result: 'success',
+      context: { details: `Role changed: ${oldRole} -> ${role}` },
+    });
 
     const updated = db.getUserById(target.id)!;
     json(res, 200, { ok: true, data: toPublicUser(updated) });

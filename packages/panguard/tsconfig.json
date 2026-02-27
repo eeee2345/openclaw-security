@@ -13,7 +13,8 @@
     { "path": "../panguard-chat" },
     { "path": "../panguard-trap" },
     { "path": "../threat-cloud" },
-    { "path": "../panguard-auth" }
+    { "path": "../panguard-auth" },
+    { "path": "../../security-hardening" }
   ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

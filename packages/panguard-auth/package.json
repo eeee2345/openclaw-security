@@ -13,6 +13,7 @@
     "dev": "tsc --build --watch"
   },
   "dependencies": {
+    "@panguard-ai/security-hardening": "workspace:*",
     "better-sqlite3": "^11.0.0"
   },
   "devDependencies": {

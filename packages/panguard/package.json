@@ -23,6 +23,7 @@
     "@panguard-ai/panguard-trap": "workspace:*",
     "@panguard-ai/threat-cloud": "workspace:*",
     "@panguard-ai/panguard-auth": "workspace:*",
+    "@panguard-ai/security-hardening": "workspace:*",
     "commander": "^12.0.0"
   },
   "devDependencies": {
