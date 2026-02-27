@@ -16,10 +16,12 @@ export function guardCommand(): Command {
     .description('Start the guard engine / \u555F\u52D5\u5B88\u8B77\u5F15\u64CE')
     .option('--data-dir <path>', 'Data directory / \u8CC7\u6599\u76EE\u9304')
     .option('--verbose', 'Verbose output (show all event logs) / \u8A73\u7D30\u8F38\u51FA', false)
-    .action(async (opts: { dataDir?: string; verbose: boolean }) => {
+    .option('--manager <url>', 'Manager URL for agent mode / Manager \u7DB2\u5740\uFF08Agent \u6A21\u5F0F\uFF09')
+    .action(async (opts: { dataDir?: string; verbose: boolean; manager?: string }) => {
       const args = ['start'];
       if (opts.dataDir) args.push('--data-dir', opts.dataDir);
       if (opts.verbose) args.push('--verbose');
+      if (opts.manager) args.push('--manager', opts.manager);
       await runCLI(args);
     });
 

@@ -62,6 +62,8 @@ import {
 } from '@panguard-ai/security-hardening';
 import { FalcoMonitor } from './monitors/falco-monitor.js';
 import { SuricataMonitor } from './monitors/suricata-monitor.js';
+import { PanguardAgentClient } from './agent-client/index.js';
+import type { AgentHeartbeat } from './agent-client/index.js';
 
 const logger = createLogger('panguard-guard:engine');
 
@@ -164,6 +166,7 @@ export class GuardEngine {
   private syslogAdapter: SyslogAdapter | null = null;
   private falcoMonitor: FalcoMonitor | null = null;
   private suricataMonitor: SuricataMonitor | null = null;
+  private agentClient: PanguardAgentClient | null = null;
 
   // State / 狀態
   private running = false;
@@ -363,6 +366,30 @@ export class GuardEngine {
       logger.info('Suricata network IDS monitoring active');
     }
 
+    // Start agent client if manager URL is configured (distributed mode)
+    // 如有設定 Manager URL 則啟動 Agent 客戶端（分散式模式）
+    if (this.config.managerUrl) {
+      try {
+        this.agentClient = new PanguardAgentClient(this.config.managerUrl);
+        const reg = await this.agentClient.register('1.0.0');
+        logger.info(`Agent mode active: registered as ${reg.agentId}`);
+
+        this.agentClient.startHeartbeat((): AgentHeartbeat => ({
+          eventsProcessed: this.eventsProcessed,
+          threatsDetected: this.threatsDetected,
+          actionsExecuted: this.actionsExecuted,
+          mode: this.mode,
+          uptime: Date.now() - this.startTime,
+          memoryUsageMB: Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 10) / 10,
+        }));
+      } catch (err: unknown) {
+        logger.warn(
+          `Agent registration failed (standalone mode): ${err instanceof Error ? err.message : String(err)}`,
+        );
+        this.agentClient = null;
+      }
+    }
+
     // Start dashboard if enabled / 啟動儀表板（如已啟用）
     const license = validateLicense(this.config.licenseKey);
     if (this.config.dashboardEnabled && hasFeature(license, 'dashboard')) {
@@ -436,6 +463,10 @@ export class GuardEngine {
     if (this.suricataMonitor) {
       this.suricataMonitor.stop();
       this.suricataMonitor = null;
+    }
+    if (this.agentClient) {
+      this.agentClient.stopHeartbeat();
+      this.agentClient = null;
     }
 
     // Save baseline / 儲存基線
@@ -528,6 +559,20 @@ export class GuardEngine {
         this.baseline
       );
       this.baseline = updatedBaseline;
+
+      // Report to Manager if in agent mode / 在 Agent 模式下回報給 Manager
+      if (this.agentClient?.isRegistered()) {
+        this.agentClient.reportEvent({
+          event,
+          verdict: {
+            conclusion: verdict.conclusion,
+            confidence: verdict.confidence,
+            action: response.action,
+          },
+        }).catch((err: unknown) => {
+          logger.warn(`Agent event report failed: ${err instanceof Error ? err.message : String(err)}`);
+        });
+      }
 
       // Upload to threat cloud / 上傳至威脅雲
       if (anonymizedData) {
