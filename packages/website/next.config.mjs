@@ -8,6 +8,11 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
+          source: '/windows',
+          has: [{ type: 'host', value: 'get.panguard.ai' }],
+          destination: '/api/install/windows',
+        },
+        {
           source: '/:path*',
           has: [{ type: 'host', value: 'get.panguard.ai' }],
           destination: '/api/install',

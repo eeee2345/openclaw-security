@@ -8,6 +8,8 @@ import SectionWrapper from '@/components/ui/SectionWrapper';
 import { Link } from '@/navigation';
 import { CheckIcon as BrandCheck } from '@/components/ui/BrandIcons';
 
+type Platform = 'unix' | 'windows';
+
 function CodeBlock({ code, label }: { code: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
@@ -41,6 +43,36 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
   );
 }
 
+function PlatformTabs({
+  selected,
+  onChange,
+}: {
+  selected: Platform;
+  onChange: (p: Platform) => void;
+}) {
+  const tabs: { id: Platform; label: string }[] = [
+    { id: 'unix', label: 'macOS / Linux' },
+    { id: 'windows', label: 'Windows' },
+  ];
+  return (
+    <div className="flex gap-1 bg-surface-1 border border-border rounded-lg p-1 w-fit mb-4">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => onChange(tab.id)}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
+            selected === tab.id
+              ? 'bg-brand-sage text-white'
+              : 'text-text-muted hover:text-text-secondary'
+          }`}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function TerminalOutput({ lines }: { lines: string[] }) {
   return (
     <div className="bg-surface-1 border border-border rounded-xl p-4 font-mono text-sm space-y-1">
@@ -58,6 +90,7 @@ function TerminalOutput({ lines }: { lines: string[] }) {
 
 export default function GettingStartedContent() {
   const t = useTranslations('docs.gettingStarted');
+  const [platform, setPlatform] = useState<Platform>('unix');
 
   const requirements = [t('req1'), t('req2'), t('req3')];
 
@@ -103,7 +136,12 @@ export default function GettingStartedContent() {
           <FadeInUp>
             <h2 className="text-xl font-bold text-text-primary mb-2">{t('step1Title')}</h2>
             <p className="text-text-secondary mb-6">{t('step1Desc')}</p>
-            <CodeBlock code="curl -fsSL https://get.panguard.ai | sh" label="Terminal" />
+            <PlatformTabs selected={platform} onChange={setPlatform} />
+            {platform === 'unix' ? (
+              <CodeBlock code="curl -fsSL https://get.panguard.ai | sh" label="Terminal (macOS / Linux)" />
+            ) : (
+              <CodeBlock code="irm https://get.panguard.ai/windows | iex" label="PowerShell (Windows)" />
+            )}
             <p className="text-xs text-text-muted mt-3">{t('step1Note')}</p>
             <TerminalOutput
               lines={[
