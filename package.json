@@ -7,7 +7,7 @@
   "author": "Panguard AI Team",
   "license": "MIT",
   "engines": {
-    "node": ">=20.0.0",
+    "node": "20.x",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
