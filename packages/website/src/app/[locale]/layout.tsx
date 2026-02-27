@@ -133,6 +133,7 @@ export default async function LocaleLayout({
       className={`${inter.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} ${notoSansTC.variable}`}
     >
       <head>
+        {/* jsonLd is a static constant — never include user-supplied values */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

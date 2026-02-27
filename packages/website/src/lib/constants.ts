@@ -3,5 +3,3 @@
 export const LEGAL_LAST_UPDATED = "February 2026";
 
 export const GITHUB_URL = "https://github.com/panguard-ai/panguard-ai";
-export const GITHUB_ORG_URL = "https://github.com/panguard-ai";
-export const SITE_URL = "https://panguard.ai";

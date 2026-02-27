@@ -161,7 +161,10 @@
       "part2c": "再用你聽得懂的語言告訴你發生了什麼。",
       "part3a": "沒有儀表板。沒有警報面板。沒有任何需要人類去點擊的東西。",
       "part3b": "你的 Agent 下指令。我們的 Agent 防禦。",
-      "tagline": "Agent to Agent."
+      "tagline": "Agent to Agent.",
+      "dashboard": "儀表板",
+      "autoFixed": "已自動修復",
+      "yourAgent": "你的 Agent"
     },
     "cliShowcase": {
       "overline": "實際運作",
@@ -275,7 +278,13 @@
       "pipeline": {
         "title": "AI 分析管線",
         "subtitle": "5 個專業 Agent",
-        "agents": ["偵測 Agent", "分析 Agent", "回應 Agent", "報告 Agent", "對話 Agent"],
+        "agents": [
+          "偵測 Agent",
+          "分析 Agent",
+          "回應 Agent",
+          "報告 Agent",
+          "對話 Agent"
+        ],
         "desc": "每個 Agent 專注一件事。協同運作，自動決策。"
       },
       "githubCta": "不相信我們？查看原始碼"
@@ -552,8 +561,18 @@
         "unit": "一次",
         "earlyBird": "早鳥價，限量前 100 份。",
         "desc": "選擇一個框架：",
-        "frameworks": ["ISO 27001", "SOC 2 Type II", "資通安全管理法"],
-        "includes": ["完整差距分析報告", "控制項逐條評估", "改善建議及優先排序", "雙語輸出 (EN/中文)", "PDF + JSON 格式"]
+        "frameworks": [
+          "ISO 27001",
+          "SOC 2 Type II",
+          "資通安全管理法"
+        ],
+        "includes": [
+          "完整差距分析報告",
+          "控制項逐條評估",
+          "改善建議及優先排序",
+          "雙語輸出 (EN/中文)",
+          "PDF + JSON 格式"
+        ]
       },
       "monitoring": {
         "name": "持續合規監控",
@@ -562,8 +581,19 @@
         "unit": "/月",
         "earlyBird": "早鳥價，限量前 50 個名額。",
         "desc": "包含所有框架：",
-        "frameworks": ["ISO 27001", "SOC 2", "資通安全管理法"],
-        "includes": ["單次報告的所有內容", "每月自動更新", "合規狀態即時監控", "變化通知（LINE/Email）", "審計追蹤日誌", "年度報告自動產出"]
+        "frameworks": [
+          "ISO 27001",
+          "SOC 2",
+          "資通安全管理法"
+        ],
+        "includes": [
+          "單次報告的所有內容",
+          "每月自動更新",
+          "合規狀態即時監控",
+          "變化通知（LINE/Email）",
+          "審計追蹤日誌",
+          "年度報告自動產出"
+        ]
       },
       "requiresPro": "適用於 Pro 方案及以上。",
       "disclaimer": "Panguard 合規報告為 AI 自動化差距分析工具，可作為合規準備的參考依據。本報告不構成正式認證、法律意見或審計結論。如需正式認證，建議配合認證機構完成最終審計流程。"

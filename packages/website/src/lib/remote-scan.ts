@@ -157,6 +157,8 @@ async function checkSSL(
         port: 443,
         servername: host,
         timeout: TCP_TIMEOUT,
+        // Intentionally false: we connect regardless of cert validity
+        // in order to inspect and report on certificate issues as findings.
         rejectUnauthorized: false,
       },
       () => {

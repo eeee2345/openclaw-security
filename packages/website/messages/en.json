@@ -161,7 +161,10 @@
       "part2c": "Then tells you what happened in plain language.",
       "part3a": "No dashboard. No alert panel. Nothing that needs a human to click.",
       "part3b": "Your agent gives commands. Our agent defends.",
-      "tagline": "Agent to Agent."
+      "tagline": "Agent to Agent.",
+      "dashboard": "Dashboard",
+      "autoFixed": "Auto-fixed",
+      "yourAgent": "Your Agent"
     },
     "cliShowcase": {
       "overline": "See It In Action",
@@ -275,7 +278,13 @@
       "pipeline": {
         "title": "AI Analysis Pipeline",
         "subtitle": "5 Specialized Agents",
-        "agents": ["Detect Agent", "Analyze Agent", "Respond Agent", "Report Agent", "Chat Agent"],
+        "agents": [
+          "Detect Agent",
+          "Analyze Agent",
+          "Respond Agent",
+          "Report Agent",
+          "Chat Agent"
+        ],
         "desc": "Each agent focuses on one task. They collaborate and make decisions autonomously."
       },
       "githubCta": "Don't trust us? Read the source"
@@ -410,8 +419,18 @@
         "unit": "one-time",
         "earlyBird": "Early bird price. Limited to the first 100 reports.",
         "desc": "Choose one framework:",
-        "frameworks": ["ISO 27001", "SOC 2 Type II", "Taiwan Cyber Security Act (ISMS)"],
-        "includes": ["Complete gap analysis report", "Control-by-control assessment", "Improvement recommendations with priority ranking", "Bilingual output (EN + zh-TW)", "PDF + JSON format"]
+        "frameworks": [
+          "ISO 27001",
+          "SOC 2 Type II",
+          "Taiwan Cyber Security Act (ISMS)"
+        ],
+        "includes": [
+          "Complete gap analysis report",
+          "Control-by-control assessment",
+          "Improvement recommendations with priority ranking",
+          "Bilingual output (EN + zh-TW)",
+          "PDF + JSON format"
+        ]
       },
       "monitoring": {
         "name": "Continuous Monitoring",
@@ -420,8 +439,19 @@
         "unit": "/mo",
         "earlyBird": "Early bird price. Limited to the first 50 seats.",
         "desc": "Includes all frameworks:",
-        "frameworks": ["ISO 27001", "SOC 2", "Taiwan Cyber Security Act (ISMS)"],
-        "includes": ["Everything in Full Assessment", "Monthly automatic updates", "Real-time compliance status monitoring", "Change notifications (LINE/Email)", "Audit trail logs", "Annual report auto-generation"]
+        "frameworks": [
+          "ISO 27001",
+          "SOC 2",
+          "Taiwan Cyber Security Act (ISMS)"
+        ],
+        "includes": [
+          "Everything in Full Assessment",
+          "Monthly automatic updates",
+          "Real-time compliance status monitoring",
+          "Change notifications (LINE/Email)",
+          "Audit trail logs",
+          "Annual report auto-generation"
+        ]
       },
       "requiresPro": "Available on Pro plans and above.",
       "disclaimer": "Panguard compliance reports are AI-powered gap analysis tools intended as a reference for compliance readiness. Reports do not constitute formal certification, legal advice, or audit conclusions. For formal certification, we recommend engaging an accredited certification body for final audit."

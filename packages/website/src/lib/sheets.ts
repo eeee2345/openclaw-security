@@ -8,27 +8,17 @@ import path from "path";
  * 1. LEAD_WEBHOOK_URL env var -> POST JSON to external webhook (Zapier, Make, etc.)
  * 2. Local data/<sheet>.json file (development / self-hosted)
  * 3. /tmp/<sheet>.json fallback (Vercel serverless, ephemeral)
- *
- * All submissions are logged to console so they appear in Vercel/Railway logs
- * even if file storage fails.
  */
 export async function appendToSheet(sheet: string, row: string[]) {
-  // Log submission event without PII (visible in deployment platform logs)
-  console.log(`[lead:${sheet}] new submission (${row.length} fields)`);
-
   // If a webhook URL is configured, send data there
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (webhookUrl) {
-    try {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sheet, row, timestamp: row[0] }),
-      });
-      return;
-    } catch (err) {
-      console.error(`[lead:${sheet}] webhook failed, falling back to file`, err);
-    }
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sheet, row, timestamp: row[0] }),
+    });
+    return;
   }
 
   // Try local data/ directory first, fall back to /tmp for serverless

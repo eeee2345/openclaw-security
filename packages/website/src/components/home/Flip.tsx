@@ -7,7 +7,7 @@ import SectionWrapper from "../ui/SectionWrapper";
 import BrandLogo from "../ui/BrandLogo";
 
 /** Visual separator: crossed-out dashboard vs auto-fix */
-function FlipVisual() {
+function FlipVisual({ t }: { t: ReturnType<typeof useTranslations> }) {
   return (
     <FadeInUp delay={0.1}>
       <div className="flex items-center gap-6 py-2" aria-hidden="true">
@@ -17,7 +17,7 @@ function FlipVisual() {
             <line x1="3" y1="21" x2="21" y2="21" />
             <line x1="12" y1="17" x2="12" y2="21" />
           </svg>
-          <span className="text-sm text-text-tertiary line-through">Dashboard</span>
+          <span className="text-sm text-text-tertiary line-through">{t("dashboard")}</span>
         </div>
         <svg width="24" height="12" viewBox="0 0 24 12" fill="none" className="opacity-30">
           <path d="M0 6h20m0 0l-4-4m4 4l-4 4" stroke="#8B9A8E" strokeWidth="1.5" />
@@ -27,7 +27,7 @@ function FlipVisual() {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             <polyline points="9 12 11 14 15 10" />
           </svg>
-          <span className="text-sm text-brand-sage font-medium">Auto-fixed</span>
+          <span className="text-sm text-brand-sage font-medium">{t("autoFixed")}</span>
         </div>
       </div>
     </FadeInUp>
@@ -35,7 +35,7 @@ function FlipVisual() {
 }
 
 /** Compact radar visualization */
-function AgentProtection() {
+function AgentProtection({ t }: { t: ReturnType<typeof useTranslations> }) {
   const orbitDots = [
     { left: "88%", top: "14%" },
     { left: "8%", top: "10%" },
@@ -107,7 +107,7 @@ function AgentProtection() {
           </div>
           <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-brand-sage border-2 border-surface-1" />
         </div>
-        <span className="text-[9px] text-text-muted">Your Agent</span>
+        <span className="text-[9px] text-text-muted">{t("yourAgent")}</span>
       </div>
     </motion.div>
   );
@@ -132,7 +132,7 @@ export default function Flip() {
                 </p>
               </FadeInUp>
 
-              <FlipVisual />
+              <FlipVisual t={t} />
 
               <FadeInUp delay={0.15}>
                 <div>
@@ -162,7 +162,7 @@ export default function Flip() {
 
             {/* Radar visualization (right side, desktop only) */}
             <div className="hidden lg:block self-center">
-              <AgentProtection />
+              <AgentProtection t={t} />
             </div>
           </div>
 
