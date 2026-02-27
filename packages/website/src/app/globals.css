@@ -254,6 +254,30 @@ body {
   pointer-events: none;
 }
 
+/* ─── Agent Flow Diagram Animations ─── */
+
+@keyframes flow-dash {
+  0% { stroke-dashoffset: 20; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes agent-pulse {
+  0%, 100% { opacity: 0.1; transform-origin: center; transform: scale(1); }
+  50% { opacity: 0.4; transform-origin: center; transform: scale(1.08); }
+}
+
+.flow-line-dash {
+  animation: flow-dash 1.5s linear infinite;
+}
+
+.agent-pulse-left,
+.agent-pulse-right {
+  animation: agent-pulse 3s ease-in-out infinite;
+}
+.agent-pulse-right {
+  animation-delay: 1.5s;
+}
+
 /* Metallic floor reflection */
 .metallic-reflection {
   background: linear-gradient(
