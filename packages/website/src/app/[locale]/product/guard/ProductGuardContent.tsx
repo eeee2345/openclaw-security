@@ -181,7 +181,7 @@ export default function ProductGuardContent() {
                 <span className="text-[#22c55e]">[OK]</span> Panguard Guard v1.0.0 installed
               </p>
               <p className="text-text-secondary">
-                <span className="text-[#22c55e]">[OK]</span> Rule engine loaded (3,155 Sigma + 423
+                <span className="text-[#22c55e]">[OK]</span> Rule engine loaded (3,155 Sigma + 5,895
                 YARA rules)
               </p>
               <p className="text-text-secondary">

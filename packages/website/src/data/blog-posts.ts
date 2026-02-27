@@ -55,7 +55,7 @@ export const blogPosts: BlogPost[] = [
       '## What Panguard Scan Does',
       'Panguard Scan is a free, open-source security audit tool that runs a comprehensive check of your server in under 60 seconds. One command is all it takes:',
       '```\ncurl -fsSL https://get.panguard.ai/scan | sh\n```',
-      'The scan engine checks 3,155 Sigma detection rules and 423 YARA malware signatures against your system. It examines SSH configuration, open ports, running services, file permissions, user accounts, cron jobs, and dozens of other attack surface vectors.',
+      'The scan engine checks 3,155 Sigma detection rules and 5,895 YARA malware signatures against your system. It examines SSH configuration, open ports, running services, file permissions, user accounts, cron jobs, and dozens of other attack surface vectors.',
       '## AI-Prioritized Findings',
       'Raw scan output is noise. Panguard Scan uses AI to prioritize findings by actual risk to your specific environment. A default SSH port on a public-facing web server is critical. The same finding on an internal development machine behind a VPN is informational. Context matters, and Panguard understands context.',
       'Each finding includes a plain-language explanation of what was found, why it matters, and exactly how to fix it. No CVE-code deciphering required.',
