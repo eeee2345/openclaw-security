@@ -1,63 +1,45 @@
-import { useTranslations } from 'next-intl';
 import NavBar from '@/components/NavBar';
 import Hero from '@/components/home/Hero';
+import EraContext from '@/components/home/EraContext';
 import PainPoint from '@/components/home/PainPoint';
-import Flip from '@/components/home/Flip';
-import TechReveal from '@/components/home/TechReveal';
+import ProductGrid from '@/components/home/ProductGrid';
 import ThreeSteps from '@/components/home/ThreeSteps';
 import UseCases from '@/components/home/UseCases';
-import TrustLayer from '@/components/home/TrustLayer';
-import Comparison from '@/components/home/Comparison';
 import SocialProof from '@/components/home/SocialProof';
-import CallToAction from '@/components/home/CallToAction';
-import Vision from '@/components/home/Vision';
+import TimeComparison from '@/components/home/TimeComparison';
+import TrustLayer from '@/components/home/TrustLayer';
+import HomePricing from '@/components/home/HomePricing';
+import FinalCTA from '@/components/home/FinalCTA';
 import Footer from '@/components/Footer';
-import CLIShowcase from '@/components/ui/CLIShowcase';
-import SectionWrapper from '@/components/ui/SectionWrapper';
-import SectionTitle from '@/components/ui/SectionTitle';
-import FadeInUp from '@/components/FadeInUp';
 
 export default function Home() {
-  const t = useTranslations('home.cliShowcase');
-
   return (
     <>
       <NavBar />
       <main>
-        {/* 1. Hero */}
+        {/* 1. Hero — See threats. Respond automatically. Deploy in one line. */}
         <Hero />
-        {/* 2. PainPoint */}
+        {/* 2. Era Context — AI deploys, who protects? */}
+        <EraContext />
+        {/* 3. Pain Point — Your server is being scanned. Now. */}
         <PainPoint />
-        {/* 3. Flip */}
-        <Flip />
-        {/* 4. TechReveal (new) */}
-        <TechReveal />
-        {/* 5. CLIShowcase */}
-        <SectionWrapper>
-          <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
-          <div className="mt-14">
-            <CLIShowcase />
-          </div>
-          <FadeInUp delay={0.3}>
-            <p className="text-sm text-brand-sage text-center mt-6 font-medium">{t('callout')}</p>
-          </FadeInUp>
-        </SectionWrapper>
-        {/* 6. ThreeSteps (new) */}
+        {/* 4. Product Grid — One platform. Six layers of defense. */}
+        <ProductGrid />
+        {/* 5. Three Steps — Install, Scan, Guard */}
         <ThreeSteps />
-        {/* 7. UseCases (new) */}
+        {/* 6. Use Cases — 4 persona scenarios */}
         <UseCases />
-        {/* 8. SocialProof */}
+        {/* 7. Stats Wall — 3,158 / 425 / 8 / 1,107 / 5 / 3 / 6 / MIT */}
         <SocialProof />
-        {/* 9. TrustLayer (new) */}
+        {/* 8. Time Comparison — Without vs With Panguard */}
+        <TimeComparison />
+        {/* 9. Trust Layer — Open Source, Security, Privacy */}
         <TrustLayer />
-        {/* 10. Comparison */}
-        <Comparison />
-        {/* 11. CallToAction */}
-        <CallToAction />
-        {/* 12. Vision */}
-        <Vision />
+        {/* 10. Pricing — Community / Solo / Pro / Business */}
+        <HomePricing />
+        {/* 11. Final CTA — 60 seconds. Free. No account needed. */}
+        <FinalCTA />
       </main>
-      {/* 13. Footer */}
       <Footer />
     </>
   );

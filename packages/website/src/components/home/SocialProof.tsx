@@ -11,6 +11,8 @@ import {
   ScanIcon,
   LockIcon,
   AnalyticsIcon,
+  ReportIcon,
+  ChatIcon,
 } from '@/components/ui/BrandIcons';
 
 export default function SocialProof() {
@@ -23,22 +25,24 @@ export default function SocialProof() {
     label: string;
     icon: typeof ShieldIcon;
   }> = [
-    { numericValue: 1068, label: t('stat1Label'), icon: ShieldIcon },
-    { numericValue: 3155, label: t('stat2Label'), icon: ScanIcon },
+    { numericValue: 3158, label: t('stat1Label'), icon: ScanIcon },
+    { numericValue: 425, label: t('stat2Label'), icon: TerminalIcon },
     { numericValue: 8, label: t('stat3Label'), icon: NetworkIcon },
-    { numericValue: 423, label: t('stat4Label'), icon: TerminalIcon },
+    { numericValue: 1107, label: t('stat4Label'), icon: ShieldIcon },
     { numericValue: 5, label: t('stat5Label'), icon: AnalyticsIcon },
-    { textValue: 'MIT', label: t('stat6Label'), icon: LockIcon },
+    { numericValue: 3, label: t('stat6Label'), icon: ChatIcon },
+    { numericValue: 6, label: t('stat7Label'), icon: ReportIcon },
+    { textValue: 'MIT', label: t('stat8Label'), icon: LockIcon },
   ];
 
   return (
     <SectionWrapper>
       <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-14 max-w-3xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-14 max-w-4xl mx-auto">
         {stats.map((s, i) => (
-          <FadeInUp key={s.label} delay={i * 0.06}>
-            <div className="bg-surface-1 rounded-xl border border-border p-6 text-center card-glow">
+          <FadeInUp key={s.label} delay={i * 0.05}>
+            <div className="bg-surface-1 rounded-xl border border-border p-5 text-center card-glow">
               <s.icon size={20} className="text-brand-sage mx-auto mb-3" />
               <p className="text-2xl sm:text-3xl font-extrabold text-text-primary">
                 {s.numericValue !== null && s.numericValue !== undefined ? (

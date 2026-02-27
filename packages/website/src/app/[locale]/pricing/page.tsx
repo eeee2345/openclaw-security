@@ -6,7 +6,7 @@ import SectionWrapper from '@/components/ui/SectionWrapper';
 import SectionTitle from '@/components/ui/SectionTitle';
 import FAQAccordion from './FAQAccordion';
 import PricingCards from './PricingCards';
-import { ShieldIcon, EnterpriseIcon, CheckIcon } from '@/components/ui/BrandIcons';
+import { ShieldIcon, EnterpriseIcon } from '@/components/ui/BrandIcons';
 import { Link } from '@/navigation';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
@@ -52,52 +52,37 @@ export default async function PricingPage() {
             subtitle={t('addons.subtitle')}
           />
           <FadeInUp>
-            <div className="grid sm:grid-cols-2 gap-6 mt-10 max-w-3xl mx-auto">
-              {(['assessment', 'monitoring'] as const).map((key) => {
-                const includes = t.raw(`addons.${key}.includes`) as string[];
-                const frameworks = t.raw(`addons.${key}.frameworks`) as string[];
-                return (
-                  <div key={key} className="bg-surface-2 rounded-xl border border-border p-6">
-                    <p className="text-sm font-bold text-text-primary mb-1">
-                      {t(`addons.${key}.name`)}
-                    </p>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-3xl font-extrabold text-brand-sage">
-                        {t(`addons.${key}.price`)}
-                      </span>
-                      <span className="text-sm text-text-muted line-through">
-                        {t(`addons.${key}.originalPrice`)}
-                      </span>
-                      <span className="text-xs text-text-tertiary">{t(`addons.${key}.unit`)}</span>
-                    </div>
-                    <p className="text-[10px] text-brand-sage mb-3">
-                      {t(`addons.${key}.earlyBird`)}
-                    </p>
-                    <p className="text-xs text-text-secondary mb-2">{t(`addons.${key}.desc`)}</p>
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {frameworks.map((fw: string) => (
-                        <span
-                          key={fw}
-                          className="text-[10px] bg-surface-0 border border-border rounded-full px-2 py-0.5 text-text-tertiary"
-                        >
-                          {fw}
-                        </span>
-                      ))}
-                    </div>
-                    <ul className="space-y-1.5">
-                      {includes.map((item: string) => (
-                        <li
-                          key={item}
-                          className="flex items-start gap-2 text-xs text-text-secondary"
-                        >
-                          <CheckIcon className="w-3.5 h-3.5 text-brand-sage mt-0.5 shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10 max-w-5xl mx-auto">
+              {(['taiwan', 'iso27001', 'soc2', 'bundle'] as const).map((addonKey) => (
+                <div
+                  key={addonKey}
+                  className={`bg-surface-2 rounded-xl border p-6 flex flex-col ${
+                    addonKey === 'bundle'
+                      ? 'border-brand-sage ring-1 ring-brand-sage/20'
+                      : 'border-border'
+                  }`}
+                >
+                  {addonKey === 'bundle' && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-brand-sage bg-brand-sage/10 rounded-full px-2.5 py-0.5 self-start mb-2">
+                      {t('addons.bestValue')}
+                    </span>
+                  )}
+                  <h4 className="text-sm font-bold text-text-primary">
+                    {t(`addons.items.${addonKey}.name`)}
+                  </h4>
+                  <div className="mt-2 flex items-baseline gap-1">
+                    <span className="text-2xl font-extrabold text-brand-sage">
+                      {t(`addons.items.${addonKey}.price`)}
+                    </span>
+                    <span className="text-xs text-text-tertiary">
+                      {t(`addons.items.${addonKey}.unit`)}
+                    </span>
                   </div>
-                );
-              })}
+                  <p className="text-xs text-text-secondary mt-2 flex-1">
+                    {t(`addons.items.${addonKey}.desc`)}
+                  </p>
+                </div>
+              ))}
             </div>
             <p className="text-xs text-text-muted text-center mt-4">{t('addons.requiresPro')}</p>
             <p className="text-[10px] text-text-muted text-center mt-3 max-w-2xl mx-auto leading-relaxed">

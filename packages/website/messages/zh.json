@@ -134,20 +134,19 @@
   },
   "home": {
     "hero": {
-      "title": "Headless Defense.",
-      "subtitle1": "你的 Agent 沒有眼睛。",
-      "subtitle2": "所以我們打造了不需要螢幕的資安。",
-      "subtitle3": "API 給你的 Agent。CLI 給你。Dashboard 不需要。",
-      "freeScan": "免費掃描",
-      "getStarted": "立即開始",
+      "title": "See threats. Respond automatically. Deploy in one line.",
+      "subtitle1": "開源 AI 資安平台",
+      "subtitle2": "為沒有資安團隊的團隊打造。",
+      "subtitle3": "一行指令安裝。AI 負責其餘一切。",
+      "getStarted": "免費掃描伺服器",
       "github": "GitHub",
+      "copied": "已複製！",
       "badges": {
-        "mit": "MIT 開源",
-        "tests": "1,068 項測試通過",
-        "typescript": "TypeScript Strict Mode",
+        "mit": "MIT 開源授權",
+        "tests": "1,107 項測試通過",
+        "typescript": "3,158 偵測規則",
         "taiwan": "台灣製造"
-      },
-      "copied": "已複製！"
+      }
     },
     "painPoint": {
       "line1": "你的 AI 剛把一個 API 部署到 VPS。",
@@ -175,23 +174,27 @@
       "callout": "注意第一行：已自動修復。"
     },
     "socialProof": {
-      "overline": "數據說話",
-      "title": "公開打造，程式碼可驗證。",
-      "subtitle": "以下每個數字都可以在原始碼中驗證。沒有虛榮指標 -- 只有工程事實。",
-      "stat1": "1,068",
-      "stat1Label": "通過測試",
-      "stat2": "3,155",
-      "stat2Label": "Sigma 偵測規則",
+      "overline": "數字會說話",
+      "title": "公開透明。以程式碼驗證。",
+      "subtitle": "以下每個數字都可以在程式碼庫中驗證。沒有虛榮指標——只有工程事實。",
+      "stat1": "3,158",
+      "stat1Label": "Sigma 偵測規則",
+      "stat2": "425",
+      "stat2Label": "YARA 規則",
       "stat3": "8",
       "stat3Label": "蜜罐協定",
-      "stat4": "423",
-      "stat4Label": "YARA 惡意程式規則",
+      "stat4": "1,107",
+      "stat4Label": "測試通過",
       "stat5": "5",
-      "stat5Label": "AI 代理管線",
-      "stat6": "MIT",
-      "stat6Label": "開源授權",
+      "stat5Label": "AI Agent",
+      "stat6": "3",
+      "stat6Label": "AI 分析層",
+      "stat7": "6",
+      "stat7Label": "產品模組",
+      "stat8": "MIT",
+      "stat8Label": "開源授權",
       "footnote": "每個數字都可以在 GitHub 上驗證。",
-      "githubLink": "查看原始碼"
+      "githubLink": "查看原始碼 →"
     },
     "comparison": {
       "overline": "為什麼選 Panguard",
@@ -214,7 +217,7 @@
       "defReporting": "技術報告",
       "pgPrice": "每月 $9 起",
       "pgAfter": "自動回應 + 解釋",
-      "pgReporting": "「本週：阻擋 3,155 次。你很安全。」",
+      "pgReporting": "「本週：阻擋 3,158 次。你很安全。」",
       "quote": "「Falcon Go 是監視器。Panguard 是保全公司 -- 有監視器、有人在看、有人在處理、還有人在報告。」"
     },
     "cta": {
@@ -248,7 +251,7 @@
       "line4": "純文字。純邏輯。純防禦。",
       "line5": "Panguard 是第一個為這個未來打造的資安平台。",
       "badge1": "MIT 開源",
-      "badge2": "1,068 項測試通過",
+      "badge2": "1,107 項測試通過",
       "badge3": "台灣製造",
       "btnGithub": "GitHub",
       "btnDocs": "技術文件",
@@ -261,9 +264,9 @@
       "subtitle": "完全透明。每一行程式碼都可以在 GitHub 上審計。",
       "detection": {
         "title": "偵測引擎",
-        "sigma": "3,155 Sigma 規則",
+        "sigma": "3,158 Sigma 規則",
         "sigmaDesc": "業界標準威脅偵測語言",
-        "yara": "423 YARA 規則",
+        "yara": "425 YARA 規則",
         "yaraDesc": "惡意程式指紋比對",
         "cve": "CVE 資料庫",
         "cveDesc": "即時同步 NVD 漏洞資訊"
@@ -363,7 +366,7 @@
       },
       "security": {
         "title": "安全實踐",
-        "desc": "TypeScript strict mode。1,068 項自動化測試。CI/CD 每次提交都自動跑完全部測試。\n\nGitHub Actions 自動化 pipeline。",
+        "desc": "TypeScript strict mode。1,107 項自動化測試。CI/CD 每次提交都自動跑完全部測試。\n\nGitHub Actions 自動化 pipeline。",
         "link": "查看測試報告"
       },
       "privacy": {
@@ -371,6 +374,135 @@
         "desc": "Threat Cloud 只收集匿名化的威脅數據。不收集你的 IP、不收集你的主機名、不收集任何可識別資訊。\n\n你可以隨時關閉數據上傳：\npanguard config set threat-cloud false",
         "link": "閱讀隱私政策"
       }
+    },
+    "eraContext": {
+      "title": "AI 在幫你寫程式、部署 API、管理伺服器。\n但誰在保護這一切？",
+      "desc1": "每天有更多 AI Agent 被部署到生產環境。",
+      "desc2": "它們很聰明，但它們看不到自己被攻擊。",
+      "desc3": "Panguard 是第一個為 AI 時代設計的資安平台——",
+      "desc4": "你的 Agent 部署，我們的 Agent 防禦。"
+    },
+    "productGrid": {
+      "overline": "完整防護",
+      "title": "一個平台，六道防線。",
+      "coreBadge": "核心",
+      "learnMore": "了解更多",
+      "products": {
+        "0": {
+          "name": "Scan",
+          "desc": "60 秒知道你有多危險。Port 偵測、SSL 檢查、漏洞掃描、PDF 報告。"
+        },
+        "1": {
+          "name": "Guard",
+          "desc": "24/7 自動監控與回應。5 個 AI Agent、三層分析、7 天學習期。"
+        },
+        "2": {
+          "name": "Chat",
+          "desc": "用人話收到告警通知。LINE、Slack、Telegram、Email 或 Webhook。"
+        },
+        "3": {
+          "name": "Trap",
+          "desc": "部署蜜罐記錄攻擊者行為。8 種協定：SSH、HTTP、FTP、SMB、MySQL、RDP、Telnet、Redis。"
+        },
+        "4": {
+          "name": "Report",
+          "desc": "60 秒產出合規報告。ISO 27001、SOC 2、台灣資通安全管理法。"
+        },
+        "5": { "name": "Threat Cloud", "desc": "全球威脅情報共享。匿名、隱私優先、社群驅動。" }
+      }
+    },
+    "timeComparison": {
+      "overline": "差異在哪",
+      "title": "你的時間應該花在做產品，不是查 log。",
+      "subtitle": "",
+      "colWithout": "沒有 Panguard",
+      "colWith": "有 Panguard",
+      "rows": {
+        "0": { "label": "發現入侵", "without": "平均 197 天", "with": "即時通知" },
+        "1": { "label": "翻 log 查問題", "without": "3-4 小時", "with": "打開 LINE" },
+        "2": { "label": "封鎖可疑 IP", "without": "手動查 → 手動封", "with": "自動，< 1 秒" },
+        "3": { "label": "產出合規報告", "without": "2-4 週（或外包 NT$300K）", "with": "60 秒" },
+        "4": { "label": "半夜告警", "without": "你爬起來", "with": "它自己處理" },
+        "5": { "label": "了解攻擊者行為", "without": "不知道誰在打你", "with": "蜜罐幫你側寫" }
+      },
+      "costRow": { "label": "每月成本", "without": "?（你的時間沒算）", "with": "NT$270 起" },
+      "source": "* IBM Cost of a Data Breach Report 2024",
+      "bottomLine": "你的時間應該花在做產品，不是查 log。"
+    },
+    "homePricing": {
+      "overline": "定價方案",
+      "title": "符合你預算的資安防護。",
+      "subtitle": "免費開始。準備好了再升級。",
+      "recommended": "最多人選",
+      "plans": {
+        "0": {
+          "name": "Community",
+          "price": "免費",
+          "period": "",
+          "desc": "1 台機器。適合體驗。",
+          "features": {
+            "0": "完整 Scan + PDF 報告",
+            "1": "Guard 基礎偵測 + 封鎖",
+            "2": "Threat Cloud 威脅情報"
+          },
+          "cta": "立即開始"
+        },
+        "1": {
+          "name": "Solo",
+          "price": "NT$270",
+          "period": "/月",
+          "desc": "最多 3 台機器。適合開發者。",
+          "features": {
+            "0": "Community 所有功能",
+            "1": "完整自動回應",
+            "2": "LINE / Slack / Telegram / Email 通知",
+            "3": "SSH + HTTP 蜜罐 + Ollama AI"
+          },
+          "cta": "開始 Solo"
+        },
+        "2": {
+          "name": "Pro",
+          "price": "NT$870",
+          "period": "/月",
+          "desc": "最多 10 台機器。適合團隊。",
+          "features": {
+            "0": "Solo 所有功能",
+            "1": "雲端 AI 深度分析",
+            "2": "全 8 種蜜罐協定",
+            "3": "Dashboard 儀表板",
+            "4": "Webhook 整合"
+          },
+          "cta": "開始 Pro"
+        },
+        "3": {
+          "name": "Business",
+          "price": "NT$2,370",
+          "period": "/月",
+          "desc": "最多 25 台機器。適合組織。",
+          "features": {
+            "0": "Pro 所有功能",
+            "1": "每月含 1 份合規報告",
+            "2": "Webhook API 存取",
+            "3": "優先支援",
+            "4": "額外報告享 5 折"
+          },
+          "cta": "開始 Business"
+        }
+      },
+      "reportTitle": "合規報告 — 單次購買",
+      "reportDesc": "台灣資安法 NT$8,970 | ISO 27001 NT$14,970 | SOC 2 NT$20,970 | 組合包 NT$29,970",
+      "reportCta": "查看合規方案",
+      "disclaimer": "所有價格為新台幣（TWD）。USD 定價請參閱英文版。"
+    },
+    "finalCta": {
+      "title": "60 秒。免費。不需要帳號。",
+      "subtitle": "立即掃描任何伺服器或網域。",
+      "manifesto1": "我們相信：資安的下一步，",
+      "manifesto2": "不是更多儀表板，而是更聰明的 Agent。",
+      "manifesto3": "你部署。我們防禦。",
+      "btnGetStarted": "免費掃描伺服器",
+      "btnGithub": "GitHub",
+      "btnDocs": "技術文件"
     }
   },
   "pricing": {
@@ -545,46 +677,40 @@
     "hero": {
       "overline": "方案價格",
       "title": "簡單透明的定價",
-      "subtitle": "每個付費方案享 30 天免費試用，無需信用卡。60 秒內開始保護你的端點。"
+      "subtitle": "免費開始。隨需擴展。無需信用卡。"
     },
     "addons": {
-      "overline": "合規報告",
-      "title": "合規報告。省下 $5,000 的顧問費。",
-      "subtitle": "傳統 ISO 27001 差距分析顧問費：$5,000 ~ $15,000 / 次。Panguard AI 自動產出同等級報告。",
-      "assessment": {
-        "name": "單次合規報告",
-        "price": "$499",
-        "originalPrice": "$999",
-        "unit": "一次",
-        "earlyBird": "早鳥價，限量前 100 份。",
-        "desc": "選擇一個框架：",
-        "frameworks": ["ISO 27001", "SOC 2 Type II", "資通安全管理法"],
-        "includes": [
-          "完整差距分析報告",
-          "控制項逐條評估",
-          "改善建議及優先排序",
-          "雙語輸出 (EN/中文)",
-          "PDF + JSON 格式"
-        ]
+      "overline": "合規報告加購",
+      "title": "合規報告。省下超過 NT$150,000 的顧問費。",
+      "subtitle": "傳統 ISO 27001 差距分析顧問費：NT$150,000 ~ NT$450,000 / 次。Panguard AI 自動產出同等級報告。",
+      "bestValue": "最划算",
+      "items": {
+        "taiwan": {
+          "name": "資通安全管理法",
+          "price": "NT$8,970",
+          "unit": "一次",
+          "desc": "完整 ISMS 差距分析。控制項逐條評估，雙語輸出（EN + zh-TW）。"
+        },
+        "iso27001": {
+          "name": "ISO 27001",
+          "price": "NT$14,970",
+          "unit": "一次",
+          "desc": "完整 93 控制項差距分析。改善建議及優先排序。"
+        },
+        "soc2": {
+          "name": "SOC 2 Type II",
+          "price": "NT$20,970",
+          "unit": "一次",
+          "desc": "信任服務標準評估。安全性、可用性與機密性控制項。"
+        },
+        "bundle": {
+          "name": "全框架組合包",
+          "price": "NT$29,970",
+          "unit": "一次",
+          "desc": "三個框架全包。省 NT$14,940。含 3 個月持續監控。"
+        }
       },
-      "monitoring": {
-        "name": "持續合規監控",
-        "price": "$99",
-        "originalPrice": "$199",
-        "unit": "/月",
-        "earlyBird": "早鳥價，限量前 50 個名額。",
-        "desc": "包含所有框架：",
-        "frameworks": ["ISO 27001", "SOC 2", "資通安全管理法"],
-        "includes": [
-          "單次報告的所有內容",
-          "每月自動更新",
-          "合規狀態即時監控",
-          "變化通知（LINE/Email）",
-          "審計追蹤日誌",
-          "年度報告自動產出"
-        ]
-      },
-      "requiresPro": "適用於 Pro 方案及以上。",
+      "requiresPro": "適用於 Pro 及 Business 方案。報告以 PDF + JSON 格式交付。",
       "disclaimer": "Panguard 合規報告為 AI 自動化差距分析工具，可作為合規準備的參考依據。本報告不構成正式認證、法律意見或審計結論。如需正式認證，建議配合認證機構完成最終審計流程。"
     },
     "faqSection": {
@@ -593,17 +719,17 @@
       "subtitle": "關於方案與定價，你需要知道的一切。"
     },
     "enterprise": {
-      "title": "需要客製化方案？",
-      "desc": "適用於擁有 500+ 端點、專屬合規需求或客製部署需求的組織。白手套式引導、客製 SLA 及專屬資安工程師。",
+      "title": "需要超過 25 台機器？",
+      "desc": "適用於大規模部署、專屬合規需求或客製整合的組織。白手套式引導、客製 SLA 及專屬資安工程師。",
       "ctaSales": "聯繫業務",
       "ctaDemo": "預約 Demo"
     },
     "guarantee": "所有付費方案享 30 天無條件退款保證。",
     "plans": {
-      "free": {
-        "name": "免費",
-        "audience": "立即開始",
-        "endpoints": "1 端點",
+      "community": {
+        "name": "Community 社群版",
+        "audience": "開源。永久免費。",
+        "machines": "1 台機器",
         "features": [
           "完整安全掃描（無限次）",
           "PDF 報告含風險評分",
@@ -612,40 +738,40 @@
           "手動修復指引",
           "社群支援"
         ],
-        "cta": "免費掃描"
+        "cta": "免費開始"
       },
       "solo": {
         "name": "Solo 個人版",
         "audience": "個人開發者與自由工作者",
-        "endpoints": "1 端點",
+        "machines": "最多 3 台機器",
         "features": [
-          "Free 所有功能",
+          "Community 所有功能",
           "三層 AI 防禦（Layer 1+2+3）",
           "一鍵自動修復漏洞",
           "LINE / Telegram 通知",
           "Chat AI 助手",
           "7 天日誌保留"
         ],
-        "cta": "加入等候名單"
+        "cta": "免費試用"
       },
       "pro": {
         "name": "Pro 專業版",
         "audience": "團隊與成長中的企業",
-        "endpoints": "最多 50 端點",
+        "machines": "最多 10 台機器",
         "features": [
           "Solo 所有功能",
           "Trap（蜜罐系統）",
           "Slack 整合",
           "30 天日誌保留",
-          "基礎合規報告",
+          "合規報告加購",
           "優先支援"
         ],
-        "cta": "加入等候名單"
+        "cta": "免費試用"
       },
-      "enterprise": {
-        "name": "Enterprise 企業版",
-        "audience": "大型組織",
-        "endpoints": "無限端點",
+      "business": {
+        "name": "Business 商業版",
+        "audience": "組織與企業",
+        "machines": "最多 25 台機器",
         "features": [
           "Pro 所有功能",
           "客製 AI 模型",
@@ -653,9 +779,9 @@
           "SSO 及 RBAC",
           "本地部署",
           "專屬客戶經理",
-          "每季安全檢視"
+          "90 天以上日誌保留"
         ],
-        "cta": "聯繫業務"
+        "cta": "免費試用"
       }
     },
     "comparison": {
@@ -669,25 +795,25 @@
       "supportInfra": "支援與基礎設施"
     },
     "tierLabels": {
-      "free": "免費",
+      "community": "Community",
       "solo": "Solo",
       "pro": "Pro",
-      "enterprise": "Enterprise"
+      "business": "Business"
     },
-    "allPaidPlansNote": "所有付費方案享 30 天無條件退款保證。年繳省 20%。",
+    "allPaidPlansNote": "所有付費方案享 30 天免費試用及無條件退款保證。年繳省 20%。",
     "faq": {
-      "faq1q": "30 天免費試用如何運作？",
-      "faq1a": "註冊任何付費方案後，即可在 30 天內完整使用該方案所有功能，無需信用卡。試用結束後，可選擇訂閱或自動降級至免費掃描方案。不會遺失任何資料。",
+      "faq1q": "免費試用如何運作？",
+      "faq1a": "註冊任何付費方案後，即可在 30 天內完整使用該方案所有功能，無需信用卡。試用結束後，可選擇訂閱或自動降級至 Community 社群版。不會遺失任何資料。",
       "faq2q": "可以隨時更換方案嗎？",
       "faq2a": "當然可以。升級後立即使用新功能，費用按比例計算。降級則在下個帳單週期生效。",
-      "faq3q": "什麼算一個端點？",
-      "faq3a": "端點是指任何執行 Panguard 代理的裝置或伺服器，包括工作站、筆電、雲端 VM 和實體伺服器。單一主機內的容器算一個端點。停用的代理不計入限額。",
+      "faq3q": "什麼算一台機器？",
+      "faq3a": "機器是指任何執行 Panguard 代理的裝置或伺服器，包括工作站、筆電、雲端 VM 和實體伺服器。單一主機內的容器算一台機器。停用的代理不計入限額。",
       "faq4q": "年繳有折扣嗎？",
-      "faq4a": "有。年繳比月繳省 20%。例如 Solo 從 $9/月降至 $7.20/月，Team 從 $14 降至 $11.20/端點/月，Business 從 $10 降至 $8/端點/月。",
-      "faq5q": "有免費方案嗎？",
-      "faq5a": "Panguard Scan 永久免費。可在一個端點上執行無限次安全稽核並取得 PDF 報告。當你準備好使用 Guard、Chat、Trap 和 Report 的 24/7 防護時，升級至每月 $9 起的付費方案。",
+      "faq4a": "有。年繳比月繳省 20%。例如 Solo 從 NT$270/月降至 NT$216/月，Pro 從 NT$870/月降至 NT$696/月，Business 從 NT$2,370/月降至 NT$1,896/月。",
+      "faq5q": "Community 方案真的免費嗎？",
+      "faq5a": "永久免費。Panguard 是開源軟體（MIT 授權）。Community 方案包含完整安全掃描、Layer 1 即時防護及社群支援，可在 1 台機器上使用。需要多機器支援、AI 防禦或合規報告時，升級至每月 NT$270 起的付費方案。",
       "faq6q": "什麼是合規報告？",
-      "faq6a": "Pro 方案以上可用。可產出 ISO 27001、SOC 2 或資通安全管理法合規報告。單次報告：$499。持續監控：$99/月，包含所有框架。",
+      "faq6a": "Pro 及 Business 方案可加購。提供資通安全管理法（NT$8,970）、ISO 27001（NT$14,970）、SOC 2（NT$20,970）或全框架組合包（NT$29,970）。報告以 AI 自動化差距分析產出，PDF + JSON 格式交付。",
       "faq7q": "取消後資料怎麼辦？",
       "faq7a": "取消後 30 天內，資料以唯讀模式保留。期間可匯出所有報告、日誌和設定。30 天後，資料將依資料保留政策及 GDPR 規範安全刪除。",
       "faq8q": "合規報告的品質跟人類顧問比如何？",
@@ -915,7 +1041,7 @@
         },
         "item5": {
           "title": "優雅降級",
-          "desc": "雲端 AI 斷線？本地 LLM（Ollama）接手。LLM 離線？3,155 條 Sigma 和 423 條 YARA 規則的規則引擎處理。Guard 永不停止保護，不受網路狀況影響。"
+          "desc": "雲端 AI 斷線？本地 LLM（Ollama）接手。LLM 離線？3,158 條 Sigma 和 425 條 YARA 規則的規則引擎處理。Guard 永不停止保護，不受網路狀況影響。"
         },
         "item6": {
           "title": "7 天情境記憶",

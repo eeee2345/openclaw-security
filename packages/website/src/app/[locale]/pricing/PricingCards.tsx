@@ -10,33 +10,40 @@ import SectionTitle from '@/components/ui/SectionTitle';
 
 /* ── Plan keys and pricing data (4 tiers) ── */
 
-const planKeys = ['free', 'solo', 'pro', 'enterprise'] as const;
+const planKeys = ['community', 'solo', 'pro', 'business'] as const;
 
 interface PlanMeta {
-  price: number | null;
+  price: number;
   unit: string;
   ctaHref: string;
   popular: boolean;
+  machines: string;
 }
 
 const planMeta: Record<(typeof planKeys)[number], PlanMeta> = {
-  free: { price: 0, unit: '', ctaHref: '/early-access', popular: false },
-  solo: { price: 9, unit: '/mo', ctaHref: '/early-access', popular: false },
-  pro: { price: 19, unit: '/endpoint/mo', ctaHref: '/early-access', popular: true },
-  enterprise: { price: null, unit: '', ctaHref: '/contact', popular: false },
+  community: {
+    price: 0,
+    unit: '',
+    ctaHref: '/docs/getting-started',
+    popular: false,
+    machines: '1',
+  },
+  solo: { price: 9, unit: '/mo', ctaHref: '/early-access', popular: false, machines: '3' },
+  pro: { price: 29, unit: '/mo', ctaHref: '/early-access', popular: true, machines: '10' },
+  business: { price: 79, unit: '/mo', ctaHref: '/early-access', popular: false, machines: '25' },
 };
 
 /* ── Feature comparison (4 columns) ── */
 
 type FeatureValue = boolean | string;
-type TierKey = 'free' | 'solo' | 'pro' | 'enterprise';
+type TierKey = 'community' | 'solo' | 'pro' | 'business';
 
 interface FeatureRow {
   feature: string;
-  free: FeatureValue;
+  community: FeatureValue;
   solo: FeatureValue;
   pro: FeatureValue;
-  enterprise: FeatureValue;
+  business: FeatureValue;
 }
 
 const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
@@ -45,80 +52,93 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
     rows: [
       {
         feature: 'Panguard Scan',
-        free: 'Full',
+        community: 'Full',
         solo: 'Full',
         pro: 'Full',
-        enterprise: 'Full + custom',
+        business: 'Full + custom',
       },
       {
         feature: 'Guard detection',
-        free: 'Layer 1',
+        community: 'Layer 1',
         solo: 'Layer 1+2+3',
         pro: 'Layer 1+2+3',
-        enterprise: 'Layer 1+2+3',
+        business: 'Layer 1+2+3',
       },
       {
         feature: 'Auto-block attacks',
-        free: 'Known patterns',
+        community: 'Known patterns',
         solo: 'All threats',
         pro: 'All threats',
-        enterprise: 'All threats',
+        business: 'All threats',
       },
       {
         feature: 'Auto-fix vulnerabilities',
-        free: 'Manual guide',
+        community: 'Manual guide',
         solo: 'One-click',
         pro: 'One-click',
-        enterprise: 'One-click',
+        business: 'One-click',
       },
-      { feature: 'AI analysis', free: false, solo: true, pro: true, enterprise: 'Custom models' },
+      {
+        feature: 'AI analysis',
+        community: false,
+        solo: true,
+        pro: true,
+        business: 'Custom models',
+      },
       {
         feature: 'Panguard Chat',
-        free: false,
+        community: false,
         solo: 'Basic',
         pro: 'Advanced',
-        enterprise: 'Advanced + API',
+        business: 'Advanced + API',
       },
       {
         feature: 'Panguard Report',
-        free: false,
+        community: false,
         solo: false,
         pro: 'Full',
-        enterprise: 'Full + custom',
+        business: 'Full + custom',
       },
-      { feature: 'Panguard Trap', free: false, solo: false, pro: true, enterprise: true },
+      { feature: 'Panguard Trap', community: false, solo: false, pro: true, business: true },
     ],
   },
   {
     categoryKey: 'alertsIntegrations',
     rows: [
-      { feature: 'Email alerts', free: false, solo: true, pro: true, enterprise: true },
-      { feature: 'LINE / Telegram', free: false, solo: true, pro: true, enterprise: true },
-      { feature: 'Slack', free: false, solo: false, pro: true, enterprise: true },
-      { feature: 'Webhook / API', free: false, solo: false, pro: false, enterprise: true },
-      { feature: 'SIEM integration', free: false, solo: false, pro: false, enterprise: true },
+      { feature: 'Email alerts', community: false, solo: true, pro: true, business: true },
+      { feature: 'LINE / Telegram', community: false, solo: true, pro: true, business: true },
+      { feature: 'Slack', community: false, solo: false, pro: true, business: true },
+      { feature: 'Webhook / API', community: false, solo: false, pro: false, business: true },
+      { feature: 'SIEM integration', community: false, solo: false, pro: false, business: true },
     ],
   },
   {
     categoryKey: 'supportInfra',
     rows: [
-      { feature: 'Community support', free: true, solo: true, pro: true, enterprise: true },
-      { feature: 'Priority support', free: false, solo: false, pro: true, enterprise: true },
-      { feature: 'Dedicated manager', free: false, solo: false, pro: false, enterprise: true },
+      { feature: 'Community support', community: true, solo: true, pro: true, business: true },
+      { feature: 'Priority support', community: false, solo: false, pro: true, business: true },
+      { feature: 'Dedicated manager', community: false, solo: false, pro: false, business: true },
       {
         feature: 'Log retention',
-        free: 'Session only',
+        community: 'Session only',
         solo: '7 days',
         pro: '30 days',
-        enterprise: '90 days+',
+        business: '90 days+',
       },
-      { feature: 'SSO & RBAC', free: false, solo: false, pro: false, enterprise: true },
-      { feature: 'On-premise option', free: false, solo: false, pro: false, enterprise: true },
+      { feature: 'SSO & RBAC', community: false, solo: false, pro: false, business: true },
+      { feature: 'On-premise option', community: false, solo: false, pro: false, business: true },
+      {
+        feature: 'Machines',
+        community: '1',
+        solo: '3',
+        pro: '10',
+        business: '25',
+      },
     ],
   },
 ];
 
-const tierKeys: TierKey[] = ['free', 'solo', 'pro', 'enterprise'];
+const tierKeys: TierKey[] = ['community', 'solo', 'pro', 'business'];
 
 function ComparisonCell({ value }: { value: FeatureValue }) {
   if (value === true) return <CheckIcon className="w-4 h-4 text-status-safe mx-auto" />;
@@ -133,8 +153,7 @@ export default function PricingCards() {
   const tc = useTranslations('common');
   const [annual, setAnnual] = useState(false);
 
-  const displayPrice = (price: number | null) => {
-    if (price === null) return null;
+  const displayPrice = (price: number) => {
     if (price === 0) return '$0';
     const effective = annual ? Math.round(price * 0.8 * 100) / 100 : price;
     return `$${effective % 1 === 0 ? effective : effective.toFixed(2)}`;
@@ -202,21 +221,13 @@ export default function PricingCards() {
                 </p>
 
                 <div className="mb-1">
-                  {meta.price === null ? (
-                    <span className="text-3xl font-extrabold text-text-primary">
-                      {tc('custom')}
-                    </span>
-                  ) : (
-                    <>
-                      <span className="text-3xl font-extrabold text-text-primary">
-                        {displayPrice(meta.price)}
-                      </span>
-                      {meta.unit && <span className="text-sm text-text-tertiary">{meta.unit}</span>}
-                    </>
-                  )}
+                  <span className="text-3xl font-extrabold text-text-primary">
+                    {displayPrice(meta.price)}
+                  </span>
+                  {meta.unit && <span className="text-sm text-text-tertiary">{meta.unit}</span>}
                 </div>
-                <p className="text-xs text-text-muted mb-4">{t(`plans.${key}.endpoints`)}</p>
-                {annual && meta.price !== null && meta.price > 0 && (
+                <p className="text-xs text-text-muted mb-4">{t(`plans.${key}.machines`)}</p>
+                {annual && meta.price > 0 && (
                   <p className="text-[11px] text-text-muted -mt-3 mb-4">{tc('billedAnnually')}</p>
                 )}
 

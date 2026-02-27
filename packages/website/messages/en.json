@@ -134,20 +134,26 @@
   },
   "home": {
     "hero": {
-      "title": "Headless Defense.",
-      "subtitle1": "Your agent has no eyes.",
-      "subtitle2": "So we built security that doesn't need a screen.",
-      "subtitle3": "API for your agent. CLI for you. Dashboard for no one.",
-      "freeScan": "Free Scan",
-      "getStarted": "Get Started",
+      "title": "See threats. Respond automatically. Deploy in one line.",
+      "subtitle1": "The open-source AI security platform",
+      "subtitle2": "built for teams without a security team.",
+      "subtitle3": "One command to install. AI does the rest.",
+      "getStarted": "Free Server Scan",
       "github": "GitHub",
+      "copied": "Copied!",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,068 Tests Passing",
-        "typescript": "TypeScript Strict Mode",
-        "taiwan": "Made in Taiwan"
-      },
-      "copied": "Copied!"
+        "tests": "1,107 Tests Passing",
+        "typescript": "3,158 Detection Rules",
+        "taiwan": "Built in Taiwan"
+      }
+    },
+    "eraContext": {
+      "title": "AI deploys your code. Manages your servers.\nBut who's protecting all of it?",
+      "desc1": "More AI agents are deployed to production every day.",
+      "desc2": "They're smart — but they can't see they're being attacked.",
+      "desc3": "Panguard is the first security platform designed for the AI era —",
+      "desc4": "your agents deploy, our agents defend."
     },
     "painPoint": {
       "line1": "Your AI just shipped an API to a VPS.",
@@ -155,6 +161,38 @@
       "line3": "SSH brute force. Open ports. Expired SSL.",
       "line4": "Your AI doesn't know. Neither do you.",
       "line5": "Until your database shows up on the dark web."
+    },
+    "productGrid": {
+      "overline": "Complete Protection",
+      "title": "One platform. Six layers of defense.",
+      "coreBadge": "Core",
+      "learnMore": "Learn more",
+      "products": {
+        "0": {
+          "name": "Scan",
+          "desc": "Know your risk score in 60 seconds. Port detection, SSL check, vulnerability scan, PDF report."
+        },
+        "1": {
+          "name": "Guard",
+          "desc": "24/7 automated monitoring and response. 5 AI agents, three-layer analysis, 7-day learning period."
+        },
+        "2": {
+          "name": "Chat",
+          "desc": "Receive alerts in plain language via LINE, Slack, Telegram, Email, or Webhook."
+        },
+        "3": {
+          "name": "Trap",
+          "desc": "Deploy honeypots to profile attackers. 8 protocols: SSH, HTTP, FTP, SMB, MySQL, RDP, Telnet, Redis."
+        },
+        "4": {
+          "name": "Report",
+          "desc": "Generate compliance reports in 60 seconds. ISO 27001, SOC 2, Taiwan Cyber Security Act."
+        },
+        "5": {
+          "name": "Threat Cloud",
+          "desc": "Global threat intelligence sharing. Anonymous, privacy-first, community-powered."
+        }
+      }
     },
     "flip": {
       "part1": "Other security tools detect a threat\nand give you a dashboard.",
@@ -177,21 +215,55 @@
     "socialProof": {
       "overline": "By the Numbers",
       "title": "Built in the open. Verified by code.",
-      "subtitle": "Every number below is verifiable in the codebase. No vanity metrics -- just engineering facts.",
-      "stat1": "1,068",
-      "stat1Label": "Tests Passing",
-      "stat2": "3,155",
-      "stat2Label": "Sigma Detection Rules",
-      "stat3": "8",
+      "subtitle": "Every number below is verifiable in the codebase. No vanity metrics — just engineering facts.",
+      "stat1Label": "Sigma Rules",
+      "stat2Label": "YARA Rules",
       "stat3Label": "Honeypot Protocols",
-      "stat4": "423",
-      "stat4Label": "YARA Malware Rules",
-      "stat5": "5",
-      "stat5Label": "AI Agent Pipeline",
-      "stat6": "MIT",
-      "stat6Label": "Open Source License",
+      "stat4Label": "Tests Passing",
+      "stat5Label": "AI Agents",
+      "stat6Label": "AI Layers",
+      "stat7Label": "Product Modules",
+      "stat8Label": "Open Source License",
       "footnote": "Every number is verifiable on GitHub.",
-      "githubLink": "View source code"
+      "githubLink": "View source code →"
+    },
+    "timeComparison": {
+      "overline": "The Difference",
+      "title": "Your time should be spent building products, not reading logs.",
+      "subtitle": "",
+      "colWithout": "Without Panguard",
+      "colWith": "With Panguard",
+      "rows": {
+        "0": {
+          "label": "Discover a breach",
+          "without": "Average 197 days",
+          "with": "Instant notification"
+        },
+        "1": { "label": "Investigate logs", "without": "3-4 hours", "with": "Open LINE" },
+        "2": {
+          "label": "Block suspicious IP",
+          "without": "Manual lookup + manual block",
+          "with": "Automatic, < 1 second"
+        },
+        "3": {
+          "label": "Generate compliance report",
+          "without": "2-4 weeks (or outsource NT$300K)",
+          "with": "60 seconds"
+        },
+        "4": { "label": "Late-night alert", "without": "You wake up", "with": "It handles itself" },
+        "5": {
+          "label": "Understand attacker behavior",
+          "without": "No visibility",
+          "with": "Honeypot profiling"
+        }
+      },
+      "costRow": {
+        "label": "Monthly cost",
+        "without": "? (your time isn't free)",
+        "with": "From $9"
+      },
+      "source": "* IBM Cost of a Data Breach Report 2024",
+      "bottomLine": "Your time should be spent building products, not reading logs."
     },
     "comparison": {
       "overline": "Why Panguard",
@@ -214,7 +286,7 @@
       "defReporting": "Technical reports",
       "pgPrice": "From $9/mo",
       "pgAfter": "Auto-responds + explains",
-      "pgReporting": "\"This week: blocked 3,155. You're safe.\"",
+      "pgReporting": "\"This week: blocked 3,158. You're safe.\"",
       "quote": "\"Falcon Go is a security camera. Panguard is a security company -- cameras, plus someone watching, responding, and reporting.\""
     },
     "cta": {
@@ -248,12 +320,22 @@
       "line4": "Plain text. Pure logic. Pure defense.",
       "line5": "Panguard is the first security platform built for that future.",
       "badge1": "MIT Open Source",
-      "badge2": "1,068 Tests Passing",
+      "badge2": "1,107 Tests Passing",
       "badge3": "Made in Taiwan",
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "btnScan": "Free Scan",
       "btnEarlyAccess": "Get Early Access"
+    },
+    "finalCta": {
+      "title": "60 seconds. Free. No account needed.",
+      "subtitle": "Scan any server or domain right now.",
+      "manifesto1": "We believe: the next step in security",
+      "manifesto2": "isn't more dashboards — it's smarter agents.",
+      "manifesto3": "You deploy. We defend.",
+      "btnGetStarted": "Free Server Scan",
+      "btnGithub": "GitHub",
+      "btnDocs": "Documentation"
     },
     "techReveal": {
       "overline": "Under the Hood",
@@ -261,9 +343,9 @@
       "subtitle": "Fully transparent. Every line of code is auditable on GitHub.",
       "detection": {
         "title": "Detection Engine",
-        "sigma": "3,155 Sigma Rules",
+        "sigma": "3,158 Sigma Rules",
         "sigmaDesc": "Industry-standard threat detection language",
-        "yara": "423 YARA Rules",
+        "yara": "425 YARA Rules",
         "yaraDesc": "Malware fingerprint matching",
         "cve": "CVE Database",
         "cveDesc": "Real-time sync with NVD vulnerability data"
@@ -363,7 +445,7 @@
       },
       "security": {
         "title": "Security Practices",
-        "desc": "TypeScript strict mode. 1,068 automated tests. CI/CD runs all tests on every commit.\n\nGitHub Actions automated pipeline.",
+        "desc": "TypeScript strict mode. 1,107 automated tests. CI/CD runs all tests on every commit.\n\nGitHub Actions automated pipeline.",
         "link": "View test reports"
       },
       "privacy": {
@@ -371,6 +453,71 @@
         "desc": "Threat Cloud only collects anonymized threat data. No IP addresses. No hostnames. No personally identifiable information.\n\nYou can disable data uploads anytime:\npanguard config set threat-cloud false",
         "link": "Read privacy policy"
       }
+    },
+    "homePricing": {
+      "overline": "Pricing",
+      "title": "Security that fits your budget.",
+      "subtitle": "Start free. Scale when you're ready.",
+      "recommended": "Most Popular",
+      "plans": {
+        "0": {
+          "name": "Community",
+          "price": "Free",
+          "period": "",
+          "desc": "1 machine. Perfect for trying out.",
+          "features": {
+            "0": "Full Scan + PDF report",
+            "1": "Guard basic detection + blocking",
+            "2": "Threat Cloud intelligence"
+          },
+          "cta": "Get Started"
+        },
+        "1": {
+          "name": "Solo",
+          "price": "$9",
+          "period": "/mo",
+          "desc": "Up to 3 machines. For developers.",
+          "features": {
+            "0": "Everything in Community",
+            "1": "Full auto-response",
+            "2": "LINE / Slack / Telegram / Email",
+            "3": "SSH + HTTP honeypots + Ollama AI"
+          },
+          "cta": "Start Solo"
+        },
+        "2": {
+          "name": "Pro",
+          "price": "$29",
+          "period": "/mo",
+          "desc": "Up to 10 machines. For teams.",
+          "features": {
+            "0": "Everything in Solo",
+            "1": "Cloud AI deep analysis",
+            "2": "All 8 honeypot protocols",
+            "3": "Dashboard",
+            "4": "Webhook integration"
+          },
+          "cta": "Start Pro"
+        },
+        "3": {
+          "name": "Business",
+          "price": "$79",
+          "period": "/mo",
+          "desc": "Up to 25 machines. For organizations.",
+          "features": {
+            "0": "Everything in Pro",
+            "1": "1 compliance report/month included",
+            "2": "Webhook API access",
+            "3": "Priority support",
+            "4": "Additional reports at 50% off"
+          },
+          "cta": "Start Business"
+        }
+      },
+      "reportTitle": "Compliance Reports — One-time Purchase",
+      "reportDesc": "Taiwan Cyber Security Act $299 | ISO 27001 $499 | SOC 2 $699 | Bundle $999",
+      "reportCta": "View compliance options",
+      "disclaimer": "All prices in USD. TWD pricing available on the Chinese version."
     }
   },
   "pricing": {
@@ -403,46 +550,40 @@
     "hero": {
       "overline": "Pricing",
       "title": "Simple, transparent pricing",
-      "subtitle": "30-day free trial on every paid plan. No credit card required. Start protecting your endpoints in under 60 seconds."
+      "subtitle": "Start free. Scale as you grow. No credit card required."
     },
     "addons": {
-      "overline": "Compliance",
+      "overline": "Compliance Add-ons",
       "title": "Compliance reports. Save $5,000+ in consulting fees.",
       "subtitle": "Traditional ISO 27001 gap analysis: $5,000-$15,000 per engagement. Panguard generates equivalent reports automatically.",
-      "assessment": {
-        "name": "Full Assessment",
-        "price": "$499",
-        "originalPrice": "$999",
-        "unit": "one-time",
-        "earlyBird": "Early bird price. Limited to the first 100 reports.",
-        "desc": "Choose one framework:",
-        "frameworks": ["ISO 27001", "SOC 2 Type II", "Taiwan Cyber Security Act (ISMS)"],
-        "includes": [
-          "Complete gap analysis report",
-          "Control-by-control assessment",
-          "Improvement recommendations with priority ranking",
-          "Bilingual output (EN + zh-TW)",
-          "PDF + JSON format"
-        ]
+      "bestValue": "Best Value",
+      "items": {
+        "taiwan": {
+          "name": "Taiwan Cyber Security Act",
+          "price": "$299",
+          "unit": "one-time",
+          "desc": "Full ISMS gap analysis. Control-by-control assessment with bilingual output (EN + zh-TW)."
+        },
+        "iso27001": {
+          "name": "ISO 27001",
+          "price": "$499",
+          "unit": "one-time",
+          "desc": "Complete 93-control gap analysis. Improvement recommendations with priority ranking."
+        },
+        "soc2": {
+          "name": "SOC 2 Type II",
+          "price": "$699",
+          "unit": "one-time",
+          "desc": "Trust Services Criteria assessment. Security, availability, and confidentiality controls."
+        },
+        "bundle": {
+          "name": "All Frameworks Bundle",
+          "price": "$999",
+          "unit": "one-time",
+          "desc": "All three frameworks. Save $498. Includes continuous monitoring for 3 months."
+        }
       },
-      "monitoring": {
-        "name": "Continuous Monitoring",
-        "price": "$99",
-        "originalPrice": "$199",
-        "unit": "/mo",
-        "earlyBird": "Early bird price. Limited to the first 50 seats.",
-        "desc": "Includes all frameworks:",
-        "frameworks": ["ISO 27001", "SOC 2", "Taiwan Cyber Security Act (ISMS)"],
-        "includes": [
-          "Everything in Full Assessment",
-          "Monthly automatic updates",
-          "Real-time compliance status monitoring",
-          "Change notifications (LINE/Email)",
-          "Audit trail logs",
-          "Annual report auto-generation"
-        ]
-      },
-      "requiresPro": "Available on Pro plans and above.",
+      "requiresPro": "Available on Pro and Business plans. Reports delivered in PDF + JSON format.",
       "disclaimer": "Panguard compliance reports are AI-powered gap analysis tools intended as a reference for compliance readiness. Reports do not constitute formal certification, legal advice, or audit conclusions. For formal certification, we recommend engaging an accredited certification body for final audit."
     },
     "faqSection": {
@@ -451,17 +592,17 @@
       "subtitle": "Everything you need to know about pricing and plans."
     },
     "enterprise": {
-      "title": "Need a custom solution?",
-      "desc": "For organizations with 500+ endpoints, dedicated compliance requirements, or custom deployment needs. White-glove onboarding, custom SLA, and a dedicated security engineer.",
+      "title": "Need more than 25 machines?",
+      "desc": "For organizations with large-scale deployments, dedicated compliance requirements, or custom integrations. White-glove onboarding, custom SLA, and a dedicated security engineer.",
       "ctaSales": "Talk to Sales",
       "ctaDemo": "Request a Demo"
     },
     "guarantee": "30-day money-back guarantee on all paid plans. No questions asked.",
     "plans": {
-      "free": {
-        "name": "Free",
-        "audience": "Get started instantly",
-        "endpoints": "1 endpoint",
+      "community": {
+        "name": "Community",
+        "audience": "Open source. Free forever.",
+        "machines": "1 machine",
         "features": [
           "Full security scan (unlimited)",
           "PDF report with risk score",
@@ -470,40 +611,40 @@
           "Manual fix instructions",
           "Community support"
         ],
-        "cta": "Scan Free"
+        "cta": "Get Started Free"
       },
       "solo": {
         "name": "Solo",
         "audience": "Solo developers & freelancers",
-        "endpoints": "1 endpoint",
+        "machines": "Up to 3 machines",
         "features": [
-          "Everything in Free",
+          "Everything in Community",
           "3-layer AI defense (Layer 1+2+3)",
           "One-click auto-fix vulnerabilities",
           "LINE / Telegram alerts",
           "Chat AI assistant",
           "7-day log retention"
         ],
-        "cta": "Join Waitlist"
+        "cta": "Start Free Trial"
       },
       "pro": {
         "name": "Pro",
         "audience": "Teams & growing businesses",
-        "endpoints": "Up to 50 endpoints",
+        "machines": "Up to 10 machines",
         "features": [
           "Everything in Solo",
           "Trap (honeypots)",
           "Slack integration",
           "30-day log retention",
-          "Basic compliance reports",
+          "Compliance report access",
           "Priority support"
         ],
-        "cta": "Join Waitlist"
+        "cta": "Start Free Trial"
       },
-      "enterprise": {
-        "name": "Enterprise",
-        "audience": "Large organizations",
-        "endpoints": "Unlimited",
+      "business": {
+        "name": "Business",
+        "audience": "Organizations & enterprises",
+        "machines": "Up to 25 machines",
         "features": [
           "Everything in Pro",
           "Custom AI models",
@@ -511,9 +652,9 @@
           "SSO & RBAC",
           "On-premise deployment",
           "Dedicated account manager",
-          "Quarterly security review"
+          "90-day+ log retention"
         ],
-        "cta": "Contact Sales"
+        "cta": "Start Free Trial"
       }
     },
     "comparison": {
@@ -527,25 +668,25 @@
       "supportInfra": "Support & Infrastructure"
     },
     "tierLabels": {
-      "free": "Free",
+      "community": "Community",
       "solo": "Solo",
       "pro": "Pro",
-      "enterprise": "Enterprise"
+      "business": "Business"
     },
-    "allPaidPlansNote": "All paid plans include 30-day money-back guarantee. Save 20% with annual billing.",
+    "allPaidPlansNote": "All paid plans include 30-day free trial and money-back guarantee. Save 20% with annual billing.",
     "faq": {
-      "faq1q": "How does the 30-day free trial work?",
-      "faq1a": "When you sign up for any paid plan, you get full access to all features in that tier for 30 days -- no credit card required. At the end of the trial, you can choose to subscribe or your account will automatically downgrade to the Free Scan tier. No data is lost.",
+      "faq1q": "How does the free trial work?",
+      "faq1a": "When you sign up for any paid plan, you get full access to all features in that tier for 30 days -- no credit card required. At the end of the trial, you can choose to subscribe or your account will automatically downgrade to the Community tier. No data is lost.",
       "faq2q": "Can I switch plans at any time?",
       "faq2a": "Absolutely. You can upgrade or downgrade your plan at any point. When upgrading, you get immediate access to the new features and we prorate the difference. When downgrading, the change takes effect at the start of your next billing cycle.",
-      "faq3q": "What counts as an endpoint?",
-      "faq3a": "An endpoint is any device or server running the Panguard agent. This includes workstations, laptops, cloud VMs, and bare-metal servers. Containers within a single host count as one endpoint. Deactivated agents do not count toward your limit.",
+      "faq3q": "What counts as a machine?",
+      "faq3a": "A machine is any device or server running the Panguard agent. This includes workstations, laptops, cloud VMs, and bare-metal servers. Containers within a single host count as one machine. Deactivated agents do not count toward your limit.",
       "faq4q": "Do you offer annual billing discounts?",
-      "faq4a": "Yes. Annual billing saves you 20% compared to monthly pricing. For example, Solo drops from $9/mo to $7.20/mo, Team from $14 to $11.20/endpoint/mo, and Business from $10 to $8/endpoint/mo -- all billed annually.",
-      "faq5q": "Is there a free plan?",
-      "faq5a": "Panguard Scan is always free. You can run unlimited security audits on one endpoint and receive a PDF report with a risk score. When you are ready for 24/7 protection with Guard, Chat, Trap, and Report, upgrade to a paid plan starting at $9/mo.",
+      "faq4a": "Yes. Annual billing saves you 20% compared to monthly pricing. For example, Solo drops from $9/mo to $7.20/mo, Pro from $29/mo to $23.20/mo, and Business from $79/mo to $63.20/mo -- all billed annually.",
+      "faq5q": "Is the Community plan really free?",
+      "faq5a": "Yes, forever. Panguard is open source (MIT). The Community plan includes full security scanning, real-time Layer 1 protection, and community support for 1 machine. When you need multi-machine support, AI defense, or compliance reports, upgrade starting at $9/mo.",
       "faq6q": "What are the compliance reports?",
-      "faq6a": "Available on Pro plans and above. Generate ISO 27001, SOC 2, or Taiwan Cyber Security Act (ISMS) compliance reports. Single assessment: $499. Continuous monitoring: $99/month with all frameworks included.",
+      "faq6a": "Available on Pro and Business plans. Generate Taiwan Cyber Security Act ($299), ISO 27001 ($499), SOC 2 ($699), or bundle all three ($999). Reports are AI-powered gap analysis delivered in PDF + JSON format.",
       "faq7q": "What happens to my data if I cancel?",
       "faq7a": "Your data remains accessible in read-only mode for 30 days after cancellation. During that window, you can export all reports, logs, and configurations. After 30 days, data is securely deleted in accordance with our data retention policy and GDPR requirements.",
       "faq8q": "How does the compliance report quality compare to a human consultant?",
@@ -773,7 +914,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 423 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,158 Sigma and 425 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "7-Day Context Memory",
