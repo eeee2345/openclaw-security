@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { Copy, Check, ArrowRight } from "lucide-react";
+import { Copy, Check, ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "@/navigation";
 
 /* ─── Install Command (never translated) ─── */
@@ -13,10 +13,10 @@ function InstallBar() {
   const handleCopy = () => {
     navigator.clipboard.writeText(installCmd);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1500);
   };
   return (
-    <div className="flex items-center gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-5 py-3.5 font-mono text-sm max-w-md mx-auto">
+    <div className="relative flex items-center gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-5 py-3.5 font-mono text-sm max-w-md mx-auto">
       <span className="text-brand-sage select-none">$</span>
       <code className="text-text-secondary flex-1 select-all truncate">{installCmd}</code>
       <button
@@ -30,6 +30,11 @@ function InstallBar() {
           <Copy className="w-4 h-4" />
         )}
       </button>
+      {copied && (
+        <span className="toast-copied absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-status-safe bg-surface-1 border border-border rounded px-2 py-1">
+          Copied!
+        </span>
+      )}
     </div>
   );
 }
@@ -85,6 +90,9 @@ export default function Hero() {
           <p className="text-xl lg:text-2xl text-text-secondary leading-relaxed mt-1">
             {t("subtitle2")}
           </p>
+          <p className="text-base lg:text-lg text-text-tertiary leading-relaxed mt-3 font-mono">
+            {t("subtitle3")}
+          </p>
         </motion.div>
 
         {/* Install command */}
@@ -118,6 +126,24 @@ export default function Hero() {
           >
             {t("github")}
           </a>
+        </motion.div>
+
+        {/* Social proof badges */}
+        <motion.div
+          className="flex flex-wrap gap-3 justify-center mt-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.7 }}
+        >
+          {(["mit", "tests", "typescript", "taiwan"] as const).map((key) => (
+            <span
+              key={key}
+              className="inline-flex items-center gap-1.5 text-xs text-text-tertiary bg-surface-1/50 border border-border/50 rounded-full px-3 py-1.5"
+            >
+              <CheckCircle className="w-3 h-3 text-brand-sage" />
+              {t(`badges.${key}`)}
+            </span>
+          ))}
         </motion.div>
       </div>
 

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import FadeInUp from "@/components/FadeInUp";
 
-const faqKeys = ["faq1", "faq2", "faq3", "faq4", "faq5", "faq6", "faq7"] as const;
+const faqKeys = ["faq1", "faq2", "faq3", "faq4", "faq5", "faq6", "faq7", "faq8"] as const;
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);

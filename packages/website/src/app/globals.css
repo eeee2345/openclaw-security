@@ -155,3 +155,37 @@ body {
   0%, 100% { transform: scale(1); opacity: 0.3; }
   50% { transform: scale(1.2); opacity: 0.6; }
 }
+
+/* Hero background glow */
+.hero-glow {
+  position: relative;
+}
+.hero-glow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(139,154,142,0.08) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Copy toast fade animation */
+@keyframes toast-fade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+}
+.toast-copied {
+  animation: toast-fade 1.5s ease-in-out forwards;
+}
+
+/* Sage text glow for emphasis */
+.text-glow-sage {
+  text-shadow: 0 0 20px rgba(139,154,142,0.4), 0 0 40px rgba(139,154,142,0.2);
+}

@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import SectionWrapper from "../ui/SectionWrapper";
 import SectionTitle from "../ui/SectionTitle";
 import FadeInUp from "../FadeInUp";
+import CountUp from "../animations/CountUp";
 import {
   ShieldIcon, NetworkIcon, TerminalIcon, ScanIcon, LockIcon, AnalyticsIcon,
 } from "@/components/ui/BrandIcons";
@@ -10,13 +11,19 @@ import {
 export default function SocialProof() {
   const t = useTranslations("home.socialProof");
 
-  const stats = [
-    { value: t("stat1"), label: t("stat1Label"), icon: ShieldIcon },
-    { value: t("stat2"), label: t("stat2Label"), icon: ScanIcon },
-    { value: t("stat3"), label: t("stat3Label"), icon: NetworkIcon },
-    { value: t("stat4"), label: t("stat4Label"), icon: TerminalIcon },
-    { value: t("stat5"), label: t("stat5Label"), icon: AnalyticsIcon },
-    { value: t("stat6"), label: t("stat6Label"), icon: LockIcon },
+  const stats: Array<{
+    numericValue?: number;
+    textValue?: string;
+    suffix?: string;
+    label: string;
+    icon: typeof ShieldIcon;
+  }> = [
+    { numericValue: 1068, label: t("stat1Label"), icon: ShieldIcon },
+    { numericValue: 847, label: t("stat2Label"), icon: ScanIcon },
+    { numericValue: 8, label: t("stat3Label"), icon: NetworkIcon },
+    { numericValue: 1203, label: t("stat4Label"), icon: TerminalIcon },
+    { numericValue: 5, label: t("stat5Label"), icon: AnalyticsIcon },
+    { textValue: "MIT", label: t("stat6Label"), icon: LockIcon },
   ];
 
   return (
@@ -33,7 +40,11 @@ export default function SocialProof() {
             <div className="bg-surface-1 rounded-xl border border-border p-6 text-center card-glow">
               <s.icon size={20} className="text-brand-sage mx-auto mb-3" />
               <p className="text-2xl sm:text-3xl font-extrabold text-text-primary">
-                {s.value}
+                {s.numericValue != null ? (
+                  <CountUp target={s.numericValue} suffix={s.suffix} />
+                ) : (
+                  s.textValue
+                )}
               </p>
               <p className="text-xs text-text-tertiary mt-2">{s.label}</p>
             </div>

@@ -147,13 +147,14 @@ export function checkAccess(requiredTier: Tier): boolean {
  */
 export function showUpgradePrompt(feature: string, requiredTier: Tier): void {
   const { tier } = getLicense();
+  const price = PRICING_TIERS[requiredTier]?.price ?? 'custom';
   console.log('');
   console.log(box(
     [
       `${symbols.warn} "${feature}" ${tierDisplayName(requiredTier)} tier required`,
       '',
       `  Current: ${c.sage(tierDisplayName(tier))}`,
-      `  Required: ${c.sage(tierDisplayName(requiredTier))}`,
+      `  Required: ${c.sage(tierDisplayName(requiredTier))}${price !== 'custom' ? ` ($${price}/mo)` : ''}`,
       '',
       `  Upgrade: ${c.underline('https://panguard.ai/pricing')}`,
       `  Or run: ${c.sage('panguard login')}`,
@@ -162,3 +163,17 @@ export function showUpgradePrompt(feature: string, requiredTier: Tier): void {
   ));
   console.log('');
 }
+
+/* ── Pricing Constants ── */
+
+export const PRICING_TIERS: Record<string, { price: number | 'custom'; unit: string; endpoints: string }> = {
+  free: { price: 0, unit: '', endpoints: '1 endpoint' },
+  solo: { price: 9, unit: '/mo', endpoints: '1 endpoint' },
+  pro: { price: 19, unit: '/endpoint/mo', endpoints: 'Up to 50 endpoints' },
+  enterprise: { price: 'custom', unit: '', endpoints: 'Unlimited' },
+};
+
+export const COMPLIANCE_PRICING = {
+  assessment: { price: 499, originalPrice: 999, unit: 'one-time' },
+  monitoring: { price: 99, originalPrice: 199, unit: '/mo' },
+} as const;

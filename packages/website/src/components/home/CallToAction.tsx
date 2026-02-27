@@ -99,7 +99,7 @@ export default function CallToAction() {
           <p className="text-xs text-text-muted uppercase tracking-wider mt-10 mb-3">
             {t("curlLabel")}
           </p>
-          <div className="flex items-center gap-3 bg-surface-1 border border-border rounded-xl px-5 py-3.5 font-mono text-sm">
+          <div className="relative flex items-center gap-3 bg-surface-1 border border-border rounded-xl px-5 py-3.5 font-mono text-sm">
             <span className="text-brand-sage select-none">$</span>
             <code className="text-text-secondary flex-1 select-all truncate text-left">
               {installCmd}
@@ -115,6 +115,11 @@ export default function CallToAction() {
                 <Copy className="w-4 h-4" />
               )}
             </button>
+            {copied && (
+              <span className="toast-copied absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-status-safe bg-surface-1 border border-border rounded px-2 py-1">
+                Copied!
+              </span>
+            )}
           </div>
         </FadeInUp>
 
@@ -124,32 +129,37 @@ export default function CallToAction() {
             {t("orScanOnline")}
           </p>
           {!result ? (
-            <form onSubmit={handleScan} className="flex gap-2">
-              <input
-                type="text"
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                placeholder={t("scanPlaceholder")}
-                className="flex-1 bg-surface-1 border border-border rounded-full px-5 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
-                disabled={scanning}
-              />
-              <button
-                type="submit"
-                disabled={scanning || !domain.trim()}
-                className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-6 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-              >
-                {scanning ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    {t("scanning")}
-                  </>
-                ) : (
-                  <>
-                    {t("scanButton")} <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
+            <div className="max-w-[600px] mx-auto">
+              <form onSubmit={handleScan} className="flex gap-2">
+                <input
+                  type="text"
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                  placeholder={t("scanPlaceholder")}
+                  className="flex-1 bg-surface-1 border border-border rounded-xl px-5 py-4 text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
+                  disabled={scanning}
+                />
+                <button
+                  type="submit"
+                  disabled={scanning || !domain.trim()}
+                  className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-xl px-6 py-4 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                >
+                  {scanning ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {t("scanning")}
+                    </>
+                  ) : (
+                    <>
+                      {t("freeScanButton")} <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+              <p className="text-xs text-text-muted mt-3">
+                {t("privacyNote")}
+              </p>
+            </div>
           ) : (
             <div className="bg-surface-1 border border-border rounded-xl p-6 text-left mt-2">
               {/* Score + Grade */}

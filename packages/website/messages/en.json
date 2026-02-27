@@ -35,6 +35,7 @@
     "company": "Company",
     "pricing": "Pricing",
     "docs": "Docs",
+    "useCases": "Use Cases",
     "startFreeScan": "Start Free Scan",
     "productLinks": {
       "overview": "Product Overview",
@@ -135,8 +136,15 @@
       "title": "Headless Defense.",
       "subtitle1": "Your agent has no eyes.",
       "subtitle2": "So we built security that doesn't need a screen.",
+      "subtitle3": "API for your agent. CLI for you. Dashboard for no one.",
       "freeScan": "Free Scan",
-      "github": "GitHub"
+      "github": "GitHub",
+      "badges": {
+        "mit": "MIT Open Source",
+        "tests": "1,068 Tests Passing",
+        "typescript": "TypeScript Strict Mode",
+        "taiwan": "Made in Taiwan"
+      }
     },
     "painPoint": {
       "line1": "Your AI just shipped an API to a VPS.",
@@ -221,7 +229,9 @@
       "sslInvalid": "Invalid",
       "sslExpires": "Expires in {days} days",
       "noSsl": "Not detected",
-      "scanAnother": "Scan another"
+      "scanAnother": "Scan another",
+      "privacyNote": "Scan results are not stored. Your privacy is protected.",
+      "freeScanButton": "Free Scan"
     },
     "vision": {
       "line1": "We believe in one thing:",
@@ -235,6 +245,123 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "btnScan": "Free Scan"
+    },
+    "techReveal": {
+      "overline": "Under the Hood",
+      "title": "What's under the hood.",
+      "subtitle": "Fully transparent. Every line of code is auditable on GitHub.",
+      "detection": {
+        "title": "Detection Engine",
+        "sigma": "847 Sigma Rules",
+        "sigmaDesc": "Industry-standard threat detection language",
+        "yara": "1,203 YARA Rules",
+        "yaraDesc": "Malware fingerprint matching",
+        "cve": "CVE Database",
+        "cveDesc": "Real-time sync with NVD vulnerability data"
+      },
+      "defense": {
+        "title": "Defense Architecture",
+        "subtitle": "Three-Layer Defense Funnel",
+        "layer1": "Layer 1: Rule Engine",
+        "layer1Desc": "Real-time pattern matching against known threats. < 50ms response.",
+        "layer2": "Layer 2: Local AI",
+        "layer2Desc": "Ollama offline analysis. Defends even when cloud is down.",
+        "layer3": "Layer 3: Cloud AI",
+        "layer3Desc": "Claude / GPT deep analysis. Zero-day threat detection."
+      },
+      "pipeline": {
+        "title": "AI Analysis Pipeline",
+        "subtitle": "5 Specialized Agents",
+        "agents": ["Detect Agent", "Analyze Agent", "Respond Agent", "Report Agent", "Chat Agent"],
+        "desc": "Each agent focuses on one task. They collaborate and make decisions autonomously."
+      },
+      "githubCta": "Don't trust us? Read the source"
+    },
+    "threeSteps": {
+      "overline": "Getting Started",
+      "title": "Three steps to protection.",
+      "tabs": {
+        "website": "I have a website",
+        "developer": "I'm a developer",
+        "business": "I run a business"
+      },
+      "website": {
+        "step1Title": "Enter your domain",
+        "step1Desc": "Type your URL above and hit \"Scan\"",
+        "step2Title": "Get your security report",
+        "step2Desc": "Receive a PDF report in 60 seconds. It tells you what's wrong, how severe it is, and how to fix it.",
+        "step3Title": "Install protection with one command",
+        "step3Desc": "Paste the install command on your server. Panguard fixes issues and keeps protecting you.",
+        "cta": "Scan your domain"
+      },
+      "developer": {
+        "step1Title": "Install",
+        "step1Desc": "curl -fsSL https://get.panguard.ai | sh\n30 seconds. Zero config.",
+        "step2Title": "Scan + start protection",
+        "step2Desc": "panguard scan → see all vulnerabilities\npanguard guard start → real-time protection",
+        "step3Title": "Connect your agent",
+        "step3Desc": "Call the Panguard API from your AI agent. Your agent now has a security advisor.",
+        "cta": "Read the docs"
+      },
+      "business": {
+        "step1Title": "Free security assessment",
+        "step1Desc": "Enter your company domain. We scan it for free. Get a full security report + risk score.",
+        "step2Title": "Deploy to all endpoints",
+        "step2Desc": "One command installs on all servers. Guard auto-detects, auto-responds, and auto-notifies.",
+        "step3Title": "Automatic compliance",
+        "step3Desc": "panguard report --framework iso27001\nGenerate ISO 27001 / SOC 2 / ISMS reports automatically. No more $5,000 consultants.",
+        "cta": "Get a free assessment"
+      }
+    },
+    "useCases": {
+      "overline": "Use Cases",
+      "title": "Why they use Panguard.",
+      "cases": {
+        "saas": {
+          "persona": "SaaS Startup",
+          "quote": "Our enterprise client required a SOC 2 report. Consultants quoted $20,000 and six months. Panguard: $499, 60 seconds.",
+          "used": "Scan + Report",
+          "saved": "Saved $19,500 and 6 months"
+        },
+        "ecommerce": {
+          "persona": "E-commerce",
+          "quote": "A customer asked if our site was secure. I didn't know how to answer.",
+          "used": "Scan (Free)",
+          "saved": "Cost: $0"
+        },
+        "taiwan": {
+          "persona": "Taiwan Software Co",
+          "quote": "Government contract requires ISMS compliance. External consultants quoted NT$300,000.",
+          "used": "Report (ISMS framework)",
+          "saved": "Saved ~$9,500 USD"
+        },
+        "freelance": {
+          "persona": "Freelance Developer",
+          "quote": "I manage 5 servers for clients but can't monitor them 24/7.",
+          "used": "Guard + Chat ($9/mo)",
+          "saved": "No more waking up at 3 AM"
+        }
+      }
+    },
+    "trustLayer": {
+      "overline": "Trust",
+      "title": "How we earn your trust.",
+      "subtitle": "",
+      "openSource": {
+        "title": "Open Source",
+        "desc": "MIT licensed. 100% source code is public. Anyone can audit it. Anyone can fork it.\n\nWe believe: if you can see every line of code, you can trust it.",
+        "link": "View source code"
+      },
+      "security": {
+        "title": "Security Practices",
+        "desc": "TypeScript strict mode. 1,068 automated tests. CI/CD runs all tests on every commit.\n\nGitHub Actions automated pipeline.",
+        "link": "View test reports"
+      },
+      "privacy": {
+        "title": "Privacy Protection",
+        "desc": "Threat Cloud only collects anonymized threat data. No IP addresses. No hostnames. No personally identifiable information.\n\nYou can disable data uploads anytime:\npanguard config set threat-cloud false",
+        "link": "Read privacy policy"
+      }
     }
   },
   "pricing": {
@@ -270,29 +397,31 @@
       "subtitle": "30-day free trial on every paid plan. No credit card required. Start protecting your endpoints in under 60 seconds."
     },
     "addons": {
-      "overline": "Add-ons",
-      "title": "Compliance report add-ons",
-      "subtitle": "Available on Starter plans and above. Add compliance reporting to any plan.",
-      "iso27001": {
-        "name": "ISO 27001",
-        "price": "$5/endpoint/mo",
-        "desc": "Gap analysis and audit-ready documentation"
+      "overline": "Compliance",
+      "title": "Compliance reports. Save $5,000+ in consulting fees.",
+      "subtitle": "Traditional ISO 27001 gap analysis: $5,000-$15,000 per engagement. Panguard generates equivalent reports automatically.",
+      "assessment": {
+        "name": "Full Assessment",
+        "price": "$499",
+        "originalPrice": "$999",
+        "unit": "one-time",
+        "earlyBird": "Early bird price. Limited to the first 100 reports.",
+        "desc": "Choose one framework:",
+        "frameworks": ["ISO 27001", "SOC 2 Type II", "Taiwan Cyber Security Act (ISMS)"],
+        "includes": ["Complete gap analysis report", "Control-by-control assessment", "Improvement recommendations with priority ranking", "Bilingual output (EN + zh-TW)", "PDF + JSON format"]
       },
-      "soc2": {
-        "name": "SOC 2",
-        "price": "$5/endpoint/mo",
-        "desc": "Type II evidence and continuous monitoring"
+      "monitoring": {
+        "name": "Continuous Monitoring",
+        "price": "$99",
+        "originalPrice": "$199",
+        "unit": "/mo",
+        "earlyBird": "Early bird price. Limited to the first 50 seats.",
+        "desc": "Includes all frameworks:",
+        "frameworks": ["ISO 27001", "SOC 2", "Taiwan Cyber Security Act (ISMS)"],
+        "includes": ["Everything in Full Assessment", "Monthly automatic updates", "Real-time compliance status monitoring", "Change notifications (LINE/Email)", "Audit trail logs", "Annual report auto-generation"]
       },
-      "tcsa": {
-        "name": "Taiwan Cyber Security Act",
-        "price": "$3/endpoint/mo",
-        "desc": "Bilingual compliance reports (EN + zh-TW)"
-      },
-      "bundle": {
-        "name": "Full Bundle",
-        "price": "$10/endpoint/mo",
-        "desc": "All frameworks included, save 30%"
-      }
+      "requiresPro": "Available on Pro plans and above.",
+      "disclaimer": "Panguard compliance reports are AI-powered gap analysis tools intended as a reference for compliance readiness. Reports do not constitute formal certification, legal advice, or audit conclusions. For formal certification, we recommend engaging an accredited certification body for final audit."
     },
     "faqSection": {
       "overline": "FAQ",
@@ -307,14 +436,15 @@
     },
     "guarantee": "30-day money-back guarantee on all paid plans. No questions asked.",
     "plans": {
-      "freeScan": {
-        "name": "Free Scan",
-        "audience": "Try before you buy",
+      "free": {
+        "name": "Free",
+        "audience": "Get started instantly",
         "endpoints": "1 endpoint",
         "features": [
-          "Basic security scan",
+          "Unlimited scans",
+          "Guard basic (detect only, no auto-fix)",
           "PDF report with risk score",
-          "Unlimited scans"
+          "Community support"
         ],
         "cta": "Scan Free"
       },
@@ -323,65 +453,40 @@
         "audience": "Solo developers & freelancers",
         "endpoints": "1 endpoint",
         "features": [
-          "Guard (24/7 monitoring)",
-          "Chat (LINE / Telegram alerts)",
-          "Scan (unlimited)",
+          "Full Scan",
+          "Guard full (auto-fix + AI)",
+          "Chat notifications",
+          "LINE / Telegram alerts",
           "7-day log retention",
-          "Community support"
+          "Email support"
         ],
-        "cta": "Start Free Trial"
+        "cta": "Join Waitlist"
       },
-      "starter": {
-        "name": "Starter",
-        "audience": "Small teams (2-5 people)",
-        "endpoints": "Up to 5 endpoints",
+      "pro": {
+        "name": "Pro",
+        "audience": "Teams & growing businesses",
+        "endpoints": "Up to 50 endpoints",
         "features": [
           "Everything in Solo",
-          "Report (basic compliance)",
-          "Email + LINE + Telegram alerts",
-          "14-day log retention",
-          "Team dashboard"
-        ],
-        "cta": "Start Free Trial"
-      },
-      "team": {
-        "name": "Team",
-        "audience": "Growing businesses (5-50)",
-        "endpoints": "5-50 endpoints",
-        "features": [
-          "Everything in Starter",
           "Trap (honeypots)",
           "Slack integration",
           "30-day log retention",
-          "Custom alert rules",
+          "Basic compliance reports",
           "Priority support"
         ],
-        "cta": "Start Free Trial"
-      },
-      "business": {
-        "name": "Business",
-        "audience": "Mid-market (50-500 endpoints)",
-        "endpoints": "50-500 endpoints",
-        "features": [
-          "Everything in Team",
-          "API access",
-          "Webhook integration",
-          "90-day log retention",
-          "SSO & RBAC",
-          "Dedicated account manager"
-        ],
-        "cta": "Start Free Trial"
+        "cta": "Join Waitlist"
       },
       "enterprise": {
         "name": "Enterprise",
-        "audience": "Large organizations (500+)",
-        "endpoints": "500+ endpoints",
+        "audience": "Large organizations",
+        "endpoints": "Unlimited",
         "features": [
-          "Everything in Business",
+          "Everything in Pro",
           "Custom AI models",
-          "SIEM integration (Splunk, ELK)",
+          "SIEM integration",
+          "SSO & RBAC",
           "On-premise deployment",
-          "Custom SLA (up to 99.99%)",
+          "Dedicated account manager",
           "Quarterly security review"
         ],
         "cta": "Contact Sales"
@@ -400,9 +505,7 @@
     "tierLabels": {
       "free": "Free",
       "solo": "Solo",
-      "starter": "Starter",
-      "team": "Team",
-      "business": "Business",
+      "pro": "Pro",
       "enterprise": "Enterprise"
     },
     "allPaidPlansNote": "All paid plans include 30-day money-back guarantee. Save 20% with annual billing.",
@@ -417,10 +520,12 @@
       "faq4a": "Yes. Annual billing saves you 20% compared to monthly pricing. For example, Solo drops from $9/mo to $7.20/mo, Team from $14 to $11.20/endpoint/mo, and Business from $10 to $8/endpoint/mo -- all billed annually.",
       "faq5q": "Is there a free plan?",
       "faq5a": "Panguard Scan is always free. You can run unlimited security audits on one endpoint and receive a PDF report with a risk score. When you are ready for 24/7 protection with Guard, Chat, Trap, and Report, upgrade to a paid plan starting at $9/mo.",
-      "faq6q": "What are the compliance add-ons?",
-      "faq6a": "Available on Starter plans and above. Add ISO 27001 ($5/endpoint/mo), SOC 2 ($5/endpoint/mo), or Taiwan Cyber Security Act ($3/endpoint/mo) compliance reporting. The Full Bundle includes all frameworks for $10/endpoint/mo, saving 30%.",
+      "faq6q": "What are the compliance reports?",
+      "faq6a": "Available on Pro plans and above. Generate ISO 27001, SOC 2, or Taiwan Cyber Security Act (ISMS) compliance reports. Single assessment: $499. Continuous monitoring: $99/month with all frameworks included.",
       "faq7q": "What happens to my data if I cancel?",
-      "faq7a": "Your data remains accessible in read-only mode for 30 days after cancellation. During that window, you can export all reports, logs, and configurations. After 30 days, data is securely deleted in accordance with our data retention policy and GDPR requirements."
+      "faq7a": "Your data remains accessible in read-only mode for 30 days after cancellation. During that window, you can export all reports, logs, and configurations. After 30 days, data is securely deleted in accordance with our data retention policy and GDPR requirements.",
+      "faq8q": "How does the compliance report quality compare to a human consultant?",
+      "faq8a": "Panguard compliance reports cover all 93 controls in ISO 27001, automatically scanning your system configuration and assessing each control. Report format meets audit standards. However, we recommend using the report as a starting point, working with your internal team or external consultant to complete the final certification process."
     }
   },
   "scan": {

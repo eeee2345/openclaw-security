@@ -3,6 +3,10 @@ import NavBar from "@/components/NavBar";
 import Hero from "@/components/home/Hero";
 import PainPoint from "@/components/home/PainPoint";
 import Flip from "@/components/home/Flip";
+import TechReveal from "@/components/home/TechReveal";
+import ThreeSteps from "@/components/home/ThreeSteps";
+import UseCases from "@/components/home/UseCases";
+import TrustLayer from "@/components/home/TrustLayer";
 import Comparison from "@/components/home/Comparison";
 import SocialProof from "@/components/home/SocialProof";
 import CallToAction from "@/components/home/CallToAction";
@@ -20,9 +24,15 @@ export default function Home() {
     <>
       <NavBar />
       <main>
+        {/* 1. Hero */}
         <Hero />
+        {/* 2. PainPoint */}
         <PainPoint />
+        {/* 3. Flip */}
         <Flip />
+        {/* 4. TechReveal (new) */}
+        <TechReveal />
+        {/* 5. CLIShowcase */}
         <SectionWrapper>
           <SectionTitle
             overline={t("overline")}
@@ -38,11 +48,22 @@ export default function Home() {
             </p>
           </FadeInUp>
         </SectionWrapper>
+        {/* 6. ThreeSteps (new) */}
+        <ThreeSteps />
+        {/* 7. UseCases (new) */}
+        <UseCases />
+        {/* 8. SocialProof */}
         <SocialProof />
+        {/* 9. TrustLayer (new) */}
+        <TrustLayer />
+        {/* 10. Comparison */}
         <Comparison />
+        {/* 11. CallToAction */}
         <CallToAction />
+        {/* 12. Vision */}
         <Vision />
       </main>
+      {/* 13. Footer */}
       <Footer />
     </>
   );

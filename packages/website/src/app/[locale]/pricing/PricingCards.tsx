@@ -8,9 +8,9 @@ import { CheckIcon } from "@/components/ui/BrandIcons";
 import FadeInUp from "@/components/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 
-/* ── Plan keys and pricing data ── */
+/* ── Plan keys and pricing data (4 tiers) ── */
 
-const planKeys = ["freeScan", "solo", "starter", "team", "business", "enterprise"] as const;
+const planKeys = ["free", "solo", "pro", "enterprise"] as const;
 
 interface PlanMeta {
   price: number | null;
@@ -19,27 +19,23 @@ interface PlanMeta {
   popular: boolean;
 }
 
-const planMeta: Record<typeof planKeys[number], PlanMeta> = {
-  freeScan: { price: 0, unit: "", ctaHref: "/early-access", popular: false },
+const planMeta: Record<(typeof planKeys)[number], PlanMeta> = {
+  free: { price: 0, unit: "", ctaHref: "/scan", popular: false },
   solo: { price: 9, unit: "/mo", ctaHref: "/early-access", popular: false },
-  starter: { price: 19, unit: "/mo", ctaHref: "/early-access", popular: false },
-  team: { price: 14, unit: "/endpoint/mo", ctaHref: "/early-access", popular: true },
-  business: { price: 10, unit: "/endpoint/mo", ctaHref: "/early-access", popular: false },
+  pro: { price: 19, unit: "/endpoint/mo", ctaHref: "/early-access", popular: true },
   enterprise: { price: null, unit: "", ctaHref: "/contact", popular: false },
 };
 
-/* ── Feature comparison ── */
+/* ── Feature comparison (4 columns) ── */
 
 type FeatureValue = boolean | string;
-type TierKey = "free" | "solo" | "starter" | "team" | "business" | "enterprise";
+type TierKey = "free" | "solo" | "pro" | "enterprise";
 
 interface FeatureRow {
   feature: string;
   free: FeatureValue;
   solo: FeatureValue;
-  starter: FeatureValue;
-  team: FeatureValue;
-  business: FeatureValue;
+  pro: FeatureValue;
   enterprise: FeatureValue;
 }
 
@@ -47,37 +43,37 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
   {
     categoryKey: "productsIncluded",
     rows: [
-      { feature: "Panguard Scan", free: "Basic", solo: "Full", starter: "Full", team: "Full", business: "Full", enterprise: "Full + custom" },
-      { feature: "Panguard Guard", free: false, solo: true, starter: true, team: true, business: true, enterprise: true },
-      { feature: "Panguard Chat", free: false, solo: "Basic", starter: "Basic", team: "Advanced", business: "Advanced", enterprise: "Advanced + API" },
-      { feature: "Panguard Report", free: false, solo: false, starter: "Basic", team: "Full", business: "Full", enterprise: "Full + custom" },
-      { feature: "Panguard Trap", free: false, solo: false, starter: false, team: true, business: true, enterprise: true },
+      { feature: "Panguard Scan", free: "Basic", solo: "Full", pro: "Full", enterprise: "Full + custom" },
+      { feature: "Panguard Guard", free: "Detect only", solo: "Full", pro: "Full", enterprise: "Full" },
+      { feature: "Panguard Chat", free: false, solo: "Basic", pro: "Advanced", enterprise: "Advanced + API" },
+      { feature: "Panguard Report", free: false, solo: false, pro: "Full", enterprise: "Full + custom" },
+      { feature: "Panguard Trap", free: false, solo: false, pro: true, enterprise: true },
     ],
   },
   {
     categoryKey: "alertsIntegrations",
     rows: [
-      { feature: "Email alerts", free: false, solo: true, starter: true, team: true, business: true, enterprise: true },
-      { feature: "LINE / Telegram", free: false, solo: true, starter: true, team: true, business: true, enterprise: true },
-      { feature: "Slack", free: false, solo: false, starter: false, team: true, business: true, enterprise: true },
-      { feature: "Webhook / API", free: false, solo: false, starter: false, team: false, business: true, enterprise: true },
-      { feature: "SIEM integration", free: false, solo: false, starter: false, team: false, business: false, enterprise: true },
+      { feature: "Email alerts", free: false, solo: true, pro: true, enterprise: true },
+      { feature: "LINE / Telegram", free: false, solo: true, pro: true, enterprise: true },
+      { feature: "Slack", free: false, solo: false, pro: true, enterprise: true },
+      { feature: "Webhook / API", free: false, solo: false, pro: true, enterprise: true },
+      { feature: "SIEM integration", free: false, solo: false, pro: false, enterprise: true },
     ],
   },
   {
     categoryKey: "supportInfra",
     rows: [
-      { feature: "Community support", free: true, solo: true, starter: true, team: true, business: true, enterprise: true },
-      { feature: "Priority support", free: false, solo: false, starter: false, team: true, business: true, enterprise: true },
-      { feature: "Dedicated manager", free: false, solo: false, starter: false, team: false, business: true, enterprise: true },
-      { feature: "Log retention", free: false, solo: "7 days", starter: "14 days", team: "30 days", business: "90 days", enterprise: "Custom" },
-      { feature: "SSO & RBAC", free: false, solo: false, starter: false, team: false, business: true, enterprise: true },
-      { feature: "On-premise option", free: false, solo: false, starter: false, team: false, business: false, enterprise: true },
+      { feature: "Community support", free: true, solo: true, pro: true, enterprise: true },
+      { feature: "Priority support", free: false, solo: false, pro: true, enterprise: true },
+      { feature: "Dedicated manager", free: false, solo: false, pro: false, enterprise: true },
+      { feature: "Log retention", free: "1 day", solo: "7 days", pro: "30 days", enterprise: "Custom" },
+      { feature: "SSO & RBAC", free: false, solo: false, pro: false, enterprise: true },
+      { feature: "On-premise option", free: false, solo: false, pro: false, enterprise: true },
     ],
   },
 ];
 
-const tierKeys: TierKey[] = ["free", "solo", "starter", "team", "business", "enterprise"];
+const tierKeys: TierKey[] = ["free", "solo", "pro", "enterprise"];
 
 function ComparisonCell({ value }: { value: FeatureValue }) {
   if (value === true) return <CheckIcon className="w-4 h-4 text-status-safe mx-auto" />;
@@ -132,7 +128,7 @@ export default function PricingCards() {
       </FadeInUp>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
         {planKeys.map((key, i) => {
           const meta = planMeta[key];
           const features = t.raw(`plans.${key}.features`) as string[];
@@ -215,17 +211,17 @@ export default function PricingCards() {
         />
         <FadeInUp>
           <div className="mt-12 overflow-x-auto">
-            <table className="w-full min-w-[800px]">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left text-sm text-text-tertiary font-normal py-4 pr-4 w-[25%]" />
+                  <th className="text-left text-sm text-text-tertiary font-normal py-4 pr-4 w-[30%]" />
                   {tierKeys.map((key) => (
                     <th
                       key={key}
                       className={`text-center text-xs font-semibold uppercase tracking-wider py-4 ${
-                        key === "team" ? "text-brand-sage" : "text-text-muted"
+                        key === "pro" ? "text-brand-sage" : "text-text-muted"
                       }`}
-                      style={{ width: `${75 / 6}%` }}
+                      style={{ width: `${70 / 4}%` }}
                     >
                       {t(`tierLabels.${key}`)}
                     </th>
@@ -237,7 +233,7 @@ export default function PricingCards() {
                   <Fragment key={cat.categoryKey}>
                     <tr>
                       <td
-                        colSpan={7}
+                        colSpan={5}
                         className="pt-8 pb-3 text-xs uppercase tracking-wider text-brand-sage font-semibold"
                       >
                         {t(`comparisonCategories.${cat.categoryKey}`)}
@@ -249,7 +245,7 @@ export default function PricingCards() {
                         {tierKeys.map((key) => (
                           <td
                             key={key}
-                            className={`py-3 text-center ${key === "team" ? "bg-brand-sage/[0.03]" : ""}`}
+                            className={`py-3 text-center ${key === "pro" ? "bg-brand-sage/[0.03]" : ""}`}
                           >
                             <ComparisonCell value={row[key]} />
                           </td>

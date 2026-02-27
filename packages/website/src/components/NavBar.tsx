@@ -66,6 +66,7 @@ export default function NavBar() {
 
   const navLinks = [
     { label: t("docs"), href: "/docs" },
+    { label: t("useCases"), href: "/#use-cases" },
     { label: t("pricing"), href: "/pricing" },
   ];
 

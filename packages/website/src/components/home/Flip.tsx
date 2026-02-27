@@ -23,7 +23,7 @@ export default function Flip() {
             <p className="text-xl lg:text-2xl text-text-secondary leading-relaxed">
               {t("part2a")}
             </p>
-            <p className="text-[clamp(32px,4vw,48px)] font-extrabold text-brand-sage leading-[1.1] mt-2">
+            <p className="text-[clamp(36px,4.5vw,54px)] font-extrabold text-brand-sage leading-[1.1] mt-2 text-glow-sage">
               {t("part2b")}
             </p>
             <p className="text-lg text-text-secondary leading-relaxed mt-4">
@@ -46,7 +46,7 @@ export default function Flip() {
 
         {/* Tagline */}
         <FadeInUp delay={0.35}>
-          <p className="text-[clamp(40px,5vw,64px)] font-extrabold text-text-primary tracking-tight">
+          <p className="text-[2.5rem] font-extrabold text-brand-sage tracking-[0.05em] text-glow-sage">
             {t("tagline")}
           </p>
         </FadeInUp>
