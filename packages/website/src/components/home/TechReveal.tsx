@@ -137,7 +137,7 @@ export default function TechReveal() {
       <FadeInUp delay={0.3}>
         <p className="text-center mt-10">
           <a
-            href="https://github.com/eeee2345/panguard-ai"
+            href="https://github.com/panguard-ai/panguard-ai"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-brand-sage hover:underline link-reveal"

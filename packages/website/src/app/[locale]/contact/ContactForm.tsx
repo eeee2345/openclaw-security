@@ -61,10 +61,11 @@ export default function ContactForm() {
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="contact-name" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.name")}
               </label>
               <input
+                id="contact-name"
                 type="text"
                 required
                 value={form.name}
@@ -74,10 +75,11 @@ export default function ContactForm() {
               />
             </div>
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="contact-email" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.email")}
               </label>
               <input
+                id="contact-email"
                 type="email"
                 required
                 value={form.email}
@@ -90,10 +92,11 @@ export default function ContactForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="contact-company" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.company")}
               </label>
               <input
+                id="contact-company"
                 type="text"
                 value={form.company}
                 onChange={(e) => update("company", e.target.value)}
@@ -102,10 +105,11 @@ export default function ContactForm() {
               />
             </div>
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="contact-inquiry-type" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.inquiryType")}
               </label>
               <select
+                id="contact-inquiry-type"
                 required
                 value={form.type}
                 onChange={(e) => update("type", e.target.value)}
@@ -122,10 +126,11 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className="block text-xs text-text-tertiary mb-1.5">
+            <label htmlFor="contact-message" className="block text-xs text-text-tertiary mb-1.5">
               {t("labels.message")}
             </label>
             <textarea
+              id="contact-message"
               required
               value={form.message}
               onChange={(e) => update("message", e.target.value)}

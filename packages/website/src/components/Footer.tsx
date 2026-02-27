@@ -4,7 +4,7 @@ import { Link } from "@/navigation";
 import BrandLogo from "./ui/BrandLogo";
 
 const socials = [
-  { icon: Github, href: "https://github.com/eeee2345/panguard-ai", label: "GitHub" },
+  { icon: Github, href: "https://github.com/panguard-ai/panguard-ai", label: "GitHub" },
   { icon: Twitter, href: "https://x.com/panguard_ai", label: "Twitter" },
   { icon: Linkedin, href: "https://linkedin.com/company/panguard-ai", label: "LinkedIn" },
 ];
@@ -38,7 +38,7 @@ export default function Footer() {
       title: t("resources"),
       links: [
         { label: t("documentation"), href: "/docs" },
-        { label: "GitHub", href: "https://github.com/eeee2345/panguard-ai", external: true },
+        { label: "GitHub", href: "https://github.com/panguard-ai/panguard-ai", external: true },
       ],
     },
     {

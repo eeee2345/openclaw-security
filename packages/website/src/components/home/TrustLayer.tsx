@@ -8,8 +8,8 @@ import FadeInUp from "../FadeInUp";
 import Card from "../ui/Card";
 
 const columns = [
-  { key: "openSource", icon: Lock, href: "https://github.com/eeee2345/panguard-ai" },
-  { key: "security", icon: Shield, href: "https://github.com/eeee2345/panguard-ai/actions" },
+  { key: "openSource", icon: Lock, href: "https://github.com/panguard-ai/panguard-ai" },
+  { key: "security", icon: Shield, href: "https://github.com/panguard-ai/panguard-ai/actions" },
   { key: "privacy", icon: Eye, href: "/privacy" },
 ] as const;
 

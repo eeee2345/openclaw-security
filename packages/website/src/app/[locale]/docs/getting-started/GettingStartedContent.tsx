@@ -324,7 +324,7 @@ export default function GettingStartedContent() {
                 {t("nextDocs")}
               </Link>
               <a
-                href="https://github.com/eeee2345/panguard-ai"
+                href="https://github.com/panguard-ai/panguard-ai"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"

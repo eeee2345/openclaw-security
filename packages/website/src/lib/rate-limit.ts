@@ -1,7 +1,12 @@
 /**
  * In-memory rate limiter for API routes.
  * Limits each IP to a configurable number of requests per window.
- * Works on both local dev and Vercel serverless (per-instance).
+ *
+ * LIMITATION: This store lives in process memory. On serverless platforms
+ * (Vercel, AWS Lambda) each cold-start gets a fresh Map, so the effective
+ * rate limit is per-instance, not global. For production traffic at scale,
+ * replace with a shared store (Redis / Upstash) or use platform-level
+ * rate limiting (Vercel WAF, Cloudflare Rate Limiting).
  */
 
 interface RateLimitEntry {
@@ -38,8 +43,8 @@ export function checkRateLimit(ip: string): boolean {
     return true;
   }
 
-  entry.count++;
-  return entry.count <= MAX_REQUESTS;
+  store.set(ip, { ...entry, count: entry.count + 1 });
+  return entry.count + 1 <= MAX_REQUESTS;
 }
 
 /**
@@ -47,10 +52,15 @@ export function checkRateLimit(ip: string): boolean {
  */
 export function getClientIP(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
+  // Prefer x-real-ip (set by Vercel/Cloudflare to the actual client IP)
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) return realIp;
+
   if (forwarded) {
-    // Take the LAST IP (most trustworthy in proxy chain)
+    // Take the FIRST IP (the original client, set by the first trusted proxy)
     const ips = forwarded.split(",").map((s) => s.trim());
-    return ips[ips.length - 1] || "unknown";
+    return ips[0] || "unknown";
   }
-  return req.headers.get("x-real-ip") || "unknown";
+
+  return "unknown";
 }

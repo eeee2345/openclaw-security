@@ -62,10 +62,11 @@ export default function DemoRequestForm() {
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="demo-name" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.name")}
               </label>
               <input
+                id="demo-name"
                 type="text"
                 required
                 value={form.name}
@@ -75,10 +76,11 @@ export default function DemoRequestForm() {
               />
             </div>
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="demo-email" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.workEmail")}
               </label>
               <input
+                id="demo-email"
                 type="email"
                 required
                 value={form.email}
@@ -91,10 +93,11 @@ export default function DemoRequestForm() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="demo-company" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.company")}
               </label>
               <input
+                id="demo-company"
                 type="text"
                 required
                 value={form.company}
@@ -104,10 +107,11 @@ export default function DemoRequestForm() {
               />
             </div>
             <div>
-              <label className="block text-xs text-text-tertiary mb-1.5">
+              <label htmlFor="demo-team-size" className="block text-xs text-text-tertiary mb-1.5">
                 {t("labels.teamSize")}
               </label>
               <select
+                id="demo-team-size"
                 value={form.teamSize}
                 onChange={(e) => update("teamSize", e.target.value)}
                 className={`${inputStyles} appearance-none`}
@@ -123,10 +127,11 @@ export default function DemoRequestForm() {
           </div>
 
           <div>
-            <label className="block text-xs text-text-tertiary mb-1.5">
+            <label htmlFor="demo-stack" className="block text-xs text-text-tertiary mb-1.5">
               {t("labels.currentStack")}
             </label>
             <input
+              id="demo-stack"
               type="text"
               value={form.stack}
               onChange={(e) => update("stack", e.target.value)}
@@ -136,10 +141,11 @@ export default function DemoRequestForm() {
           </div>
 
           <div>
-            <label className="block text-xs text-text-tertiary mb-1.5">
+            <label htmlFor="demo-message" className="block text-xs text-text-tertiary mb-1.5">
               {t("labels.message")}
             </label>
             <textarea
+              id="demo-message"
               value={form.message}
               onChange={(e) => update("message", e.target.value)}
               placeholder={t("placeholders.message")}

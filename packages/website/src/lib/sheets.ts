@@ -13,8 +13,8 @@ import path from "path";
  * even if file storage fails.
  */
 export async function appendToSheet(sheet: string, row: string[]) {
-  // Always log to stdout (visible in deployment platform logs)
-  console.log(`[lead:${sheet}]`, JSON.stringify(row));
+  // Log submission event without PII (visible in deployment platform logs)
+  console.log(`[lead:${sheet}] new submission (${row.length} fields)`);
 
   // If a webhook URL is configured, send data there
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;

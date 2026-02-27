@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  return {
+    title: locale === "zh" ? "隱私權政策" : "Privacy Policy",
+  };
+}
 
-export default function PrivacyPolicyPage() {
+export default function PrivacyPolicyPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
     <article className="prose-legal">
       <header className="mb-10">
@@ -14,6 +24,14 @@ export default function PrivacyPolicyPage() {
         <p className="text-sm text-text-tertiary">
           Last updated: February 2026
         </p>
+        {locale === "zh" && (
+          <p className="mt-3 text-sm text-text-muted border border-border rounded-lg px-4 py-3 bg-surface-1">
+            本隱私權政策目前僅提供英文版本。中文翻譯版本正在準備中，如有任何疑問請聯繫
+            <a href="mailto:privacy@panguard.ai" className="text-brand-sage hover:text-brand-sage-light underline ml-1">
+              privacy@panguard.ai
+            </a>
+          </p>
+        )}
       </header>
 
       <div className="space-y-8 text-sm text-text-secondary leading-relaxed">

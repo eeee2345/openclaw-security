@@ -56,7 +56,7 @@ export default function SocialProof() {
         <p className="text-xs text-text-muted text-center mt-8 max-w-xl mx-auto leading-relaxed">
           {t("footnote")}{" "}
           <a
-            href="https://github.com/eeee2345/panguard-ai"
+            href="https://github.com/panguard-ai/panguard-ai"
             target="_blank"
             rel="noopener noreferrer"
             className="text-brand-sage hover:underline"

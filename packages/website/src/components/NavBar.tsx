@@ -102,7 +102,7 @@ export default function NavBar() {
           )
         )}
         <a
-          href="https://github.com/eeee2345/panguard-ai"
+          href="https://github.com/panguard-ai/panguard-ai"
           target="_blank"
           rel="noopener noreferrer"
           className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
@@ -160,7 +160,7 @@ export default function NavBar() {
               )
             )}
             <a
-              href="https://github.com/eeee2345/panguard-ai"
+              href="https://github.com/panguard-ai/panguard-ai"
               target="_blank"
               rel="noopener noreferrer"
               className="block py-2 text-sm text-text-secondary hover:text-text-primary"

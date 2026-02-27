@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Terms of Service",
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  return {
+    title: locale === "zh" ? "服務條款" : "Terms of Service",
+  };
+}
 
-export default function TermsOfServicePage() {
+export default function TermsOfServicePage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
     <article className="prose-legal">
       <header className="mb-10">
@@ -14,6 +24,14 @@ export default function TermsOfServicePage() {
         <p className="text-sm text-text-tertiary">
           Last updated: February 2026
         </p>
+        {locale === "zh" && (
+          <p className="mt-3 text-sm text-text-muted border border-border rounded-lg px-4 py-3 bg-surface-1">
+            本服務條款目前僅提供英文版本。中文翻譯版本正在準備中，如有任何疑問請聯繫
+            <a href="mailto:legal@panguard.ai" className="text-brand-sage hover:text-brand-sage-light underline ml-1">
+              legal@panguard.ai
+            </a>
+          </p>
+        )}
       </header>
 
       <div className="space-y-8 text-sm text-text-secondary leading-relaxed">

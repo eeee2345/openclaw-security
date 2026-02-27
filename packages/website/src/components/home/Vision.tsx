@@ -59,7 +59,7 @@ export default function Vision() {
         <FadeInUp delay={0.4}>
           <div className="flex flex-wrap justify-center gap-3 mt-10">
             <a
-              href="https://github.com/eeee2345/panguard-ai"
+              href="https://github.com/panguard-ai/panguard-ai"
               target="_blank"
               rel="noopener noreferrer"
               className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"

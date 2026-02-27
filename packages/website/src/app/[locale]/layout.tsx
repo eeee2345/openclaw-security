@@ -80,7 +80,7 @@ const jsonLd = [
     url: "https://panguard.ai",
     logo: "https://panguard.ai/favicon.png",
     sameAs: [
-      "https://github.com/panguard",
+      "https://github.com/panguard-ai/panguard-ai",
       "https://x.com/panguard_ai",
       "https://linkedin.com/company/panguard-ai",
     ],
