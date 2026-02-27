@@ -1,0 +1,130 @@
+# Panguard AI - Suricata Configuration Template
+# Network intrusion detection with deep packet inspection (DPI)
+#
+# This is a minimal Suricata configuration focused on detection.
+# It enables EVE JSON output for Panguard's SuricataMonitor to consume.
+#
+# Install: Copy to /etc/suricata/suricata.yaml (or merge with existing)
+# Start:   sudo suricata -c /etc/suricata/suricata.yaml -i eth0
+#
+# For full configuration reference:
+#   https://docs.suricata.io/en/latest/configuration/suricata-yaml.html
+
+%YAML 1.1
+---
+
+# Global settings
+vars:
+  address-groups:
+    HOME_NET: "[192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12]"
+    EXTERNAL_NET: "!$HOME_NET"
+    HTTP_SERVERS: "$HOME_NET"
+    DNS_SERVERS: "$HOME_NET"
+    SMTP_SERVERS: "$HOME_NET"
+    SQL_SERVERS: "$HOME_NET"
+
+  port-groups:
+    HTTP_PORTS: "80"
+    SHELLCODE_PORTS: "!80"
+    SSH_PORTS: "22"
+    DNS_PORTS: "53"
+
+# Default log directory
+default-log-dir: /var/log/suricata/
+
+# EVE JSON output (primary output for Panguard integration)
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      community-id: yes
+      types:
+        - alert:
+            payload: yes
+            payload-buffer-size: 4kb
+            payload-printable: yes
+            packet: yes
+            metadata: yes
+            http-body: yes
+            http-body-printable: yes
+            tagged-packets: yes
+        - dns:
+            query: yes
+            answer: yes
+        - http:
+            extended: yes
+        - tls:
+            extended: yes
+        - files:
+            force-magic: yes
+            force-hash: [md5, sha256]
+        - flow
+
+  # Fast log (human-readable, secondary)
+  - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+
+# Detection engine settings
+detect-engine:
+  - profile: medium
+  - custom-values:
+      toclient-groups: 3
+      toserver-groups: 25
+  - sgh-mpm-context: auto
+  - inspection-recursion-limit: 3000
+
+# App layer protocol detection
+app-layer:
+  protocols:
+    http:
+      enabled: yes
+    tls:
+      enabled: yes
+      detection-ports:
+        dp: 443
+    ssh:
+      enabled: yes
+    dns:
+      enabled: yes
+      tcp:
+        enabled: yes
+      udp:
+        enabled: yes
+    smtp:
+      enabled: yes
+    ftp:
+      enabled: yes
+    smb:
+      enabled: yes
+    nfs:
+      enabled: yes
+    rdp:
+      enabled: yes
+
+# Threading (auto-detect CPU count)
+threading:
+  set-cpu-affinity: no
+  detect-thread-ratio: 1.0
+
+# Stream engine
+stream:
+  memcap: 64mb
+  checksum-validation: yes
+  reassembly:
+    memcap: 256mb
+    depth: 1mb
+    toserver-chunk-size: 2560
+    toclient-chunk-size: 2560
+    randomize-chunk-size: yes
+
+# Rule paths
+default-rule-path: /var/lib/suricata/rules
+rule-files:
+  - suricata.rules
+
+# Classification and reference config
+classification-file: /etc/suricata/classification.config
+reference-config-file: /etc/suricata/reference.config

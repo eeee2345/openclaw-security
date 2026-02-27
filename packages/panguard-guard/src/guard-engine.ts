@@ -61,6 +61,7 @@ import {
   SyslogAdapter,
 } from '@panguard-ai/security-hardening';
 import { FalcoMonitor } from './monitors/falco-monitor.js';
+import { SuricataMonitor } from './monitors/suricata-monitor.js';
 
 const logger = createLogger('panguard-guard:engine');
 
@@ -162,6 +163,7 @@ export class GuardEngine {
   private monitorEngine: MonitorEngine | null = null;
   private syslogAdapter: SyslogAdapter | null = null;
   private falcoMonitor: FalcoMonitor | null = null;
+  private suricataMonitor: SuricataMonitor | null = null;
 
   // State / 狀態
   private running = false;
@@ -351,6 +353,16 @@ export class GuardEngine {
       logger.info('Falco eBPF kernel-level monitoring active');
     }
 
+    // Start Suricata network IDS monitor (optional, graceful degradation)
+    // 啟動 Suricata 網路 IDS 監控（可選，優雅降級）
+    this.suricataMonitor = new SuricataMonitor();
+    const suricataAvailable = await this.suricataMonitor.checkAvailability();
+    if (suricataAvailable) {
+      this.suricataMonitor.on('event', (event) => void this.processEvent(event));
+      await this.suricataMonitor.start();
+      logger.info('Suricata network IDS monitoring active');
+    }
+
     // Start dashboard if enabled / 啟動儀表板（如已啟用）
     const license = validateLicense(this.config.licenseKey);
     if (this.config.dashboardEnabled && hasFeature(license, 'dashboard')) {
@@ -420,6 +432,10 @@ export class GuardEngine {
     if (this.falcoMonitor) {
       this.falcoMonitor.stop();
       this.falcoMonitor = null;
+    }
+    if (this.suricataMonitor) {
+      this.suricataMonitor.stop();
+      this.suricataMonitor = null;
     }
 
     // Save baseline / 儲存基線
