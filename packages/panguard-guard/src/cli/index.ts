@@ -118,19 +118,19 @@ async function commandStart(dataDir: string, verbose = false): Promise<void> {
   console.log('');
 
   // Quiet mode: register human-friendly event callback
+  // Status summary every 60s, threat alerts immediately
   if (!verbose) {
-    let lastStatusLine = '';
+    let lastStatusTime = 0;
     engine.setEventCallback((type, data) => {
       if (type === 'status') {
+        const now = Date.now();
+        if (now - lastStatusTime < 60_000) return; // Throttle: 60s between status lines
+        lastStatusTime = now;
         const time = new Date().toLocaleTimeString('en-US', { hour12: false });
         const events = Number(data['eventsProcessed'] ?? 0);
         const threats = Number(data['threatsDetected'] ?? 0);
         const uploaded = Number(data['uploaded'] ?? 0);
-        const line = `  [${time}] Events: ${events.toLocaleString()} | Threats: ${threats} | Uploaded: ${uploaded}`;
-        if (line !== lastStatusLine) {
-          console.log(c.dim(line));
-          lastStatusLine = line;
-        }
+        console.log(c.dim(`  [${time}] Events: ${events.toLocaleString()} | Threats: ${threats} | Uploaded: ${uploaded}`));
       } else if (type === 'threat') {
         const time = new Date().toLocaleTimeString('en-US', { hour12: false });
         console.log('');
