@@ -184,7 +184,7 @@
       "stat2Label": "Sigma 偵測規則",
       "stat3": "8",
       "stat3Label": "蜜罐協定",
-      "stat4": "313",
+      "stat4": "423",
       "stat4Label": "YARA 惡意程式規則",
       "stat5": "5",
       "stat5Label": "AI 代理管線",
@@ -263,7 +263,7 @@
         "title": "偵測引擎",
         "sigma": "3,155 Sigma 規則",
         "sigmaDesc": "業界標準威脅偵測語言",
-        "yara": "313 YARA 規則",
+        "yara": "423 YARA 規則",
         "yaraDesc": "惡意程式指紋比對",
         "cve": "CVE 資料庫",
         "cveDesc": "即時同步 NVD 漏洞資訊"
@@ -929,7 +929,7 @@
         },
         "item5": {
           "title": "優雅降級",
-          "desc": "雲端 AI 斷線？本地 LLM（Ollama）接手。LLM 離線？3,155 條 Sigma 和 313 條 YARA 規則的規則引擎處理。Guard 永不停止保護，不受網路狀況影響。"
+          "desc": "雲端 AI 斷線？本地 LLM（Ollama）接手。LLM 離線？3,155 條 Sigma 和 423 條 YARA 規則的規則引擎處理。Guard 永不停止保護，不受網路狀況影響。"
         },
         "item6": {
           "title": "7 天情境記憶",

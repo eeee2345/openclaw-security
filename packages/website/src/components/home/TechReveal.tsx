@@ -41,7 +41,7 @@ export default function TechReveal() {
               </div>
               <div>
                 <p className="text-xl font-extrabold text-text-primary">
-                  <CountUp target={313} />
+                  <CountUp target={423} />
                 </p>
                 <p className="text-sm text-brand-sage font-medium">
                   {t("detection.yara")}

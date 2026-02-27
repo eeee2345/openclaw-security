@@ -165,7 +165,7 @@ export default function ProductGuardContent() {
               </p>
               <p className="text-text-secondary">
                 <span className="text-[#22c55e]">[OK]</span> Rule engine loaded
-                (3,155 Sigma + 313 YARA rules)
+                (3,155 Sigma + 423 YARA rules)
               </p>
               <p className="text-text-secondary">
                 <span className="text-[#22c55e]">[OK]</span> Local LLM ready

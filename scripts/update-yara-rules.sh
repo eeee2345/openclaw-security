@@ -14,12 +14,14 @@ TARGET_DIR="$(cd "$(dirname "$0")/.." && pwd)/config/yara-rules/community"
 TEMP_BASE="/tmp/panguard-yara-community"
 
 # MIT/BSD/Apache-compatible YARA rule repositories (bash 3 compatible)
-REPO_NAMES="reversinglabs jpcert"
+REPO_NAMES="reversinglabs jpcert bartblaze inquest"
 
 repo_url() {
   case "$1" in
     reversinglabs) echo "https://github.com/reversinglabs/reversinglabs-yara-rules.git" ;;
     jpcert)        echo "https://github.com/JPCERT/jpcert-yara.git" ;;
+    bartblaze)     echo "https://github.com/bartblaze/Yara-rules.git" ;;
+    inquest)       echo "https://github.com/InQuest/yara-rules.git" ;;
   esac
 }
 
@@ -27,6 +29,8 @@ repo_license() {
   case "$1" in
     reversinglabs) echo "MIT" ;;
     jpcert)        echo "BSD-2-Clause" ;;
+    bartblaze)     echo "MIT" ;;
+    inquest)       echo "MIT-compatible" ;;
   esac
 }
 

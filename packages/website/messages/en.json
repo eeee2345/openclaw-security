@@ -184,7 +184,7 @@
       "stat2Label": "Sigma Detection Rules",
       "stat3": "8",
       "stat3Label": "Honeypot Protocols",
-      "stat4": "313",
+      "stat4": "423",
       "stat4Label": "YARA Malware Rules",
       "stat5": "5",
       "stat5Label": "AI Agent Pipeline",
@@ -263,7 +263,7 @@
         "title": "Detection Engine",
         "sigma": "3,155 Sigma Rules",
         "sigmaDesc": "Industry-standard threat detection language",
-        "yara": "313 YARA Rules",
+        "yara": "423 YARA Rules",
         "yaraDesc": "Malware fingerprint matching",
         "cve": "CVE Database",
         "cveDesc": "Real-time sync with NVD vulnerability data"
@@ -787,7 +787,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 313 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 423 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "7-Day Context Memory",

@@ -102,9 +102,9 @@ export class YaraScanner {
     const files: YaraRuleFile[] = [];
 
     const walk = async (dir: string): Promise<void> => {
-      let entries: Awaited<ReturnType<typeof readdir>>;
+      let entries: import('node:fs').Dirent<string>[];
       try {
-        entries = await readdir(dir, { withFileTypes: true });
+        entries = await readdir(dir, { withFileTypes: true, encoding: 'utf-8' });
       } catch {
         return;
       }
@@ -168,9 +168,9 @@ export class YaraScanner {
     const resolvedDir = resolve(dir);
 
     const walk = async (currentDir: string): Promise<void> => {
-      let entries: Awaited<ReturnType<typeof readdir>>;
+      let entries: import('node:fs').Dirent<string>[];
       try {
-        entries = await readdir(currentDir, { withFileTypes: true });
+        entries = await readdir(currentDir, { withFileTypes: true, encoding: 'utf-8' });
       } catch {
         return;
       }

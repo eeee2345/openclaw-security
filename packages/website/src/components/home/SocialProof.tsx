@@ -21,7 +21,7 @@ export default function SocialProof() {
     { numericValue: 1068, label: t("stat1Label"), icon: ShieldIcon },
     { numericValue: 3155, label: t("stat2Label"), icon: ScanIcon },
     { numericValue: 8, label: t("stat3Label"), icon: NetworkIcon },
-    { numericValue: 313, label: t("stat4Label"), icon: TerminalIcon },
+    { numericValue: 423, label: t("stat4Label"), icon: TerminalIcon },
     { numericValue: 5, label: t("stat5Label"), icon: AnalyticsIcon },
     { textValue: "MIT", label: t("stat6Label"), icon: LockIcon },
   ];
