@@ -57,7 +57,13 @@ export type {
 export { DEFAULT_ACTION_POLICY, TIER_FEATURES } from './types.js';
 
 // Config / 配置
-export { loadConfig, saveConfig, ensureDataDir, DEFAULT_DATA_DIR, DEFAULT_GUARD_CONFIG } from './config.js';
+export {
+  loadConfig,
+  saveConfig,
+  ensureDataDir,
+  DEFAULT_DATA_DIR,
+  DEFAULT_GUARD_CONFIG,
+} from './config.js';
 
 // Guard Engine / 守護引擎
 export { GuardEngine } from './guard-engine.js';
@@ -99,7 +105,12 @@ export { ThreatCloudClient } from './threat-cloud/index.js';
 export { DashboardServer } from './dashboard/index.js';
 
 // License / 授權
-export { validateLicense, hasFeature, getTierFeatures, generateTestLicenseKey } from './license/index.js';
+export {
+  validateLicense,
+  hasFeature,
+  getTierFeatures,
+  generateTestLicenseKey,
+} from './license/index.js';
 
 // Daemon / 服務
 export { PidFile, Watchdog, installService, uninstallService } from './daemon/index.js';

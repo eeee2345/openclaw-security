@@ -233,7 +233,11 @@ describe('Platform Integrity', () => {
     it('should have 8 honeypot service types covering common attack surfaces', () => {
       const types: string[] = ['ssh', 'http', 'ftp', 'smb', 'mysql', 'rdp', 'telnet', 'redis'];
       for (const type of types) {
-        expect(panguardTrap.DEFAULT_SERVICE_CONFIGS[type as keyof typeof panguardTrap.DEFAULT_SERVICE_CONFIGS]).toBeDefined();
+        expect(
+          panguardTrap.DEFAULT_SERVICE_CONFIGS[
+            type as keyof typeof panguardTrap.DEFAULT_SERVICE_CONFIGS
+          ]
+        ).toBeDefined();
       }
     });
 

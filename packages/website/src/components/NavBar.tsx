@@ -1,10 +1,10 @@
-"use client";
-import { useState, useEffect } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { Menu, X } from "lucide-react";
-import { Link, usePathname, useRouter } from "@/navigation";
-import type { Locale } from "@/navigation";
-import BrandLogo from "./ui/BrandLogo";
+'use client';
+import { useState, useEffect } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { Menu, X } from 'lucide-react';
+import { Link, usePathname, useRouter } from '@/navigation';
+import type { Locale } from '@/navigation';
+import BrandLogo from './ui/BrandLogo';
 
 /* ─── Locale Switcher ─── */
 function LocaleSwitcher() {
@@ -19,21 +19,21 @@ function LocaleSwitcher() {
   return (
     <div className="inline-flex items-center bg-surface-1 border border-border rounded-full p-0.5">
       <button
-        onClick={() => switchTo("en")}
+        onClick={() => switchTo('en')}
         className={`relative px-3 py-1 text-xs font-medium rounded-full transition-all duration-300 ${
-          locale === "en"
-            ? "text-surface-0 bg-brand-sage"
-            : "text-text-tertiary hover:text-text-secondary"
+          locale === 'en'
+            ? 'text-surface-0 bg-brand-sage'
+            : 'text-text-tertiary hover:text-text-secondary'
         }`}
       >
         EN
       </button>
       <button
-        onClick={() => switchTo("zh")}
+        onClick={() => switchTo('zh')}
         className={`relative px-3 py-1 text-xs font-medium rounded-full transition-all duration-300 ${
-          locale === "zh"
-            ? "text-surface-0 bg-brand-sage"
-            : "text-text-tertiary hover:text-text-secondary"
+          locale === 'zh'
+            ? 'text-surface-0 bg-brand-sage'
+            : 'text-text-tertiary hover:text-text-secondary'
         }`}
       >
         中文
@@ -54,28 +54,28 @@ function Logo() {
 }
 
 export default function NavBar() {
-  const t = useTranslations("nav");
+  const t = useTranslations('nav');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const navLinks = [
-    { label: t("docs"), href: "/docs" },
-    { label: t("useCases"), href: "/#use-cases" },
-    { label: t("pricing"), href: "/pricing" },
+    { label: t('docs'), href: '/docs' },
+    { label: t('useCases'), href: '/#use-cases' },
+    { label: t('pricing'), href: '/pricing' },
   ];
 
   return (
     <nav
       className={`sticky top-0 z-50 h-16 flex items-center justify-between px-6 lg:px-[120px] transition-all duration-300 ${
         scrolled
-          ? "bg-surface-0/80 backdrop-blur-xl border-b border-border"
-          : "bg-transparent border-b border-transparent"
+          ? 'bg-surface-0/80 backdrop-blur-xl border-b border-border'
+          : 'bg-transparent border-b border-transparent'
       }`}
     >
       <Logo />
@@ -83,7 +83,7 @@ export default function NavBar() {
       {/* Desktop nav */}
       <div className="hidden lg:flex items-center gap-1">
         {navLinks.map((link) =>
-          link.href.startsWith("/#") ? (
+          link.href.startsWith('/#') ? (
             <a
               key={link.href}
               href={link.href}
@@ -118,7 +118,7 @@ export default function NavBar() {
           href="/early-access"
           className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
         >
-          {t("getStarted")}
+          {t('getStarted')}
         </Link>
       </div>
 
@@ -139,7 +139,7 @@ export default function NavBar() {
               <LocaleSwitcher />
             </div>
             {navLinks.map((link) =>
-              link.href.startsWith("/#") ? (
+              link.href.startsWith('/#') ? (
                 <a
                   key={link.href}
                   href={link.href}
@@ -174,7 +174,7 @@ export default function NavBar() {
                 className="block text-center bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-3"
                 onClick={() => setMobileOpen(false)}
               >
-                {t("getStarted")}
+                {t('getStarted')}
               </Link>
             </div>
           </div>

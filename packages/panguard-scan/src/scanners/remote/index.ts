@@ -29,17 +29,29 @@ export async function runRemoteScan(config: RemoteScanConfig): Promise<ScanResul
 
   // Run all checks in parallel
   const [portResult, sslResult, headerResult, dnsResult] = await Promise.all([
-    scanPorts(target, lang, timeout).catch(() => ({ findings: [] as Finding[], openPorts: [] as Array<{ port: number; open: boolean; service: string }> })),
-    checkSSL(target, lang, timeout).catch(() => ({ findings: [] as Finding[], result: { valid: false, error: 'failed' } })),
-    checkHttpHeaders(target, lang, timeout).catch(() => ({ findings: [] as Finding[], headers: [] })),
-    checkDNS(target, lang).catch(() => ({ findings: [] as Finding[], result: { hasSPF: false, hasDMARC: false, hasDKIM: false } })),
+    scanPorts(target, lang, timeout).catch(() => ({
+      findings: [] as Finding[],
+      openPorts: [] as Array<{ port: number; open: boolean; service: string }>,
+    })),
+    checkSSL(target, lang, timeout).catch(() => ({
+      findings: [] as Finding[],
+      result: { valid: false, error: 'failed' },
+    })),
+    checkHttpHeaders(target, lang, timeout).catch(() => ({
+      findings: [] as Finding[],
+      headers: [],
+    })),
+    checkDNS(target, lang).catch(() => ({
+      findings: [] as Finding[],
+      result: { hasSPF: false, hasDMARC: false, hasDKIM: false },
+    })),
   ]);
 
   allFindings.push(
     ...portResult.findings,
     ...sslResult.findings,
     ...headerResult.findings,
-    ...dnsResult.findings,
+    ...dnsResult.findings
   );
 
   // Sort findings by severity (comparator function)
@@ -53,18 +65,24 @@ export async function runRemoteScan(config: RemoteScanConfig): Promise<ScanResul
   let riskScore = 0;
   for (const f of sortedFindings) {
     switch (f.severity) {
-      case 'critical': riskScore += 25; break;
-      case 'high': riskScore += 15; break;
-      case 'medium': riskScore += 8; break;
-      case 'low': riskScore += 3; break;
+      case 'critical':
+        riskScore += 25;
+        break;
+      case 'high':
+        riskScore += 15;
+        break;
+      case 'medium':
+        riskScore += 8;
+        break;
+      case 'low':
+        riskScore += 3;
+        break;
     }
   }
   riskScore = Math.min(100, riskScore);
 
-  const riskLevel = riskScore >= 75 ? 'critical'
-    : riskScore >= 50 ? 'high'
-    : riskScore >= 25 ? 'medium'
-    : 'low';
+  const riskLevel =
+    riskScore >= 75 ? 'critical' : riskScore >= 50 ? 'high' : riskScore >= 25 ? 'medium' : 'low';
 
   const scanDuration = Date.now() - startTime;
 

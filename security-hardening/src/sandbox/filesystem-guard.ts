@@ -67,7 +67,7 @@ export function createFilesystemGuard(allowedDirs: string[]) {
     if (!isPathAllowed(filePath, allowedDirs)) {
       throw new Error(
         `Filesystem access denied: ${filePath} is not in allowed directories / ` +
-        `檔案系統存取拒絕：${filePath} 不在允許的目錄中`
+          `檔案系統存取拒絕：${filePath} 不在允許的目錄中`
       );
     }
   };

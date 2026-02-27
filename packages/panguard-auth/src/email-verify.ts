@@ -147,7 +147,7 @@ export async function sendVerificationEmail(
   config: SmtpConfig,
   to: string,
   verifyToken: string,
-  baseUrl: string,
+  baseUrl: string
 ): Promise<void> {
   const verifyLink = `${baseUrl}/api/waitlist/verify/${verifyToken}`;
   const subject = 'Panguard AI - Verify your email';
@@ -182,10 +182,10 @@ export async function sendWelcomeEmail(
   config: SmtpConfig,
   to: string,
   name: string,
-  baseUrl: string,
+  baseUrl: string
 ): Promise<void> {
   const registerLink = `${baseUrl}/register`;
-  const subject = 'Panguard AI - You\'re in!';
+  const subject = "Panguard AI - You're in!";
   const html = `
     <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
       <h2 style="color: #1A1614;">You're in, ${name || 'there'}!</h2>

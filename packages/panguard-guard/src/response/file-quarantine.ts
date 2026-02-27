@@ -108,7 +108,9 @@ export class FileQuarantine {
     this.manifest.records.push(record);
     await this.saveManifest();
 
-    logger.info(`Quarantined: ${absPath} -> ${quarantinePath} (SHA-256: ${sha256.slice(0, 16)}...)`);
+    logger.info(
+      `Quarantined: ${absPath} -> ${quarantinePath} (SHA-256: ${sha256.slice(0, 16)}...)`
+    );
     return record;
   }
 
@@ -119,7 +121,7 @@ export class FileQuarantine {
   async restore(id: string): Promise<{ success: boolean; message: string }> {
     await this.initialize();
 
-    const record = this.manifest.records.find(r => r.id === id);
+    const record = this.manifest.records.find((r) => r.id === id);
     if (!record) {
       return { success: false, message: `Quarantine record not found: ${id}` };
     }
@@ -153,19 +155,19 @@ export class FileQuarantine {
 
   /** Get active (not restored) quarantine records / 取得未還原的隔離紀錄 */
   getActiveRecords(): QuarantineRecord[] {
-    return this.manifest.records.filter(r => !r.restoredAt);
+    return this.manifest.records.filter((r) => !r.restoredAt);
   }
 
   /** Find record by ID / 以 ID 搜尋紀錄 */
   findRecord(id: string): QuarantineRecord | undefined {
-    return this.manifest.records.find(r => r.id === id);
+    return this.manifest.records.find((r) => r.id === id);
   }
 
   /** Count files in quarantine / 隔離區檔案數量 */
   async getQuarantineCount(): Promise<number> {
     try {
       const files = await readdir(this.quarantineDir);
-      return files.filter(f => f !== 'manifest.json').length;
+      return files.filter((f) => f !== 'manifest.json').length;
     } catch {
       return 0;
     }

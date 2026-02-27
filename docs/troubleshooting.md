@@ -173,6 +173,7 @@ ls ~/.panguard-guard/rules/sigma/
 **可能原因：** 學習期不夠長，或有新部署的服務。
 
 **解決方法：**
+
 1. 確認你的環境在學習期間是正常運作的
 2. 如果最近有大量變更，考慮重置學習
 3. 調高信心度閾值
@@ -180,6 +181,7 @@ ls ~/.panguard-guard/rules/sigma/
 ### 自動回應沒有執行
 
 **可能原因：**
+
 1. 你可能使用 Free 版（不支援自動回應，需要 Starter 以上）
 2. 信心度低於 90%，需要你確認
 
@@ -210,15 +212,18 @@ panguard chat setup --channel line
 ```
 
 **LINE 特定問題：**
+
 - 確認 LINE Notify Token 是否過期
 - 確認你的 LINE 帳號有連動 Notify
 
 **Telegram 特定問題：**
+
 - 確認 Bot Token 正確
 - 確認 Chat ID 正確（可用 @userinfobot 查詢）
 - 確認你已經先對 Bot 發送過訊息
 
 **Slack 特定問題：**
+
 - 確認 Webhook URL 有效
 - 確認 Slack App 有權限發送到目標頻道
 
@@ -287,13 +292,13 @@ curl -H "Authorization: Bearer your-api-key" \
 
 ### 支援哪些作業系統？
 
-| 作業系統 | 版本 | 狀態 |
-|---------|------|------|
-| macOS | 12+ (Monterey+) | 完整支援 |
-| Ubuntu | 20.04+ | 完整支援 |
-| Debian | 11+ | 完整支援 |
-| CentOS | 8+ | 完整支援 |
-| Windows | 10+ | 完整支援 |
+| 作業系統 | 版本            | 狀態     |
+| -------- | --------------- | -------- |
+| macOS    | 12+ (Monterey+) | 完整支援 |
+| Ubuntu   | 20.04+          | 完整支援 |
+| Debian   | 11+             | 完整支援 |
+| CentOS   | 8+              | 完整支援 |
+| Windows  | 10+             | 完整支援 |
 
 ### 需要 root / admin 權限嗎？
 

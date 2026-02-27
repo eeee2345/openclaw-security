@@ -7,13 +7,13 @@ html {
 }
 
 body {
-  color: #F5F1E8;
-  background: #1A1614;
+  color: #f5f1e8;
+  background: #1a1614;
 }
 
 ::selection {
   background: rgba(139, 154, 142, 0.3);
-  color: #F5F1E8;
+  color: #f5f1e8;
 }
 
 /* Subtle grid background for hero */
@@ -26,14 +26,24 @@ body {
 
 /* Loading bar animation */
 @keyframes loading-bar {
-  0% { width: 0%; margin-left: 0; }
-  50% { width: 60%; margin-left: 20%; }
-  100% { width: 0%; margin-left: 100%; }
+  0% {
+    width: 0%;
+    margin-left: 0;
+  }
+  50% {
+    width: 60%;
+    margin-left: 20%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+  }
 }
 
 /* Breathing animation for ComingSoon shield */
 @keyframes breathe {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: scale(1);
   }
@@ -45,13 +55,15 @@ body {
 
 /* Sage glow card effect */
 .card-glow {
-  box-shadow: 0 0 0 1px rgba(139, 154, 142, 0.15),
-              0 4px 24px rgba(139, 154, 142, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(139, 154, 142, 0.15),
+    0 4px 24px rgba(139, 154, 142, 0.06);
 }
 
 .card-glow:hover {
-  box-shadow: 0 0 0 1px rgba(139, 154, 142, 0.3),
-              0 8px 32px rgba(139, 154, 142, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(139, 154, 142, 0.3),
+    0 8px 32px rgba(139, 154, 142, 0.1);
 }
 
 /* Cursor-following spotlight effect for cards */
@@ -60,7 +72,7 @@ body {
   overflow: hidden;
 }
 .card-spotlight::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 300px;
   height: 300px;
@@ -79,7 +91,7 @@ body {
 
 /* Underline reveal animation for links */
 .link-reveal {
-  background-image: linear-gradient(#8B9A8E, #8B9A8E);
+  background-image: linear-gradient(#8b9a8e, #8b9a8e);
   background-size: 0% 1px;
   background-position: 0 100%;
   background-repeat: no-repeat;
@@ -91,7 +103,7 @@ body {
 
 /* Section gradient transitions (replaces hard border-b) */
 .section-fade::after {
-  content: "";
+  content: '';
   display: block;
   height: 1px;
   background: linear-gradient(
@@ -105,62 +117,113 @@ body {
 
 /* Shield spinner animation */
 @keyframes shield-spin {
-  0% { transform: rotate(0deg); opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { transform: rotate(360deg); opacity: 0.6; }
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.6;
+  }
 }
 
 /* Pulse animation */
 @keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 0.5; }
-  50% { transform: scale(1.2); opacity: 0; }
-  100% { transform: scale(0.8); opacity: 0.5; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
 }
 
 /* Scan line animation */
 @keyframes scan-line {
-  0% { top: 0; }
-  50% { top: 100%; }
-  100% { top: 0; }
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0;
+  }
 }
 
 /* Infinite scroll for logo bars */
 @keyframes scroll-x {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 /* ─── Hero CSS Animations (zero JS overhead) ─── */
 
 /* Central glow orb - slow breathe */
 .hero-orb {
-  background: radial-gradient(circle, rgba(139,154,142,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139, 154, 142, 0.1) 0%, transparent 70%);
   animation: hero-orb-breathe 8s ease-in-out infinite;
 }
 @keyframes hero-orb-breathe {
-  0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.6; }
-  50% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; }
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
 }
 
 /* Scan line - vertical sweep */
 .hero-scanline {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139,154,142,0.12) 30%, rgba(139,154,142,0.12) 70%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(139, 154, 142, 0.12) 30%,
+    rgba(139, 154, 142, 0.12) 70%,
+    transparent
+  );
   animation: hero-scan 7s linear infinite;
 }
 @keyframes hero-scan {
-  0% { top: -2%; }
-  100% { top: 102%; }
+  0% {
+    top: -2%;
+  }
+  100% {
+    top: 102%;
+  }
 }
 
 /* Shield glow ring pulse */
 .hero-glow-ring {
-  background: radial-gradient(circle, rgba(139,154,142,0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139, 154, 142, 0.06) 0%, transparent 70%);
   animation: hero-ring-pulse 4s ease-in-out infinite;
 }
 @keyframes hero-ring-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.2); opacity: 0.6; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
 }
 
 /* Hero background glow */
@@ -168,14 +231,14 @@ body {
   position: relative;
 }
 .hero-glow::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   width: 60%;
   height: 60%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse, rgba(139,154,142,0.08) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(139, 154, 142, 0.08) 0%, transparent 70%);
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
@@ -183,10 +246,22 @@ body {
 
 /* Copy toast fade animation */
 @keyframes toast-fade {
-  0% { opacity: 0; transform: translateX(-50%) translateY(4px); }
-  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-  85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-  100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
 }
 .toast-copied {
   animation: toast-fade 1.5s ease-in-out forwards;
@@ -194,13 +269,16 @@ body {
 
 /* Sage text glow for emphasis */
 .text-glow-sage {
-  text-shadow: 0 0 20px rgba(139,154,142,0.4), 0 0 40px rgba(139,154,142,0.2);
+  text-shadow:
+    0 0 20px rgba(139, 154, 142, 0.4),
+    0 0 40px rgba(139, 154, 142, 0.2);
 }
 
 /* ─── Metallic Logo Animation ─── */
 
 @keyframes metallic-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -218,7 +296,8 @@ body {
 }
 
 @keyframes metallic-rotate {
-  0%, 100% {
+  0%,
+  100% {
     transform: perspective(800px) rotateY(-6deg) rotateX(2deg);
   }
   50% {
@@ -228,8 +307,8 @@ body {
 
 .metallic-logo-wrapper {
   animation: metallic-float 6s ease-in-out infinite;
-  filter: drop-shadow(0 20px 40px rgba(139,154,142,0.15))
-          drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 20px 40px rgba(139, 154, 142, 0.15))
+    drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
 }
 
 .metallic-logo-inner {
@@ -243,7 +322,7 @@ body {
   overflow: hidden;
 }
 .metallic-shine::after {
-  content: "";
+  content: '';
   position: absolute;
   top: -10%;
   left: 0;
@@ -252,9 +331,9 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255,255,255,0.06) 30%,
-    rgba(255,255,255,0.12) 50%,
-    rgba(255,255,255,0.06) 70%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.06) 70%,
     transparent
   );
   animation: metallic-shine-sweep 4s ease-in-out infinite;
@@ -264,13 +343,26 @@ body {
 /* ─── Agent Flow Diagram Animations ─── */
 
 @keyframes flow-dash {
-  0% { stroke-dashoffset: 20; }
-  100% { stroke-dashoffset: 0; }
+  0% {
+    stroke-dashoffset: 20;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes agent-pulse {
-  0%, 100% { opacity: 0.1; transform-origin: center; transform: scale(1); }
-  50% { opacity: 0.4; transform-origin: center; transform: scale(1.08); }
+  0%,
+  100% {
+    opacity: 0.1;
+    transform-origin: center;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform-origin: center;
+    transform: scale(1.08);
+  }
 }
 
 .flow-line-dash {
@@ -288,8 +380,13 @@ body {
 /* ─── Ambient Logo Float ─── */
 
 @keyframes ambient-float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .metallic-logo-float {
@@ -300,8 +397,12 @@ body {
 /* ─── Security Radar Visualization ─── */
 
 @keyframes radar-sweep {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .scanning-radar {
@@ -315,8 +416,15 @@ body {
 }
 
 @keyframes shield-ring-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.5; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.5;
+  }
 }
 
 .shield-inner-pulse {
@@ -325,14 +433,10 @@ body {
 
 /* Metallic floor reflection */
 .metallic-reflection {
-  background: linear-gradient(
-    to bottom,
-    rgba(139,154,142,0.08),
-    transparent 80%
-  );
+  background: linear-gradient(to bottom, rgba(139, 154, 142, 0.08), transparent 80%);
   filter: blur(8px);
   transform: scaleY(-0.3) translateY(-20%);
   opacity: 0.4;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
 }

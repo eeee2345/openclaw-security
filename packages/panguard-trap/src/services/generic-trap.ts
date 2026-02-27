@@ -140,7 +140,12 @@ const mysqlHandler: ProtocolHandler = {
         return '+-------------------+\r\n| Tables_in_webapp  |\r\n+-------------------+\r\n| users             |\r\n| sessions          |\r\n| orders            |\r\n+-------------------+\r\n3 rows in set\r\nmysql> ';
       }
     }
-    if (upper.startsWith('DROP') || upper.startsWith('DELETE') || upper.startsWith('INSERT') || upper.startsWith('UPDATE')) {
+    if (
+      upper.startsWith('DROP') ||
+      upper.startsWith('DELETE') ||
+      upper.startsWith('INSERT') ||
+      upper.startsWith('UPDATE')
+    ) {
       return 'ERROR 1142 (42000): command denied to user\r\nmysql> ';
     }
     return `ERROR 1064 (42000): You have an error in your SQL syntax near '${trimmed.slice(0, 20)}'\r\nmysql> `;
@@ -177,7 +182,7 @@ const redisHandler: ProtocolHandler = {
       return '$-1\r\n'; // nil
     }
     if (cmd === 'SET' || cmd === 'DEL') {
-      return '-READONLY You can\'t write against a read only replica.\r\n';
+      return "-READONLY You can't write against a read only replica.\r\n";
     }
     if (cmd === 'SLAVEOF' || cmd === 'REPLICAOF') {
       return '-ERR not allowed\r\n';
@@ -325,7 +330,7 @@ export class GenericTrapService extends BaseTrapService {
             session.sessionId,
             state.username,
             trimmed,
-            state.authAttempts >= 2, // will grant on next attempt
+            state.authAttempts >= 2 // will grant on next attempt
           );
         }
 

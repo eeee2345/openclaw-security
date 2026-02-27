@@ -4,7 +4,17 @@
  */
 
 import Database from 'better-sqlite3';
-import type { WaitlistEntry, WaitlistInput, WaitlistStats, User, RegisterInput, Session, UserAdmin, SessionAdmin, ActivityItem } from './types.js';
+import type {
+  WaitlistEntry,
+  WaitlistInput,
+  WaitlistStats,
+  User,
+  RegisterInput,
+  Session,
+  UserAdmin,
+  SessionAdmin,
+  ActivityItem,
+} from './types.js';
 import { hashToken } from './auth.js';
 
 export class AuthDB {
@@ -109,39 +119,55 @@ export class AuthDB {
       input.company ?? null,
       input.role ?? null,
       input.source ?? 'website',
-      verifyToken,
+      verifyToken
     );
     return this.getWaitlistById(Number(result.lastInsertRowid))!;
   }
 
   getWaitlistByEmail(email: string): WaitlistEntry | undefined {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, company, role, source, status, verified,
              verify_token as verifyToken, created_at as createdAt, updated_at as updatedAt
       FROM waitlist WHERE email = ?
-    `).get(email.toLowerCase().trim()) as WaitlistEntry | undefined;
+    `
+      )
+      .get(email.toLowerCase().trim()) as WaitlistEntry | undefined;
   }
 
   getWaitlistById(id: number): WaitlistEntry | undefined {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, company, role, source, status, verified,
              verify_token as verifyToken, created_at as createdAt, updated_at as updatedAt
       FROM waitlist WHERE id = ?
-    `).get(id) as WaitlistEntry | undefined;
+    `
+      )
+      .get(id) as WaitlistEntry | undefined;
   }
 
   verifyWaitlistToken(token: string): WaitlistEntry | undefined {
-    const entry = this.db.prepare(`
+    const entry = this.db
+      .prepare(
+        `
       SELECT id, email, name, company, role, source, status, verified,
              verify_token as verifyToken, created_at as createdAt, updated_at as updatedAt
       FROM waitlist WHERE verify_token = ?
         AND (verify_token_expires_at IS NULL OR verify_token_expires_at > datetime('now'))
-    `).get(token) as WaitlistEntry | undefined;
+    `
+      )
+      .get(token) as WaitlistEntry | undefined;
 
     if (entry) {
-      this.db.prepare(`
+      this.db
+        .prepare(
+          `
         UPDATE waitlist SET verified = 1, updated_at = datetime('now') WHERE id = ?
-      `).run(entry.id);
+      `
+        )
+        .run(entry.id);
       entry.verified = 1;
     }
     return entry;
@@ -149,17 +175,35 @@ export class AuthDB {
 
   getWaitlistStats(): WaitlistStats {
     const total = (this.db.prepare('SELECT COUNT(*) as c FROM waitlist').get() as { c: number }).c;
-    const pending = (this.db.prepare("SELECT COUNT(*) as c FROM waitlist WHERE status = 'pending'").get() as { c: number }).c;
-    const approved = (this.db.prepare("SELECT COUNT(*) as c FROM waitlist WHERE status = 'approved'").get() as { c: number }).c;
-    const rejected = (this.db.prepare("SELECT COUNT(*) as c FROM waitlist WHERE status = 'rejected'").get() as { c: number }).c;
-    const verified = (this.db.prepare('SELECT COUNT(*) as c FROM waitlist WHERE verified = 1').get() as { c: number }).c;
-    const todaySignups = (this.db.prepare(
-      "SELECT COUNT(*) as c FROM waitlist WHERE created_at > datetime('now', '-1 day')"
-    ).get() as { c: number }).c;
+    const pending = (
+      this.db.prepare("SELECT COUNT(*) as c FROM waitlist WHERE status = 'pending'").get() as {
+        c: number;
+      }
+    ).c;
+    const approved = (
+      this.db.prepare("SELECT COUNT(*) as c FROM waitlist WHERE status = 'approved'").get() as {
+        c: number;
+      }
+    ).c;
+    const rejected = (
+      this.db.prepare("SELECT COUNT(*) as c FROM waitlist WHERE status = 'rejected'").get() as {
+        c: number;
+      }
+    ).c;
+    const verified = (
+      this.db.prepare('SELECT COUNT(*) as c FROM waitlist WHERE verified = 1').get() as {
+        c: number;
+      }
+    ).c;
+    const todaySignups = (
+      this.db
+        .prepare("SELECT COUNT(*) as c FROM waitlist WHERE created_at > datetime('now', '-1 day')")
+        .get() as { c: number }
+    ).c;
 
-    const sourceRows = this.db.prepare(
-      'SELECT source, COUNT(*) as c FROM waitlist GROUP BY source'
-    ).all() as { source: string; c: number }[];
+    const sourceRows = this.db
+      .prepare('SELECT source, COUNT(*) as c FROM waitlist GROUP BY source')
+      .all() as { source: string; c: number }[];
     const bySource: Record<string, number> = {};
     for (const row of sourceRows) bySource[row.source] = row.c;
 
@@ -167,11 +211,15 @@ export class AuthDB {
   }
 
   getAllWaitlist(): WaitlistEntry[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, company, role, source, status, verified,
              verify_token as verifyToken, created_at as createdAt, updated_at as updatedAt
       FROM waitlist ORDER BY created_at DESC
-    `).all() as WaitlistEntry[];
+    `
+      )
+      .all() as WaitlistEntry[];
   }
 
   // ── Users ──────────────────────────────────────────────────────────
@@ -186,19 +234,27 @@ export class AuthDB {
   }
 
   getUserByEmail(email: string): User | undefined {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, password_hash as passwordHash, role, tier, verified,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users WHERE email = ?
-    `).get(email.toLowerCase().trim()) as User | undefined;
+    `
+      )
+      .get(email.toLowerCase().trim()) as User | undefined;
   }
 
   getUserById(id: number): User | undefined {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, password_hash as passwordHash, role, tier, verified,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users WHERE id = ?
-    `).get(id) as User | undefined;
+    `
+      )
+      .get(id) as User | undefined;
   }
 
   updateLastLogin(userId: number): void {
@@ -214,20 +270,28 @@ export class AuthDB {
       VALUES (?, ?, ?)
     `);
     const result = stmt.run(userId, hashed, expiresAt);
-    const row = this.db.prepare(`
+    const row = this.db
+      .prepare(
+        `
       SELECT id, user_id as userId, token, expires_at as expiresAt, created_at as createdAt
       FROM sessions WHERE id = ?
-    `).get(Number(result.lastInsertRowid)) as Session;
+    `
+      )
+      .get(Number(result.lastInsertRowid)) as Session;
     // Return plaintext token to caller (client needs it); DB stores the hash
     return { ...row, token };
   }
 
   getSession(token: string): (Session & { user: User }) | undefined {
     const hashed = hashToken(token);
-    const session = this.db.prepare(`
+    const session = this.db
+      .prepare(
+        `
       SELECT id, user_id as userId, token, expires_at as expiresAt, created_at as createdAt
       FROM sessions WHERE token = ? AND expires_at > datetime('now')
-    `).get(hashed) as Session | undefined;
+    `
+      )
+      .get(hashed) as Session | undefined;
 
     if (!session) return undefined;
 
@@ -243,13 +307,20 @@ export class AuthDB {
   }
 
   cleanExpiredSessions(): number {
-    const result = this.db.prepare("DELETE FROM sessions WHERE expires_at <= datetime('now')").run();
+    const result = this.db
+      .prepare("DELETE FROM sessions WHERE expires_at <= datetime('now')")
+      .run();
     return result.changes;
   }
 
   // ── Report Purchases ─────────────────────────────────────────────
 
-  createReportPurchase(userId: number, addonId: string, pricingModel: string, expiresAt?: string): ReportPurchase {
+  createReportPurchase(
+    userId: number,
+    addonId: string,
+    pricingModel: string,
+    expiresAt?: string
+  ): ReportPurchase {
     const stmt = this.db.prepare(`
       INSERT INTO report_purchases (user_id, addon_id, pricing_model, expires_at)
       VALUES (?, ?, ?, ?)
@@ -259,59 +330,83 @@ export class AuthDB {
   }
 
   getReportPurchaseById(id: number): ReportPurchase | undefined {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, user_id as userId, addon_id as addonId, pricing_model as pricingModel,
              status, purchased_at as purchasedAt, expires_at as expiresAt
       FROM report_purchases WHERE id = ?
-    `).get(id) as ReportPurchase | undefined;
+    `
+      )
+      .get(id) as ReportPurchase | undefined;
   }
 
   getUserReportPurchases(userId: number): ReportPurchase[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, user_id as userId, addon_id as addonId, pricing_model as pricingModel,
              status, purchased_at as purchasedAt, expires_at as expiresAt
       FROM report_purchases WHERE user_id = ? AND status = 'active'
       ORDER BY purchased_at DESC
-    `).all(userId) as ReportPurchase[];
+    `
+      )
+      .all(userId) as ReportPurchase[];
   }
 
   hasActiveReportPurchase(userId: number, addonId: string): boolean {
-    const row = this.db.prepare(`
+    const row = this.db
+      .prepare(
+        `
       SELECT COUNT(*) as c FROM report_purchases
       WHERE user_id = ? AND addon_id = ? AND status = 'active'
         AND (expires_at IS NULL OR expires_at > datetime('now'))
-    `).get(userId, addonId) as { c: number };
+    `
+      )
+      .get(userId, addonId) as { c: number };
     return row.c > 0;
   }
 
   // ── Admin: Enhanced Queries ─────────────────────────────────────
 
   getAllUsersAdmin(): UserAdmin[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, role, tier, verified,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users ORDER BY created_at DESC
-    `).all() as UserAdmin[];
+    `
+      )
+      .all() as UserAdmin[];
   }
 
   searchUsers(query: string): UserAdmin[] {
     const pattern = `%${query}%`;
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, role, tier, verified,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users WHERE email LIKE ? OR name LIKE ?
       ORDER BY created_at DESC
-    `).all(pattern, pattern) as UserAdmin[];
+    `
+      )
+      .all(pattern, pattern) as UserAdmin[];
   }
 
   getActiveSessions(): SessionAdmin[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT s.id, s.user_id as userId, u.email as userEmail, u.name as userName,
              s.expires_at as expiresAt, s.created_at as createdAt
       FROM sessions s JOIN users u ON s.user_id = u.id
       WHERE s.expires_at > datetime('now')
       ORDER BY s.created_at DESC
-    `).all() as SessionAdmin[];
+    `
+      )
+      .all() as SessionAdmin[];
   }
 
   deleteSessionById(sessionId: number): boolean {
@@ -320,40 +415,69 @@ export class AuthDB {
   }
 
   getRecentActivity(limit: number = 20): ActivityItem[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT * FROM (
         SELECT 'user_registered' as type, email as description, created_at as timestamp FROM users
         UNION ALL
         SELECT 'waitlist_joined' as type, email as description, created_at as timestamp FROM waitlist
       ) combined
       ORDER BY timestamp DESC LIMIT ?
-    `).all(Math.min(limit, 50)) as ActivityItem[];
+    `
+      )
+      .all(Math.min(limit, 50)) as ActivityItem[];
   }
 
   getAdminDashboardStats(): {
-    users: { total: number; byTier: Record<string, number>; byRole: Record<string, number>; recentSignups: number; verifiedCount: number; signupsByDay: Array<{ date: string; count: number }> };
+    users: {
+      total: number;
+      byTier: Record<string, number>;
+      byRole: Record<string, number>;
+      recentSignups: number;
+      verifiedCount: number;
+      signupsByDay: Array<{ date: string; count: number }>;
+    };
     waitlist: WaitlistStats & { signupsByDay: Array<{ date: string; count: number }> };
     sessions: { active: number; total: number };
     reportPurchases: { total: number; active: number };
   } {
     const userStats = this.getUserStats();
-    const verifiedCount = (this.db.prepare('SELECT COUNT(*) as c FROM users WHERE verified = 1').get() as { c: number }).c;
-    const userSignupsByDay = this.db.prepare(
-      "SELECT date(created_at) as date, COUNT(*) as count FROM users WHERE created_at > datetime('now', '-30 day') GROUP BY date(created_at) ORDER BY date ASC"
-    ).all() as Array<{ date: string; count: number }>;
+    const verifiedCount = (
+      this.db.prepare('SELECT COUNT(*) as c FROM users WHERE verified = 1').get() as { c: number }
+    ).c;
+    const userSignupsByDay = this.db
+      .prepare(
+        "SELECT date(created_at) as date, COUNT(*) as count FROM users WHERE created_at > datetime('now', '-30 day') GROUP BY date(created_at) ORDER BY date ASC"
+      )
+      .all() as Array<{ date: string; count: number }>;
 
     const waitlistStats = this.getWaitlistStats();
-    const waitlistSignupsByDay = this.db.prepare(
-      "SELECT date(created_at) as date, COUNT(*) as count FROM waitlist WHERE created_at > datetime('now', '-30 day') GROUP BY date(created_at) ORDER BY date ASC"
-    ).all() as Array<{ date: string; count: number }>;
+    const waitlistSignupsByDay = this.db
+      .prepare(
+        "SELECT date(created_at) as date, COUNT(*) as count FROM waitlist WHERE created_at > datetime('now', '-30 day') GROUP BY date(created_at) ORDER BY date ASC"
+      )
+      .all() as Array<{ date: string; count: number }>;
 
-    const activeSessions = (this.db.prepare("SELECT COUNT(*) as c FROM sessions WHERE expires_at > datetime('now')").get() as { c: number }).c;
-    const totalSessions = (this.db.prepare('SELECT COUNT(*) as c FROM sessions').get() as { c: number }).c;
+    const activeSessions = (
+      this.db
+        .prepare("SELECT COUNT(*) as c FROM sessions WHERE expires_at > datetime('now')")
+        .get() as { c: number }
+    ).c;
+    const totalSessions = (
+      this.db.prepare('SELECT COUNT(*) as c FROM sessions').get() as { c: number }
+    ).c;
 
-    const activeReportPurchases = (this.db.prepare(
-      "SELECT COUNT(*) as c FROM report_purchases WHERE status = 'active' AND (expires_at IS NULL OR expires_at > datetime('now'))"
-    ).get() as { c: number }).c;
-    const totalReportPurchases = (this.db.prepare('SELECT COUNT(*) as c FROM report_purchases').get() as { c: number }).c;
+    const activeReportPurchases = (
+      this.db
+        .prepare(
+          "SELECT COUNT(*) as c FROM report_purchases WHERE status = 'active' AND (expires_at IS NULL OR expires_at > datetime('now'))"
+        )
+        .get() as { c: number }
+    ).c;
+    const totalReportPurchases = (
+      this.db.prepare('SELECT COUNT(*) as c FROM report_purchases').get() as { c: number }
+    ).c;
 
     return {
       users: { ...userStats, verifiedCount, signupsByDay: userSignupsByDay },
@@ -366,15 +490,20 @@ export class AuthDB {
   // ── Admin: User Management ──────────────────────────────────────
 
   getAllUsers(): User[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, email, name, password_hash as passwordHash, role, tier, verified,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users ORDER BY created_at DESC
-    `).all() as User[];
+    `
+      )
+      .all() as User[];
   }
 
   updateUserTier(userId: number, tier: string, planExpiresAt?: string): void {
-    this.db.prepare('UPDATE users SET tier = ?, plan_expires_at = ? WHERE id = ?')
+    this.db
+      .prepare('UPDATE users SET tier = ?, plan_expires_at = ? WHERE id = ?')
       .run(tier, planExpiresAt ?? null, userId);
   }
 
@@ -382,21 +511,28 @@ export class AuthDB {
     this.db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, userId);
   }
 
-  getUserStats(): { total: number; byTier: Record<string, number>; byRole: Record<string, number>; recentSignups: number } {
+  getUserStats(): {
+    total: number;
+    byTier: Record<string, number>;
+    byRole: Record<string, number>;
+    recentSignups: number;
+  } {
     const total = (this.db.prepare('SELECT COUNT(*) as c FROM users').get() as { c: number }).c;
-    const recentSignups = (this.db.prepare(
-      "SELECT COUNT(*) as c FROM users WHERE created_at > datetime('now', '-7 day')"
-    ).get() as { c: number }).c;
+    const recentSignups = (
+      this.db
+        .prepare("SELECT COUNT(*) as c FROM users WHERE created_at > datetime('now', '-7 day')")
+        .get() as { c: number }
+    ).c;
 
-    const tierRows = this.db.prepare(
-      'SELECT tier, COUNT(*) as c FROM users GROUP BY tier'
-    ).all() as { tier: string; c: number }[];
+    const tierRows = this.db
+      .prepare('SELECT tier, COUNT(*) as c FROM users GROUP BY tier')
+      .all() as { tier: string; c: number }[];
     const byTier: Record<string, number> = {};
     for (const row of tierRows) byTier[row.tier] = row.c;
 
-    const roleRows = this.db.prepare(
-      'SELECT role, COUNT(*) as c FROM users GROUP BY role'
-    ).all() as { role: string; c: number }[];
+    const roleRows = this.db
+      .prepare('SELECT role, COUNT(*) as c FROM users GROUP BY role')
+      .all() as { role: string; c: number }[];
     const byRole: Record<string, number> = {};
     for (const row of roleRows) byRole[row.role] = row.c;
 
@@ -406,32 +542,45 @@ export class AuthDB {
   // ── Admin: Waitlist Management ─────────────────────────────────
 
   approveWaitlistEntry(id: number): void {
-    this.db.prepare(
-      "UPDATE waitlist SET status = 'approved', updated_at = datetime('now') WHERE id = ?"
-    ).run(id);
+    this.db
+      .prepare("UPDATE waitlist SET status = 'approved', updated_at = datetime('now') WHERE id = ?")
+      .run(id);
   }
 
   rejectWaitlistEntry(id: number): void {
-    this.db.prepare(
-      "UPDATE waitlist SET status = 'rejected', updated_at = datetime('now') WHERE id = ?"
-    ).run(id);
+    this.db
+      .prepare("UPDATE waitlist SET status = 'rejected', updated_at = datetime('now') WHERE id = ?")
+      .run(id);
   }
 
   // ── Audit Log ──────────────────────────────────────────────────
 
-  addAuditLog(action: string, actorId: number | null, targetId: number | null, details?: string): void {
-    this.db.prepare(`
+  addAuditLog(
+    action: string,
+    actorId: number | null,
+    targetId: number | null,
+    details?: string
+  ): void {
+    this.db
+      .prepare(
+        `
       INSERT INTO audit_log (action, actor_id, target_id, details)
       VALUES (?, ?, ?, ?)
-    `).run(action, actorId, targetId, details ?? null);
+    `
+      )
+      .run(action, actorId, targetId, details ?? null);
   }
 
   getAuditLog(limit: number = 50): AuditLogEntry[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT id, action, actor_id as actorId, target_id as targetId,
              details, created_at as createdAt
       FROM audit_log ORDER BY created_at DESC LIMIT ?
-    `).all(Math.min(limit, 200)) as AuditLogEntry[];
+    `
+      )
+      .all(Math.min(limit, 200)) as AuditLogEntry[];
   }
 
   // ── Session Management ────────────────────────────────────────

@@ -235,13 +235,13 @@ export class AchievementTracker {
 
   /** Get un-notified achievements / 取得未通知的成就 */
   getUnnotified(): EarnedAchievement[] {
-    return Array.from(this.earned.values()).filter(e => !e.notified);
+    return Array.from(this.earned.values()).filter((e) => !e.notified);
   }
 
   /** Load earned achievements from serialized data / 從序列化資料載入 */
   load(data: Array<{ id: string; earnedAt: string }>): void {
     for (const item of data) {
-      const achievement = ACHIEVEMENTS.find(a => a.id === item.id);
+      const achievement = ACHIEVEMENTS.find((a) => a.id === item.id);
       if (achievement) {
         this.earned.set(item.id, {
           achievement,
@@ -254,7 +254,7 @@ export class AchievementTracker {
 
   /** Serialize earned achievements / 序列化已獲得的成就 */
   serialize(): Array<{ id: string; earnedAt: string }> {
-    return Array.from(this.earned.values()).map(e => ({
+    return Array.from(this.earned.values()).map((e) => ({
       id: e.achievement.id,
       earnedAt: e.earnedAt,
     }));

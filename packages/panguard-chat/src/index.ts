@@ -80,11 +80,7 @@ export { WebhookChannel } from './channels/index.js';
 // Templates / 模板
 // ---------------------------------------------------------------------------
 
-export {
-  ALERT_TEMPLATES,
-  findAlertTemplate,
-  getHumanSummary,
-} from './templates/index.js';
+export { ALERT_TEMPLATES, findAlertTemplate, getHumanSummary } from './templates/index.js';
 export type { AlertTemplate } from './templates/index.js';
 
 // ---------------------------------------------------------------------------

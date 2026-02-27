@@ -69,14 +69,14 @@ POST /api/v1/ioc
 
 **欄位說明：**
 
-| 欄位 | 類型 | 必填 | 說明 |
-|------|------|------|------|
-| `type` | string | v | IoC 類型：`ip`, `domain`, `url`, `hash`, `email` |
-| `value` | string | v | IoC 值 |
-| `confidence` | number | v | 信心度 0-100 |
-| `source` | string | - | 來源識別 |
-| `tags` | string[] | - | 標籤（如 `c2`, `botnet`, `phishing`） |
-| `description` | string | - | 描述 |
+| 欄位          | 類型     | 必填 | 說明                                             |
+| ------------- | -------- | ---- | ------------------------------------------------ |
+| `type`        | string   | v    | IoC 類型：`ip`, `domain`, `url`, `hash`, `email` |
+| `value`       | string   | v    | IoC 值                                           |
+| `confidence`  | number   | v    | 信心度 0-100                                     |
+| `source`      | string   | -    | 來源識別                                         |
+| `tags`        | string[] | -    | 標籤（如 `c2`, `botnet`, `phishing`）            |
+| `description` | string   | -    | 描述                                             |
 
 **回應：**
 
@@ -99,10 +99,10 @@ GET /api/v1/ioc?type=ip&value=203.0.113.50
 
 **Query Parameters：**
 
-| 參數 | 類型 | 必填 | 說明 |
-|------|------|------|------|
-| `type` | string | v | IoC 類型 |
-| `value` | string | v | IoC 值 |
+| 參數    | 類型   | 必填 | 說明     |
+| ------- | ------ | ---- | -------- |
+| `type`  | string | v    | IoC 類型 |
+| `value` | string | v    | IoC 值   |
 
 **回應：**
 
@@ -177,11 +177,11 @@ GET /api/v1/ioc/recent?limit=100
 
 **Query Parameters：**
 
-| 參數 | 類型 | 預設 | 說明 |
-|------|------|------|------|
-| `limit` | number | `50` | 回傳數量上限 |
-| `type` | string | - | 過濾 IoC 類型 |
-| `since` | string | - | ISO 8601 時間，只回傳此時間之後的 |
+| 參數    | 類型   | 預設 | 說明                              |
+| ------- | ------ | ---- | --------------------------------- |
+| `limit` | number | `50` | 回傳數量上限                      |
+| `type`  | string | -    | 過濾 IoC 類型                     |
+| `since` | string | -    | ISO 8601 時間，只回傳此時間之後的 |
 
 **回應：**
 
@@ -245,24 +245,24 @@ GET /api/v1/stats
 
 ### 常見錯誤碼
 
-| HTTP 狀態碼 | 錯誤碼 | 說明 |
-|------------|--------|------|
-| 400 | `invalid_request` | 請求格式錯誤 |
-| 401 | `unauthorized` | API Key 缺失或無效 |
-| 404 | `not_found` | 端點不存在 |
-| 429 | `rate_limited` | 請求頻率過高 |
-| 500 | `internal_error` | 伺服器內部錯誤 |
+| HTTP 狀態碼 | 錯誤碼            | 說明               |
+| ----------- | ----------------- | ------------------ |
+| 400         | `invalid_request` | 請求格式錯誤       |
+| 401         | `unauthorized`    | API Key 缺失或無效 |
+| 404         | `not_found`       | 端點不存在         |
+| 429         | `rate_limited`    | 請求頻率過高       |
+| 500         | `internal_error`  | 伺服器內部錯誤     |
 
 ---
 
 ## 速率限制
 
-| 端點 | 限制 |
-|------|------|
-| `POST /ioc` | 100 次/分鐘 |
-| `GET /ioc` | 300 次/分鐘 |
-| `POST /ioc/batch` | 30 次/分鐘 |
-| `GET /ioc/recent` | 60 次/分鐘 |
+| 端點              | 限制        |
+| ----------------- | ----------- |
+| `POST /ioc`       | 100 次/分鐘 |
+| `GET /ioc`        | 300 次/分鐘 |
+| `POST /ioc/batch` | 30 次/分鐘  |
+| `GET /ioc/recent` | 60 次/分鐘  |
 
 超過限制時回傳 `429 Too Many Requests`。
 
@@ -277,7 +277,7 @@ const response = await fetch('http://localhost:8080/api/v1/ioc', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer your-api-key',
+    Authorization: 'Bearer your-api-key',
   },
   body: JSON.stringify({
     type: 'ip',

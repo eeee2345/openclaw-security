@@ -1,18 +1,22 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
-import { useTranslations } from "next-intl";
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { useInView } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import {
-  ShieldIcon, HistoryIcon, LockIcon, TerminalIcon, ResponseIcon,
-} from "@/components/ui/BrandIcons";
-import SectionWrapper from "../ui/SectionWrapper";
-import SectionTitle from "../ui/SectionTitle";
-import FadeInUp from "../FadeInUp";
+  ShieldIcon,
+  HistoryIcon,
+  LockIcon,
+  TerminalIcon,
+  ResponseIcon,
+} from '@/components/ui/BrandIcons';
+import SectionWrapper from '../ui/SectionWrapper';
+import SectionTitle from '../ui/SectionTitle';
+import FadeInUp from '../FadeInUp';
 
 /* ─── Animated Counter ─── */
-function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
+function Counter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const inView = useInView(ref, { once: true, margin: '-50px' });
   const [val, setVal] = useState(0);
   useEffect(() => {
     if (!inView) return;
@@ -25,37 +29,42 @@ function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
     };
     requestAnimationFrame(tick);
   }, [inView, target]);
-  return <span ref={ref}>{val}{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {val}
+      {suffix}
+    </span>
+  );
 }
 
 export default function WhyPanguard() {
-  const t = useTranslations("home.whyPanguard");
+  const t = useTranslations('home.whyPanguard');
 
   /* ─── Stats Cards ─── */
   const stats = [
     {
       icon: ShieldIcon,
       value: 90,
-      suffix: "%",
-      prefix: "",
-      label: t("stat1Label"),
-      desc: t("stat1Desc"),
+      suffix: '%',
+      prefix: '',
+      label: t('stat1Label'),
+      desc: t('stat1Desc'),
     },
     {
       icon: ResponseIcon,
       value: 50,
-      suffix: "ms",
-      prefix: "< ",
-      label: t("stat2Label"),
-      desc: t("stat2Desc"),
+      suffix: 'ms',
+      prefix: '< ',
+      label: t('stat2Label'),
+      desc: t('stat2Desc'),
     },
     {
       icon: TerminalIcon,
       value: 0,
-      suffix: "",
-      prefix: "",
-      label: t("stat3Label"),
-      desc: t("stat3Desc"),
+      suffix: '',
+      prefix: '',
+      label: t('stat3Label'),
+      desc: t('stat3Desc'),
       isZero: true,
     },
   ];
@@ -64,18 +73,18 @@ export default function WhyPanguard() {
   const features = [
     {
       icon: ShieldIcon,
-      title: t("feature1Title"),
-      desc: t("feature1Desc"),
+      title: t('feature1Title'),
+      desc: t('feature1Desc'),
     },
     {
       icon: HistoryIcon,
-      title: t("feature2Title"),
-      desc: t("feature2Desc"),
+      title: t('feature2Title'),
+      desc: t('feature2Desc'),
     },
     {
       icon: LockIcon,
-      title: t("feature3Title"),
-      desc: t("feature3Desc"),
+      title: t('feature3Title'),
+      desc: t('feature3Desc'),
     },
   ];
 
@@ -83,14 +92,9 @@ export default function WhyPanguard() {
     <>
       {/* ── Problem + Stats ── */}
       <SectionWrapper>
-        <SectionTitle
-          title={t("title")}
-          subtitle={t("subtitle")}
-        />
+        <SectionTitle title={t('title')} subtitle={t('subtitle')} />
         <FadeInUp delay={0.1}>
-          <p className="text-text-primary font-semibold text-lg mt-6 text-center">
-            {t("gapLine")}
-          </p>
+          <p className="text-text-primary font-semibold text-lg mt-6 text-center">{t('gapLine')}</p>
         </FadeInUp>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14">
@@ -100,7 +104,7 @@ export default function WhyPanguard() {
                 <c.icon size={24} className="text-brand-sage mb-5" />
                 <div className="text-5xl font-extrabold text-text-primary">
                   {c.prefix}
-                  {c.isZero ? "0" : <Counter target={c.value} suffix={c.suffix} />}
+                  {c.isZero ? '0' : <Counter target={c.value} suffix={c.suffix} />}
                 </div>
                 <p className="text-sm text-brand-sage font-medium mt-2">{c.label}</p>
                 <p className="text-sm text-text-tertiary mt-4 leading-relaxed">{c.desc}</p>
@@ -112,7 +116,7 @@ export default function WhyPanguard() {
 
       {/* ── Why Panguard ── */}
       <SectionWrapper dark>
-        <SectionTitle title={t("whyTitle")} />
+        <SectionTitle title={t('whyTitle')} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-14">
           {features.map((f, i) => (
             <FadeInUp key={f.title} delay={i * 0.06}>

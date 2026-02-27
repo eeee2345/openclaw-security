@@ -13,7 +13,10 @@ import { describe, it, expect } from 'vitest';
 import { sortBySeverity, SEVERITY_ORDER } from '../src/scanners/types.js';
 import type { Finding } from '../src/scanners/types.js';
 import { checkUnnecessaryPorts } from '../src/scanners/open-ports.js';
-import { SCANNERS_VERSION, checkUnnecessaryPorts as reExportedCheckPorts } from '../src/scanners/index.js';
+import {
+  SCANNERS_VERSION,
+  checkUnnecessaryPorts as reExportedCheckPorts,
+} from '../src/scanners/index.js';
 import { getComplianceEntries, mapFindingsToCompliance } from '../src/report/compliance-map.js';
 import type { PortInfo } from '@panguard-ai/core';
 

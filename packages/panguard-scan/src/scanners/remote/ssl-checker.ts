@@ -24,7 +24,7 @@ export interface SSLResult {
 export async function checkSSL(
   host: string,
   lang: Language,
-  timeout = 5000,
+  timeout = 5000
 ): Promise<{ findings: Finding[]; result: SSLResult }> {
   const findings: Finding[] = [];
 
@@ -48,14 +48,20 @@ export async function checkSSL(
 
         resolve({
           valid: now >= validFrom && now <= validTo,
-          issuer: String(Array.isArray(cert.issuer?.O) ? cert.issuer.O[0] : (cert.issuer?.O ?? cert.issuer?.CN ?? 'unknown')),
-          subject: String(Array.isArray(cert.subject?.CN) ? cert.subject.CN[0] : (cert.subject?.CN ?? 'unknown')),
+          issuer: String(
+            Array.isArray(cert.issuer?.O)
+              ? cert.issuer.O[0]
+              : (cert.issuer?.O ?? cert.issuer?.CN ?? 'unknown')
+          ),
+          subject: String(
+            Array.isArray(cert.subject?.CN) ? cert.subject.CN[0] : (cert.subject?.CN ?? 'unknown')
+          ),
           validFrom: validFrom.toISOString(),
           validTo: validTo.toISOString(),
           daysUntilExpiry,
           selfSigned,
         });
-      },
+      }
     );
 
     socket.on('error', (err) => {
@@ -72,55 +78,71 @@ export async function checkSSL(
   if (result.error) {
     findings.push({
       id: 'remote-ssl-error',
-      title: lang === 'zh-TW'
-        ? 'SSL \u6191\u8B49\u6AA2\u67E5\u5931\u6557'
-        : 'SSL certificate check failed',
+      title:
+        lang === 'zh-TW'
+          ? 'SSL \u6191\u8B49\u6AA2\u67E5\u5931\u6557'
+          : 'SSL certificate check failed',
       description: result.error,
       severity: 'high',
       category: 'ssl',
-      remediation: lang === 'zh-TW'
-        ? '\u78BA\u8A8D\u4F3A\u670D\u5668\u5DF2\u555F\u7528 HTTPS \u4E26\u5B89\u88DD\u6709\u6548\u6191\u8B49'
-        : 'Ensure the server has HTTPS enabled with a valid certificate',
+      remediation:
+        lang === 'zh-TW'
+          ? '\u78BA\u8A8D\u4F3A\u670D\u5668\u5DF2\u555F\u7528 HTTPS \u4E26\u5B89\u88DD\u6709\u6548\u6191\u8B49'
+          : 'Ensure the server has HTTPS enabled with a valid certificate',
     });
   } else {
     if (!result.valid) {
       findings.push({
         id: 'remote-ssl-expired',
         title: lang === 'zh-TW' ? 'SSL \u6191\u8B49\u5DF2\u904E\u671F' : 'SSL certificate expired',
-        description: lang === 'zh-TW'
-          ? `\u6191\u8B49\u5DF2\u65BC ${result.validTo} \u904E\u671F`
-          : `Certificate expired on ${result.validTo}`,
+        description:
+          lang === 'zh-TW'
+            ? `\u6191\u8B49\u5DF2\u65BC ${result.validTo} \u904E\u671F`
+            : `Certificate expired on ${result.validTo}`,
         severity: 'critical',
         category: 'ssl',
-        remediation: lang === 'zh-TW' ? '\u7ACB\u5373\u66F4\u65B0 SSL \u6191\u8B49' : 'Renew the SSL certificate immediately',
+        remediation:
+          lang === 'zh-TW'
+            ? '\u7ACB\u5373\u66F4\u65B0 SSL \u6191\u8B49'
+            : 'Renew the SSL certificate immediately',
       });
     } else if (result.daysUntilExpiry !== undefined && result.daysUntilExpiry <= 30) {
       findings.push({
         id: 'remote-ssl-expiring',
-        title: lang === 'zh-TW'
-          ? `SSL \u6191\u8B49\u5373\u5C07\u904E\u671F (${result.daysUntilExpiry} \u5929)`
-          : `SSL certificate expiring soon (${result.daysUntilExpiry} days)`,
-        description: lang === 'zh-TW'
-          ? `\u6191\u8B49\u5C07\u65BC ${result.validTo} \u904E\u671F`
-          : `Certificate will expire on ${result.validTo}`,
+        title:
+          lang === 'zh-TW'
+            ? `SSL \u6191\u8B49\u5373\u5C07\u904E\u671F (${result.daysUntilExpiry} \u5929)`
+            : `SSL certificate expiring soon (${result.daysUntilExpiry} days)`,
+        description:
+          lang === 'zh-TW'
+            ? `\u6191\u8B49\u5C07\u65BC ${result.validTo} \u904E\u671F`
+            : `Certificate will expire on ${result.validTo}`,
         severity: result.daysUntilExpiry <= 7 ? 'high' : 'medium',
         category: 'ssl',
-        remediation: lang === 'zh-TW' ? '\u8ACB\u5118\u5FEB\u66F4\u65B0 SSL \u6191\u8B49' : 'Renew the SSL certificate soon',
+        remediation:
+          lang === 'zh-TW'
+            ? '\u8ACB\u5118\u5FEB\u66F4\u65B0 SSL \u6191\u8B49'
+            : 'Renew the SSL certificate soon',
       });
     }
 
     if (result.selfSigned) {
       findings.push({
         id: 'remote-ssl-self-signed',
-        title: lang === 'zh-TW' ? '\u4F7F\u7528\u81EA\u7C3D\u6191\u8B49' : 'Self-signed certificate detected',
-        description: lang === 'zh-TW'
-          ? '\u81EA\u7C3D\u6191\u8B49\u4E0D\u88AB\u700F\u89BD\u5668\u4FE1\u4EFB'
-          : 'Self-signed certificates are not trusted by browsers',
+        title:
+          lang === 'zh-TW'
+            ? '\u4F7F\u7528\u81EA\u7C3D\u6191\u8B49'
+            : 'Self-signed certificate detected',
+        description:
+          lang === 'zh-TW'
+            ? '\u81EA\u7C3D\u6191\u8B49\u4E0D\u88AB\u700F\u89BD\u5668\u4FE1\u4EFB'
+            : 'Self-signed certificates are not trusted by browsers',
         severity: 'medium',
         category: 'ssl',
-        remediation: lang === 'zh-TW'
-          ? "\u4F7F\u7528 Let's Encrypt \u7B49\u53EF\u4FE1\u4EFB CA \u7C3D\u767C\u7684\u6191\u8B49"
-          : "Use a certificate from a trusted CA like Let's Encrypt",
+        remediation:
+          lang === 'zh-TW'
+            ? "\u4F7F\u7528 Let's Encrypt \u7B49\u53EF\u4FE1\u4EFB CA \u7C3D\u767C\u7684\u6191\u8B49"
+            : "Use a certificate from a trusted CA like Let's Encrypt",
       });
     }
   }

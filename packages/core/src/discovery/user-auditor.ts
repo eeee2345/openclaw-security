@@ -68,11 +68,17 @@ async function auditMacOSUsers(): Promise<UserInfo[]> {
   if (adminGroupOutput) {
     const match = adminGroupOutput.match(/GroupMembership:\s*(.+)/);
     if (match?.[1]) {
-      match[1].trim().split(/\s+/).forEach((u) => adminUsers.add(u));
+      match[1]
+        .trim()
+        .split(/\s+/)
+        .forEach((u) => adminUsers.add(u));
     }
   }
 
-  const usernames = userListOutput.split('\n').map((u) => u.trim()).filter(Boolean);
+  const usernames = userListOutput
+    .split('\n')
+    .map((u) => u.trim())
+    .filter(Boolean);
 
   for (const username of usernames) {
     // Skip system accounts (those starting with _)
@@ -172,7 +178,10 @@ async function auditLinuxUsers(): Promise<UserInfo[]> {
 
       const groupName = parts[0] ?? '';
       const membersStr = parts[3] ?? '';
-      const members = membersStr.split(',').map((m) => m.trim()).filter(Boolean);
+      const members = membersStr
+        .split(',')
+        .map((m) => m.trim())
+        .filter(Boolean);
 
       // sudo, wheel, and admin groups grant admin privileges
       // sudo、wheel 和 admin 群組授予管理員權限
@@ -239,9 +248,7 @@ async function auditLinuxUsers(): Promise<UserInfo[]> {
       if (lastChangeMatch?.[1]) {
         const changeDate = new Date(lastChangeMatch[1].trim());
         if (!isNaN(changeDate.getTime())) {
-          passwordAge = Math.floor(
-            (Date.now() - changeDate.getTime()) / (1000 * 60 * 60 * 24)
-          );
+          passwordAge = Math.floor((Date.now() - changeDate.getTime()) / (1000 * 60 * 60 * 24));
         }
       }
     }
@@ -355,9 +362,7 @@ async function auditWindowsUsers(): Promise<UserInfo[]> {
         const dateStr = passwordLastSetMatch[1].trim();
         const setDate = new Date(dateStr);
         if (!isNaN(setDate.getTime())) {
-          passwordAge = Math.floor(
-            (Date.now() - setDate.getTime()) / (1000 * 60 * 60 * 24)
-          );
+          passwordAge = Math.floor((Date.now() - setDate.getTime()) / (1000 * 60 * 60 * 24));
         }
       }
     }

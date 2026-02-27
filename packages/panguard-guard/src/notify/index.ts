@@ -41,7 +41,7 @@ export { sendEmailNotify } from './email.js';
 export async function sendNotifications(
   config: NotificationConfig,
   verdict: ThreatVerdict,
-  eventDescription: string,
+  eventDescription: string
 ): Promise<NotificationResult[]> {
   const promises: Promise<NotificationResult>[] = [];
 
@@ -83,7 +83,7 @@ export async function sendNotifications(
   const successCount = notificationResults.filter((r) => r.success).length;
   logger.info(
     `Notifications sent: ${successCount}/${notificationResults.length} successful / ` +
-    `通知發送: ${successCount}/${notificationResults.length} 成功`,
+      `通知發送: ${successCount}/${notificationResults.length} 成功`
   );
 
   return notificationResults;

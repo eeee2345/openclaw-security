@@ -29,18 +29,41 @@ export interface KillResult {
 /** Protected system processes that must never be killed / 不可終止的系統程序 */
 const PROTECTED_PROCESSES = new Set([
   // Unix/Linux
-  'init', 'systemd', 'launchd', 'sshd', 'cron', 'atd',
-  'journald', 'udevd', 'dbus-daemon', 'NetworkManager',
-  'login', 'getty',
+  'init',
+  'systemd',
+  'launchd',
+  'sshd',
+  'cron',
+  'atd',
+  'journald',
+  'udevd',
+  'dbus-daemon',
+  'NetworkManager',
+  'login',
+  'getty',
   // macOS
-  'loginwindow', 'WindowServer', 'kernel_task', 'mds', 'mds_stores',
-  'coreaudiod', 'diskarbitrationd', 'configd',
+  'loginwindow',
+  'WindowServer',
+  'kernel_task',
+  'mds',
+  'mds_stores',
+  'coreaudiod',
+  'diskarbitrationd',
+  'configd',
   // Windows
-  'explorer.exe', 'svchost.exe', 'csrss.exe', 'lsass.exe',
-  'services.exe', 'winlogon.exe', 'wininit.exe', 'smss.exe',
-  'System', 'dwm.exe',
+  'explorer.exe',
+  'svchost.exe',
+  'csrss.exe',
+  'lsass.exe',
+  'services.exe',
+  'winlogon.exe',
+  'wininit.exe',
+  'smss.exe',
+  'System',
+  'dwm.exe',
   // Self
-  'panguard-guard', 'node',
+  'panguard-guard',
+  'node',
 ]);
 
 /** Protected PIDs / 受保護的 PID */
@@ -69,7 +92,10 @@ export class ProcessKiller {
    * Kill a process and optionally its children
    * 終止程序（可選終止子程序）
    */
-  async kill(pid: number, options: { processName?: string; killChildren?: boolean; gracePeriodMs?: number } = {}): Promise<KillResult> {
+  async kill(
+    pid: number,
+    options: { processName?: string; killChildren?: boolean; gracePeriodMs?: number } = {}
+  ): Promise<KillResult> {
     const { processName, killChildren = true, gracePeriodMs = 3000 } = options;
 
     // Safety: protected PID check
@@ -84,7 +110,10 @@ export class ProcessKiller {
     }
 
     // Safety: protected process name check
-    if (processName && (PROTECTED_PROCESSES.has(processName) || this.additionalProtected.has(processName))) {
+    if (
+      processName &&
+      (PROTECTED_PROCESSES.has(processName) || this.additionalProtected.has(processName))
+    ) {
       return {
         pid,
         processName,
@@ -119,9 +148,21 @@ export class ProcessKiller {
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if ((err as NodeJS.ErrnoException).code === 'ESRCH') {
-        return { pid, processName, success: true, message: 'Process already exited', childrenKilled };
+        return {
+          pid,
+          processName,
+          success: true,
+          message: 'Process already exited',
+          childrenKilled,
+        };
       }
-      return { pid, processName, success: false, message: `SIGTERM failed: ${msg}`, childrenKilled };
+      return {
+        pid,
+        processName,
+        success: false,
+        message: `SIGTERM failed: ${msg}`,
+        childrenKilled,
+      };
     }
 
     // Wait for graceful exit, then SIGKILL if still alive
@@ -135,7 +176,9 @@ export class ProcessKiller {
       }
     }
 
-    logger.info(`Killed process PID ${pid}${processName ? ` (${processName})` : ''}, ${childrenKilled} children terminated`);
+    logger.info(
+      `Killed process PID ${pid}${processName ? ` (${processName})` : ''}, ${childrenKilled} children terminated`
+    );
     return {
       pid,
       processName,
@@ -153,17 +196,23 @@ export class ProcessKiller {
     try {
       if (os === 'win32') {
         const stdout = await execFilePromise('wmic', [
-          'process', 'where', `(ParentProcessId=${parentPid})`, 'get', 'ProcessId',
+          'process',
+          'where',
+          `(ParentProcessId=${parentPid})`,
+          'get',
+          'ProcessId',
         ]);
-        return stdout.split('\n')
-          .map(line => parseInt(line.trim(), 10))
-          .filter(pid => !isNaN(pid) && pid !== parentPid);
+        return stdout
+          .split('\n')
+          .map((line) => parseInt(line.trim(), 10))
+          .filter((pid) => !isNaN(pid) && pid !== parentPid);
       } else {
         // Unix/macOS: use pgrep
         const stdout = await execFilePromise('/usr/bin/pgrep', ['-P', String(parentPid)]);
-        return stdout.split('\n')
-          .map(line => parseInt(line.trim(), 10))
-          .filter(pid => !isNaN(pid));
+        return stdout
+          .split('\n')
+          .map((line) => parseInt(line.trim(), 10))
+          .filter((pid) => !isNaN(pid));
       }
     } catch {
       return []; // No children or pgrep not available

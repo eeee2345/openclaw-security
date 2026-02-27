@@ -95,7 +95,7 @@ export class OpenAIProvider extends LLMProviderBase {
 
     if (!this.config.apiKey) {
       throw new Error(
-        'OpenAI API key is required. Set the apiKey field in LLMConfig or the OPENAI_API_KEY environment variable.',
+        'OpenAI API key is required. Set the apiKey field in LLMConfig or the OPENAI_API_KEY environment variable.'
       );
     }
 
@@ -192,10 +192,7 @@ export class OpenAIProvider extends LLMProviderBase {
       // Track token usage from API response
       // 從 API 回應追蹤 Token 使用量
       if (response.usage) {
-        this.tokenTracker.track(
-          response.usage.prompt_tokens,
-          response.usage.completion_tokens,
-        );
+        this.tokenTracker.track(response.usage.prompt_tokens, response.usage.completion_tokens);
       }
 
       // Extract the assistant's message content
@@ -220,24 +217,16 @@ export class OpenAIProvider extends LLMProviderBase {
       // 為常見失敗提供更具體的錯誤訊息
       if (error instanceof Error) {
         if (error.message.includes('401') || error.message.includes('Incorrect API key')) {
-          throw new Error(
-            'OpenAI API authentication failed. Check your API key.',
-          );
+          throw new Error('OpenAI API authentication failed. Check your API key.');
         }
         if (error.message.includes('429') || error.message.includes('Rate limit')) {
-          throw new Error(
-            'OpenAI API rate limit exceeded. Please wait and try again.',
-          );
+          throw new Error('OpenAI API rate limit exceeded. Please wait and try again.');
         }
         if (error.message.includes('timeout') || error.message.includes('ETIMEDOUT')) {
-          throw new Error(
-            `OpenAI API request timed out after ${this.config.timeout}ms.`,
-          );
+          throw new Error(`OpenAI API request timed out after ${this.config.timeout}ms.`);
         }
         if (error.message.includes('model_not_found') || error.message.includes('does not exist')) {
-          throw new Error(
-            `OpenAI model "${this.model}" not found. Check the model name.`,
-          );
+          throw new Error(`OpenAI model "${this.model}" not found. Check the model name.`);
         }
       }
 

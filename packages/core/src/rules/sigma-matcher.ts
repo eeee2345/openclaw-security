@@ -47,7 +47,12 @@ function wildcardToRegex(pattern: string): RegExp {
 function getEventFieldValue(event: SecurityEvent, fieldName: string): string | undefined {
   // Check top-level event properties first / 先檢查事件頂層屬性
   const topLevelKeys: ReadonlyArray<keyof SecurityEvent> = [
-    'id', 'source', 'severity', 'category', 'description', 'host',
+    'id',
+    'source',
+    'severity',
+    'category',
+    'description',
+    'host',
   ];
 
   for (const key of topLevelKeys) {
@@ -194,7 +199,7 @@ function ipToNumber(ip: string): number | null {
  */
 function evaluateSelection(
   event: SecurityEvent,
-  selection: Record<string, string | string[]>,
+  selection: Record<string, string | string[]>
 ): { matched: boolean; fields: string[] } {
   const matchedFields: string[] = [];
 
@@ -286,14 +291,14 @@ function expandAggregations(condition: string, selectionNames: string[]): string
 
   // "all of <pattern>*" → AND of matching selections
   result = result.replace(/\ball\s+of\s+(\w+)\*/gi, (_match, prefix: string) => {
-    const matching = selectionNames.filter(n => n.startsWith(prefix));
+    const matching = selectionNames.filter((n) => n.startsWith(prefix));
     if (matching.length === 0) return 'false';
     return '(' + matching.join(' AND ') + ')';
   });
 
   // "1 of <pattern>*" → OR of matching selections
   result = result.replace(/\b1\s+of\s+(\w+)\*/gi, (_match, prefix: string) => {
-    const matching = selectionNames.filter(n => n.startsWith(prefix));
+    const matching = selectionNames.filter((n) => n.startsWith(prefix));
     if (matching.length === 0) return 'false';
     return '(' + matching.join(' OR ') + ')';
   });
@@ -313,10 +318,7 @@ function expandAggregations(condition: string, selectionNames: string[]): string
  * @param selectionResults - Map of selection name to match result / 選擇項名稱到比對結果的映射
  * @returns True if the condition is satisfied / 條件滿足時回傳 true
  */
-function evaluateCondition(
-  condition: string,
-  selectionResults: Map<string, boolean>,
-): boolean {
+function evaluateCondition(condition: string, selectionResults: Map<string, boolean>): boolean {
   // Expand aggregation expressions / 展開聚合表達式
   const selectionNames = Array.from(selectionResults.keys());
   const expanded = expandAggregations(condition, selectionNames);
@@ -450,7 +452,7 @@ export function matchEvent(event: SecurityEvent, rule: SigmaRule): RuleMatch | n
 
   logger.info(
     `Event matched rule "${rule.title}" (${rule.id}) / 事件比對到規則 "${rule.title}" (${rule.id})`,
-    { eventId: event.id, matchedFields: uniqueFields },
+    { eventId: event.id, matchedFields: uniqueFields }
   );
 
   return match;

@@ -80,7 +80,7 @@ export function createLLM(config: LLMConfig): LLMProvider {
     default:
       throw new Error(
         `Unknown LLM provider: "${(config as LLMConfig).provider}". ` +
-        'Supported providers: ollama, claude, openai',
+          'Supported providers: ollama, claude, openai'
       );
   }
 }

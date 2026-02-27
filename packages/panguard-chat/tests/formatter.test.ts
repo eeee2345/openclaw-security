@@ -4,7 +4,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import type { ThreatAlert, SummaryReport, LearningProgress, ConfirmationRequest } from '../src/types.js';
+import type {
+  ThreatAlert,
+  SummaryReport,
+  LearningProgress,
+  ConfirmationRequest,
+} from '../src/types.js';
 import {
   formatAlert,
   formatSummary,
@@ -196,11 +201,7 @@ describe('formatSummary', () => {
   });
 
   it('should show estimated damage avoided', () => {
-    const result = formatSummary(
-      makeSummary({ estimatedDamageAvoided: 50000 }),
-      'developer',
-      'en',
-    );
+    const result = formatSummary(makeSummary({ estimatedDamageAvoided: 50000 }), 'developer', 'en');
     expect(result.text).toContain('50,000');
   });
 
@@ -208,7 +209,7 @@ describe('formatSummary', () => {
     const result = formatSummary(
       makeSummary({ trendComparison: { thisPeriod: 15, lastPeriod: 10, changePercent: 50 } }),
       'developer',
-      'en',
+      'en'
     );
     expect(result.text).toContain('increased');
     expect(result.text).toContain('50%');
@@ -223,7 +224,7 @@ describe('formatSummary', () => {
     const result = formatSummary(
       makeSummary({ recommendations: ['Enable 2FA', 'Update firewall rules'] }),
       'developer',
-      'en',
+      'en'
     );
     expect(result.text).toContain('Enable 2FA');
     expect(result.text).toContain('Update firewall rules');
@@ -250,19 +251,13 @@ describe('formatLearningProgress', () => {
   });
 
   it('should show completion message when learning is done', () => {
-    const result = formatLearningProgress(
-      makeProgress({ day: 7, totalDays: 7 }),
-      'en',
-    );
+    const result = formatLearningProgress(makeProgress({ day: 7, totalDays: 7 }), 'en');
     expect(result.text).toContain('complete');
     expect(result.text).toContain('protection mode');
   });
 
   it('should show completion message in zh-TW', () => {
-    const result = formatLearningProgress(
-      makeProgress({ day: 7, totalDays: 7 }),
-      'zh-TW',
-    );
+    const result = formatLearningProgress(makeProgress({ day: 7, totalDays: 7 }), 'zh-TW');
     expect(result.text).toContain('完成');
     expect(result.text).toContain('保護模式');
   });
@@ -288,18 +283,12 @@ describe('formatConfirmation', () => {
   });
 
   it('should map malicious to critical severity', () => {
-    const result = formatConfirmation(
-      makeConfirmation({ conclusion: 'malicious' }),
-      'en',
-    );
+    const result = formatConfirmation(makeConfirmation({ conclusion: 'malicious' }), 'en');
     expect(result.severity).toBe('critical');
   });
 
   it('should map suspicious to warning severity', () => {
-    const result = formatConfirmation(
-      makeConfirmation({ conclusion: 'suspicious' }),
-      'en',
-    );
+    const result = formatConfirmation(makeConfirmation({ conclusion: 'suspicious' }), 'en');
     expect(result.severity).toBe('warning');
   });
 });

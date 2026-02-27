@@ -44,7 +44,9 @@ export function loadRulesFromDirectory(dir: string): SigmaRule[] {
     entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    logger.error(`Failed to read rules directory: ${dir} / 讀取規則目錄失敗: ${dir}`, { error: message });
+    logger.error(`Failed to read rules directory: ${dir} / 讀取規則目錄失敗: ${dir}`, {
+      error: message,
+    });
     return rules;
   }
 
@@ -59,15 +61,15 @@ export function loadRulesFromDirectory(dir: string): SigmaRule[] {
 
     if (rule !== null) {
       rules.push(rule);
-      logger.debug(
-        `Loaded rule from file: ${entry.name} / 從檔案載入規則: ${entry.name}`,
-        { ruleId: rule.id, title: rule.title },
-      );
+      logger.debug(`Loaded rule from file: ${entry.name} / 從檔案載入規則: ${entry.name}`, {
+        ruleId: rule.id,
+        title: rule.title,
+      });
     }
   }
 
   logger.info(
-    `Loaded ${rules.length} rules from directory: ${dir} / 從目錄載入 ${rules.length} 條規則: ${dir}`,
+    `Loaded ${rules.length} rules from directory: ${dir} / 從目錄載入 ${rules.length} 條規則: ${dir}`
   );
 
   return rules;
@@ -123,7 +125,7 @@ export function loadRulesRecursive(dir: string, source?: SigmaRule['source']): S
   walk(dir);
 
   logger.info(
-    `Loaded ${rules.length} rules recursively from: ${dir} (source: ${source ?? 'unset'}) / 從 ${dir} 遞迴載入 ${rules.length} 條規則`,
+    `Loaded ${rules.length} rules recursively from: ${dir} (source: ${source ?? 'unset'}) / 從 ${dir} 遞迴載入 ${rules.length} 條規則`
   );
 
   return rules;
@@ -146,11 +148,13 @@ export function loadRulesRecursive(dir: string, source?: SigmaRule['source']): S
  */
 export function watchRulesDirectory(
   dir: string,
-  callback: (rules: SigmaRule[]) => void,
+  callback: (rules: SigmaRule[]) => void
 ): () => void {
   if (!fs.existsSync(dir)) {
     logger.error(`Cannot watch non-existent directory: ${dir} / 無法監視不存在的目錄: ${dir}`);
-    return () => { /* noop */ };
+    return () => {
+      /* noop */
+    };
   }
 
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -170,7 +174,7 @@ export function watchRulesDirectory(
 
     debounceTimer = setTimeout(() => {
       logger.info(
-        `Detected rule file change (${eventType}${filename ? `: ${filename}` : ''}), reloading rules / 偵測到規則檔案變更，重新載入規則`,
+        `Detected rule file change (${eventType}${filename ? `: ${filename}` : ''}), reloading rules / 偵測到規則檔案變更，重新載入規則`
       );
       const rules = loadRulesFromDirectory(dir);
       callback(rules);

@@ -256,12 +256,7 @@ level: medium
 
 describe('Rule Loader', () => {
   it('should load rules from directory', () => {
-    const rulesDir = join(
-      process.cwd(),
-      'config',
-      'sigma-rules',
-      'custom',
-    );
+    const rulesDir = join(process.cwd(), 'config', 'sigma-rules', 'custom');
 
     // The config/sigma-rules/custom directory should exist in the project
     if (existsSync(rulesDir)) {
@@ -294,12 +289,18 @@ describe('Recursive Rule Loader', () => {
   });
 
   afterEach(() => {
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   function writeRuleFile(dir: string, filename: string, id: string, title: string): void {
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, filename), `
+    writeFileSync(
+      join(dir, filename),
+      `
 title: ${title}
 id: ${id}
 status: stable
@@ -312,7 +313,8 @@ detection:
     category: 'authentication'
   condition: selection
 level: medium
-`.trim());
+`.trim()
+    );
   }
 
   it('should load rules recursively from nested directories', () => {
@@ -398,7 +400,9 @@ describe('Rule Engine', () => {
     mkdirSync(customDir, { recursive: true });
     mkdirSync(communityDir, { recursive: true });
 
-    writeFileSync(join(customDir, 'custom-rule.yml'), `
+    writeFileSync(
+      join(customDir, 'custom-rule.yml'),
+      `
 title: Custom Rule
 id: engine-custom-001
 status: stable
@@ -411,9 +415,12 @@ detection:
     category: 'authentication'
   condition: selection
 level: high
-`.trim());
+`.trim()
+    );
 
-    writeFileSync(join(communityDir, 'community-rule.yml'), `
+    writeFileSync(
+      join(communityDir, 'community-rule.yml'),
+      `
 title: Community Rule
 id: engine-community-001
 status: stable
@@ -426,7 +433,8 @@ detection:
     category: 'process_creation'
   condition: selection
 level: medium
-`.trim());
+`.trim()
+    );
 
     const engine = new RuleEngine({
       rulesDir: customDir,
@@ -436,11 +444,15 @@ level: medium
 
     const rules = engine.getRules();
     expect(rules.length).toBe(2);
-    expect(rules.find(r => r.id === 'engine-custom-001')?.source).toBe('custom');
-    expect(rules.find(r => r.id === 'engine-community-001')?.source).toBe('community');
+    expect(rules.find((r) => r.id === 'engine-custom-001')?.source).toBe('custom');
+    expect(rules.find((r) => r.id === 'engine-community-001')?.source).toBe('community');
 
     engine.destroy();
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   it('should gracefully handle missing communityRulesDir', async () => {
@@ -448,7 +460,9 @@ level: medium
     const customDir = join(tempDir, 'custom');
     mkdirSync(customDir, { recursive: true });
 
-    writeFileSync(join(customDir, 'rule.yml'), `
+    writeFileSync(
+      join(customDir, 'rule.yml'),
+      `
 title: Solo Custom Rule
 id: solo-001
 status: stable
@@ -461,7 +475,8 @@ detection:
     category: 'authentication'
   condition: selection
 level: low
-`.trim());
+`.trim()
+    );
 
     const engine = new RuleEngine({
       rulesDir: customDir,
@@ -473,6 +488,10 @@ level: low
     expect(engine.getRules().length).toBe(1);
 
     engine.destroy();
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 });

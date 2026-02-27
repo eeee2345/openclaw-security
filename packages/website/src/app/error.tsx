@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 export default function RootError({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -8,29 +8,38 @@ export default function RootError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-
   return (
     <html lang="en">
-      <body style={{ background: "#1A1614", color: "#F5F1E8", fontFamily: "system-ui, sans-serif" }}>
-        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-          <div style={{ maxWidth: "400px", textAlign: "center" }}>
-            <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "12px" }}>
+      <body
+        style={{ background: '#1A1614', color: '#F5F1E8', fontFamily: 'system-ui, sans-serif' }}
+      >
+        <div
+          style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+          }}
+        >
+          <div style={{ maxWidth: '400px', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '12px' }}>
               Something went wrong
             </h1>
-            <p style={{ color: "#A09890", fontSize: "14px", marginBottom: "24px" }}>
+            <p style={{ color: '#A09890', fontSize: '14px', marginBottom: '24px' }}>
               An unexpected error occurred. Please try again.
             </p>
             <button
               onClick={reset}
               style={{
-                background: "#8B9A8E",
-                color: "#1A1614",
-                border: "none",
-                borderRadius: "999px",
-                padding: "12px 24px",
+                background: '#8B9A8E',
+                color: '#1A1614',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '12px 24px',
                 fontWeight: 600,
-                fontSize: "14px",
-                cursor: "pointer",
+                fontSize: '14px',
+                cursor: 'pointer',
               }}
             >
               Try again

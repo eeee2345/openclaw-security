@@ -98,7 +98,14 @@ describe('formatStatistics', () => {
       totalCredentialAttempts: 200,
       totalCommandsCaptured: 85,
       sessionsByService: {
-        ssh: 25, http: 12, ftp: 3, smb: 1, mysql: 1, rdp: 0, telnet: 0, redis: 0,
+        ssh: 25,
+        http: 12,
+        ftp: 3,
+        smb: 1,
+        mysql: 1,
+        rdp: 0,
+        telnet: 0,
+        redis: 0,
       },
       topAttackerIPs: [
         { ip: '1.2.3.4', sessions: 10, riskScore: 75 },
@@ -108,14 +115,17 @@ describe('formatStatistics', () => {
         { username: 'admin', count: 50 },
         { username: 'root', count: 40 },
       ],
-      topPasswords: [
-        { password: '123456', count: 30 },
-      ],
+      topPasswords: [{ password: '123456', count: 30 }],
       skillDistribution: { script_kiddie: 10, intermediate: 4, advanced: 1, apt: 0 },
       intentDistribution: {
-        reconnaissance: 5, credential_harvesting: 8, ransomware_deployment: 0,
-        cryptomining: 1, data_theft: 0, botnet_recruitment: 0,
-        lateral_movement: 1, unknown: 0,
+        reconnaissance: 5,
+        credential_harvesting: 8,
+        ransomware_deployment: 0,
+        cryptomining: 1,
+        data_theft: 0,
+        botnet_recruitment: 0,
+        lateral_movement: 1,
+        unknown: 0,
       },
       uptimeMs: 7_200_000, // 2 hours
     };

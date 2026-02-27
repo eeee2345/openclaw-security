@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const inputStyles =
-  "w-full bg-surface-1 border border-border rounded-full px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors";
+  'w-full bg-surface-1 border border-border rounded-full px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors';
 
 export default function ContactForm() {
-  const t = useTranslations("contactForm");
+  const t = useTranslations('contactForm');
 
-  const inquiryTypes = t.raw("inquiryTypes") as string[];
+  const inquiryTypes = t.raw('inquiryTypes') as string[];
 
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    company: "",
-    type: "",
-    message: "",
+    name: '',
+    email: '',
+    company: '',
+    type: '',
+    message: '',
   });
 
   function update(field: string, value: string) {
@@ -32,17 +32,17 @@ export default function ContactForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setError('');
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error("Submit failed");
+      if (!res.ok) throw new Error('Submit failed');
       setSubmitted(true);
     } catch {
-      setError(t("error"));
+      setError(t('error'));
     } finally {
       setLoading(false);
     }
@@ -62,29 +62,29 @@ export default function ContactForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="contact-name" className="block text-xs text-text-tertiary mb-1.5">
-                {t("labels.name")}
+                {t('labels.name')}
               </label>
               <input
                 id="contact-name"
                 type="text"
                 required
                 value={form.name}
-                onChange={(e) => update("name", e.target.value)}
-                placeholder={t("placeholders.name")}
+                onChange={(e) => update('name', e.target.value)}
+                placeholder={t('placeholders.name')}
                 className={inputStyles}
               />
             </div>
             <div>
               <label htmlFor="contact-email" className="block text-xs text-text-tertiary mb-1.5">
-                {t("labels.email")}
+                {t('labels.email')}
               </label>
               <input
                 id="contact-email"
                 type="email"
                 required
                 value={form.email}
-                onChange={(e) => update("email", e.target.value)}
-                placeholder={t("placeholders.email")}
+                onChange={(e) => update('email', e.target.value)}
+                placeholder={t('placeholders.email')}
                 className={inputStyles}
               />
             </div>
@@ -93,29 +93,32 @@ export default function ContactForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="contact-company" className="block text-xs text-text-tertiary mb-1.5">
-                {t("labels.company")}
+                {t('labels.company')}
               </label>
               <input
                 id="contact-company"
                 type="text"
                 value={form.company}
-                onChange={(e) => update("company", e.target.value)}
-                placeholder={t("placeholders.company")}
+                onChange={(e) => update('company', e.target.value)}
+                placeholder={t('placeholders.company')}
                 className={inputStyles}
               />
             </div>
             <div>
-              <label htmlFor="contact-inquiry-type" className="block text-xs text-text-tertiary mb-1.5">
-                {t("labels.inquiryType")}
+              <label
+                htmlFor="contact-inquiry-type"
+                className="block text-xs text-text-tertiary mb-1.5"
+              >
+                {t('labels.inquiryType')}
               </label>
               <select
                 id="contact-inquiry-type"
                 required
                 value={form.type}
-                onChange={(e) => update("type", e.target.value)}
+                onChange={(e) => update('type', e.target.value)}
                 className={`${inputStyles} appearance-none`}
               >
-                <option value="">{t("placeholders.inquiryType")}</option>
+                <option value="">{t('placeholders.inquiryType')}</option>
                 {inquiryTypes.map((type) => (
                   <option key={type} value={type}>
                     {type}
@@ -127,28 +130,26 @@ export default function ContactForm() {
 
           <div>
             <label htmlFor="contact-message" className="block text-xs text-text-tertiary mb-1.5">
-              {t("labels.message")}
+              {t('labels.message')}
             </label>
             <textarea
               id="contact-message"
               required
               value={form.message}
-              onChange={(e) => update("message", e.target.value)}
-              placeholder={t("placeholders.message")}
+              onChange={(e) => update('message', e.target.value)}
+              placeholder={t('placeholders.message')}
               rows={5}
               className={`${inputStyles} resize-none`}
             />
           </div>
 
-          {error && (
-            <p className="text-sm text-status-alert">{error}</p>
-          )}
+          {error && <p className="text-sm text-status-alert">{error}</p>}
 
           <button
             type="submit"
             className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] text-sm"
           >
-            {loading ? t("submitting") : t("submit")}
+            {loading ? t('submitting') : t('submit')}
           </button>
         </motion.form>
       ) : (
@@ -162,11 +163,9 @@ export default function ContactForm() {
           <div className="w-12 h-12 rounded-full bg-status-safe/10 border border-status-safe/20 flex items-center justify-center mx-auto mb-4">
             <Check className="w-6 h-6 text-status-safe" />
           </div>
-          <h3 className="text-xl font-bold text-text-primary">
-            {t("successTitle")}
-          </h3>
+          <h3 className="text-xl font-bold text-text-primary">{t('successTitle')}</h3>
           <p className="text-text-secondary mt-2 leading-relaxed text-sm max-w-sm mx-auto">
-            {t("successDesc")}
+            {t('successDesc')}
           </p>
         </motion.div>
       )}

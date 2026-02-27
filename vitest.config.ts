@@ -17,7 +17,11 @@ export default defineConfig({
         '**/*.d.ts',
       ],
     },
-    include: ['packages/**/tests/**/*.test.ts', 'tests/**/*.test.ts', 'security-hardening/tests/**/*.test.ts'],
+    include: [
+      'packages/**/tests/**/*.test.ts',
+      'tests/**/*.test.ts',
+      'security-hardening/tests/**/*.test.ts',
+    ],
     exclude: ['**/node_modules/**', 'node_modules', 'dist'],
   },
   resolve: {

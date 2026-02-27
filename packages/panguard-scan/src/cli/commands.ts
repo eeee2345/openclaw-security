@@ -6,9 +6,21 @@
  */
 
 import {
-  initI18n, t, createLogger, setLogLevel,
-  c, colorSeverity, banner, spinner, table, box,
-  scoreDisplay, divider, formatDuration, symbols, statusPanel,
+  initI18n,
+  t,
+  createLogger,
+  setLogLevel,
+  c,
+  colorSeverity,
+  banner,
+  spinner,
+  table,
+  box,
+  scoreDisplay,
+  divider,
+  formatDuration,
+  symbols,
+  statusPanel,
 } from '@panguard-ai/core';
 import { runScan } from '../scanners/index.js';
 import { generatePdfReport } from '../report/index.js';
@@ -31,45 +43,64 @@ export async function executeScan(config: ScanConfig): Promise<void> {
   // Banner
   console.log(banner());
 
-  const mode = config.depth === 'quick'
-    ? t('panguard-scan:cli.quickMode')
-    : t('panguard-scan:cli.fullMode');
+  const mode =
+    config.depth === 'quick' ? t('panguard-scan:cli.quickMode') : t('panguard-scan:cli.fullMode');
   console.log(`  ${symbols.scan} ${mode}`);
   console.log('');
 
   // Scan with spinner
-  const sp = spinner(t('panguard-scan:cli.scanning', { defaultValue: 'Scanning system security...' }));
+  const sp = spinner(
+    t('panguard-scan:cli.scanning', { defaultValue: 'Scanning system security...' })
+  );
   const result = await runScan(config);
-  sp.succeed(t('panguard-scan:cli.complete') + ` ${c.dim(`(${formatDuration(result.scanDuration)})`)}`);
+  sp.succeed(
+    t('panguard-scan:cli.complete') + ` ${c.dim(`(${formatDuration(result.scanDuration)})`)}`
+  );
 
   // Security Score
   const safetyScore = Math.max(0, 100 - result.riskScore);
-  const grade = safetyScore >= 90 ? 'A' : safetyScore >= 75 ? 'B' : safetyScore >= 60 ? 'C' : safetyScore >= 40 ? 'D' : 'F';
+  const grade =
+    safetyScore >= 90
+      ? 'A'
+      : safetyScore >= 75
+        ? 'B'
+        : safetyScore >= 60
+          ? 'C'
+          : safetyScore >= 40
+            ? 'D'
+            : 'F';
   console.log(scoreDisplay(safetyScore, grade));
 
   // Status panel (matching mockup "PANGUARD AI Security Status")
   const riskLabel = t(`panguard-scan:severity.${result.riskLevel}`);
-  console.log(statusPanel('PANGUARD AI Security Status', [
-    {
-      label: 'Status',
-      value: result.riskScore <= 25 ? c.safe('PROTECTED') : result.riskScore <= 50 ? c.caution('AT RISK') : c.critical('VULNERABLE'),
-      status: result.riskScore <= 25 ? 'safe' : result.riskScore <= 50 ? 'caution' : 'critical',
-    },
-    {
-      label: 'Risk Score',
-      value: `${result.riskScore}/100 (${riskLabel})`,
-      status: result.riskScore <= 25 ? 'safe' : result.riskScore <= 50 ? 'caution' : 'critical',
-    },
-    {
-      label: 'Issues Found',
-      value: String(result.findings.length),
-      status: result.findings.length === 0 ? 'safe' : 'caution',
-    },
-    {
-      label: 'Scan Duration',
-      value: formatDuration(result.scanDuration),
-    },
-  ]));
+  console.log(
+    statusPanel('PANGUARD AI Security Status', [
+      {
+        label: 'Status',
+        value:
+          result.riskScore <= 25
+            ? c.safe('PROTECTED')
+            : result.riskScore <= 50
+              ? c.caution('AT RISK')
+              : c.critical('VULNERABLE'),
+        status: result.riskScore <= 25 ? 'safe' : result.riskScore <= 50 ? 'caution' : 'critical',
+      },
+      {
+        label: 'Risk Score',
+        value: `${result.riskScore}/100 (${riskLabel})`,
+        status: result.riskScore <= 25 ? 'safe' : result.riskScore <= 50 ? 'caution' : 'critical',
+      },
+      {
+        label: 'Issues Found',
+        value: String(result.findings.length),
+        status: result.findings.length === 0 ? 'safe' : 'caution',
+      },
+      {
+        label: 'Scan Duration',
+        value: formatDuration(result.scanDuration),
+      },
+    ])
+  );
 
   // Findings table
   if (result.findings.length > 0) {
@@ -87,17 +118,19 @@ export async function executeScan(config: ScanConfig): Promise<void> {
       num: String(i + 1),
       severity: colorSeverity(finding.severity),
       title: finding.title,
-      status: (finding as unknown as Record<string, unknown>)['fixed'] ? c.safe('Fixed') : c.critical('Open'),
+      status: (finding as unknown as Record<string, unknown>)['fixed']
+        ? c.safe('Fixed')
+        : c.critical('Open'),
     }));
 
     console.log(table(columns, coloredRows));
     console.log('');
 
     // Summary counts
-    const critCount = result.findings.filter(f => f.severity === 'critical').length;
-    const highCount = result.findings.filter(f => f.severity === 'high').length;
-    const medCount = result.findings.filter(f => f.severity === 'medium').length;
-    const lowCount = result.findings.filter(f => f.severity === 'low').length;
+    const critCount = result.findings.filter((f) => f.severity === 'critical').length;
+    const highCount = result.findings.filter((f) => f.severity === 'high').length;
+    const medCount = result.findings.filter((f) => f.severity === 'medium').length;
+    const lowCount = result.findings.filter((f) => f.severity === 'low').length;
 
     const parts: string[] = [];
     if (critCount > 0) parts.push(c.critical(`${critCount} Critical`));
@@ -110,22 +143,33 @@ export async function executeScan(config: ScanConfig): Promise<void> {
       console.log('');
     }
   } else {
-    console.log(box(
-      `${symbols.pass} ${t('panguard-scan:cli.noFindings', { defaultValue: 'No security issues found!' })}`,
-      { borderColor: c.safe, title: 'All Clear' }
-    ));
+    console.log(
+      box(
+        `${symbols.pass} ${t('panguard-scan:cli.noFindings', { defaultValue: 'No security issues found!' })}`,
+        { borderColor: c.safe, title: 'All Clear' }
+      )
+    );
     console.log('');
   }
 
   // PDF report
   if (config.output) {
-    const reportSp = spinner(t('panguard-scan:cli.generating', { defaultValue: 'Generating PDF report...' }));
+    const reportSp = spinner(
+      t('panguard-scan:cli.generating', { defaultValue: 'Generating PDF report...' })
+    );
     try {
       await generatePdfReport(result, config.output, config.lang);
-      reportSp.succeed(t('panguard-scan:cli.reportSaved', { path: config.output, defaultValue: `Report saved: ${config.output}` }));
+      reportSp.succeed(
+        t('panguard-scan:cli.reportSaved', {
+          path: config.output,
+          defaultValue: `Report saved: ${config.output}`,
+        })
+      );
     } catch (err) {
       reportSp.fail(`Error generating report: ${err instanceof Error ? err.message : err}`);
-      logger.error('Failed to generate PDF report', { error: err instanceof Error ? err.message : String(err) });
+      logger.error('Failed to generate PDF report', {
+        error: err instanceof Error ? err.message : String(err),
+      });
     }
   }
 

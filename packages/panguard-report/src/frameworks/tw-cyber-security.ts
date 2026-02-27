@@ -21,7 +21,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'access_control',
     titleEn: 'Access Control and Identity Management',
     titleZh: '存取控制及身分管理',
-    descriptionEn: 'Establish access control mechanisms to ensure only authorized personnel can access information systems.',
+    descriptionEn:
+      'Establish access control mechanisms to ensure only authorized personnel can access information systems.',
     descriptionZh: '建立存取控制機制，確保僅經授權人員得存取資通系統。',
     relatedCategories: ['password', 'access', 'authentication'],
   },
@@ -30,7 +31,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'system_protection',
     titleEn: 'System and Communication Protection',
     titleZh: '系統與通訊保護',
-    descriptionEn: 'Implement system protection measures including firewall, intrusion detection, and secure communication.',
+    descriptionEn:
+      'Implement system protection measures including firewall, intrusion detection, and secure communication.',
     descriptionZh: '實施系統保護措施，包括防火牆、入侵偵測及安全通訊。',
     relatedCategories: ['firewall', 'network', 'system'],
   },
@@ -39,7 +41,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'network_security',
     titleEn: 'Network Security Management',
     titleZh: '網路安全管理',
-    descriptionEn: 'Manage network security including network segmentation, monitoring, and access restrictions.',
+    descriptionEn:
+      'Manage network security including network segmentation, monitoring, and access restrictions.',
     descriptionZh: '管理網路安全，包括網路分段、監控及存取限制。',
     relatedCategories: ['network', 'monitoring'],
   },
@@ -48,7 +51,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'encryption',
     titleEn: 'Encryption and Key Management',
     titleZh: '加密及金鑰管理',
-    descriptionEn: 'Implement appropriate encryption for data in transit and at rest, with proper key management.',
+    descriptionEn:
+      'Implement appropriate encryption for data in transit and at rest, with proper key management.',
     descriptionZh: '針對傳輸中及靜態資料實施適當加密，並妥善管理金鑰。',
     relatedCategories: ['certificate', 'encryption', 'tls'],
   },
@@ -57,7 +61,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'authentication',
     titleEn: 'Multi-Factor Authentication',
     titleZh: '多因子驗證',
-    descriptionEn: 'Implement multi-factor authentication for critical systems and privileged accounts.',
+    descriptionEn:
+      'Implement multi-factor authentication for critical systems and privileged accounts.',
     descriptionZh: '針對關鍵系統及特權帳號實施多因子驗證。',
     relatedCategories: ['password', 'authentication', 'access'],
   },
@@ -66,7 +71,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'monitoring',
     titleEn: 'Security Monitoring and Log Management',
     titleZh: '安全監控及日誌管理',
-    descriptionEn: 'Establish continuous security monitoring and maintain audit logs for at least 6 months.',
+    descriptionEn:
+      'Establish continuous security monitoring and maintain audit logs for at least 6 months.',
     descriptionZh: '建立持續安全監控，並保留稽核日誌至少六個月。',
     relatedCategories: ['monitoring', 'logging', 'audit'],
   },
@@ -75,7 +81,8 @@ export const TW_CYBER_SECURITY_CONTROLS: ComplianceControl[] = [
     category: 'incident_response',
     titleEn: 'Security Incident Response',
     titleZh: '資安事件應變',
-    descriptionEn: 'Establish incident response procedures, including notification within specified timeframes.',
+    descriptionEn:
+      'Establish incident response procedures, including notification within specified timeframes.',
     descriptionZh: '建立資安事件應變程序，包括於規定時限內通報。',
     relatedCategories: ['incident', 'response', 'notification'],
   },

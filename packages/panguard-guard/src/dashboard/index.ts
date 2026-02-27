@@ -131,10 +131,10 @@ export class DashboardServer {
 
         socket.write(
           'HTTP/1.1 101 Switching Protocols\r\n' +
-          'Upgrade: websocket\r\n' +
-          'Connection: Upgrade\r\n' +
-          `Sec-WebSocket-Accept: ${acceptKey}\r\n` +
-          '\r\n',
+            'Upgrade: websocket\r\n' +
+            'Connection: Upgrade\r\n' +
+            `Sec-WebSocket-Accept: ${acceptKey}\r\n` +
+            '\r\n'
         );
 
         const client: WSClient = { socket, alive: true, connectedAt: Date.now() };
@@ -164,9 +164,7 @@ export class DashboardServer {
       });
 
       this.server.listen(this.port, '127.0.0.1', () => {
-        logger.info(
-          `Dashboard started on http://127.0.0.1:${this.port} / 儀表板已啟動`,
-        );
+        logger.info(`Dashboard started on http://127.0.0.1:${this.port} / 儀表板已啟動`);
         logger.info(`Dashboard auth token: ${this.authToken}`);
         resolve();
       });
@@ -179,7 +177,11 @@ export class DashboardServer {
   async stop(): Promise<void> {
     return new Promise((resolve) => {
       for (const client of this.wsClients) {
-        try { client.socket.destroy(); } catch { /* ignore */ }
+        try {
+          client.socket.destroy();
+        } catch {
+          /* ignore */
+        }
       }
       this.wsClients.clear();
 
@@ -237,7 +239,7 @@ export class DashboardServer {
    */
   addThreatMapEntry(entry: ThreatMapEntry): void {
     const existing = this.threatMap.find(
-      (t) => t.sourceIP === entry.sourceIP && t.attackType === entry.attackType,
+      (t) => t.sourceIP === entry.sourceIP && t.attackType === entry.attackType
     );
     if (existing) {
       existing.count += entry.count;
@@ -267,7 +269,10 @@ export class DashboardServer {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'no-referrer');
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:*");
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:*"
+    );
 
     if (req.method === 'OPTIONS') {
       res.writeHead(204);

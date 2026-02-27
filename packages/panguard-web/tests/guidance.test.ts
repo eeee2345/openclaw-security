@@ -210,19 +210,27 @@ describe('Guidance Wizard', () => {
     });
 
     it('should include compliance step for enterprise', () => {
-      const result = generateGuidanceResult({
-        persona: 'mid_enterprise',
-      }, 'en');
+      const result = generateGuidanceResult(
+        {
+          persona: 'mid_enterprise',
+        },
+        'en'
+      );
       const hasComplianceStep = result.configSteps.some((s) => s.includes('compliance'));
       expect(hasComplianceStep).toBe(true);
     });
 
     it('should include honeypot step for server users', () => {
-      const result = generateGuidanceResult({
-        persona: 'developer',
-        hasServer: true,
-      }, 'en');
-      const hasTrapStep = result.configSteps.some((s) => s.includes('honeypot') || s.includes('Panguard Trap'));
+      const result = generateGuidanceResult(
+        {
+          persona: 'developer',
+          hasServer: true,
+        },
+        'en'
+      );
+      const hasTrapStep = result.configSteps.some(
+        (s) => s.includes('honeypot') || s.includes('Panguard Trap')
+      );
       expect(hasTrapStep).toBe(true);
     });
 

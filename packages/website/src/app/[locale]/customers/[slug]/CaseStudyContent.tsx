@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import { Link } from "@/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { CaseStudy } from "@/data/case-studies";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import { Link } from '@/navigation';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import type { CaseStudy } from '@/data/case-studies';
 
 export default function CaseStudyContent({ study }: { study: CaseStudy }) {
-  const t = useTranslations("caseStudy");
+  const t = useTranslations('caseStudy');
 
   return (
     <>
@@ -20,7 +20,7 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
             className="inline-flex items-center gap-1.5 text-sm text-text-tertiary hover:text-brand-sage transition-colors mb-8"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            {t("allStories")}
+            {t('allStories')}
           </Link>
         </FadeInUp>
 
@@ -29,12 +29,8 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
             <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-brand-sage/10 text-brand-sage">
               {study.industry}
             </span>
-            <span className="text-sm font-semibold text-text-primary">
-              {study.company}
-            </span>
-            <span className="text-xs text-text-muted">
-              {study.companySize}
-            </span>
+            <span className="text-sm font-semibold text-text-primary">{study.company}</span>
+            <span className="text-xs text-text-muted">{study.companySize}</span>
           </div>
         </FadeInUp>
 
@@ -72,11 +68,9 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
         <div className="max-w-3xl mx-auto">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              {t("challenge")}
+              {t('challenge')}
             </p>
-            <p className="text-lg text-text-secondary leading-relaxed">
-              {study.challenge}
-            </p>
+            <p className="text-lg text-text-secondary leading-relaxed">{study.challenge}</p>
           </FadeInUp>
         </div>
       </SectionWrapper>
@@ -86,11 +80,9 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
         <div className="max-w-3xl mx-auto">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              {t("solution")}
+              {t('solution')}
             </p>
-            <p className="text-lg text-text-secondary leading-relaxed">
-              {study.solution}
-            </p>
+            <p className="text-lg text-text-secondary leading-relaxed">{study.solution}</p>
           </FadeInUp>
 
           {/* Products used */}
@@ -118,12 +110,8 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
                 &ldquo;{study.quote}&rdquo;
               </p>
               <footer className="mt-4">
-                <p className="text-sm font-semibold text-text-primary">
-                  {study.quoteName}
-                </p>
-                <p className="text-sm text-text-tertiary">
-                  {study.quoteRole}
-                </p>
+                <p className="text-sm font-semibold text-text-primary">{study.quoteName}</p>
+                <p className="text-sm text-text-tertiary">{study.quoteRole}</p>
               </footer>
             </blockquote>
           </FadeInUp>
@@ -135,11 +123,11 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
         <div className="text-center">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("similarResults")}
+              {t('similarResults')}
             </h2>
             <p className="text-text-secondary mt-4 max-w-xl mx-auto leading-relaxed">
-              Join {study.company} and other growing teams that trust Panguard
-              AI to protect their infrastructure.
+              Join {study.company} and other growing teams that trust Panguard AI to protect their
+              infrastructure.
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
@@ -154,7 +142,7 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
                 href="/customers"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("moreStories")}
+                {t('moreStories')}
               </Link>
             </div>
           </FadeInUp>

@@ -22,11 +22,15 @@ export function getWizardSteps(): WizardStep[] {
       title: { en: 'Language / \u8A9E\u8A00', 'zh-TW': '\u8A9E\u8A00 / Language' },
       description: {
         en: 'Choose your preferred language / \u9078\u64C7\u4F60\u504F\u597D\u7684\u8A9E\u8A00',
-        'zh-TW': '\u9078\u64C7\u4F60\u504F\u597D\u7684\u8A9E\u8A00 / Choose your preferred language',
+        'zh-TW':
+          '\u9078\u64C7\u4F60\u504F\u597D\u7684\u8A9E\u8A00 / Choose your preferred language',
       },
       inputType: 'select',
       options: [
-        { value: 'zh-TW', label: { en: '\u7E41\u9AD4\u4E2D\u6587', 'zh-TW': '\u7E41\u9AD4\u4E2D\u6587' } },
+        {
+          value: 'zh-TW',
+          label: { en: '\u7E41\u9AD4\u4E2D\u6587', 'zh-TW': '\u7E41\u9AD4\u4E2D\u6587' },
+        },
         { value: 'en', label: { en: 'English', 'zh-TW': 'English' } },
       ],
     },
@@ -40,7 +44,7 @@ export function getWizardSteps(): WizardStep[] {
         'zh-TW': '\u4F60\u7684\u7D44\u7E54\u6216\u5C08\u6848\u53EB\u4EC0\u9EBC\u540D\u5B57\uFF1F',
       },
       inputType: 'text',
-      validate: (v: string) => v.trim().length > 0 ? null : 'Required / \u5FC5\u586B',
+      validate: (v: string) => (v.trim().length > 0 ? null : 'Required / \u5FC5\u586B'),
     },
 
     // ── Step 3: Organization Size ─────────────────────────────
@@ -71,7 +75,10 @@ export function getWizardSteps(): WizardStep[] {
         },
         {
           value: 'medium',
-          label: { en: 'Medium Business (50-500)', 'zh-TW': '\u4E2D\u578B\u4F01\u696D (50-500\u4EBA)' },
+          label: {
+            en: 'Medium Business (50-500)',
+            'zh-TW': '\u4E2D\u578B\u4F01\u696D (50-500\u4EBA)',
+          },
           description: {
             en: 'IT team but no security team',
             'zh-TW': '\u6709 IT \u5718\u968A\u4F46\u6C92\u6709\u8CC7\u5B89\u5718\u968A',
@@ -99,11 +106,17 @@ export function getWizardSteps(): WizardStep[] {
       inputType: 'select',
       options: [
         { value: 'tech', label: { en: 'Technology / SaaS', 'zh-TW': '\u79D1\u6280 / SaaS' } },
-        { value: 'finance', label: { en: 'Finance / Banking', 'zh-TW': '\u91D1\u878D / \u9280\u884C' } },
+        {
+          value: 'finance',
+          label: { en: 'Finance / Banking', 'zh-TW': '\u91D1\u878D / \u9280\u884C' },
+        },
         { value: 'healthcare', label: { en: 'Healthcare', 'zh-TW': '\u91AB\u7642' } },
         { value: 'education', label: { en: 'Education', 'zh-TW': '\u6559\u80B2' } },
         { value: 'government', label: { en: 'Government', 'zh-TW': '\u653F\u5E9C' } },
-        { value: 'retail', label: { en: 'Retail / E-commerce', 'zh-TW': '\u96F6\u552E / \u96FB\u5546' } },
+        {
+          value: 'retail',
+          label: { en: 'Retail / E-commerce', 'zh-TW': '\u96F6\u552E / \u96FB\u5546' },
+        },
         { value: 'manufacturing', label: { en: 'Manufacturing', 'zh-TW': '\u88FD\u9020\u696D' } },
         { value: 'other', label: { en: 'Other', 'zh-TW': '\u5176\u4ED6' } },
       ],
@@ -190,7 +203,10 @@ export function getWizardSteps(): WizardStep[] {
         },
         {
           value: 'all',
-          label: { en: 'All of the Above (Recommended)', 'zh-TW': '\u4EE5\u4E0A\u5168\u90E8 (\u63A8\u85A6)' },
+          label: {
+            en: 'All of the Above (Recommended)',
+            'zh-TW': '\u4EE5\u4E0A\u5168\u90E8 (\u63A8\u85A6)',
+          },
           description: {
             en: 'Maximum protection',
             'zh-TW': '\u6700\u5927\u5316\u9632\u8B77',
@@ -214,7 +230,10 @@ export function getWizardSteps(): WizardStep[] {
         { value: 'soc2', label: { en: 'SOC 2', 'zh-TW': 'SOC 2' } },
         {
           value: 'tw_cyber',
-          label: { en: 'Taiwan Cyber Security Act', 'zh-TW': '\u8CC7\u901A\u5B89\u5168\u7BA1\u7406\u6CD5' },
+          label: {
+            en: 'Taiwan Cyber Security Act',
+            'zh-TW': '\u8CC7\u901A\u5B89\u5168\u7BA1\u7406\u6CD5',
+          },
         },
         {
           value: 'none',
@@ -229,7 +248,8 @@ export function getWizardSteps(): WizardStep[] {
       title: { en: 'Notification Channel', 'zh-TW': '\u901A\u77E5\u7BA1\u9053' },
       description: {
         en: 'How should we alert you about threats?',
-        'zh-TW': '\u6211\u5011\u61C9\u8A72\u5982\u4F55\u901A\u77E5\u4F60\u6709\u95DC\u5A01\u8105\uFF1F',
+        'zh-TW':
+          '\u6211\u5011\u61C9\u8A72\u5982\u4F55\u901A\u77E5\u4F60\u6709\u95DC\u5A01\u8105\uFF1F',
       },
       inputType: 'select',
       options: [
@@ -307,7 +327,8 @@ export function getWizardSteps(): WizardStep[] {
           label: { en: 'Local AI (Ollama)', 'zh-TW': '\u672C\u5730 AI (Ollama)' },
           description: {
             en: 'Privacy-first, runs on your server',
-            'zh-TW': '\u96B1\u79C1\u512A\u5148\uFF0C\u5728\u4F60\u7684\u4F3A\u670D\u5668\u4E0A\u904B\u884C',
+            'zh-TW':
+              '\u96B1\u79C1\u512A\u5148\uFF0C\u5728\u4F60\u7684\u4F3A\u670D\u5668\u4E0A\u904B\u884C',
           },
         },
         {
@@ -344,7 +365,8 @@ export function getWizardSteps(): WizardStep[] {
           label: { en: 'Balanced (Recommended)', 'zh-TW': '\u5747\u8861 (\u63A8\u85A6)' },
           description: {
             en: 'Learn first, then protect. Notify before blocking.',
-            'zh-TW': '\u5148\u5B78\u7FD2\u518D\u9632\u8B77\u3002\u963B\u64CB\u524D\u5148\u901A\u77E5\u3002',
+            'zh-TW':
+              '\u5148\u5B78\u7FD2\u518D\u9632\u8B77\u3002\u963B\u64CB\u524D\u5148\u901A\u77E5\u3002',
           },
         },
         {
@@ -352,7 +374,8 @@ export function getWizardSteps(): WizardStep[] {
           label: { en: 'Learning Only', 'zh-TW': '\u50C5\u5B78\u7FD2' },
           description: {
             en: 'Monitor and learn for 7 days, no auto-actions',
-            'zh-TW': '\u89C0\u5BDF\u5B78\u7FD2 7 \u5929\uFF0C\u4E0D\u81EA\u52D5\u57F7\u884C\u4EFB\u4F55\u52D5\u4F5C',
+            'zh-TW':
+              '\u89C0\u5BDF\u5B78\u7FD2 7 \u5929\uFF0C\u4E0D\u81EA\u52D5\u57F7\u884C\u4EFB\u4F55\u52D5\u4F5C',
           },
         },
       ],

@@ -44,7 +44,12 @@ export interface InvestigationPlan {
 // ===== Evidence & Verdict =====
 
 /** Evidence source type / 證據來源類型 */
-export type EvidenceSource = 'rule_match' | 'ai_analysis' | 'baseline_deviation' | 'threat_intel' | 'investigation';
+export type EvidenceSource =
+  | 'rule_match'
+  | 'ai_analysis'
+  | 'baseline_deviation'
+  | 'threat_intel'
+  | 'investigation';
 
 /** Evidence item / 證據項目 */
 export interface Evidence {
@@ -55,7 +60,13 @@ export interface Evidence {
 }
 
 /** Response action type / 回應動作類型 */
-export type ResponseAction = 'log_only' | 'notify' | 'block_ip' | 'kill_process' | 'disable_account' | 'isolate_file';
+export type ResponseAction =
+  | 'log_only'
+  | 'notify'
+  | 'block_ip'
+  | 'kill_process'
+  | 'disable_account'
+  | 'isolate_file';
 
 /** Threat verdict from Analyze Agent / 分析代理的威脅判決 */
 export interface ThreatVerdict {
@@ -275,8 +286,32 @@ export interface LicenseInfo {
 /** Feature gates per tier / 各等級功能閘 */
 export const TIER_FEATURES: Record<LicenseTier, string[]> = {
   free: ['basic_monitoring', 'rule_matching', 'auto_respond', 'threat_cloud_upload'],
-  pro: ['basic_monitoring', 'rule_matching', 'ai_analysis', 'auto_respond', 'auto_fix', 'notifications', 'context_memory', 'threat_cloud_upload', 'custom_rules'],
-  enterprise: ['basic_monitoring', 'rule_matching', 'ai_analysis', 'auto_respond', 'auto_fix', 'notifications', 'context_memory', 'threat_cloud', 'threat_cloud_upload', 'multi_endpoint', 'priority_support', 'custom_rules', 'webhook_api'],
+  pro: [
+    'basic_monitoring',
+    'rule_matching',
+    'ai_analysis',
+    'auto_respond',
+    'auto_fix',
+    'notifications',
+    'context_memory',
+    'threat_cloud_upload',
+    'custom_rules',
+  ],
+  enterprise: [
+    'basic_monitoring',
+    'rule_matching',
+    'ai_analysis',
+    'auto_respond',
+    'auto_fix',
+    'notifications',
+    'context_memory',
+    'threat_cloud',
+    'threat_cloud_upload',
+    'multi_endpoint',
+    'priority_support',
+    'custom_rules',
+    'webhook_api',
+  ],
 };
 
 // ===== LLM interface for PanguardGuard =====

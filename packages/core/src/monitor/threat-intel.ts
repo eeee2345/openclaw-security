@@ -131,7 +131,7 @@ function ipMatchesPattern(ip: string, pattern: string): boolean {
   const ipNum = ipToNumber(ip);
   if (ipNum === null) return false;
 
-  return ((ipNum & cidr.mask) >>> 0) === cidr.network;
+  return (ipNum & cidr.mask) >>> 0 === cidr.network;
 }
 
 /**

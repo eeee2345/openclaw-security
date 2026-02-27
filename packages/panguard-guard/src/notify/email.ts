@@ -29,7 +29,7 @@ const logger = createLogger('panguard-guard:notify:email');
 export async function sendEmailNotify(
   config: EmailConfig,
   verdict: ThreatVerdict,
-  eventDescription: string,
+  eventDescription: string
 ): Promise<NotificationResult> {
   const subject = `[PanguardGuard] ${verdict.conclusion.toUpperCase()} Alert - Confidence ${verdict.confidence}%`;
 
@@ -61,12 +61,7 @@ export async function sendEmailNotify(
 /**
  * Send email via raw SMTP protocol / 透過原始 SMTP 協定發送電子郵件
  */
-function sendSMTP(
-  config: EmailConfig,
-  to: string,
-  subject: string,
-  body: string,
-): Promise<void> {
+function sendSMTP(config: EmailConfig, to: string, subject: string, body: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const commands = [
       `EHLO panguard-guard`,
@@ -139,15 +134,9 @@ function sendSMTP(
     };
 
     if (config.secure) {
-      const socket = tls.connect(
-        { host: config.host, port: config.port },
-        () => onConnect(socket),
-      );
+      const socket = tls.connect({ host: config.host, port: config.port }, () => onConnect(socket));
     } else {
-      const socket = net.connect(
-        { host: config.host, port: config.port },
-        () => onConnect(socket),
-      );
+      const socket = net.connect({ host: config.host, port: config.port }, () => onConnect(socket));
     }
   });
 }

@@ -33,62 +33,48 @@ describe('OsqueryProvider', () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.query('SELECT 1')
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.query('SELECT 1')).rejects.toThrow('osquery is not available');
   });
 
   it('should throw on getProcesses when not available', async () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.getProcesses()
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.getProcesses()).rejects.toThrow('osquery is not available');
   });
 
   it('should throw on getListeningPorts when not available', async () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.getListeningPorts()
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.getListeningPorts()).rejects.toThrow('osquery is not available');
   });
 
   it('should throw on getUsers when not available', async () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.getUsers()
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.getUsers()).rejects.toThrow('osquery is not available');
   });
 
   it('should throw on getLoggedInUsers when not available', async () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.getLoggedInUsers()
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.getLoggedInUsers()).rejects.toThrow('osquery is not available');
   });
 
   it('should throw on getSystemInfo when not available', async () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.getSystemInfo()
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.getSystemInfo()).rejects.toThrow('osquery is not available');
   });
 
   it('should throw on getPortsAsPortInfo when not available', async () => {
     provider = new OsqueryProvider('/nonexistent/osqueryi');
     await provider.isAvailable();
 
-    await expect(
-      provider.getPortsAsPortInfo()
-    ).rejects.toThrow('osquery is not available');
+    await expect(provider.getPortsAsPortInfo()).rejects.toThrow('osquery is not available');
   });
 });

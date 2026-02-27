@@ -2,14 +2,14 @@
 # Panguard 安全平台預設配置
 
 app:
-  name: "Panguard AI"
-  version: "0.1.0"
-  language: "zh-TW"
+  name: 'Panguard AI'
+  version: '0.1.0'
+  language: 'zh-TW'
 
 logging:
-  level: "info"
-  format: "json"
-  file: "./logs/panguard.log"
+  level: 'info'
+  format: 'json'
+  file: './logs/panguard.log'
 
 security:
   scanInterval: 3600
@@ -17,14 +17,14 @@ security:
   maxLoginAttempts: 5
 
 ai:
-  provider: "ollama"
-  model: "llama3"
-  endpoint: "http://localhost:11434"
+  provider: 'ollama'
+  model: 'llama3'
+  endpoint: 'http://localhost:11434'
   fallbackToRules: true
 
 rules:
-  sigmaCustomPath: "./config/sigma-rules/custom"
-  sigmaCommunityPath: "./config/sigma-rules/community"
-  yaraCustomPath: "./config/yara-rules/custom"
-  yaraCommunityPath: "./config/yara-rules/community"
+  sigmaCustomPath: './config/sigma-rules/custom'
+  sigmaCommunityPath: './config/sigma-rules/community'
+  yaraCustomPath: './config/yara-rules/custom'
+  yaraCommunityPath: './config/yara-rules/community'
   autoReload: true

@@ -10,15 +10,7 @@
 // ---------------------------------------------------------------------------
 
 /** Supported honeypot service types / 支援的蜜罐服務類型 */
-export type TrapServiceType =
-  | 'ssh'
-  | 'http'
-  | 'ftp'
-  | 'smb'
-  | 'mysql'
-  | 'rdp'
-  | 'telnet'
-  | 'redis';
+export type TrapServiceType = 'ssh' | 'http' | 'ftp' | 'smb' | 'mysql' | 'rdp' | 'telnet' | 'redis';
 
 /** Trap service status / 蜜罐服務狀態 */
 export type TrapServiceStatus = 'stopped' | 'starting' | 'running' | 'error';
@@ -50,7 +42,10 @@ export interface TrapServiceConfig {
 }
 
 /** Default service configurations / 預設服務配置 */
-export const DEFAULT_SERVICE_CONFIGS: Record<TrapServiceType, Omit<TrapServiceConfig, 'enabled'>> = {
+export const DEFAULT_SERVICE_CONFIGS: Record<
+  TrapServiceType,
+  Omit<TrapServiceConfig, 'enabled'>
+> = {
   ssh: {
     type: 'ssh',
     port: 2222,

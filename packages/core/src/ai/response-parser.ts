@@ -22,7 +22,11 @@ const logger = createLogger('ai:response-parser');
  * @internal
  */
 const VALID_SEVERITIES: ReadonlySet<string> = new Set([
-  'info', 'low', 'medium', 'high', 'critical',
+  'info',
+  'low',
+  'medium',
+  'high',
+  'critical',
 ]);
 
 /**
@@ -192,7 +196,8 @@ export function parseClassificationResponse(raw: string): ThreatClassification {
       technique: typeof json['technique'] === 'string' ? json['technique'] : 'T0000',
       severity: coerceSeverity(json['severity']),
       confidence: coerceConfidence(json['confidence']),
-      description: typeof json['description'] === 'string' ? json['description'] : raw.slice(0, 500),
+      description:
+        typeof json['description'] === 'string' ? json['description'] : raw.slice(0, 500),
     };
   }
 

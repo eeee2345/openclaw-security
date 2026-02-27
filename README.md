@@ -30,14 +30,14 @@ Panguard AI is an open-source cybersecurity platform that brings enterprise-grad
 
 ## Product Suite
 
-| Product | Description | Priority |
-|---------|-------------|----------|
-| **Panguard Scan** | 60-second security audit + PDF report | P0 |
-| **Panguard Guard** | AI real-time endpoint monitoring + auto-response | P0 |
-| **Panguard Chat** | AI security co-pilot (LINE / Telegram / Slack / Email) | P0 |
-| **Panguard Trap** | Smart honeypot system (8 service types) | P1 |
-| **Panguard Report** | AI compliance report generator (TW Cyber Security Act / ISO 27001 / SOC 2) | P1 |
-| **Threat Cloud** | Collective threat intelligence API server | P1 |
+| Product             | Description                                                                | Priority |
+| ------------------- | -------------------------------------------------------------------------- | -------- |
+| **Panguard Scan**   | 60-second security audit + PDF report                                      | P0       |
+| **Panguard Guard**  | AI real-time endpoint monitoring + auto-response                           | P0       |
+| **Panguard Chat**   | AI security co-pilot (LINE / Telegram / Slack / Email)                     | P0       |
+| **Panguard Trap**   | Smart honeypot system (8 service types)                                    | P1       |
+| **Panguard Report** | AI compliance report generator (TW Cyber Security Act / ISO 27001 / SOC 2) | P1       |
+| **Threat Cloud**    | Collective threat intelligence API server                                  | P1       |
 
 ---
 
@@ -105,18 +105,18 @@ pnpm dev         # start all dev servers
 
 This monorepo contains 12 packages:
 
-| Package | Description |
-|---------|-------------|
-| [`@panguard-ai/core`](packages/core) | Core engine: environment discovery, Sigma rules, system monitoring, AI interfaces, security tool adapters |
-| [`@panguard-ai/panguard-scan`](packages/panguard-scan) | Security scanner: password audit, port detection, SSL check, PDF report generation |
-| [`@panguard-ai/panguard-guard`](packages/panguard-guard) | AI monitoring: 5 agents (Detect/Analyze/Respond/Report/Chat), investigation engine, dashboard, licensing, daemon |
-| [`@panguard-ai/panguard-chat`](packages/panguard-chat) | Notification system: 5 channels (LINE/Telegram/Slack/Email/Webhook), tone adaptation per user role, alert templates |
-| [`@panguard-ai/panguard-trap`](packages/panguard-trap) | Honeypot system: 8 service types (SSH/HTTP/FTP/SMB/MySQL/RDP/Telnet/Redis), attacker profiling, threat intelligence |
-| [`@panguard-ai/panguard-report`](packages/panguard-report) | Compliance reports: Taiwan Cyber Security Act (10 controls), ISO 27001 (12 controls), SOC 2 (10 controls) |
-| [`@panguard-ai/panguard-auth`](packages/panguard-auth) | Authentication: Google OAuth (PKCE), scrypt password hashing, session management, SQLite, rate limiting |
-| [`@panguard-ai/panguard`](packages/panguard) | Unified CLI: 13 commands (login/scan/guard/trap/report/threat/...), interactive menu, setup wizard |
-| [`@panguard-ai/panguard-web`](packages/panguard-web) | Website content engine: personas, pricing, guidance wizard, HTML templates |
-| [`security-hardening`](security-hardening) | Security hardening: WebSocket security, credential storage, sandbox, permissions, audit logging |
+| Package                                                    | Description                                                                                                         |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| [`@panguard-ai/core`](packages/core)                       | Core engine: environment discovery, Sigma rules, system monitoring, AI interfaces, security tool adapters           |
+| [`@panguard-ai/panguard-scan`](packages/panguard-scan)     | Security scanner: password audit, port detection, SSL check, PDF report generation                                  |
+| [`@panguard-ai/panguard-guard`](packages/panguard-guard)   | AI monitoring: 5 agents (Detect/Analyze/Respond/Report/Chat), investigation engine, dashboard, licensing, daemon    |
+| [`@panguard-ai/panguard-chat`](packages/panguard-chat)     | Notification system: 5 channels (LINE/Telegram/Slack/Email/Webhook), tone adaptation per user role, alert templates |
+| [`@panguard-ai/panguard-trap`](packages/panguard-trap)     | Honeypot system: 8 service types (SSH/HTTP/FTP/SMB/MySQL/RDP/Telnet/Redis), attacker profiling, threat intelligence |
+| [`@panguard-ai/panguard-report`](packages/panguard-report) | Compliance reports: Taiwan Cyber Security Act (10 controls), ISO 27001 (12 controls), SOC 2 (10 controls)           |
+| [`@panguard-ai/panguard-auth`](packages/panguard-auth)     | Authentication: Google OAuth (PKCE), scrypt password hashing, session management, SQLite, rate limiting             |
+| [`@panguard-ai/panguard`](packages/panguard)               | Unified CLI: 13 commands (login/scan/guard/trap/report/threat/...), interactive menu, setup wizard                  |
+| [`@panguard-ai/panguard-web`](packages/panguard-web)       | Website content engine: personas, pricing, guidance wizard, HTML templates                                          |
+| [`security-hardening`](security-hardening)                 | Security hardening: WebSocket security, credential storage, sandbox, permissions, audit logging                     |
 
 ---
 
@@ -174,28 +174,28 @@ panguard-ai/
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| Language | TypeScript 5.7 (strict mode) |
-| Runtime | Node.js 20+ |
-| Package Manager | pnpm 10 (workspace monorepo) |
-| Auth | Google OAuth (PKCE) + scrypt + SQLite sessions |
-| Testing | Vitest 3 |
-| Linting | ESLint 9 + eslint-plugin-security |
-| Formatting | Prettier 3 |
-| Frontend | React 19 + Vite 6 + TailwindCSS 3.4 |
-| CI/CD | GitHub Actions |
-| i18n | i18next (English + Traditional Chinese) |
+| Category        | Technology                                     |
+| --------------- | ---------------------------------------------- |
+| Language        | TypeScript 5.7 (strict mode)                   |
+| Runtime         | Node.js 20+                                    |
+| Package Manager | pnpm 10 (workspace monorepo)                   |
+| Auth            | Google OAuth (PKCE) + scrypt + SQLite sessions |
+| Testing         | Vitest 3                                       |
+| Linting         | ESLint 9 + eslint-plugin-security              |
+| Formatting      | Prettier 3                                     |
+| Frontend        | React 19 + Vite 6 + TailwindCSS 3.4            |
+| CI/CD           | GitHub Actions                                 |
+| i18n            | i18next (English + Traditional Chinese)        |
 
 ---
 
 ## Test Coverage
 
-| Scope | Tests | Files |
-|-------|-------|-------|
-| Unit tests | 906 | 57 |
-| Integration tests | 162 | 6 |
-| **Total** | **1107** | **64** |
+| Scope             | Tests    | Files  |
+| ----------------- | -------- | ------ |
+| Unit tests        | 906      | 57     |
+| Integration tests | 162      | 6      |
+| **Total**         | **1107** | **64** |
 
 All tests pass with zero failures. Run `pnpm test` to verify.
 

@@ -53,9 +53,8 @@ function verdictToAlert(verdict: ThreatVerdict, eventDescription: string): Threa
     mitreTechnique: verdict.mitreTechnique,
     severity: severityMap[verdict.conclusion] ?? 'info',
     eventDescription,
-    actionsTaken: verdict.recommendedAction !== 'log_only'
-      ? [`Executed: ${verdict.recommendedAction}`]
-      : [],
+    actionsTaken:
+      verdict.recommendedAction !== 'log_only' ? [`Executed: ${verdict.recommendedAction}`] : [],
     timestamp: new Date().toISOString(),
   };
 }
@@ -350,7 +349,7 @@ describe('PanguardGuard -> PanguardChat Pipeline Integration', () => {
           proposedAction: 'Block suspicious outbound connection',
           expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
         },
-        'en',
+        'en'
       );
 
       expect(confirmation.text).toContain('Block');

@@ -17,7 +17,8 @@ export const PAGES: PageMeta[] = [
     id: 'home',
     titleEn: 'Panguard AI - AI-Driven Endpoint Protection',
     titleZh: 'Panguard AI - AI 驅動的端點防護',
-    descriptionEn: 'One command to install. AI protects your machines automatically. It tells you when something happens. You do nothing when all is well.',
+    descriptionEn:
+      'One command to install. AI protects your machines automatically. It tells you when something happens. You do nothing when all is well.',
     descriptionZh: '一行指令安裝，AI 全自動保護你的機器。有事它會告訴你，沒事你什麼都不用做。',
     path: '/',
   },
@@ -25,15 +26,18 @@ export const PAGES: PageMeta[] = [
     id: 'features',
     titleEn: 'Features - How Panguard AI Protects You',
     titleZh: '功能 - Panguard AI 如何保護你',
-    descriptionEn: 'Panguard Scan, Panguard Guard, Panguard Chat, Panguard Trap, Panguard Report - complete security in plain language.',
-    descriptionZh: 'Panguard Scan、Panguard Guard、Panguard Chat、Panguard Trap、Panguard Report - 用人話做資安。',
+    descriptionEn:
+      'Panguard Scan, Panguard Guard, Panguard Chat, Panguard Trap, Panguard Report - complete security in plain language.',
+    descriptionZh:
+      'Panguard Scan、Panguard Guard、Panguard Chat、Panguard Trap、Panguard Report - 用人話做資安。',
     path: '/features',
   },
   {
     id: 'pricing',
     titleEn: 'Pricing - Plans for Every Size',
     titleZh: '定價 - 各種規模都有方案',
-    descriptionEn: 'From free security scans to enterprise compliance. Start protecting in 60 seconds.',
+    descriptionEn:
+      'From free security scans to enterprise compliance. Start protecting in 60 seconds.',
     descriptionZh: '從免費資安掃描到企業合規。60 秒內開始防護。',
     path: '/pricing',
   },
@@ -49,7 +53,7 @@ export const PAGES: PageMeta[] = [
     id: 'guide',
     titleEn: 'Online Guide - Find Your Security Solution',
     titleZh: '線上引導 - 找到你的資安方案',
-    descriptionEn: 'Answer a few questions and we\'ll recommend the perfect security setup for you.',
+    descriptionEn: "Answer a few questions and we'll recommend the perfect security setup for you.",
     descriptionZh: '回答幾個問題，我們就推薦最適合你的資安方案。',
     path: '/guide',
   },
@@ -122,7 +126,8 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
     tagZh: '免費',
     headlineEn: '60-Second Security Health Check',
     headlineZh: '60 秒資安健檢',
-    descriptionEn: 'One command scans your system and generates a professional PDF report with remediation steps.',
+    descriptionEn:
+      'One command scans your system and generates a professional PDF report with remediation steps.',
     descriptionZh: '一行指令掃描你的系統，產生專業 PDF 報告和修復步驟。',
     highlightsEn: [
       'Password policy audit',
@@ -147,7 +152,8 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
     tagZh: '核心',
     headlineEn: 'AI Watches. AI Acts. You Sleep.',
     headlineZh: 'AI 監控。AI 行動。你安心睡。',
-    descriptionEn: 'Continuous monitoring with multi-agent AI. Detects, analyzes, and responds to threats automatically.',
+    descriptionEn:
+      'Continuous monitoring with multi-agent AI. Detects, analyzes, and responds to threats automatically.',
     descriptionZh: '多 Agent AI 持續監控。自動偵測、分析、回應威脅。',
     highlightsEn: [
       'Multi-agent pipeline: Detect > Analyze > Respond > Report',
@@ -172,7 +178,8 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
     tagZh: 'P0',
     headlineEn: 'Your AI Security Co-pilot',
     headlineZh: '你的 AI 資安副駕駛',
-    descriptionEn: 'Talks to you in plain language through LINE, Telegram, or Slack. No jargon, just clear answers.',
+    descriptionEn:
+      'Talks to you in plain language through LINE, Telegram, or Slack. No jargon, just clear answers.',
     descriptionZh: '透過 LINE、Telegram 或 Slack 用人話跟你溝通。不講術語，只給清楚的答案。',
     highlightsEn: [
       'LINE / Telegram / Slack / Email / Webhook',
@@ -197,7 +204,8 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
     tagZh: '進階',
     headlineEn: 'Smart Honeypots That Learn',
     headlineZh: '會學習的智慧蜜罐',
-    descriptionEn: 'Deploy fake services that attract and profile attackers. Feeds intelligence back to protect everyone.',
+    descriptionEn:
+      'Deploy fake services that attract and profile attackers. Feeds intelligence back to protect everyone.',
     descriptionZh: '部署假服務，吸引並分析攻擊者。將情報回饋保護所有人。',
     highlightsEn: [
       '8 service types: SSH, HTTP, FTP, MySQL, Redis, and more',
@@ -220,7 +228,8 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
     tagZh: '合規',
     headlineEn: 'Audit-Ready in 5 Minutes',
     headlineZh: '5 分鐘準備好稽核',
-    descriptionEn: 'AI generates compliance reports mapped to real frameworks. No security expertise required.',
+    descriptionEn:
+      'AI generates compliance reports mapped to real frameworks. No security expertise required.',
     descriptionZh: 'AI 產生對應真實框架的合規報告。不需要資安專業知識。',
     highlightsEn: [
       'Taiwan Cyber Security Management Act (10 controls)',

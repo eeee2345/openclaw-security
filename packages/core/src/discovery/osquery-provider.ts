@@ -90,11 +90,7 @@ export class OsqueryProvider {
     }
 
     try {
-      const { stdout } = await execFileAsync(
-        this.osqueryPath,
-        ['--json', sql],
-        { timeout: 30000 },
-      );
+      const { stdout } = await execFileAsync(this.osqueryPath, ['--json', sql], { timeout: 30000 });
 
       return JSON.parse(stdout) as T[];
     } catch (err) {
@@ -118,7 +114,7 @@ export class OsqueryProvider {
       state: string;
     }>('SELECT pid, name, path, cmdline, uid, state FROM processes');
 
-    return rows.map(row => ({
+    return rows.map((row) => ({
       pid: parseInt(row.pid, 10),
       name: row.name,
       path: row.path,
@@ -141,11 +137,11 @@ export class OsqueryProvider {
       name: string;
     }>(
       'SELECT lp.pid, lp.port, lp.protocol, lp.address, p.name ' +
-      'FROM listening_ports lp LEFT JOIN processes p ON lp.pid = p.pid ' +
-      'WHERE lp.port > 0'
+        'FROM listening_ports lp LEFT JOIN processes p ON lp.pid = p.pid ' +
+        'WHERE lp.port > 0'
     );
 
-    return rows.map(row => ({
+    return rows.map((row) => ({
       pid: parseInt(row.pid, 10),
       port: parseInt(row.port, 10),
       protocol: row.protocol === '6' ? 'tcp' : row.protocol === '17' ? 'udp' : row.protocol,
@@ -160,7 +156,7 @@ export class OsqueryProvider {
    */
   async getPortsAsPortInfo(): Promise<PortInfo[]> {
     const ports = await this.getListeningPorts();
-    return ports.map(p => ({
+    return ports.map((p) => ({
       port: p.port,
       protocol: p.protocol as 'tcp' | 'udp',
       state: 'LISTEN',
@@ -184,7 +180,7 @@ export class OsqueryProvider {
       directory: string;
     }>('SELECT uid, gid, username, description, shell, directory FROM users');
 
-    return rows.map(row => ({
+    return rows.map((row) => ({
       username: row.username,
       uid: row.uid,
       gid: row.gid,
@@ -209,7 +205,7 @@ export class OsqueryProvider {
       type: string;
     }>('SELECT user, host, time, tty, type FROM logged_in_users');
 
-    return rows.map(row => ({
+    return rows.map((row) => ({
       user: row.user,
       host: row.host,
       time: parseInt(row.time, 10),
@@ -225,7 +221,7 @@ export class OsqueryProvider {
   async getSystemInfo(): Promise<Record<string, string>> {
     const rows = await this.query<Record<string, string>>(
       'SELECT hostname, computer_name, cpu_brand, cpu_type, ' +
-      'physical_memory, hardware_vendor, hardware_model FROM system_info'
+        'physical_memory, hardware_vendor, hardware_model FROM system_info'
     );
     return rows[0] ?? {};
   }
@@ -263,12 +259,14 @@ export class OsqueryProvider {
    * Get network interfaces via osquery
    * 透過 osquery 取得網路介面
    */
-  async getInterfaces(): Promise<Array<{
-    interface: string;
-    address: string;
-    mask: string;
-    type: string;
-  }>> {
+  async getInterfaces(): Promise<
+    Array<{
+      interface: string;
+      address: string;
+      mask: string;
+      type: string;
+    }>
+  > {
     const rows = await this.query<{
       interface: string;
       address: string;
@@ -276,9 +274,9 @@ export class OsqueryProvider {
       type: string;
     }>(
       'SELECT ia.interface, ia.address, ia.mask, id.type ' +
-      'FROM interface_addresses ia ' +
-      'JOIN interface_details id ON ia.interface = id.interface ' +
-      'WHERE ia.address != "" AND ia.address != "::1" AND ia.address != "127.0.0.1"'
+        'FROM interface_addresses ia ' +
+        'JOIN interface_details id ON ia.interface = id.interface ' +
+        'WHERE ia.address != "" AND ia.address != "::1" AND ia.address != "127.0.0.1"'
     );
     return rows;
   }
@@ -314,9 +312,7 @@ export class OsqueryProvider {
  *
  * Returns the provider if osquery is available, null otherwise.
  */
-export async function createOsqueryProvider(
-  osqueryPath?: string,
-): Promise<OsqueryProvider | null> {
+export async function createOsqueryProvider(osqueryPath?: string): Promise<OsqueryProvider | null> {
   const provider = new OsqueryProvider(osqueryPath);
   const available = await provider.isAvailable();
   return available ? provider : null;

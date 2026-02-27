@@ -20,12 +20,7 @@
  */
 
 import { createLogger } from '@panguard-ai/core';
-import type {
-  TrapSession,
-  AttackerProfile,
-  AttackerSkillLevel,
-  AttackerIntent,
-} from '../types.js';
+import type { TrapSession, AttackerProfile, AttackerSkillLevel, AttackerIntent } from '../types.js';
 
 const logger = createLogger('panguard-trap:profiler');
 
@@ -75,7 +70,7 @@ const ADVANCED_PATTERNS: RegExp[] = [
 export function estimateSkillLevel(
   commands: string[],
   mitreTechniques: string[],
-  toolsDetected: string[],
+  toolsDetected: string[]
 ): { level: AttackerSkillLevel; score: number } {
   let score = 0;
 
@@ -121,11 +116,27 @@ export function estimateSkillLevel(
 
 /** Intent indicators / 意圖指標 */
 const INTENT_INDICATORS: { pattern: RegExp; intent: AttackerIntent; weight: number }[] = [
-  { pattern: /whoami|id\s|uname|hostname|ifconfig|ip\s+addr|cat\s+\/etc\/passwd/i, intent: 'reconnaissance', weight: 3 },
-  { pattern: /shadow|passwd|credential|hash|dump|mimikatz/i, intent: 'credential_harvesting', weight: 5 },
-  { pattern: /encrypt|ransom|lockbit|cryptolocker|\.locked|\.crypt/i, intent: 'ransomware_deployment', weight: 8 },
+  {
+    pattern: /whoami|id\s|uname|hostname|ifconfig|ip\s+addr|cat\s+\/etc\/passwd/i,
+    intent: 'reconnaissance',
+    weight: 3,
+  },
+  {
+    pattern: /shadow|passwd|credential|hash|dump|mimikatz/i,
+    intent: 'credential_harvesting',
+    weight: 5,
+  },
+  {
+    pattern: /encrypt|ransom|lockbit|cryptolocker|\.locked|\.crypt/i,
+    intent: 'ransomware_deployment',
+    weight: 8,
+  },
   { pattern: /xmrig|miner|cryptonight|stratum|pool\./i, intent: 'cryptomining', weight: 8 },
-  { pattern: /tar\s+.*\.gz|zip\s+|scp\s+|rsync|curl.*upload|wget.*post/i, intent: 'data_theft', weight: 5 },
+  {
+    pattern: /tar\s+.*\.gz|zip\s+|scp\s+|rsync|curl.*upload|wget.*post/i,
+    intent: 'data_theft',
+    weight: 5,
+  },
   { pattern: /irc\s|c2\s|beacon|callback|botnet|zombie/i, intent: 'botnet_recruitment', weight: 6 },
   { pattern: /ssh\s+\w+@|psexec|wmic|net\s+use|smbclient/i, intent: 'lateral_movement', weight: 5 },
 ];
@@ -238,7 +249,7 @@ export class AttackerProfiler {
     session.attackerProfileId = profile.profileId;
 
     logger.info(
-      `Attacker profile updated: ${profile.profileId} (skill=${profile.skillLevel}, intent=${profile.intent}) / 攻擊者 profile 已更新`,
+      `Attacker profile updated: ${profile.profileId} (skill=${profile.skillLevel}, intent=${profile.intent}) / 攻擊者 profile 已更新`
     );
 
     return profile;
@@ -341,7 +352,11 @@ export class AttackerProfiler {
     }
     profile.credentialPatterns.totalAttempts += session.credentials.length;
 
-    const { level, score } = estimateSkillLevel(session.commands, profile.mitreTechniques, profile.toolsDetected);
+    const { level, score } = estimateSkillLevel(
+      session.commands,
+      profile.mitreTechniques,
+      profile.toolsDetected
+    );
 
     const SKILL_ORDER: AttackerSkillLevel[] = ['script_kiddie', 'intermediate', 'advanced', 'apt'];
     if (SKILL_ORDER.indexOf(level) > SKILL_ORDER.indexOf(profile.skillLevel)) {

@@ -21,7 +21,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'organizational',
     titleEn: 'Policies for Information Security',
     titleZh: '資訊安全政策',
-    descriptionEn: 'A set of policies for information security shall be defined, approved by management, published, and communicated.',
+    descriptionEn:
+      'A set of policies for information security shall be defined, approved by management, published, and communicated.',
     descriptionZh: '應定義一套資訊安全政策，經管理層核准、公布並傳達。',
     relatedCategories: ['policy', 'governance'],
   },
@@ -30,7 +31,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'organizational',
     titleEn: 'Information Security Roles and Responsibilities',
     titleZh: '資訊安全角色與責任',
-    descriptionEn: 'Information security roles and responsibilities shall be defined and allocated.',
+    descriptionEn:
+      'Information security roles and responsibilities shall be defined and allocated.',
     descriptionZh: '應定義並分配資訊安全角色與責任。',
     relatedCategories: ['governance', 'personnel'],
   },
@@ -39,7 +41,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'organizational',
     titleEn: 'Acceptable Use of Information and Other Assets',
     titleZh: '資訊及其他資產的可接受使用',
-    descriptionEn: 'Rules for the acceptable use of information and other associated assets shall be identified and documented.',
+    descriptionEn:
+      'Rules for the acceptable use of information and other associated assets shall be identified and documented.',
     descriptionZh: '應識別並記錄資訊及其他相關資產的可接受使用規則。',
     relatedCategories: ['policy', 'asset'],
   },
@@ -48,7 +51,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'access_control',
     titleEn: 'Access Control',
     titleZh: '存取控制',
-    descriptionEn: 'Rules to control physical and logical access to information shall be established and implemented.',
+    descriptionEn:
+      'Rules to control physical and logical access to information shall be established and implemented.',
     descriptionZh: '應建立並實施控制資訊實體及邏輯存取的規則。',
     relatedCategories: ['access', 'authentication', 'password'],
   },
@@ -66,7 +70,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'cloud_security',
     titleEn: 'Information Security for Use of Cloud Services',
     titleZh: '雲端服務的資訊安全',
-    descriptionEn: 'Processes for acquisition, use, management, and exit from cloud services shall be established.',
+    descriptionEn:
+      'Processes for acquisition, use, management, and exit from cloud services shall be established.',
     descriptionZh: '應建立雲端服務的取得、使用、管理及退出程序。',
     relatedCategories: ['cloud', 'network', 'system'],
   },
@@ -75,7 +80,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'incident',
     titleEn: 'Information Security Incident Management Planning',
     titleZh: '資訊安全事件管理規劃',
-    descriptionEn: 'The organization shall plan and prepare for managing information security incidents.',
+    descriptionEn:
+      'The organization shall plan and prepare for managing information security incidents.',
     descriptionZh: '組織應規劃並準備管理資訊安全事件。',
     relatedCategories: ['incident', 'response', 'monitoring'],
   },
@@ -84,7 +90,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'organizational',
     titleEn: 'Collection of Evidence',
     titleZh: '證據收集',
-    descriptionEn: 'Procedures for identification, collection, acquisition, and preservation of evidence shall be established.',
+    descriptionEn:
+      'Procedures for identification, collection, acquisition, and preservation of evidence shall be established.',
     descriptionZh: '應建立證據識別、收集、取得及保存程序。',
     relatedCategories: ['logging', 'audit', 'forensic'],
   },
@@ -93,7 +100,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'continuity',
     titleEn: 'Information Security During Disruption',
     titleZh: '中斷期間的資訊安全',
-    descriptionEn: 'The organization shall plan how to maintain information security at an appropriate level during disruption.',
+    descriptionEn:
+      'The organization shall plan how to maintain information security at an appropriate level during disruption.',
     descriptionZh: '組織應規劃如何在中斷期間維持適當的資訊安全水準。',
     relatedCategories: ['continuity', 'backup', 'recovery'],
   },
@@ -102,7 +110,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'continuity',
     titleEn: 'ICT Readiness for Business Continuity',
     titleZh: 'ICT 業務持續性準備',
-    descriptionEn: 'ICT readiness shall be planned, implemented, maintained, and tested based on business continuity objectives.',
+    descriptionEn:
+      'ICT readiness shall be planned, implemented, maintained, and tested based on business continuity objectives.',
     descriptionZh: '應根據業務持續性目標規劃、實施、維護並測試 ICT 準備。',
     relatedCategories: ['continuity', 'backup', 'system'],
   },
@@ -111,7 +120,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'compliance',
     titleEn: 'Compliance with Policies and Standards',
     titleZh: '政策和標準的合規性',
-    descriptionEn: 'Compliance with the organization information security policy and standards shall be regularly reviewed.',
+    descriptionEn:
+      'Compliance with the organization information security policy and standards shall be regularly reviewed.',
     descriptionZh: '應定期審查組織資訊安全政策和標準的合規性。',
     relatedCategories: ['governance', 'audit', 'compliance'],
   },
@@ -122,7 +132,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'people',
     titleEn: 'Screening',
     titleZh: '人員審查',
-    descriptionEn: 'Background verification checks on candidates shall be carried out prior to employment.',
+    descriptionEn:
+      'Background verification checks on candidates shall be carried out prior to employment.',
     descriptionZh: '應在僱用前對候選人進行背景驗證。',
     relatedCategories: ['personnel', 'access'],
   },
@@ -131,7 +142,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'people',
     titleEn: 'Information Security Awareness, Education and Training',
     titleZh: '資訊安全意識、教育和訓練',
-    descriptionEn: 'Personnel and relevant interested parties shall receive appropriate security awareness education and training.',
+    descriptionEn:
+      'Personnel and relevant interested parties shall receive appropriate security awareness education and training.',
     descriptionZh: '人員和相關利害關係人應接受適當的安全意識教育和訓練。',
     relatedCategories: ['personnel', 'training'],
   },
@@ -142,7 +154,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'physical',
     titleEn: 'Physical Security Perimeters',
     titleZh: '實體安全邊界',
-    descriptionEn: 'Security perimeters shall be defined and used to protect areas containing information.',
+    descriptionEn:
+      'Security perimeters shall be defined and used to protect areas containing information.',
     descriptionZh: '應定義並使用安全邊界來保護包含資訊的區域。',
     relatedCategories: ['physical', 'access'],
   },
@@ -162,7 +175,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'technology',
     titleEn: 'User Endpoint Devices',
     titleZh: '使用者端點裝置',
-    descriptionEn: 'Information stored on, processed by, or accessible via user endpoint devices shall be protected.',
+    descriptionEn:
+      'Information stored on, processed by, or accessible via user endpoint devices shall be protected.',
     descriptionZh: '應保護儲存在使用者端點裝置上、由其處理或可透過其存取的資訊。',
     relatedCategories: ['system', 'endpoint', 'device'],
   },
@@ -171,7 +185,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'access_control',
     titleEn: 'Privileged Access Rights',
     titleZh: '特權存取權限',
-    descriptionEn: 'The allocation and use of privileged access rights shall be restricted and managed.',
+    descriptionEn:
+      'The allocation and use of privileged access rights shall be restricted and managed.',
     descriptionZh: '應限制並管理特權存取權限的分配及使用。',
     relatedCategories: ['access', 'authentication', 'privilege'],
   },
@@ -180,7 +195,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'access_control',
     titleEn: 'Information Access Restriction',
     titleZh: '資訊存取限制',
-    descriptionEn: 'Access to information and other associated assets shall be restricted per the access control policy.',
+    descriptionEn:
+      'Access to information and other associated assets shall be restricted per the access control policy.',
     descriptionZh: '應按照存取控制政策限制對資訊及其他相關資產的存取。',
     relatedCategories: ['access', 'policy'],
   },
@@ -189,7 +205,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'authentication',
     titleEn: 'Secure Authentication',
     titleZh: '安全驗證',
-    descriptionEn: 'Secure authentication technologies and procedures shall be established and implemented.',
+    descriptionEn:
+      'Secure authentication technologies and procedures shall be established and implemented.',
     descriptionZh: '應建立並實施安全驗證技術及程序。',
     relatedCategories: ['authentication', 'password', 'access'],
   },
@@ -198,7 +215,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'malware',
     titleEn: 'Protection Against Malware',
     titleZh: '惡意軟體防護',
-    descriptionEn: 'Protection against malware shall be implemented and supported by appropriate user awareness.',
+    descriptionEn:
+      'Protection against malware shall be implemented and supported by appropriate user awareness.',
     descriptionZh: '應實施惡意軟體防護並以適當的使用者意識支援。',
     relatedCategories: ['malware', 'endpoint', 'system'],
   },
@@ -207,7 +225,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'vulnerability',
     titleEn: 'Management of Technical Vulnerabilities',
     titleZh: '技術弱點管理',
-    descriptionEn: 'Information about technical vulnerabilities shall be obtained timely, and appropriate measures taken.',
+    descriptionEn:
+      'Information about technical vulnerabilities shall be obtained timely, and appropriate measures taken.',
     descriptionZh: '應及時取得技術弱點資訊，並採取適當措施。',
     relatedCategories: ['vulnerability', 'updates', 'patch'],
   },
@@ -216,7 +235,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'configuration',
     titleEn: 'Configuration Management',
     titleZh: '組態管理',
-    descriptionEn: 'Configurations, including security configurations, of hardware, software, services, and networks shall be established and managed.',
+    descriptionEn:
+      'Configurations, including security configurations, of hardware, software, services, and networks shall be established and managed.',
     descriptionZh: '應建立並管理硬體、軟體、服務及網路的組態（含安全組態）。',
     relatedCategories: ['configuration', 'system', 'network'],
   },
@@ -225,7 +245,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'data_protection',
     titleEn: 'Data Leakage Prevention',
     titleZh: '資料外洩防護',
-    descriptionEn: 'Data leakage prevention measures shall be applied to systems, networks, and any other devices that process or store sensitive information.',
+    descriptionEn:
+      'Data leakage prevention measures shall be applied to systems, networks, and any other devices that process or store sensitive information.',
     descriptionZh: '應對處理或儲存敏感資訊的系統、網路及其他裝置實施資料外洩防護措施。',
     relatedCategories: ['data', 'encryption', 'system'],
   },
@@ -234,7 +255,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'backup',
     titleEn: 'Information Backup',
     titleZh: '資訊備份',
-    descriptionEn: 'Backup copies of information, software, and systems shall be maintained and regularly tested.',
+    descriptionEn:
+      'Backup copies of information, software, and systems shall be maintained and regularly tested.',
     descriptionZh: '應維護並定期測試資訊、軟體及系統的備份副本。',
     relatedCategories: ['backup', 'continuity', 'recovery'],
   },
@@ -243,7 +265,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'logging',
     titleEn: 'Logging',
     titleZh: '日誌記錄',
-    descriptionEn: 'Logs that record activities, exceptions, faults, and other relevant events shall be produced and protected.',
+    descriptionEn:
+      'Logs that record activities, exceptions, faults, and other relevant events shall be produced and protected.',
     descriptionZh: '應產生並保護記錄活動、例外、故障及其他相關事件的日誌。',
     relatedCategories: ['logging', 'monitoring', 'audit'],
   },
@@ -252,7 +275,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'monitoring',
     titleEn: 'Monitoring Activities',
     titleZh: '監控活動',
-    descriptionEn: 'Networks, systems, and applications shall be monitored for anomalous behaviour.',
+    descriptionEn:
+      'Networks, systems, and applications shall be monitored for anomalous behaviour.',
     descriptionZh: '應監控網路、系統及應用程式的異常行為。',
     relatedCategories: ['monitoring', 'network', 'system'],
   },
@@ -270,7 +294,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'network',
     titleEn: 'Security of Network Services',
     titleZh: '網路服務安全',
-    descriptionEn: 'Security mechanisms, service levels, and management requirements of network services shall be identified and implemented.',
+    descriptionEn:
+      'Security mechanisms, service levels, and management requirements of network services shall be identified and implemented.',
     descriptionZh: '應識別並實施網路服務的安全機制、服務水準及管理要求。',
     relatedCategories: ['network', 'service', 'firewall'],
   },
@@ -288,7 +313,8 @@ export const ISO27001_CONTROLS: ComplianceControl[] = [
     category: 'development',
     titleEn: 'Secure Development Life Cycle',
     titleZh: '安全開發生命週期',
-    descriptionEn: 'Rules for the secure development of software and systems shall be established and applied.',
+    descriptionEn:
+      'Rules for the secure development of software and systems shall be established and applied.',
     descriptionZh: '應建立並應用軟體及系統安全開發的規則。',
     relatedCategories: ['development', 'system', 'configuration'],
   },

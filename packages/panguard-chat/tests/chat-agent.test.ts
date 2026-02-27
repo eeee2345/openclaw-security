@@ -216,7 +216,7 @@ describe('ChatAgent', () => {
       const request: ConfirmationRequest = {
         verdictId: 'v-002',
         conclusion: 'malicious',
-        confidence: 0.90,
+        confidence: 0.9,
         humanSummary: 'Malware detected.',
         proposedAction: 'Quarantine file',
         expiresAt: new Date(Date.now() + 3600000).toISOString(),
@@ -234,7 +234,7 @@ describe('ChatAgent', () => {
       const request: ConfirmationRequest = {
         verdictId: 'v-003',
         conclusion: 'suspicious',
-        confidence: 0.60,
+        confidence: 0.6,
         humanSummary: 'Possible false positive.',
         proposedAction: 'Block IP',
         expiresAt: new Date(Date.now() + 3600000).toISOString(),
@@ -252,7 +252,7 @@ describe('ChatAgent', () => {
       const request: ConfirmationRequest = {
         verdictId: 'v-004',
         conclusion: 'suspicious',
-        confidence: 0.70,
+        confidence: 0.7,
         humanSummary: 'Test.',
         proposedAction: 'Test action',
         expiresAt: new Date(Date.now() - 1000).toISOString(), // already expired
@@ -339,19 +339,21 @@ describe('ChatAgent', () => {
 
   describe('boss user type', () => {
     it('should not include technical terms', async () => {
-      const bossAgent = new ChatAgent(makeConfig({
-        userProfile: {
-          type: 'boss',
-          language: 'zh-TW',
-          notificationChannel: 'line',
-          preferences: {
-            criticalAlerts: true,
-            dailySummary: true,
-            weeklySummary: true,
-            peacefulReport: true,
+      const bossAgent = new ChatAgent(
+        makeConfig({
+          userProfile: {
+            type: 'boss',
+            language: 'zh-TW',
+            notificationChannel: 'line',
+            preferences: {
+              criticalAlerts: true,
+              dailySummary: true,
+              weeklySummary: true,
+              peacefulReport: true,
+            },
           },
-        },
-      }));
+        })
+      );
       const bossChannel = new MockChannel();
       bossAgent.registerChannel(bossChannel);
 

@@ -49,7 +49,8 @@ function renderProgress(current: number, total: number, lang: Lang): void {
   const percent = Math.round(ratio * 100);
 
   const bar = c.safe('\u2588'.repeat(filled)) + c.dim('\u2591'.repeat(empty));
-  const stepLabel = lang === 'zh-TW' ? `\u6B65\u9A5F ${current}/${total}` : `Step ${current}/${total}`;
+  const stepLabel =
+    lang === 'zh-TW' ? `\u6B65\u9A5F ${current}/${total}` : `Step ${current}/${total}`;
 
   console.log(`  ${c.dim(stepLabel)} ${bar} ${c.dim(`${percent}%`)}`);
   console.log('');
@@ -94,14 +95,14 @@ export class WizardEngine {
 
       // Re-evaluate applicable steps in case answers changed
       const currentApplicable = this.getApplicableSteps();
-      if (!currentApplicable.find(s => s.id === step.id)) {
+      if (!currentApplicable.find((s) => s.id === step.id)) {
         // This step is no longer applicable, skip forward
         index++;
         continue;
       }
 
       // Recalculate position within current applicable steps
-      const stepNum = currentApplicable.findIndex(s => s.id === step.id) + 1;
+      const stepNum = currentApplicable.findIndex((s) => s.id === step.id) + 1;
       const stepTotal = currentApplicable.length;
 
       renderProgress(stepNum, stepTotal, this.lang);
@@ -228,7 +229,9 @@ export class WizardEngine {
       return manual;
     } catch {
       process.stdout.write(`\r\x1b[K`);
-      console.log(`  ${symbols.warn} ${this.lang === 'zh-TW' ? '\u5075\u6E2C\u5931\u6557' : 'Detection failed'}`);
+      console.log(
+        `  ${symbols.warn} ${this.lang === 'zh-TW' ? '\u5075\u6E2C\u5931\u6557' : 'Detection failed'}`
+      );
 
       const manual = await promptText({
         title: step.title,
@@ -243,7 +246,7 @@ export class WizardEngine {
    * Filter steps based on their dependency conditions and current answers.
    */
   private getApplicableSteps(): WizardStep[] {
-    return this.steps.filter(step => {
+    return this.steps.filter((step) => {
       if (!step.dependsOn) return true;
 
       const depValue = this.answers[step.dependsOn.stepId];

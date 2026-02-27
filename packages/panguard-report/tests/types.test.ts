@@ -73,12 +73,23 @@ describe('PanguardReport Types', () => {
     });
 
     it('should support all finding severities', () => {
-      const severities: ComplianceFinding['severity'][] = ['critical', 'high', 'medium', 'low', 'info'];
+      const severities: ComplianceFinding['severity'][] = [
+        'critical',
+        'high',
+        'medium',
+        'low',
+        'info',
+      ];
       expect(severities).toHaveLength(5);
     });
 
     it('should support all finding sources', () => {
-      const sources: ComplianceFinding['source'][] = ['panguard-scan', 'panguard-guard', 'panguard-trap', 'manual'];
+      const sources: ComplianceFinding['source'][] = [
+        'panguard-scan',
+        'panguard-guard',
+        'panguard-trap',
+        'manual',
+      ];
       expect(sources).toHaveLength(4);
     });
   });

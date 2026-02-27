@@ -83,7 +83,9 @@ async function checkMacOSShares(): Promise<Finding[]> {
       // Process previous share if it had everyone access
       // 如果前一個共用有 everyone 存取權則處理
       if (currentShareName && hasEveryoneAccess) {
-        findings.push(createShareFinding(findingCounter++, currentShareName, currentSharePath, 'macOS'));
+        findings.push(
+          createShareFinding(findingCounter++, currentShareName, currentSharePath, 'macOS')
+        );
       }
       currentShareName = nameMatch[1].trim();
       currentSharePath = '';
@@ -101,10 +103,7 @@ async function checkMacOSShares(): Promise<Finding[]> {
 
     // Check for everyone/guest access
     // 檢查 everyone/guest 存取權
-    if (
-      trimmed.toLowerCase().includes('everyone') ||
-      trimmed.toLowerCase().includes('guest')
-    ) {
+    if (trimmed.toLowerCase().includes('everyone') || trimmed.toLowerCase().includes('guest')) {
       hasEveryoneAccess = true;
     }
   }
@@ -112,7 +111,9 @@ async function checkMacOSShares(): Promise<Finding[]> {
   // Process last share
   // 處理最後一個共用
   if (currentShareName && hasEveryoneAccess) {
-    findings.push(createShareFinding(findingCounter++, currentShareName, currentSharePath, 'macOS'));
+    findings.push(
+      createShareFinding(findingCounter++, currentShareName, currentSharePath, 'macOS')
+    );
   }
 
   return findings;
@@ -180,10 +181,7 @@ async function checkLinuxShares(): Promise<Finding[]> {
 
       // Check for guest/public access
       // 檢查訪客/公開存取
-      if (
-        (key === 'guest ok' && value === 'yes') ||
-        (key === 'public' && value === 'yes')
-      ) {
+      if ((key === 'guest ok' && value === 'yes') || (key === 'public' && value === 'yes')) {
         hasGuestAccess = true;
       }
     }
@@ -252,9 +250,7 @@ async function checkWindowsShares(): Promise<Finding[]> {
 
     findings.push({
       id: `SCAN-SHARE-${String(findingCounter).padStart(3, '0')}`,
-      title:
-        `Network share found: ${shareName} / ` +
-        `發現網路共用：${shareName}`,
+      title: `Network share found: ${shareName} / ` + `發現網路共用：${shareName}`,
       description:
         `A network share "${shareName}" is configured on this Windows system. ` +
         `Non-default shares may expose data to unauthorized network users. ` +

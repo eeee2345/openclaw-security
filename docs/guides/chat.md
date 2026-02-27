@@ -26,13 +26,13 @@ panguard chat status
 
 ## 5 個通知管道
 
-| 管道 | 適合對象 | 特色 |
-|------|---------|------|
-| LINE | 個人用戶（台灣） | 最普及的通訊軟體 |
-| Telegram | 個人用戶 / 開發者 | Bot API，Markdown 格式 |
-| Slack | 團隊 / 企業 | Block Kit 豐富格式，頻道分流 |
-| Email | 合規場景 | SMTP HTML，留存紀錄 |
-| Webhook | 自動化整合 | mTLS 安全，自訂 payload |
+| 管道     | 適合對象          | 特色                         |
+| -------- | ----------------- | ---------------------------- |
+| LINE     | 個人用戶（台灣）  | 最普及的通訊軟體             |
+| Telegram | 個人用戶 / 開發者 | Bot API，Markdown 格式       |
+| Slack    | 團隊 / 企業       | Block Kit 豐富格式，頻道分流 |
+| Email    | 合規場景          | SMTP HTML，留存紀錄          |
+| Webhook  | 自動化整合        | mTLS 安全，自訂 payload      |
 
 ---
 
@@ -45,6 +45,7 @@ panguard chat setup --channel line
 ```
 
 設定精靈會要求：
+
 1. LINE Notify Token（從 [notify-bot.line.me](https://notify-bot.line.me) 取得）
 
 ### Telegram
@@ -54,6 +55,7 @@ panguard chat setup --channel telegram
 ```
 
 設定精靈會要求：
+
 1. Bot Token（從 [@BotFather](https://t.me/botfather) 取得）
 2. Chat ID
 
@@ -64,6 +66,7 @@ panguard chat setup --channel slack
 ```
 
 設定精靈會要求：
+
 1. Webhook URL（從 Slack App 設定取得）
 
 Slack 通知使用 Block Kit 格式，包含結構化的嚴重等級標示和操作按鈕。
@@ -75,6 +78,7 @@ panguard chat setup --channel email
 ```
 
 設定精靈會要求：
+
 1. SMTP Host
 2. SMTP Port
 3. 使用者帳號
@@ -91,6 +95,7 @@ panguard chat setup --channel webhook
 ```
 
 設定精靈會要求：
+
 1. Webhook URL
 2. 認證方式（可選：mTLS 憑證路徑）
 
@@ -162,15 +167,15 @@ Timeline:
 
 Chat 會發送以下類型的通知：
 
-| 類型 | 觸發條件 | 頻率 |
-|------|---------|------|
-| 威脅告警 | Guard 偵測到威脅 | 即時 |
-| 自動回應通知 | Guard 自動執行了回應動作 | 即時 |
-| 確認請求 | 信心度 70-90%，需要你確認 | 即時 |
-| 每日摘要 | 每天固定時間 | 每日 1 次 |
-| 學習進度 | 學習模式期間 | 每日 1 次 |
-| 分數變化 | 安全分數顯著變動 | 即時 |
-| 成就解鎖 | 解鎖新成就 | 即時 |
+| 類型         | 觸發條件                  | 頻率      |
+| ------------ | ------------------------- | --------- |
+| 威脅告警     | Guard 偵測到威脅          | 即時      |
+| 自動回應通知 | Guard 自動執行了回應動作  | 即時      |
+| 確認請求     | 信心度 70-90%，需要你確認 | 即時      |
+| 每日摘要     | 每天固定時間              | 每日 1 次 |
+| 學習進度     | 學習模式期間              | 每日 1 次 |
+| 分數變化     | 安全分數顯著變動          | 即時      |
+| 成就解鎖     | 解鎖新成就                | 即時      |
 
 ---
 

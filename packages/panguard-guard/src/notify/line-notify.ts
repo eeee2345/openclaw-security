@@ -28,7 +28,7 @@ const LINE_NOTIFY_URL = 'https://notify-api.line.me/api/notify';
 export async function sendLineNotify(
   config: LineNotifyConfig,
   verdict: ThreatVerdict,
-  eventDescription: string,
+  eventDescription: string
 ): Promise<NotificationResult> {
   const message =
     `\n[PanguardGuard Alert]\n` +
@@ -65,14 +65,16 @@ function postLineNotify(token: string, message: string): Promise<void> {
         path: url.pathname,
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/x-www-form-urlencoded',
           'Content-Length': Buffer.byteLength(body),
         },
       },
       (res) => {
         let data = '';
-        res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+        res.on('data', (chunk: Buffer) => {
+          data += chunk.toString();
+        });
         res.on('end', () => {
           if (res.statusCode === 200) {
             resolve();
@@ -80,7 +82,7 @@ function postLineNotify(token: string, message: string): Promise<void> {
             reject(new Error(`LINE Notify HTTP ${res.statusCode}: ${data}`));
           }
         });
-      },
+      }
     );
 
     req.on('error', reject);

@@ -124,7 +124,12 @@ function parseSeverityFromMessage(message: string): Severity {
 function extractCategoryFromMessage(message: string): string {
   const lower = message.toLowerCase();
 
-  if (lower.includes('login') || lower.includes('auth') || lower.includes('ssh') || lower.includes('logon')) {
+  if (
+    lower.includes('login') ||
+    lower.includes('auth') ||
+    lower.includes('ssh') ||
+    lower.includes('logon')
+  ) {
     return 'Initial Access';
   }
   if (lower.includes('sudo') || lower.includes('privilege') || lower.includes('elevation')) {
@@ -208,7 +213,7 @@ export function normalizeNetworkEvent(connection: RawNetworkConnection): Securit
  */
 export function normalizeProcessEvent(
   process: RawProcess,
-  action: 'started' | 'stopped',
+  action: 'started' | 'stopped'
 ): SecurityEvent {
   const description = `Process ${action}: ${process.name} (PID: ${process.pid})${process.user ? ` by ${process.user}` : ''}`;
 

@@ -74,16 +74,37 @@ export function waitForKey(): Promise<string> {
       stdin.pause();
 
       // Ctrl+C
-      if (data === '\x03') { resolve('ctrl-c'); return; }
+      if (data === '\x03') {
+        resolve('ctrl-c');
+        return;
+      }
       // Enter
-      if (data === '\r' || data === '\n') { resolve('enter'); return; }
+      if (data === '\r' || data === '\n') {
+        resolve('enter');
+        return;
+      }
       // Escape (standalone)
-      if (data === '\x1b' && data.length === 1) { resolve('escape'); return; }
+      if (data === '\x1b' && data.length === 1) {
+        resolve('escape');
+        return;
+      }
       // Arrow keys: \x1b[A (up), \x1b[B (down), \x1b[C (right), \x1b[D (left)
-      if (data === '\x1b[A') { resolve('up'); return; }
-      if (data === '\x1b[B') { resolve('down'); return; }
-      if (data === '\x1b[C') { resolve('right'); return; }
-      if (data === '\x1b[D') { resolve('left'); return; }
+      if (data === '\x1b[A') {
+        resolve('up');
+        return;
+      }
+      if (data === '\x1b[B') {
+        resolve('down');
+        return;
+      }
+      if (data === '\x1b[C') {
+        resolve('right');
+        return;
+      }
+      if (data === '\x1b[D') {
+        resolve('left');
+        return;
+      }
 
       resolve(data.trim().toLowerCase());
     };
@@ -118,7 +139,12 @@ function renderMenuLine(item: MenuItem, selected: boolean, userTier?: Tier | str
 }
 
 /** Render the full menu to stdout */
-function drawMenu(items: MenuItem[], selectedIndex: number, footer: string, userTier?: Tier | string): void {
+function drawMenu(
+  items: MenuItem[],
+  selectedIndex: number,
+  footer: string,
+  userTier?: Tier | string
+): void {
   for (let i = 0; i < items.length; i++) {
     clearLine();
     console.log(renderMenuLine(items[i]!, i === selectedIndex, userTier));
@@ -150,7 +176,7 @@ export interface ArrowMenuResult {
  */
 export async function runArrowMenu(
   items: MenuItem[],
-  opts: { lang: Lang; initialIndex?: number },
+  opts: { lang: Lang; initialIndex?: number }
 ): Promise<ArrowMenuResult | null> {
   const selectableIndices = items
     .map((item, i) => ({ item, i }))
@@ -168,9 +194,10 @@ export async function runArrowMenu(
 
   const { tier: userTier } = getLicense();
 
-  const footerText = opts.lang === 'zh-TW'
-    ? '\u2191\u2193 \u5C0E\u822A  \u23CE \u9078\u64C7  q \u9000\u51FA  l \u4E2D/EN'
-    : '\u2191\u2193 Navigate  \u23CE Select  q Quit  l \u4E2D/EN';
+  const footerText =
+    opts.lang === 'zh-TW'
+      ? '\u2191\u2193 \u5C0E\u822A  \u23CE \u9078\u64C7  q \u9000\u51FA  l \u4E2D/EN'
+      : '\u2191\u2193 Navigate  \u23CE Select  q Quit  l \u4E2D/EN';
 
   hideCursor();
 
@@ -235,10 +262,7 @@ export async function runArrowMenu(
  * Render a compact submenu with number-key selection.
  * Used for secondary choices (scan depth, frameworks, languages).
  */
-export function renderCompactMenu(
-  title: string,
-  items: MenuItem[],
-): void {
+export function renderCompactMenu(title: string, items: MenuItem[]): void {
   console.log(`  ${c.dim(title)}`);
   console.log('');
 
@@ -257,9 +281,9 @@ export function renderCompactMenu(
  */
 export async function waitForCompactChoice(
   items: MenuItem[],
-  lang: Lang,
+  lang: Lang
 ): Promise<MenuItem | null> {
-  const validKeys = new Set(items.map(i => i.key));
+  const validKeys = new Set(items.map((i) => i.key));
   const backText = lang === 'zh-TW' ? '\u8FD4\u56DE' : 'Back';
 
   console.log(`  ${c.dim(`[b] ${backText}`)}`);
@@ -276,7 +300,7 @@ export async function waitForCompactChoice(
 
     if (validKeys.has(key)) {
       console.log('');
-      return items.find(i => i.key === key) ?? null;
+      return items.find((i) => i.key === key) ?? null;
     }
   }
 }
@@ -287,9 +311,8 @@ export async function waitForCompactChoice(
  * "Press any key to continue..."
  */
 export async function pressAnyKey(lang: Lang): Promise<void> {
-  const msg = lang === 'zh-TW'
-    ? '\u6309\u4EFB\u610F\u9375\u7E7C\u7E8C...'
-    : 'Press any key to continue...';
+  const msg =
+    lang === 'zh-TW' ? '\u6309\u4EFB\u610F\u9375\u7E7C\u7E8C...' : 'Press any key to continue...';
   console.log('');
   process.stdout.write(`  ${c.dim(msg)} `);
   await waitForKey();

@@ -77,7 +77,11 @@ describe('FileQuarantine', () => {
   });
 
   afterEach(() => {
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   it('should quarantine a file with SHA-256', async () => {
@@ -129,8 +133,9 @@ describe('FileQuarantine', () => {
     const badFile = join(quarantineDir, 'already-quarantined.txt');
     writeFileSync(badFile, 'data');
 
-    await expect(quarantine.quarantine(badFile, 'test'))
-      .rejects.toThrow('Cannot quarantine a file already in quarantine');
+    await expect(quarantine.quarantine(badFile, 'test')).rejects.toThrow(
+      'Cannot quarantine a file already in quarantine'
+    );
   });
 
   it('should track active vs restored records', async () => {

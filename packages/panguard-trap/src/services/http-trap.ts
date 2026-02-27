@@ -23,7 +23,11 @@ const logger = createLogger('panguard-trap:service:http');
 /** Attack patterns to detect / 偵測的攻擊模式 */
 const ATTACK_PATTERNS: { pattern: RegExp; technique: string; type: string }[] = [
   { pattern: /\.\.\/|\.\.\\|%2e%2e/i, technique: 'T1083', type: 'directory_traversal' },
-  { pattern: /union\s+select|or\s+1\s*=\s*1|'\s*or\s*'/i, technique: 'T1190', type: 'sql_injection' },
+  {
+    pattern: /union\s+select|or\s+1\s*=\s*1|'\s*or\s*'/i,
+    technique: 'T1190',
+    type: 'sql_injection',
+  },
   { pattern: /<script|javascript:|onerror=/i, technique: 'T1059.007', type: 'xss' },
   { pattern: /etc\/passwd|etc\/shadow|win\.ini/i, technique: 'T1005', type: 'lfi' },
   { pattern: /cmd\.exe|powershell|\/bin\/bash/i, technique: 'T1059', type: 'rce' },
@@ -108,7 +112,7 @@ export class HTTPTrapService extends BaseTrapService {
 
   private handleRequest(
     req: import('node:http').IncomingMessage,
-    res: import('node:http').ServerResponse,
+    res: import('node:http').ServerResponse
   ): void {
     const remoteIP = req.socket.remoteAddress ?? 'unknown';
     const remotePort = req.socket.remotePort ?? 0;
@@ -181,7 +185,7 @@ export class HTTPTrapService extends BaseTrapService {
       setTimeout(() => {
         res.writeHead(page.status, {
           'Content-Type': page.contentType,
-          'Server': this.serverBanner,
+          Server: this.serverBanner,
           'X-Powered-By': 'PHP/8.1.2',
         });
         res.end(page.body);
@@ -196,7 +200,12 @@ export class HTTPTrapService extends BaseTrapService {
   private extractCredentials(sessionId: string, body: string): void {
     // URL-encoded form data
     const params = new URLSearchParams(body);
-    const username = params.get('user') ?? params.get('log') ?? params.get('username') ?? params.get('email') ?? '';
+    const username =
+      params.get('user') ??
+      params.get('log') ??
+      params.get('username') ??
+      params.get('email') ??
+      '';
     const password = params.get('pass') ?? params.get('pwd') ?? params.get('password') ?? '';
 
     if (username || password) {
@@ -223,7 +232,9 @@ export class HTTPTrapService extends BaseTrapService {
   }
 
   /** Sanitize headers to remove sensitive values / 清理 headers 以移除敏感值 */
-  private sanitizeHeaders(headers: import('node:http').IncomingHttpHeaders): Record<string, string> {
+  private sanitizeHeaders(
+    headers: import('node:http').IncomingHttpHeaders
+  ): Record<string, string> {
     const safe: Record<string, string> = {};
     for (const [key, value] of Object.entries(headers)) {
       if (key === 'authorization' || key === 'cookie') {

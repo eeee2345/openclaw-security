@@ -90,13 +90,14 @@ async function checkCertOnPort(port: number): Promise<Finding | null> {
           if (now > validTo) {
             // Certificate has expired
             // 憑證已過期
-            logger.info(`Expired certificate on port ${port}: expired ${Math.abs(daysUntilExpiry)} days ago`);
+            logger.info(
+              `Expired certificate on port ${port}: expired ${Math.abs(daysUntilExpiry)} days ago`
+            );
             socket.destroy();
             resolve({
               id: `SCAN-SSL-${port}`,
               title:
-                `Expired SSL certificate on port ${port} / ` +
-                `埠 ${port} 上的 SSL 憑證已過期`,
+                `Expired SSL certificate on port ${port} / ` + `埠 ${port} 上的 SSL 憑證已過期`,
               description:
                 `The SSL/TLS certificate on port ${port} (subject: ${subject}) ` +
                 `expired on ${validTo.toISOString().split('T')[0]}. ` +
@@ -108,9 +109,9 @@ async function checkCertOnPort(port: number): Promise<Finding | null> {
               category: 'certificate',
               remediation:
                 `Renew the SSL/TLS certificate for port ${port} immediately. ` +
-                'Consider using automated certificate management (e.g., Let\'s Encrypt). / ' +
+                "Consider using automated certificate management (e.g., Let's Encrypt). / " +
                 `立即續期埠 ${port} 的 SSL/TLS 憑證。` +
-                '考慮使用自動憑證管理（例如 Let\'s Encrypt）。',
+                "考慮使用自動憑證管理（例如 Let's Encrypt）。",
               complianceRef: '4.4',
               details:
                 `Subject: ${subject}, Valid from: ${validFrom.toISOString()}, ` +

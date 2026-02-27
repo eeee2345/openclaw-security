@@ -15,11 +15,7 @@
 export const ADAPTERS_VERSION = '0.1.0';
 
 // Types / 型別
-export type {
-  AdapterConfig,
-  AdapterAlert,
-  SecurityAdapter,
-} from './types.js';
+export type { AdapterConfig, AdapterAlert, SecurityAdapter } from './types.js';
 
 // Base adapter / 基底對接器
 export { BaseAdapter, mapSeverity, mapEventSource } from './base-adapter.js';

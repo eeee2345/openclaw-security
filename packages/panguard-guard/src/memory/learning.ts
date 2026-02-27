@@ -45,7 +45,7 @@ export function getRemainingDays(baseline: EnvironmentBaseline, learningDays: nu
 export function switchToProtectionMode(baseline: EnvironmentBaseline): EnvironmentBaseline {
   logger.info(
     `Switching to protection mode. Processes: ${baseline.normalProcesses.length}, ` +
-    `Connections: ${baseline.normalConnections.length}, Login patterns: ${baseline.normalLoginPatterns.length} / 切換至防護模式`,
+      `Connections: ${baseline.normalConnections.length}, Login patterns: ${baseline.normalLoginPatterns.length} / 切換至防護模式`
   );
   return { ...baseline, learningComplete: true, lastUpdated: new Date().toISOString() };
 }
@@ -54,8 +54,13 @@ export function switchToProtectionMode(baseline: EnvironmentBaseline): Environme
  * Get baseline summary for display / 取得基線摘要
  */
 export function getBaselineSummary(baseline: EnvironmentBaseline): {
-  processCount: number; connectionCount: number; loginPatternCount: number;
-  portCount: number; eventCount: number; confidenceLevel: number; learningComplete: boolean;
+  processCount: number;
+  connectionCount: number;
+  loginPatternCount: number;
+  portCount: number;
+  eventCount: number;
+  confidenceLevel: number;
+  learningComplete: boolean;
 } {
   return {
     processCount: baseline.normalProcesses.length,

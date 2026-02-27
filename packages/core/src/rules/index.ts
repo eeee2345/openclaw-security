@@ -63,7 +63,7 @@ export class RuleEngine {
     if (this.config.customRules !== undefined && this.config.customRules.length > 0) {
       this.rules.push(...this.config.customRules);
       logger.info(
-        `Initialized with ${this.config.customRules.length} custom rules / 已初始化 ${this.config.customRules.length} 條自訂規則`,
+        `Initialized with ${this.config.customRules.length} custom rules / 已初始化 ${this.config.customRules.length} 條自訂規則`
       );
     }
   }
@@ -91,7 +91,7 @@ export class RuleEngine {
           existingIds.add(rule.id);
         } else {
           logger.warn(
-            `Skipping duplicate rule id "${rule.id}" from custom directory / 跳過自訂目錄中重複的規則 id "${rule.id}"`,
+            `Skipping duplicate rule id "${rule.id}" from custom directory / 跳過自訂目錄中重複的規則 id "${rule.id}"`
           );
         }
       }
@@ -106,19 +106,19 @@ export class RuleEngine {
           existingIds.add(rule.id);
         } else {
           logger.warn(
-            `Skipping duplicate rule id "${rule.id}" from community directory / 跳過社群目錄中重複的規則 id "${rule.id}"`,
+            `Skipping duplicate rule id "${rule.id}" from community directory / 跳過社群目錄中重複的規則 id "${rule.id}"`
           );
         }
       }
     }
 
     if (this.config.rulesDir === undefined && this.config.communityRulesDir === undefined) {
-      logger.warn('No rulesDir or communityRulesDir configured, skipping directory load / 未配置規則目錄，跳過載入');
+      logger.warn(
+        'No rulesDir or communityRulesDir configured, skipping directory load / 未配置規則目錄，跳過載入'
+      );
     }
 
-    logger.info(
-      `Total rules loaded: ${this.rules.length} / 已載入規則總數: ${this.rules.length}`,
-    );
+    logger.info(`Total rules loaded: ${this.rules.length} / 已載入規則總數: ${this.rules.length}`);
 
     // Set up hot-reload watcher if configured / 如果配置了熱載入，設定監視器
     if (this.config.hotReload && this.config.rulesDir !== undefined) {
@@ -152,7 +152,7 @@ export class RuleEngine {
         }
 
         logger.info(
-          `Hot-reloaded rules, total: ${this.rules.length} / 熱載入規則完成，總數: ${this.rules.length}`,
+          `Hot-reloaded rules, total: ${this.rules.length} / 熱載入規則完成，總數: ${this.rules.length}`
         );
       });
     }
@@ -168,10 +168,14 @@ export class RuleEngine {
     const existingIndex = this.rules.findIndex((r) => r.id === rule.id);
     if (existingIndex !== -1) {
       this.rules[existingIndex] = rule;
-      logger.info(`Updated existing rule: "${rule.title}" (${rule.id}) / 更新現有規則: "${rule.title}" (${rule.id})`);
+      logger.info(
+        `Updated existing rule: "${rule.title}" (${rule.id}) / 更新現有規則: "${rule.title}" (${rule.id})`
+      );
     } else {
       this.rules.push(rule);
-      logger.info(`Added new rule: "${rule.title}" (${rule.id}) / 新增規則: "${rule.title}" (${rule.id})`);
+      logger.info(
+        `Added new rule: "${rule.title}" (${rule.id}) / 新增規則: "${rule.title}" (${rule.id})`
+      );
     }
   }
 
@@ -254,7 +258,7 @@ export class RuleEngine {
     }
 
     logger.info(
-      `Reload complete, total rules: ${this.rules.length} / 重新載入完成，規則總數: ${this.rules.length}`,
+      `Reload complete, total rules: ${this.rules.length} / 重新載入完成，規則總數: ${this.rules.length}`
     );
   }
 

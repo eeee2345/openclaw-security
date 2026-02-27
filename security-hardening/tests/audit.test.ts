@@ -94,7 +94,7 @@ describe('Syslog Adapter', () => {
     // facility=16(local0), error=3, warn=4, info=6
     // priority = facility*8 + severity
     expect(errorMsg).toMatch(/^<131>/); // 16*8+3
-    expect(warnMsg).toMatch(/^<132>/);  // 16*8+4
-    expect(infoMsg).toMatch(/^<134>/);  // 16*8+6
+    expect(warnMsg).toMatch(/^<132>/); // 16*8+4
+    expect(infoMsg).toMatch(/^<134>/); // 16*8+6
   });
 });

@@ -1,47 +1,41 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { Rss } from "lucide-react";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import {
-  changelogEntries,
-  type ChangelogEntry,
-} from "@/data/changelog-entries";
+import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { Rss } from 'lucide-react';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { changelogEntries, type ChangelogEntry } from '@/data/changelog-entries';
 
 /* ─── Types ─── */
 
-type ChangeType = "feature" | "fix" | "improvement" | "security";
+type ChangeType = 'feature' | 'fix' | 'improvement' | 'security';
 
-type FilterKey = "all" | ChangeType;
+type FilterKey = 'all' | ChangeType;
 
 /* ─── Badge styles per change type ─── */
 
 const badgeStyles: Record<ChangeType, string> = {
-  feature: "bg-brand-sage/10 text-brand-sage",
-  fix: "bg-amber-500/10 text-amber-400",
-  improvement: "bg-blue-500/10 text-blue-400",
-  security: "bg-red-500/10 text-red-400",
+  feature: 'bg-brand-sage/10 text-brand-sage',
+  fix: 'bg-amber-500/10 text-amber-400',
+  improvement: 'bg-blue-500/10 text-blue-400',
+  security: 'bg-red-500/10 text-red-400',
 };
 
 /* ─── Helpers ─── */
 
 function formatDate(dateStr: string, locale: string): string {
-  const date = new Date(dateStr + "T00:00:00");
-  return date.toLocaleDateString(locale === "zh" ? "zh-TW" : "en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 }
 
-function filterEntries(
-  entries: ChangelogEntry[],
-  filter: FilterKey
-): ChangelogEntry[] {
-  if (filter === "all") return entries;
+function filterEntries(entries: ChangelogEntry[], filter: FilterKey): ChangelogEntry[] {
+  if (filter === 'all') return entries;
 
   return entries
     .map((entry) => ({
@@ -54,39 +48,35 @@ function filterEntries(
 /* ─── Filter Config ─── */
 
 const filterKeys: { key: FilterKey; labelKey: string }[] = [
-  { key: "all", labelKey: "filters.all" },
-  { key: "feature", labelKey: "filters.features" },
-  { key: "fix", labelKey: "filters.fixes" },
-  { key: "improvement", labelKey: "filters.improvements" },
-  { key: "security", labelKey: "filters.security" },
+  { key: 'all', labelKey: 'filters.all' },
+  { key: 'feature', labelKey: 'filters.features' },
+  { key: 'fix', labelKey: 'filters.fixes' },
+  { key: 'improvement', labelKey: 'filters.improvements' },
+  { key: 'security', labelKey: 'filters.security' },
 ];
 
 /* ════════════════════════  Component  ═══════════════════════ */
 
 export default function ChangelogContent() {
-  const t = useTranslations("changelog");
+  const t = useTranslations('changelog');
   const locale = useLocale();
 
-  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
 
   const filtered = filterEntries(changelogEntries, activeFilter);
 
   const badgeLabels: Record<ChangeType, string> = {
-    feature: t("badges.feature"),
-    fix: t("badges.fix"),
-    improvement: t("badges.improvement"),
-    security: t("badges.security"),
+    feature: t('badges.feature'),
+    fix: t('badges.fix'),
+    improvement: t('badges.improvement'),
+    security: t('badges.security'),
   };
 
   return (
     <>
       {/* ───────────── Hero ───────────── */}
       <SectionWrapper spacing="spacious">
-        <SectionTitle
-          overline={t("overline")}
-          title={t("title")}
-          subtitle={t("subtitle")}
-        />
+        <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
       </SectionWrapper>
 
       {/* ───────────── Filters ───────────── */}
@@ -99,8 +89,8 @@ export default function ChangelogContent() {
                 onClick={() => setActiveFilter(f.key)}
                 className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 ${
                   activeFilter === f.key
-                    ? "bg-brand-sage text-surface-0"
-                    : "border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary"
+                    ? 'bg-brand-sage text-surface-0'
+                    : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
                 }`}
               >
                 {t(f.labelKey)}
@@ -152,18 +142,13 @@ export default function ChangelogContent() {
 
                     <ul className="mt-5 space-y-3">
                       {entry.changes.map((change, cIdx) => (
-                        <li
-                          key={cIdx}
-                          className="flex items-start gap-3 text-sm"
-                        >
+                        <li key={cIdx} className="flex items-start gap-3 text-sm">
                           <span
                             className={`inline-block shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide mt-0.5 ${badgeStyles[change.type]}`}
                           >
                             {badgeLabels[change.type]}
                           </span>
-                          <span className="text-text-secondary leading-relaxed">
-                            {change.text}
-                          </span>
+                          <span className="text-text-secondary leading-relaxed">{change.text}</span>
                         </li>
                       ))}
                     </ul>
@@ -177,9 +162,7 @@ export default function ChangelogContent() {
           {filtered.length === 0 && (
             <FadeInUp>
               <div className="text-center py-16">
-                <p className="text-text-tertiary text-sm">
-                  {t("emptyFilter")}
-                </p>
+                <p className="text-text-tertiary text-sm">{t('emptyFilter')}</p>
               </div>
             </FadeInUp>
           )}
@@ -192,11 +175,10 @@ export default function ChangelogContent() {
           <div className="text-center max-w-xl mx-auto">
             <Rss className="w-8 h-8 text-brand-sage mx-auto mb-5" />
             <h2 className="text-[clamp(24px,3vw,36px)] font-bold text-text-primary leading-[1.1]">
-              {t("notifyTitle")}
+              {t('notifyTitle')}
             </h2>
             <p className="text-text-secondary mt-3 leading-relaxed text-sm">
-              {t("notifyDesc")}
-              {" "}{t("noSpam")}
+              {t('notifyDesc')} {t('noSpam')}
             </p>
 
             <form
@@ -205,15 +187,15 @@ export default function ChangelogContent() {
             >
               <input
                 type="email"
-                placeholder={t("emailPlaceholder")}
-                aria-label={t("emailAriaLabel")}
+                placeholder={t('emailPlaceholder')}
+                aria-label={t('emailAriaLabel')}
                 className="w-full sm:w-auto sm:min-w-[280px] rounded-full border border-border bg-surface-1 px-5 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
               />
               <button
                 type="submit"
                 className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3 text-sm hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] whitespace-nowrap"
               >
-                {t("subscribe")}
+                {t('subscribe')}
               </button>
             </form>
           </div>

@@ -18,18 +18,18 @@ Panguard 整合 5 個公開威脅情報來源：
 
 ### abuse.ch 系列
 
-| 來源 | 類型 | 說明 |
-|------|------|------|
-| [ThreatFox](https://threatfox.abuse.ch) | IoC（入侵指標） | IP、域名、URL、檔案 hash 的惡意指標資料庫 |
-| [URLhaus](https://urlhaus.abuse.ch) | 惡意 URL | 惡意軟體散布網址資料庫 |
-| [Feodo Tracker](https://feodotracker.abuse.ch) | C2 伺服器 | 殭屍網路 Command & Control 伺服器追蹤 |
+| 來源                                           | 類型            | 說明                                      |
+| ---------------------------------------------- | --------------- | ----------------------------------------- |
+| [ThreatFox](https://threatfox.abuse.ch)        | IoC（入侵指標） | IP、域名、URL、檔案 hash 的惡意指標資料庫 |
+| [URLhaus](https://urlhaus.abuse.ch)            | 惡意 URL        | 惡意軟體散布網址資料庫                    |
+| [Feodo Tracker](https://feodotracker.abuse.ch) | C2 伺服器       | 殭屍網路 Command & Control 伺服器追蹤     |
 
 ### 其他來源
 
-| 來源 | 類型 | 說明 |
-|------|------|------|
-| [GreyNoise](https://greynoise.io) | IP 聲譽 | 區分有目標的攻擊和大規模網路掃描 |
-| [AbuseIPDB](https://abuseipdb.com) | IP 檢舉 | 社群回報的惡意 IP 資料庫 |
+| 來源                               | 類型    | 說明                             |
+| ---------------------------------- | ------- | -------------------------------- |
+| [GreyNoise](https://greynoise.io)  | IP 聲譽 | 區分有目標的攻擊和大規模網路掃描 |
+| [AbuseIPDB](https://abuseipdb.com) | IP 檢舉 | 社群回報的惡意 IP 資料庫         |
 
 ---
 
@@ -77,13 +77,13 @@ AbuseIPDB     依查詢即時取得
 
 威脅情報追蹤以下類型的入侵指標：
 
-| 類型 | 說明 | 範例 |
-|------|------|------|
-| IP 位址 | 已知惡意 IP | `203.0.113.50` |
-| 域名 | 惡意域名 | `malware.example.com` |
-| URL | 惡意網址 | `http://evil.com/payload.exe` |
-| 檔案 Hash | 惡意檔案指紋 | SHA-256 hash |
-| Email | 釣魚郵件地址 | `phish@attacker.com` |
+| 類型      | 說明         | 範例                          |
+| --------- | ------------ | ----------------------------- |
+| IP 位址   | 已知惡意 IP  | `203.0.113.50`                |
+| 域名      | 惡意域名     | `malware.example.com`         |
+| URL       | 惡意網址     | `http://evil.com/payload.exe` |
+| 檔案 Hash | 惡意檔案指紋 | SHA-256 hash                  |
+| Email     | 釣魚郵件地址 | `phish@attacker.com`          |
 
 ---
 
@@ -129,11 +129,13 @@ panguard guard status
 當威脅情報匹配到你系統上的活動，Chat 會用人話通知你：
 
 **boss 角色收到的通知：**
+
 > 偵測到你的伺服器正在與一個已知的惡意伺服器通訊。
 > 該 IP 已被全球 1,247 次檢舉為攻擊來源。
 > 已自動封鎖該連線。無需你採取行動。
 
 **developer 角色收到的通知：**
+
 > Threat Intel Match: 203.0.113.50
 > Source: AbuseIPDB (confidence: 98%), ThreatFox (tag: C2)
 > Action: IP blocked via iptables

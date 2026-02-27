@@ -20,11 +20,7 @@ const logger = createLogger('websocket:connection-validator');
  * @returns true if localhost / 為本機則回傳 true
  */
 function isLocalhostUrl(url: URL): boolean {
-  return (
-    url.hostname === 'localhost' ||
-    url.hostname === '127.0.0.1' ||
-    url.hostname === '::1'
-  );
+  return url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname === '::1';
 }
 
 /**

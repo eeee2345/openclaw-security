@@ -80,14 +80,12 @@ export class TrapEngine {
         this.services.push(service);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        logger.error(
-          `Failed to start ${serviceConfig.type} trap: ${msg} / 啟動失敗: ${msg}`,
-        );
+        logger.error(`Failed to start ${serviceConfig.type} trap: ${msg} / 啟動失敗: ${msg}`);
       }
     }
 
     logger.info(
-      `PanguardTrap engine started with ${this.services.length} services / PanguardTrap 引擎已啟動，${this.services.length} 個服務`,
+      `PanguardTrap engine started with ${this.services.length} services / PanguardTrap 引擎已啟動，${this.services.length} 個服務`
     );
   }
 
@@ -139,7 +137,14 @@ export class TrapEngine {
 
     // Sessions by service
     const sessionsByService: Record<TrapServiceType, number> = {
-      ssh: 0, http: 0, ftp: 0, smb: 0, mysql: 0, rdp: 0, telnet: 0, redis: 0,
+      ssh: 0,
+      http: 0,
+      ftp: 0,
+      smb: 0,
+      mysql: 0,
+      rdp: 0,
+      telnet: 0,
+      redis: 0,
     };
     for (const s of allSessions) {
       sessionsByService[s.serviceType] = (sessionsByService[s.serviceType] ?? 0) + 1;
@@ -180,12 +185,20 @@ export class TrapEngine {
 
     // Skill distribution
     const skillDistribution: Record<AttackerSkillLevel, number> = {
-      script_kiddie: 0, intermediate: 0, advanced: 0, apt: 0,
+      script_kiddie: 0,
+      intermediate: 0,
+      advanced: 0,
+      apt: 0,
     };
     const intentDistribution: Record<AttackerIntent, number> = {
-      reconnaissance: 0, credential_harvesting: 0, ransomware_deployment: 0,
-      cryptomining: 0, data_theft: 0, botnet_recruitment: 0,
-      lateral_movement: 0, unknown: 0,
+      reconnaissance: 0,
+      credential_harvesting: 0,
+      ransomware_deployment: 0,
+      cryptomining: 0,
+      data_theft: 0,
+      botnet_recruitment: 0,
+      lateral_movement: 0,
+      unknown: 0,
     };
 
     for (const profile of this.profiler.getAllProfiles()) {
@@ -249,9 +262,7 @@ export class TrapEngine {
    * 取得運行中的服務類型
    */
   getRunningServices(): TrapServiceType[] {
-    return this.services
-      .filter((s) => s.status === 'running')
-      .map((s) => s.serviceType);
+    return this.services.filter((s) => s.status === 'running').map((s) => s.serviceType);
   }
 
   // -------------------------------------------------------------------------
@@ -273,9 +284,7 @@ export class TrapEngine {
       const intel = buildTrapIntel(session, profile);
       if (intel) {
         this.intelReports.push(intel);
-        logger.info(
-          `Intel report generated for ${session.sourceIP} / 情報報告已產生`,
-        );
+        logger.info(`Intel report generated for ${session.sourceIP} / 情報報告已產生`);
       }
     }
 
@@ -289,7 +298,7 @@ export class TrapEngine {
     }
 
     logger.info(
-      `Session processed: ${session.sessionId} → profile ${profile.profileId} (${profile.skillLevel}/${profile.intent}) / 連線已處理`,
+      `Session processed: ${session.sessionId} → profile ${profile.profileId} (${profile.skillLevel}/${profile.intent}) / 連線已處理`
     );
   }
 }

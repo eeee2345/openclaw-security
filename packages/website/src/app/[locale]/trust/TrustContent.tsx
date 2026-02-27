@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight } from 'lucide-react';
 import {
   ComplianceIcon,
   LockIcon,
@@ -17,56 +17,56 @@ import {
   AlertIcon,
   MonitorIcon,
   HistoryIcon,
-} from "@/components/ui/BrandIcons";
+} from '@/components/ui/BrandIcons';
 import {
   CertifiedSecureBadge,
   ProtectedByBadge,
   EnterpriseGradeBadge,
-} from "@/components/ui/BrandBadges";
+} from '@/components/ui/BrandBadges';
 
 /* ─── Types ─── */
-type StatusVariant = "active" | "in-progress" | "planned";
+type StatusVariant = 'active' | 'in-progress' | 'planned';
 
 /* ─── Status Badge Styles ─── */
 const statusStyles: Record<StatusVariant, string> = {
-  active: "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20",
-  "in-progress": "bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/20",
-  planned: "bg-text-muted/10 text-text-muted border-border",
+  active: 'bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20',
+  'in-progress': 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/20',
+  planned: 'bg-text-muted/10 text-text-muted border-border',
 };
 
 /* ─── Compliance Card Config ─── */
 const complianceCardConfigs = [
-  { key: "soc2" as const, variant: "in-progress" as StatusVariant, badge: CertifiedSecureBadge },
-  { key: "iso27001" as const, variant: "planned" as StatusVariant, badge: CertifiedSecureBadge },
-  { key: "gdpr" as const, variant: "active" as StatusVariant, badge: ProtectedByBadge },
-  { key: "hipaa" as const, variant: "in-progress" as StatusVariant, badge: EnterpriseGradeBadge },
+  { key: 'soc2' as const, variant: 'in-progress' as StatusVariant, badge: CertifiedSecureBadge },
+  { key: 'iso27001' as const, variant: 'planned' as StatusVariant, badge: CertifiedSecureBadge },
+  { key: 'gdpr' as const, variant: 'active' as StatusVariant, badge: ProtectedByBadge },
+  { key: 'hipaa' as const, variant: 'in-progress' as StatusVariant, badge: EnterpriseGradeBadge },
 ];
 
 /* ─── Security Architecture Icon Mapping ─── */
 const layerConfigs = [
-  { key: "dataLayer" as const, icon: LockIcon },
-  { key: "applicationLayer" as const, icon: ShieldIcon },
-  { key: "infrastructureLayer" as const, icon: NetworkIcon },
+  { key: 'dataLayer' as const, icon: LockIcon },
+  { key: 'applicationLayer' as const, icon: ShieldIcon },
+  { key: 'infrastructureLayer' as const, icon: NetworkIcon },
 ];
 
 /* ─── Data Handling Icon Mapping ─── */
 const dataHandlingConfigs = [
-  { key: "item1" as const, icon: LockIcon },
-  { key: "item2" as const, icon: GlobalIcon },
-  { key: "item3" as const, icon: HistoryIcon },
-  { key: "item4" as const, icon: ShieldIcon },
-  { key: "item5" as const, icon: ScanIcon },
-  { key: "item6" as const, icon: AlertIcon },
+  { key: 'item1' as const, icon: LockIcon },
+  { key: 'item2' as const, icon: GlobalIcon },
+  { key: 'item3' as const, icon: HistoryIcon },
+  { key: 'item4' as const, icon: ShieldIcon },
+  { key: 'item5' as const, icon: ScanIcon },
+  { key: 'item6' as const, icon: AlertIcon },
 ];
 
 /* ─── Subprocessors Config ─── */
-const subprocessorKeys = ["aws", "anthropic", "cloudflare", "stripe", "sendgrid"] as const;
+const subprocessorKeys = ['aws', 'anthropic', 'cloudflare', 'stripe', 'sendgrid'] as const;
 
 /* ═══════════════════════════════════════════════════════════════════
    Trust Center Content
    ═══════════════════════════════════════════════════════════════════ */
 export default function TrustContent() {
-  const t = useTranslations("trust");
+  const t = useTranslations('trust');
 
   return (
     <>
@@ -76,18 +76,17 @@ export default function TrustContent() {
         <div className="max-w-[1200px] mx-auto relative">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-6">
-              {t("overline")}
+              {t('overline')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.05}>
             <h1 className="text-[clamp(40px,5vw,64px)] font-extrabold leading-[1.08] tracking-tight text-text-primary max-w-3xl">
-              {t("title")}{" "}
-              <span className="text-brand-sage">{t("titleHighlight")}</span>
+              {t('title')} <span className="text-brand-sage">{t('titleHighlight')}</span>
             </h1>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <p className="text-xl text-text-secondary max-w-2xl mt-6 leading-relaxed">
-              {t("subtitle")}
+              {t('subtitle')}
             </p>
           </FadeInUp>
         </div>
@@ -96,9 +95,9 @@ export default function TrustContent() {
       {/* -- Compliance Status Cards -- */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("compliance.overline")}
-          title={t("compliance.title")}
-          subtitle={t("compliance.subtitle")}
+          overline={t('compliance.overline')}
+          title={t('compliance.title')}
+          subtitle={t('compliance.subtitle')}
         />
         <div className="grid sm:grid-cols-2 gap-4 mt-14">
           {complianceCardConfigs.map((card, i) => (
@@ -137,9 +136,9 @@ export default function TrustContent() {
       {/* -- Security Architecture -- */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("architecture.overline")}
-          title={t("architecture.title")}
-          subtitle={t("architecture.subtitle")}
+          overline={t('architecture.overline')}
+          title={t('architecture.title')}
+          subtitle={t('architecture.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
           {layerConfigs.map((layer, i) => {
@@ -176,9 +175,9 @@ export default function TrustContent() {
       {/* -- Data Handling Practices -- */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("dataHandling.overline")}
-          title={t("dataHandling.title")}
-          subtitle={t("dataHandling.subtitle")}
+          overline={t('dataHandling.overline')}
+          title={t('dataHandling.title')}
+          subtitle={t('dataHandling.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
           {dataHandlingConfigs.map((practice, i) => (
@@ -200,22 +199,22 @@ export default function TrustContent() {
       {/* -- Subprocessors -- */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("subprocessors.overline")}
-          title={t("subprocessors.title")}
-          subtitle={t("subprocessors.subtitle")}
+          overline={t('subprocessors.overline')}
+          title={t('subprocessors.title')}
+          subtitle={t('subprocessors.subtitle')}
         />
         <FadeInUp delay={0.1}>
           <div className="mt-14 max-w-3xl mx-auto">
             {/* Table header */}
             <div className="grid grid-cols-3 gap-4 px-6 pb-3 border-b border-border">
               <span className="text-[11px] uppercase tracking-wider text-text-muted font-semibold">
-                {t("subprocessors.headers.name")}
+                {t('subprocessors.headers.name')}
               </span>
               <span className="text-[11px] uppercase tracking-wider text-text-muted font-semibold">
-                {t("subprocessors.headers.purpose")}
+                {t('subprocessors.headers.purpose')}
               </span>
               <span className="text-[11px] uppercase tracking-wider text-text-muted font-semibold text-right">
-                {t("subprocessors.headers.location")}
+                {t('subprocessors.headers.location')}
               </span>
             </div>
             {/* Table rows */}
@@ -238,7 +237,7 @@ export default function TrustContent() {
         </FadeInUp>
         <FadeInUp delay={0.4}>
           <p className="text-xs text-text-muted text-center mt-6 max-w-lg mx-auto">
-            {t("subprocessors.updateNote")}
+            {t('subprocessors.updateNote')}
           </p>
         </FadeInUp>
       </SectionWrapper>
@@ -249,10 +248,10 @@ export default function TrustContent() {
           <FadeInUp>
             <MonitorIcon className="w-8 h-8 text-brand-sage mx-auto mb-4" />
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
             <p className="text-text-secondary mt-4 max-w-xl mx-auto leading-relaxed">
-              {t("cta.desc")}
+              {t('cta.desc')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
@@ -261,13 +260,13 @@ export default function TrustContent() {
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/security"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("cta.cta2")}
+                {t('cta.cta2')}
               </Link>
             </div>
           </FadeInUp>

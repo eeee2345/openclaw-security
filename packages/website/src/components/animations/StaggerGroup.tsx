@@ -1,6 +1,6 @@
-"use client";
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+'use client';
+import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
 
 const container = {
   hidden: { opacity: 0 },
@@ -24,7 +24,7 @@ const item = {
 
 export function StaggerGroup({
   children,
-  className = "",
+  className = '',
   stagger = 0.08,
 }: {
   children: ReactNode;
@@ -42,7 +42,7 @@ export function StaggerGroup({
       }}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: '-60px' }}
       className={className}
     >
       {children}
@@ -52,7 +52,7 @@ export function StaggerGroup({
 
 export function StaggerItem({
   children,
-  className = "",
+  className = '',
 }: {
   children: ReactNode;
   className?: string;

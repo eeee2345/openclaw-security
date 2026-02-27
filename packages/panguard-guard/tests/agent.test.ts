@@ -107,9 +107,7 @@ describe('AnalyzeAgent', () => {
     const agent = new AnalyzeAgent(null);
     const detection: DetectionResult = {
       event: makeEvent(),
-      ruleMatches: [
-        { ruleId: 'rule-1', ruleName: 'SSH Brute Force', severity: 'high' },
-      ],
+      ruleMatches: [{ ruleId: 'rule-1', ruleName: 'SSH Brute Force', severity: 'high' }],
       timestamp: new Date().toISOString(),
     };
 
@@ -126,17 +124,13 @@ describe('AnalyzeAgent', () => {
 
     const highDetection: DetectionResult = {
       event: makeEvent(),
-      ruleMatches: [
-        { ruleId: 'rule-1', ruleName: 'Test', severity: 'high' },
-      ],
+      ruleMatches: [{ ruleId: 'rule-1', ruleName: 'Test', severity: 'high' }],
       timestamp: new Date().toISOString(),
     };
 
     const criticalDetection: DetectionResult = {
       event: makeEvent(),
-      ruleMatches: [
-        { ruleId: 'rule-2', ruleName: 'Critical Test', severity: 'critical' },
-      ],
+      ruleMatches: [{ ruleId: 'rule-2', ruleName: 'Critical Test', severity: 'critical' }],
       timestamp: new Date().toISOString(),
     };
 
@@ -255,7 +249,9 @@ describe('RespondAgent', () => {
       conclusion: 'malicious',
       confidence: 95,
       reasoning: 'Test',
-      evidence: [{ source: 'rule_match', description: 'test', confidence: 95, data: { ip: '127.0.0.1' } }],
+      evidence: [
+        { source: 'rule_match', description: 'test', confidence: 95, data: { ip: '127.0.0.1' } },
+      ],
       recommendedAction: 'block_ip',
     };
 
@@ -270,7 +266,9 @@ describe('RespondAgent', () => {
       conclusion: 'malicious',
       confidence: 95,
       reasoning: 'Test',
-      evidence: [{ source: 'rule_match', description: 'test', confidence: 95, data: { ip: '10.0.0.1' } }],
+      evidence: [
+        { source: 'rule_match', description: 'test', confidence: 95, data: { ip: '10.0.0.1' } },
+      ],
       recommendedAction: 'block_ip',
     };
 
@@ -285,7 +283,14 @@ describe('RespondAgent', () => {
       conclusion: 'malicious',
       confidence: 95,
       reasoning: 'Test',
-      evidence: [{ source: 'rule_match', description: 'test', confidence: 95, data: { pid: 123, processName: 'sshd' } }],
+      evidence: [
+        {
+          source: 'rule_match',
+          description: 'test',
+          confidence: 95,
+          data: { pid: 123, processName: 'sshd' },
+        },
+      ],
       recommendedAction: 'kill_process',
     };
 
@@ -300,7 +305,9 @@ describe('RespondAgent', () => {
       conclusion: 'malicious',
       confidence: 95,
       reasoning: 'Test',
-      evidence: [{ source: 'rule_match', description: 'test', confidence: 95, data: { username: 'root' } }],
+      evidence: [
+        { source: 'rule_match', description: 'test', confidence: 95, data: { username: 'root' } },
+      ],
       recommendedAction: 'disable_account',
     };
 
@@ -328,7 +335,12 @@ describe('ReportAgent', () => {
       evidence: [{ source: 'rule_match', description: 'test', confidence: 60 }],
       recommendedAction: 'notify',
     };
-    const response = { action: 'notify' as const, success: true, details: 'test', timestamp: new Date().toISOString() };
+    const response = {
+      action: 'notify' as const,
+      success: true,
+      details: 'test',
+      timestamp: new Date().toISOString(),
+    };
     const baseline = createEmptyBaseline();
 
     const result = agent.report(event, verdict, response, baseline);
@@ -348,7 +360,12 @@ describe('ReportAgent', () => {
       evidence: [],
       recommendedAction: 'block_ip',
     };
-    const response = { action: 'block_ip' as const, success: true, details: 'test', timestamp: new Date().toISOString() };
+    const response = {
+      action: 'block_ip' as const,
+      success: true,
+      details: 'test',
+      timestamp: new Date().toISOString(),
+    };
     const baseline = createEmptyBaseline();
 
     const result = agent.report(event, verdict, response, baseline);
@@ -384,7 +401,12 @@ describe('ReportAgent', () => {
         evidence: [],
         recommendedAction: 'notify',
       };
-      const response = { action: 'notify' as const, success: true, details: 'test', timestamp: new Date().toISOString() };
+      const response = {
+        action: 'notify' as const,
+        success: true,
+        details: 'test',
+        timestamp: new Date().toISOString(),
+      };
       agent.report(event, verdict, response, baseline);
     }
 

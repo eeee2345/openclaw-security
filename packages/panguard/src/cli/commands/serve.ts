@@ -12,7 +12,12 @@ import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { c, banner } from '@panguard-ai/core';
 import { AuthDB, createAuthHandlers } from '@panguard-ai/panguard-auth';
-import type { AuthRouteConfig, SmtpConfig, GoogleOAuthConfig, GoogleSheetsConfig } from '@panguard-ai/panguard-auth';
+import type {
+  AuthRouteConfig,
+  SmtpConfig,
+  GoogleOAuthConfig,
+  GoogleSheetsConfig,
+} from '@panguard-ai/panguard-auth';
 
 export function serveCommand(): Command {
   return new Command('serve')
@@ -32,28 +37,36 @@ export function serveCommand(): Command {
       const db = new AuthDB(options.db);
 
       // Build config from environment
-      const smtp: SmtpConfig | undefined = process.env['SMTP_HOST'] ? {
-        host: process.env['SMTP_HOST'],
-        port: parseInt(process.env['SMTP_PORT'] ?? '587', 10),
-        secure: process.env['SMTP_SECURE'] === 'true',
-        from: process.env['SMTP_FROM'] ?? 'noreply@panguard.ai',
-        auth: {
-          user: process.env['SMTP_USER'] ?? '',
-          pass: process.env['SMTP_PASS'] ?? '',
-        },
-      } : undefined;
+      const smtp: SmtpConfig | undefined = process.env['SMTP_HOST']
+        ? {
+            host: process.env['SMTP_HOST'],
+            port: parseInt(process.env['SMTP_PORT'] ?? '587', 10),
+            secure: process.env['SMTP_SECURE'] === 'true',
+            from: process.env['SMTP_FROM'] ?? 'noreply@panguard.ai',
+            auth: {
+              user: process.env['SMTP_USER'] ?? '',
+              pass: process.env['SMTP_PASS'] ?? '',
+            },
+          }
+        : undefined;
 
-      const google: GoogleOAuthConfig | undefined = process.env['GOOGLE_CLIENT_ID'] ? {
-        clientId: process.env['GOOGLE_CLIENT_ID'],
-        clientSecret: process.env['GOOGLE_CLIENT_SECRET'] ?? '',
-        redirectUri: process.env['GOOGLE_REDIRECT_URI'] ?? `http://${host}:${port}/api/auth/google/callback`,
-      } : undefined;
+      const google: GoogleOAuthConfig | undefined = process.env['GOOGLE_CLIENT_ID']
+        ? {
+            clientId: process.env['GOOGLE_CLIENT_ID'],
+            clientSecret: process.env['GOOGLE_CLIENT_SECRET'] ?? '',
+            redirectUri:
+              process.env['GOOGLE_REDIRECT_URI'] ??
+              `http://${host}:${port}/api/auth/google/callback`,
+          }
+        : undefined;
 
-      const sheets: GoogleSheetsConfig | undefined = process.env['GOOGLE_SHEETS_ID'] ? {
-        spreadsheetId: process.env['GOOGLE_SHEETS_ID'],
-        serviceAccountEmail: process.env['GOOGLE_SHEETS_SA_EMAIL'] ?? '',
-        privateKey: process.env['GOOGLE_SHEETS_PRIVATE_KEY'] ?? '',
-      } : undefined;
+      const sheets: GoogleSheetsConfig | undefined = process.env['GOOGLE_SHEETS_ID']
+        ? {
+            spreadsheetId: process.env['GOOGLE_SHEETS_ID'],
+            serviceAccountEmail: process.env['GOOGLE_SHEETS_SA_EMAIL'] ?? '',
+            privateKey: process.env['GOOGLE_SHEETS_PRIVATE_KEY'] ?? '',
+          }
+        : undefined;
 
       const baseUrl = process.env['PANGUARD_BASE_URL'] ?? `http://${host}:${port}`;
 
@@ -67,7 +80,7 @@ export function serveCommand(): Command {
         join(process.cwd(), 'packages', 'admin'),
         join(thisDir, '..', '..', '..', '..', 'admin'),
       ];
-      const adminDir = adminDirs.find(d => existsSync(d));
+      const adminDir = adminDirs.find((d) => existsSync(d));
 
       const server = createServer((req, res) => {
         void handleRequest(req, res, handlers, db, adminDir);
@@ -82,7 +95,9 @@ export function serveCommand(): Command {
         if (adminDir) {
           console.log(`    ${c.dim('/admin')}          Admin Dashboard`);
         } else {
-          console.log(`    ${c.dim('/admin')}          ${c.caution('Not found')} (packages/admin/ missing)`);
+          console.log(
+            `    ${c.dim('/admin')}          ${c.caution('Not found')} (packages/admin/ missing)`
+          );
         }
         console.log(`    ${c.dim('/health')}         Health check`);
         console.log('');
@@ -106,7 +121,7 @@ async function handleRequest(
   res: ServerResponse,
   handlers: ReturnType<typeof createAuthHandlers>,
   _db: AuthDB,
-  adminDir: string | undefined,
+  adminDir: string | undefined
 ): Promise<void> {
   const url = req.url ?? '/';
   const pathname = url.split('?')[0] ?? '/';
@@ -117,7 +132,7 @@ async function handleRequest(
 
   // CORS — default to same-origin only; set CORS_ALLOWED_ORIGINS to allow cross-origin
   const corsEnv = process.env['CORS_ALLOWED_ORIGINS'] ?? '';
-  const allowedOrigins = corsEnv ? corsEnv.split(',').map(o => o.trim()) : [];
+  const allowedOrigins = corsEnv ? corsEnv.split(',').map((o) => o.trim()) : [];
   const origin = req.headers.origin ?? '';
   if (allowedOrigins.includes('*')) {
     res.setHeader('Access-Control-Allow-Origin', origin || '*');
@@ -278,7 +293,7 @@ function serveStaticFile(
   _req: IncomingMessage,
   res: ServerResponse,
   adminDir: string,
-  pathname: string,
+  pathname: string
 ): void {
   // Map /admin -> /admin/index.html
   const resolvedAdminDir = resolve(adminDir);

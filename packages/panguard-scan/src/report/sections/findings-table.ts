@@ -52,11 +52,7 @@ function ensureSpace(doc: PDFKit.PDFDocument, requiredHeight: number): void {
  * @param finding - Security finding to render / 要渲染的安全發現
  * @param lang - Output language / 輸出語言
  */
-function renderFinding(
-  doc: PDFKit.PDFDocument,
-  finding: Finding,
-  lang: Language,
-): void {
+function renderFinding(doc: PDFKit.PDFDocument, finding: Finding, lang: Language): void {
   const isZh = lang === 'zh-TW';
 
   ensureSpace(doc, ESTIMATED_FINDING_HEIGHT);
@@ -68,20 +64,13 @@ function renderFinding(
   const badgeWidth = 60;
   const badgeHeight = 14;
 
-  doc
-    .rect(LAYOUT.margin, startY, badgeWidth, badgeHeight)
-    .fill(badgeColor);
+  doc.rect(LAYOUT.margin, startY, badgeWidth, badgeHeight).fill(badgeColor);
 
   doc
     .font(FONTS.heading)
     .fontSize(8)
     .fillColor(COLORS.white)
-    .text(
-      finding.severity.toUpperCase(),
-      LAYOUT.margin + 4,
-      startY + 2,
-      { width: badgeWidth - 8 },
-    );
+    .text(finding.severity.toUpperCase(), LAYOUT.margin + 4, startY + 2, { width: badgeWidth - 8 });
 
   // -- Finding title --
   doc
@@ -144,12 +133,9 @@ function renderFinding(
       .font(FONTS.body)
       .fontSize(8)
       .fillColor(COLORS.lightText)
-      .text(
-        `${complianceLabel} ${finding.complianceRef}`,
-        LAYOUT.margin + 10,
-        doc.y,
-        { width: LAYOUT.contentWidth - 20 },
-      );
+      .text(`${complianceLabel} ${finding.complianceRef}`, LAYOUT.margin + 10, doc.y, {
+        width: LAYOUT.contentWidth - 20,
+      });
   }
 
   // -- Separator line --
@@ -179,7 +165,7 @@ function renderFinding(
 export function renderFindingsTable(
   doc: PDFKit.PDFDocument,
   result: ScanResult,
-  lang: Language,
+  lang: Language
 ): void {
   const isZh = lang === 'zh-TW';
 

@@ -96,10 +96,9 @@ async function registerCjkFont(doc: PDFKit.PDFDocument): Promise<boolean> {
     }
   }
 
-  logger.warn(
-    'No CJK font found on this system. Chinese characters may not render correctly.',
-    { platform },
-  );
+  logger.warn('No CJK font found on this system. Chinese characters may not render correctly.', {
+    platform,
+  });
   return false;
 }
 
@@ -136,15 +135,10 @@ function addPageFooter(doc: PDFKit.PDFDocument, pageNumber: number): void {
     .font(FONTS.body)
     .fontSize(7)
     .fillColor(COLORS.lightText)
-    .text(
-      String(pageNumber),
-      LAYOUT.pageWidth / 2,
-      footerY - 4,
-      {
-        width: LAYOUT.contentWidth / 2,
-        align: 'right',
-      },
-    );
+    .text(String(pageNumber), LAYOUT.pageWidth / 2, footerY - 4, {
+      width: LAYOUT.contentWidth / 2,
+      align: 'right',
+    });
 }
 
 /**
@@ -173,13 +167,12 @@ function addPageFooter(doc: PDFKit.PDFDocument, pageNumber: number): void {
 export async function generatePdfReport(
   result: ScanResult,
   outputPath: string,
-  lang: Language,
+  lang: Language
 ): Promise<void> {
   logger.info('Starting PDF report generation', { outputPath, lang });
 
-  const reportTitle = lang === 'zh-TW'
-    ? 'Panguard AI - 資安健檢報告'
-    : 'Panguard AI - Health Check Report';
+  const reportTitle =
+    lang === 'zh-TW' ? 'Panguard AI - 資安健檢報告' : 'Panguard AI - Health Check Report';
 
   // Create the PDF document
   const doc = new PDFDocument({
@@ -214,7 +207,7 @@ export async function generatePdfReport(
     } else {
       logger.warn(
         'CJK font not available; falling back to Helvetica. ' +
-        'Chinese characters will not render correctly but the report will not crash.',
+          'Chinese characters will not render correctly but the report will not crash.'
       );
     }
   }

@@ -131,7 +131,7 @@ function deduplicateRemediations(findings: Finding[]): string[] {
 export function renderRemediation(
   doc: PDFKit.PDFDocument,
   result: ScanResult,
-  lang: Language,
+  lang: Language
 ): void {
   const isZh = lang === 'zh-TW';
 
@@ -171,9 +171,7 @@ export function renderRemediation(
   const sortedFindings = [...result.findings].sort(sortBySeverity);
 
   for (const group of PRIORITY_GROUPS) {
-    const groupFindings = sortedFindings.filter((f) =>
-      group.severities.includes(f.severity),
-    );
+    const groupFindings = sortedFindings.filter((f) => group.severities.includes(f.severity));
 
     if (groupFindings.length === 0) {
       continue;
@@ -184,10 +182,7 @@ export function renderRemediation(
     // -- Group header --
     const header = isZh ? group.headerZh : group.headerEn;
 
-    doc
-      .rect(LAYOUT.margin, doc.y, LAYOUT.contentWidth, 22)
-      .fillOpacity(0.08)
-      .fill(group.color);
+    doc.rect(LAYOUT.margin, doc.y, LAYOUT.contentWidth, 22).fillOpacity(0.08).fill(group.color);
 
     doc.fillOpacity(1);
 

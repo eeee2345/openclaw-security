@@ -5,9 +5,7 @@
     "outDir": "./dist",
     "composite": true
   },
-  "references": [
-    { "path": "../core" }
-  ],
+  "references": [{ "path": "../core" }],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests"]
 }

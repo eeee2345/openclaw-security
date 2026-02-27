@@ -31,7 +31,8 @@ export const GUIDANCE_STEPS: GuidanceStep[] = [
     stepNumber: 1,
     titleEn: 'Welcome to Panguard AI',
     titleZh: '歡迎來到 Panguard AI',
-    descriptionEn: 'Answer a few quick questions and we\'ll recommend the perfect security setup for you. Takes less than 2 minutes.',
+    descriptionEn:
+      "Answer a few quick questions and we'll recommend the perfect security setup for you. Takes less than 2 minutes.",
     descriptionZh: '回答幾個簡單的問題，我們就推薦最適合你的資安方案。不到 2 分鐘。',
   },
   {
@@ -46,7 +47,8 @@ export const GUIDANCE_STEPS: GuidanceStep[] = [
         id: 'developer',
         labelEn: 'Developer',
         labelZh: '開發者',
-        descriptionEn: 'I have servers/VPS and build software. AI-generated code is part of my workflow.',
+        descriptionEn:
+          'I have servers/VPS and build software. AI-generated code is part of my workflow.',
         descriptionZh: '我有伺服器/VPS，寫軟體。AI 生成的 code 是我工作流程的一部分。',
       },
       {
@@ -101,7 +103,7 @@ export const GUIDANCE_STEPS: GuidanceStep[] = [
     stepNumber: 4,
     titleEn: 'Your Recommended Setup',
     titleZh: '你的推薦方案',
-    descriptionEn: 'Based on your answers, here\'s what we recommend.',
+    descriptionEn: "Based on your answers, here's what we recommend.",
     descriptionZh: '根據你的回答，我們推薦以下方案。',
   },
   {
@@ -153,9 +155,10 @@ export const GUIDANCE_STEPS: GuidanceStep[] = [
   {
     type: 'complete',
     stepNumber: 7,
-    titleEn: 'You\'re Protected!',
+    titleEn: "You're Protected!",
     titleZh: '你已受到保護！',
-    descriptionEn: 'Panguard AI is now learning your environment. You\'ll receive your first security summary in 24 hours.',
+    descriptionEn:
+      "Panguard AI is now learning your environment. You'll receive your first security summary in 24 hours.",
     descriptionZh: 'Panguard AI 正在學習你的環境。你會在 24 小時內收到第一份資安摘要。',
   },
 ];
@@ -256,9 +259,7 @@ function generateInstallCommand(answers: GuidanceAnswers): string {
     return 'curl -fsSL https://get.panguard.ai | sh';
   }
 
-  const channelFlag = answers.notificationChannel
-    ? ` --notify ${answers.notificationChannel}`
-    : '';
+  const channelFlag = answers.notificationChannel ? ` --notify ${answers.notificationChannel}` : '';
 
   return `curl -fsSL https://get.panguard.ai | sh -s -- --plan ${plan}${channelFlag}`;
 }
@@ -271,32 +272,40 @@ function generateConfigSteps(answers: GuidanceAnswers, language: WebLanguage): s
   const steps: string[] = [];
   const isZh = language === 'zh-TW';
 
-  steps.push(isZh
-    ? '1. 執行安裝指令（自動偵測你的環境）'
-    : '1. Run the install command (auto-detects your environment)');
+  steps.push(
+    isZh
+      ? '1. 執行安裝指令（自動偵測你的環境）'
+      : '1. Run the install command (auto-detects your environment)'
+  );
 
-  steps.push(isZh
-    ? '2. 等待 7 天學習期完成（已知攻擊仍會立即處理）'
-    : '2. Wait for the 7-day learning period (known attacks are still handled immediately)');
+  steps.push(
+    isZh
+      ? '2. 等待 7 天學習期完成（已知攻擊仍會立即處理）'
+      : '2. Wait for the 7-day learning period (known attacks are still handled immediately)'
+  );
 
   if (answers.notificationChannel) {
-    const channelName = answers.notificationChannel.charAt(0).toUpperCase()
-      + answers.notificationChannel.slice(1);
-    steps.push(isZh
-      ? `3. 設定 ${channelName} 通知管道`
-      : `3. Set up ${channelName} notification channel`);
+    const channelName =
+      answers.notificationChannel.charAt(0).toUpperCase() + answers.notificationChannel.slice(1);
+    steps.push(
+      isZh ? `3. 設定 ${channelName} 通知管道` : `3. Set up ${channelName} notification channel`
+    );
   }
 
   if (answers.persona === 'mid_enterprise') {
-    steps.push(isZh
-      ? '4. 設定合規報告排程（Panguard Report）'
-      : '4. Configure compliance report scheduling (Panguard Report)');
+    steps.push(
+      isZh
+        ? '4. 設定合規報告排程（Panguard Report）'
+        : '4. Configure compliance report scheduling (Panguard Report)'
+    );
   }
 
   if (answers.hasServer) {
-    steps.push(isZh
-      ? `${steps.length + 1}. 部署蜜罐服務（Panguard Trap）`
-      : `${steps.length + 1}. Deploy honeypot services (Panguard Trap)`);
+    steps.push(
+      isZh
+        ? `${steps.length + 1}. 部署蜜罐服務（Panguard Trap）`
+        : `${steps.length + 1}. Deploy honeypot services (Panguard Trap)`
+    );
   }
 
   return steps;
@@ -308,7 +317,7 @@ function generateConfigSteps(answers: GuidanceAnswers, language: WebLanguage): s
  */
 export function generateGuidanceResult(
   answers: GuidanceAnswers,
-  language: WebLanguage = 'zh-TW',
+  language: WebLanguage = 'zh-TW'
 ): GuidanceResult {
   const recommendedPlan = determinePlan(answers.persona);
   const recommendedProducts = determineProducts(answers);

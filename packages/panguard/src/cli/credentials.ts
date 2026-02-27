@@ -52,9 +52,9 @@ export type Tier = 'free' | 'solo' | 'pro' | 'enterprise' | 'starter' | 'team' |
 export const TIER_LEVEL: Record<Tier, number> = {
   free: 0,
   solo: 1,
-  starter: 2,  // legacy
+  starter: 2, // legacy
   pro: 2,
-  team: 3,     // legacy alias
+  team: 3, // legacy alias
   business: 4, // legacy
   enterprise: 5,
 };
@@ -86,11 +86,19 @@ export function saveCredentials(creds: StoredCredentials): void {
   const json = JSON.stringify(creds);
   const encrypted = encryptData(json);
   writeFileSync(CREDENTIALS_PATH, encrypted, { encoding: 'utf-8', mode: 0o600 });
-  try { chmodSync(CREDENTIALS_PATH, 0o600); } catch { /* best-effort */ }
+  try {
+    chmodSync(CREDENTIALS_PATH, 0o600);
+  } catch {
+    /* best-effort */
+  }
 
   // Remove legacy plaintext file if it exists
   if (existsSync(LEGACY_CREDENTIALS_PATH)) {
-    try { unlinkSync(LEGACY_CREDENTIALS_PATH); } catch { /* best-effort */ }
+    try {
+      unlinkSync(LEGACY_CREDENTIALS_PATH);
+    } catch {
+      /* best-effort */
+    }
   }
 }
 
@@ -134,10 +142,20 @@ export function loadCredentials(): StoredCredentials | null {
 export function deleteCredentials(): boolean {
   let removed = false;
   if (existsSync(CREDENTIALS_PATH)) {
-    try { unlinkSync(CREDENTIALS_PATH); removed = true; } catch { /* ignore */ }
+    try {
+      unlinkSync(CREDENTIALS_PATH);
+      removed = true;
+    } catch {
+      /* ignore */
+    }
   }
   if (existsSync(LEGACY_CREDENTIALS_PATH)) {
-    try { unlinkSync(LEGACY_CREDENTIALS_PATH); removed = true; } catch { /* ignore */ }
+    try {
+      unlinkSync(LEGACY_CREDENTIALS_PATH);
+      removed = true;
+    } catch {
+      /* ignore */
+    }
   }
   return removed;
 }
@@ -159,9 +177,9 @@ export function tierDisplayName(tier: Tier): string {
     solo: 'Solo',
     pro: 'Pro',
     enterprise: 'Enterprise',
-    starter: 'Starter',  // legacy
-    team: 'Pro',          // legacy → Pro
-    business: 'Pro',      // legacy → Pro
+    starter: 'Starter', // legacy
+    team: 'Pro', // legacy → Pro
+    business: 'Pro', // legacy → Pro
   };
   return names[tier] ?? tier;
 }

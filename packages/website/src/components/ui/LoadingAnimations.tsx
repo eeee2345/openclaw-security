@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { BRAND_LOGO_PATHS, BRAND_LOGO_VIEWBOX } from "./BrandLogo";
+import { BRAND_LOGO_PATHS, BRAND_LOGO_VIEWBOX } from './BrandLogo';
 
 function BrandShieldSVG({ width, height }: { width: number; height: number }) {
   return (
     <svg width={width} height={height} viewBox={BRAND_LOGO_VIEWBOX} fill="none">
-      {BRAND_LOGO_PATHS.filter(p => p.role === "fg").map((p, i) => (
+      {BRAND_LOGO_PATHS.filter((p) => p.role === 'fg').map((p, i) => (
         <path key={i} fill="#8B9A8E" d={p.d} />
       ))}
     </svg>
@@ -14,7 +14,7 @@ function BrandShieldSVG({ width, height }: { width: number; height: number }) {
 
 export function ShieldSpinner({
   size = 48,
-  className = "",
+  className = '',
 }: {
   size?: number;
   className?: string;
@@ -48,15 +48,12 @@ export function ShieldSpinner({
   );
 }
 
-export function PulseLoader({
-  size = 48,
-  className = "",
-}: {
-  size?: number;
-  className?: string;
-}) {
+export function PulseLoader({ size = 48, className = '' }: { size?: number; className?: string }) {
   return (
-    <div className={`relative inline-flex items-center justify-center ${className}`} style={{ width: size, height: size }}>
+    <div
+      className={`relative inline-flex items-center justify-center ${className}`}
+      style={{ width: size, height: size }}
+    >
       {/* Pulse rings */}
       <div
         className="absolute rounded-full bg-brand-sage/10 animate-[pulse-ring_2s_ease-out_infinite]"
@@ -72,13 +69,7 @@ export function PulseLoader({
   );
 }
 
-export function ScanLoader({
-  size = 48,
-  className = "",
-}: {
-  size?: number;
-  className?: string;
-}) {
+export function ScanLoader({ size = 48, className = '' }: { size?: number; className?: string }) {
   return (
     <div
       className={`relative inline-flex items-center justify-center overflow-hidden ${className}`}

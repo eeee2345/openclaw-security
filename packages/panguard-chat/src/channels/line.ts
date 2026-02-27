@@ -34,10 +34,13 @@ const logger = createLogger('panguard-chat:channel:line');
 /** Map severity to LINE Flex Message color */
 function severityColor(severity?: AlertSeverity): string {
   switch (severity) {
-    case 'critical': return '#FF0000';
-    case 'warning': return '#FFA500';
+    case 'critical':
+      return '#FF0000';
+    case 'warning':
+      return '#FFA500';
     case 'info':
-    default: return '#2196F3';
+    default:
+      return '#2196F3';
   }
 }
 
@@ -142,14 +145,9 @@ export class LineChannel implements MessagingChannel {
         messages: [lineMessage],
       });
 
-      const response = await this.httpPost(
-        'https://api.line.me/v2/bot/message/push',
-        payload,
-      );
+      const response = await this.httpPost('https://api.line.me/v2/bot/message/push', payload);
 
-      logger.info(
-        `LINE message sent to ${userId.slice(0, 8)}... / LINE 訊息已發送`,
-      );
+      logger.info(`LINE message sent to ${userId.slice(0, 8)}... / LINE 訊息已發送`);
 
       return {
         success: true,
@@ -219,10 +217,7 @@ export class LineChannel implements MessagingChannel {
     const userId = event.source.userId;
     const text = event.message.text;
 
-    logger.info(
-      `LINE message received from ${userId.slice(0, 8)}... / ` +
-      `收到 LINE 訊息`,
-    );
+    logger.info(`LINE message received from ${userId.slice(0, 8)}... / ` + `收到 LINE 訊息`);
 
     const response = await this.replyHandler(userId, text);
 
@@ -232,7 +227,7 @@ export class LineChannel implements MessagingChannel {
       JSON.stringify({
         replyToken: event.replyToken,
         messages: [buildTextMessage(response)],
-      }),
+      })
     );
 
     return response;
@@ -254,38 +249,42 @@ export class LineChannel implements MessagingChannel {
 
     return new Promise((resolve, reject) => {
       // Dynamic import to avoid bundling issues
-      import('node:https').then(({ request }) => {
-        const req = request(
-          {
-            hostname,
-            path: pathname,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.config.channelAccessToken}`,
-              'Content-Length': Buffer.byteLength(body),
+      import('node:https')
+        .then(({ request }) => {
+          const req = request(
+            {
+              hostname,
+              path: pathname,
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.config.channelAccessToken}`,
+                'Content-Length': Buffer.byteLength(body),
+              },
             },
-          },
-          (res) => {
-            let data = '';
-            res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
-            res.on('end', () => {
-              if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-                try {
-                  resolve(JSON.parse(data) as { messageId?: string });
-                } catch {
-                  resolve({});
+            (res) => {
+              let data = '';
+              res.on('data', (chunk: Buffer) => {
+                data += chunk.toString();
+              });
+              res.on('end', () => {
+                if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                  try {
+                    resolve(JSON.parse(data) as { messageId?: string });
+                  } catch {
+                    resolve({});
+                  }
+                } else {
+                  reject(new Error(`LINE API error ${res.statusCode}: ${data}`));
                 }
-              } else {
-                reject(new Error(`LINE API error ${res.statusCode}: ${data}`));
-              }
-            });
-          },
-        );
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-      }).catch(reject);
+              });
+            }
+          );
+          req.on('error', reject);
+          req.write(body);
+          req.end();
+        })
+        .catch(reject);
     });
   }
 }

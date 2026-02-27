@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, writeFileSync, existsSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { InMemoryCredentialStore, EncryptedFileCredentialStore } from '../src/credentials/credential-store.js';
+import {
+  InMemoryCredentialStore,
+  EncryptedFileCredentialStore,
+} from '../src/credentials/credential-store.js';
 import { scanPlaintextCredentials, migrateCredentials } from '../src/credentials/migration.js';
 
 describe('InMemoryCredentialStore', () => {

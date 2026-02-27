@@ -26,11 +26,14 @@ const logger = createLogger('panguard-guard:notify:telegram');
 export async function sendTelegramNotify(
   config: TelegramConfig,
   verdict: ThreatVerdict,
-  eventDescription: string,
+  eventDescription: string
 ): Promise<NotificationResult> {
   const conclusionLabel =
-    verdict.conclusion === 'malicious' ? 'MALICIOUS' :
-    verdict.conclusion === 'suspicious' ? 'SUSPICIOUS' : 'BENIGN';
+    verdict.conclusion === 'malicious'
+      ? 'MALICIOUS'
+      : verdict.conclusion === 'suspicious'
+        ? 'SUSPICIOUS'
+        : 'BENIGN';
 
   const text =
     `*[PanguardGuard Alert]*\n\n` +
@@ -77,7 +80,9 @@ function postTelegram(botToken: string, chatId: string, text: string): Promise<v
       },
       (res) => {
         let data = '';
-        res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+        res.on('data', (chunk: Buffer) => {
+          data += chunk.toString();
+        });
         res.on('end', () => {
           if (res.statusCode === 200) {
             resolve();
@@ -85,7 +90,7 @@ function postTelegram(botToken: string, chatId: string, text: string): Promise<v
             reject(new Error(`Telegram HTTP ${res.statusCode}: ${data}`));
           }
         });
-      },
+      }
     );
 
     req.on('error', reject);

@@ -6,23 +6,23 @@
 
 ## 系統需求
 
-| 項目 | 最低要求 |
-|------|---------|
+| 項目     | 最低要求                              |
+| -------- | ------------------------------------- |
 | 作業系統 | macOS 12+、Ubuntu 20.04+、Windows 10+ |
-| Node.js | >= 20.0.0 |
-| 磁碟空間 | 200 MB |
-| 記憶體 | 512 MB（Guard 運行時建議 1 GB） |
+| Node.js  | >= 20.0.0                             |
+| 磁碟空間 | 200 MB                                |
+| 記憶體   | 512 MB（Guard 運行時建議 1 GB）       |
 
 ### 跨平台支援狀態
 
-| 功能 | macOS | Linux | Windows |
-|------|-------|-------|---------|
-| **Scan** 掃描 | 完整（lsof, socketfilterfw） | 完整（ss, ufw/iptables） | 部分（netstat，無防火牆偵測） |
-| **Guard** 防護 | 輪詢監控（5 秒間隔） | 輪詢監控（5 秒間隔） | 輪詢監控（5 秒間隔） |
-| **Trap** 蜜罐 | TCP 端口蜜罐 | TCP 端口蜜罐 | TCP 端口蜜罐 |
-| **Chat** 通知 | LINE / Telegram / Slack | LINE / Telegram / Slack | LINE / Telegram / Slack |
-| **Report** 報告 | 完整（3 框架） | 完整（3 框架） | 完整（3 框架） |
-| 系統更新偵測 | softwareupdate | apt / yum | 尚未支援 |
+| 功能            | macOS                        | Linux                    | Windows                       |
+| --------------- | ---------------------------- | ------------------------ | ----------------------------- |
+| **Scan** 掃描   | 完整（lsof, socketfilterfw） | 完整（ss, ufw/iptables） | 部分（netstat，無防火牆偵測） |
+| **Guard** 防護  | 輪詢監控（5 秒間隔）         | 輪詢監控（5 秒間隔）     | 輪詢監控（5 秒間隔）          |
+| **Trap** 蜜罐   | TCP 端口蜜罐                 | TCP 端口蜜罐             | TCP 端口蜜罐                  |
+| **Chat** 通知   | LINE / Telegram / Slack      | LINE / Telegram / Slack  | LINE / Telegram / Slack       |
+| **Report** 報告 | 完整（3 框架）               | 完整（3 框架）           | 完整（3 框架）                |
+| 系統更新偵測    | softwareupdate               | apt / yum                | 尚未支援                      |
 
 > macOS 和 Linux 為主要支援平台。Windows 可執行基礎功能，但部分 OS 層級偵測尚未完善。
 
@@ -35,14 +35,14 @@
 1. 點擊「註冊」，使用 Google 帳號或 Email + 密碼
 2. 在 [Pricing](https://panguard.ai/pricing) 頁面瀏覽方案
 
-| 方案 | 月費 | 包含功能 |
-|------|------|---------|
-| **Scan** | $0 | 快速掃描、了解安全狀況 |
-| **Solo** | $9 | 即時防護、1 通知管道、1 端點 |
-| **Starter** | $19 | 防護 + 3 通知管道、最多 5 端點 |
-| **Team** | $14/端點 | 全功能含蜜罐、5-50 端點 |
-| **Business** | $10/端點 | 全功能 + 基礎合規報告、50-500 端點 |
-| **Enterprise** | 聯繫我們 | 500+ 端點、專屬支援 |
+| 方案           | 月費     | 包含功能                           |
+| -------------- | -------- | ---------------------------------- |
+| **Scan**       | $0       | 快速掃描、了解安全狀況             |
+| **Solo**       | $9       | 即時防護、1 通知管道、1 端點       |
+| **Starter**    | $19      | 防護 + 3 通知管道、最多 5 端點     |
+| **Team**       | $14/端點 | 全功能含蜜罐、5-50 端點            |
+| **Business**   | $10/端點 | 全功能 + 基礎合規報告、50-500 端點 |
+| **Enterprise** | 聯繫我們 | 500+ 端點、專屬支援                |
 
 Scan 方案即可開始使用。合規報告為獨立加價購，任何付費方案皆可購買。
 
@@ -235,14 +235,14 @@ panguard chat test
 
 你已經完成基本設定。以下是進階功能：
 
-| 想做什麼 | 等級 | 閱讀 |
-|---------|------|------|
-| 了解認證架構 | - | [概念：認證架構](concepts/authentication.md) |
-| 了解 AI 三層漏斗架構 | - | [概念：三層 AI 架構](concepts/three-layer-ai.md) |
-| 深入了解 Guard 的 5 個 AI Agent | Solo | [指南：Panguard Guard](guides/guard.md) |
-| 設定蜜罐捕捉攻擊者 | Team | [指南：Panguard Trap](guides/trap.md) |
-| 產生合規報告 | 加價購 | [指南：Panguard Report](guides/report.md) |
-| 部署集體威脅情報 | Business | [指南：Threat Cloud](guides/threat-cloud.md) |
-| 完整使用手冊 | - | [快速使用手冊](guides/quickstart-guide.md) |
-| 查看所有 CLI 指令 | - | [參考：CLI 完整指令](reference/cli.md) |
-| 撰寫自訂 Sigma 規則 | - | [參考：Sigma 規則](reference/sigma-rules.md) |
+| 想做什麼                        | 等級     | 閱讀                                             |
+| ------------------------------- | -------- | ------------------------------------------------ |
+| 了解認證架構                    | -        | [概念：認證架構](concepts/authentication.md)     |
+| 了解 AI 三層漏斗架構            | -        | [概念：三層 AI 架構](concepts/three-layer-ai.md) |
+| 深入了解 Guard 的 5 個 AI Agent | Solo     | [指南：Panguard Guard](guides/guard.md)          |
+| 設定蜜罐捕捉攻擊者              | Team     | [指南：Panguard Trap](guides/trap.md)            |
+| 產生合規報告                    | 加價購   | [指南：Panguard Report](guides/report.md)        |
+| 部署集體威脅情報                | Business | [指南：Threat Cloud](guides/threat-cloud.md)     |
+| 完整使用手冊                    | -        | [快速使用手冊](guides/quickstart-guide.md)       |
+| 查看所有 CLI 指令               | -        | [參考：CLI 完整指令](reference/cli.md)           |
+| 撰寫自訂 Sigma 規則             | -        | [參考：Sigma 規則](reference/sigma-rules.md)     |

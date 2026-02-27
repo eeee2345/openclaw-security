@@ -1,41 +1,49 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { FileText, Video, Image as ImageIcon, Download, ArrowRight, Mail, Send } from "lucide-react";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { resources, resourceTypes, Resource } from "@/data/resources";
+import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import {
+  FileText,
+  Video,
+  Image as ImageIcon,
+  Download,
+  ArrowRight,
+  Mail,
+  Send,
+} from 'lucide-react';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { resources, resourceTypes, Resource } from '@/data/resources';
 
 /* ─── Helpers ─── */
 
 function formatDate(dateStr: string, locale: string): string {
-  const [year, month] = dateStr.split("-");
+  const [year, month] = dateStr.split('-');
   const date = new Date(Number(year), Number(month) - 1);
-  return date.toLocaleDateString(locale === "zh" ? "zh-TW" : "en-US", {
-    year: "numeric",
-    month: "long",
+  return date.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
   });
 }
 
 /* ─── Type Badge Color Map ─── */
 
-const typeBadgeStyles: Record<Resource["type"], string> = {
-  Whitepaper: "bg-brand-sage/10 text-brand-sage",
-  Report: "bg-blue-500/10 text-blue-400",
-  Guide: "bg-amber-500/10 text-amber-400",
-  Webinar: "bg-purple-500/10 text-purple-400",
-  Infographic: "bg-pink-500/10 text-pink-400",
+const typeBadgeStyles: Record<Resource['type'], string> = {
+  Whitepaper: 'bg-brand-sage/10 text-brand-sage',
+  Report: 'bg-blue-500/10 text-blue-400',
+  Guide: 'bg-amber-500/10 text-amber-400',
+  Webinar: 'bg-purple-500/10 text-purple-400',
+  Infographic: 'bg-pink-500/10 text-pink-400',
 };
 
 /* ─── Type Icon Map ─── */
 
-function TypeIcon({ type, className }: { type: Resource["type"]; className?: string }) {
+function TypeIcon({ type, className }: { type: Resource['type']; className?: string }) {
   switch (type) {
-    case "Webinar":
+    case 'Webinar':
       return <Video className={className} />;
-    case "Infographic":
+    case 'Infographic':
       return <ImageIcon className={className} />;
     default:
       return <FileText className={className} />;
@@ -44,7 +52,7 @@ function TypeIcon({ type, className }: { type: Resource["type"]; className?: str
 
 /* ─── Type Badge ─── */
 
-function TypeBadge({ type }: { type: Resource["type"] }) {
+function TypeBadge({ type }: { type: Resource['type'] }) {
   return (
     <span
       className={`text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full ${typeBadgeStyles[type]}`}
@@ -57,32 +65,28 @@ function TypeBadge({ type }: { type: Resource["type"] }) {
 /* ════════════════════════  Resources Content  ═══════════════════════ */
 
 export default function ResourcesContent() {
-  const t = useTranslations("resources");
+  const t = useTranslations('resources');
   const locale = useLocale();
 
-  const [activeType, setActiveType] = useState("All");
+  const [activeType, setActiveType] = useState('All');
 
   const featuredResource = resources[0];
   const remainingResources = resources.slice(1);
 
   const filteredResources =
-    activeType === "All"
+    activeType === 'All'
       ? remainingResources
       : remainingResources.filter((r) => r.type === activeType);
 
-  function ctaLabel(type: Resource["type"]): string {
-    return type === "Webinar" ? t("watch") : t("download");
+  function ctaLabel(type: Resource['type']): string {
+    return type === 'Webinar' ? t('watch') : t('download');
   }
 
   return (
     <>
       {/* ───────────── Hero ───────────── */}
       <SectionWrapper spacing="spacious">
-        <SectionTitle
-          overline={t("overline")}
-          title={t("title")}
-          subtitle={t("subtitle")}
-        />
+        <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
       </SectionWrapper>
 
       {/* ───────────── Featured Resource ───────────── */}
@@ -100,7 +104,7 @@ export default function ResourcesContent() {
                 <div className="flex items-center gap-3 mb-4">
                   <TypeBadge type={featuredResource.type} />
                   <span className="text-[11px] uppercase tracking-wider font-semibold text-brand-sage">
-                    {t("featured")}
+                    {t('featured')}
                   </span>
                 </div>
                 <h2 className="text-[clamp(24px,3vw,36px)] font-bold text-text-primary leading-[1.15]">
@@ -138,8 +142,8 @@ export default function ResourcesContent() {
                 onClick={() => setActiveType(type)}
                 className={`text-sm font-semibold rounded-full px-5 py-2 transition-all duration-200 ${
                   activeType === type
-                    ? "bg-brand-sage text-surface-0"
-                    : "bg-surface-1 text-text-secondary border border-border hover:border-brand-sage/40 hover:text-text-primary"
+                    ? 'bg-brand-sage text-surface-0'
+                    : 'bg-surface-1 text-text-secondary border border-border hover:border-brand-sage/40 hover:text-text-primary'
                 }`}
               >
                 {type}
@@ -154,9 +158,7 @@ export default function ResourcesContent() {
         {filteredResources.length === 0 ? (
           <FadeInUp>
             <div className="text-center py-16">
-              <p className="text-text-tertiary text-lg">
-                {t("noResources")}
-              </p>
+              <p className="text-text-tertiary text-lg">{t('noResources')}</p>
             </div>
           </FadeInUp>
         ) : (
@@ -202,11 +204,9 @@ export default function ResourcesContent() {
           <div className="text-center max-w-2xl mx-auto">
             <Mail className="w-8 h-8 text-brand-sage mx-auto mb-4" />
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("newsletter.title")}
+              {t('newsletter.title')}
             </h2>
-            <p className="text-text-secondary mt-4 leading-relaxed">
-              {t("newsletter.desc")}
-            </p>
+            <p className="text-text-secondary mt-4 leading-relaxed">{t('newsletter.desc')}</p>
           </div>
         </FadeInUp>
         <FadeInUp delay={0.1}>
@@ -216,8 +216,8 @@ export default function ResourcesContent() {
           >
             <input
               type="email"
-              placeholder={t("newsletter.emailPlaceholder")}
-              aria-label={t("newsletter.emailAriaLabel")}
+              placeholder={t('newsletter.emailPlaceholder')}
+              aria-label={t('newsletter.emailAriaLabel')}
               className="w-full sm:flex-1 bg-surface-2 border border-border rounded-full px-5 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
               required
             />
@@ -225,13 +225,11 @@ export default function ResourcesContent() {
               type="submit"
               className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-6 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] shrink-0"
             >
-              {t("newsletter.subscribe")}
+              {t('newsletter.subscribe')}
               <Send className="w-4 h-4" />
             </button>
           </form>
-          <p className="text-xs text-text-muted text-center mt-3">
-            {t("newsletter.note")}
-          </p>
+          <p className="text-xs text-text-muted text-center mt-3">{t('newsletter.note')}</p>
         </FadeInUp>
       </SectionWrapper>
     </>

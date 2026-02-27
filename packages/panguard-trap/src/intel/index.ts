@@ -10,11 +10,7 @@
  */
 
 import { createLogger } from '@panguard-ai/core';
-import type {
-  TrapSession,
-  TrapIntelligence,
-  AttackerProfile,
-} from '../types.js';
+import type { TrapSession, TrapIntelligence, AttackerProfile } from '../types.js';
 
 const logger = createLogger('panguard-trap:intel');
 
@@ -48,7 +44,7 @@ function isPrivateIP(ip: string): boolean {
  */
 export function buildTrapIntel(
   session: TrapSession,
-  profile?: AttackerProfile,
+  profile?: AttackerProfile
 ): TrapIntelligence | null {
   // Don't report private IPs
   if (isPrivateIP(session.sourceIP)) {
@@ -89,9 +85,7 @@ export function buildTrapIntel(
     region: profile?.geoHints?.country,
   };
 
-  logger.info(
-    `Trap intel built for ${session.sourceIP} (${attackType}) / 蜜罐情報已建立`,
-  );
+  logger.info(`Trap intel built for ${session.sourceIP} (${attackType}) / 蜜罐情報已建立`);
 
   return intel;
 }
@@ -102,14 +96,12 @@ export function buildTrapIntel(
  */
 export function buildBatchIntel(
   sessions: TrapSession[],
-  profiles: Map<string, AttackerProfile>,
+  profiles: Map<string, AttackerProfile>
 ): TrapIntelligence[] {
   const results: TrapIntelligence[] = [];
 
   for (const session of sessions) {
-    const profile = session.attackerProfileId
-      ? profiles.get(session.attackerProfileId)
-      : undefined;
+    const profile = session.attackerProfileId ? profiles.get(session.attackerProfileId) : undefined;
     const intel = buildTrapIntel(session, profile);
     if (intel) {
       results.push(intel);

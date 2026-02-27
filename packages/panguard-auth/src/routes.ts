@@ -6,14 +6,24 @@
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { AuthDB } from './database.js';
-import { hashPassword, verifyPassword, generateSessionToken, generateVerifyToken, sessionExpiry } from './auth.js';
+import {
+  hashPassword,
+  verifyPassword,
+  generateSessionToken,
+  generateVerifyToken,
+  sessionExpiry,
+} from './auth.js';
 import { authenticateRequest, requireAdmin } from './middleware.js';
 import type { SmtpConfig } from './email-verify.js';
 import { sendVerificationEmail } from './email-verify.js';
 import type { GoogleOAuthConfig } from './google-oauth.js';
 import {
-  getGoogleAuthUrl, exchangeCodeForTokens, getGoogleUserInfo,
-  generateCodeVerifier, generateCodeChallenge, generateOAuthState,
+  getGoogleAuthUrl,
+  exchangeCodeForTokens,
+  getGoogleUserInfo,
+  generateCodeVerifier,
+  generateCodeChallenge,
+  generateOAuthState,
 } from './google-oauth.js';
 import type { GoogleSheetsConfig } from './google-sheets.js';
 import { syncWaitlistEntry, ensureSheetHeaders } from './google-sheets.js';
@@ -68,8 +78,24 @@ function json(res: ServerResponse, status: number, data: unknown): void {
   res.end(JSON.stringify(data));
 }
 
-function toPublicUser(u: { id: number; email: string; name: string; role: string; tier: string; createdAt: string; planExpiresAt?: string | null }): UserPublic {
-  return { id: u.id, email: u.email, name: u.name, role: u.role, tier: u.tier, createdAt: u.createdAt, planExpiresAt: u.planExpiresAt };
+function toPublicUser(u: {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
+  tier: string;
+  createdAt: string;
+  planExpiresAt?: string | null;
+}): UserPublic {
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role,
+    tier: u.tier,
+    createdAt: u.createdAt,
+    planExpiresAt: u.planExpiresAt,
+  };
 }
 
 function isValidEmail(email: unknown): email is string {
@@ -103,15 +129,18 @@ export function createAuthHandlers(config: AuthRouteConfig) {
   const pendingCliFlows = new Map<string, { callbackUrl: string; createdAt: number }>();
 
   // Cleanup stale flows every 5 minutes
-  const oauthCleanupTimer = setInterval(() => {
-    const cutoff = Date.now() - 10 * 60 * 1000; // 10 min TTL
-    for (const [state, flow] of pendingOAuthFlows) {
-      if (flow.createdAt < cutoff) pendingOAuthFlows.delete(state);
-    }
-    for (const [state, flow] of pendingCliFlows) {
-      if (flow.createdAt < cutoff) pendingCliFlows.delete(state);
-    }
-  }, 5 * 60 * 1000);
+  const oauthCleanupTimer = setInterval(
+    () => {
+      const cutoff = Date.now() - 10 * 60 * 1000; // 10 min TTL
+      for (const [state, flow] of pendingOAuthFlows) {
+        if (flow.createdAt < cutoff) pendingOAuthFlows.delete(state);
+      }
+      for (const [state, flow] of pendingCliFlows) {
+        if (flow.createdAt < cutoff) pendingCliFlows.delete(state);
+      }
+    },
+    5 * 60 * 1000
+  );
   if (oauthCleanupTimer.unref) oauthCleanupTimer.unref();
 
   // ── Waitlist ─────────────────────────────────────────────────────
@@ -124,7 +153,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     const result = await readBody(req);
     if (!result.ok) {
-      json(res, result.status, { ok: false, error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body' });
+      json(res, result.status, {
+        ok: false,
+        error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body',
+      });
       return;
     }
     const body = result.data;
@@ -151,7 +183,7 @@ export function createAuthHandlers(config: AuthRouteConfig) {
         role: typeof role === 'string' ? role : undefined,
         source: typeof source === 'string' ? source : undefined,
       },
-      verifyToken,
+      verifyToken
     );
 
     // Send verification email (non-blocking, don't fail the request)
@@ -250,7 +282,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     const result = await readBody(req);
     if (!result.ok) {
-      json(res, result.status, { ok: false, error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body' });
+      json(res, result.status, {
+        ok: false,
+        error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body',
+      });
       return;
     }
     const body = result.data;
@@ -308,7 +343,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     const result = await readBody(req);
     if (!result.ok) {
-      json(res, result.status, { ok: false, error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body' });
+      json(res, result.status, {
+        ok: false,
+        error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body',
+      });
       return;
     }
     const body = result.data;
@@ -390,7 +428,12 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     res.end();
   }
 
-  async function handleGoogleCallback(req: IncomingMessage, res: ServerResponse, code: string, state: string | null): Promise<void> {
+  async function handleGoogleCallback(
+    req: IncomingMessage,
+    res: ServerResponse,
+    code: string,
+    state: string | null
+  ): Promise<void> {
     if (!config.google) {
       json(res, 501, { ok: false, error: 'Google OAuth not configured' });
       return;
@@ -424,8 +467,12 @@ export function createAuthHandlers(config: AuthRouteConfig) {
         const randomPw = generateSessionToken(); // Not used for login, just to fill the field
         const pwHash = await hashPassword(randomPw);
         user = db.createUser(
-          { email: googleUser.email, name: googleUser.name || googleUser.email, password: randomPw },
-          pwHash,
+          {
+            email: googleUser.email,
+            name: googleUser.name || googleUser.email,
+            password: randomPw,
+          },
+          pwHash
         );
       }
 
@@ -496,7 +543,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
     const result = await readBody(req);
     if (!result.ok) {
-      json(res, result.status, { ok: false, error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body' });
+      json(res, result.status, {
+        ok: false,
+        error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body',
+      });
       return;
     }
     const body = result.data;
@@ -510,7 +560,7 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     // Validate web session
     const user = authenticateRequest(
       { headers: { authorization: `Bearer ${token}` } } as IncomingMessage,
-      db,
+      db
     );
     if (!user) {
       json(res, 401, { ok: false, error: 'Invalid session token' });
@@ -561,7 +611,11 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: users });
   }
 
-  async function handleAdminUpdateTier(req: IncomingMessage, res: ServerResponse, userId: string): Promise<void> {
+  async function handleAdminUpdateTier(
+    req: IncomingMessage,
+    res: ServerResponse,
+    userId: string
+  ): Promise<void> {
     if (req.method !== 'PATCH') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -582,7 +636,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     const { tier } = result.data;
     const validTiers = ['free', 'solo', 'starter', 'pro', 'team', 'business', 'enterprise'];
     if (typeof tier !== 'string' || !validTiers.includes(tier)) {
-      json(res, 400, { ok: false, error: `Invalid tier. Must be one of: ${validTiers.join(', ')}` });
+      json(res, 400, {
+        ok: false,
+        error: `Invalid tier. Must be one of: ${validTiers.join(', ')}`,
+      });
       return;
     }
 
@@ -605,7 +662,11 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: toPublicUser(updated) });
   }
 
-  async function handleAdminUpdateRole(req: IncomingMessage, res: ServerResponse, userId: string): Promise<void> {
+  async function handleAdminUpdateRole(
+    req: IncomingMessage,
+    res: ServerResponse,
+    userId: string
+  ): Promise<void> {
     if (req.method !== 'PATCH') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -662,7 +723,11 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: { users: userStats, waitlist: waitlistStats } });
   }
 
-  async function handleAdminWaitlistApprove(req: IncomingMessage, res: ServerResponse, entryId: string): Promise<void> {
+  async function handleAdminWaitlistApprove(
+    req: IncomingMessage,
+    res: ServerResponse,
+    entryId: string
+  ): Promise<void> {
     if (req.method !== 'POST') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -684,7 +749,11 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: { id: entry.id, status: 'approved' } });
   }
 
-  async function handleAdminWaitlistReject(req: IncomingMessage, res: ServerResponse, entryId: string): Promise<void> {
+  async function handleAdminWaitlistReject(
+    req: IncomingMessage,
+    res: ServerResponse,
+    entryId: string
+  ): Promise<void> {
     if (req.method !== 'POST') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -709,17 +778,29 @@ export function createAuthHandlers(config: AuthRouteConfig) {
   // ── Admin: Enhanced Endpoints ───────────────────────────────────
 
   function handleAdminDashboard(req: IncomingMessage, res: ServerResponse): void {
-    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'Method not allowed' }); return; }
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
     const user = authenticateRequest(req, db);
-    if (!requireAdmin(user)) { json(res, 403, { ok: false, error: 'Admin access required' }); return; }
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
     const stats = db.getAdminDashboardStats();
     json(res, 200, { ok: true, data: stats });
   }
 
   function handleAdminUsersSearch(req: IncomingMessage, res: ServerResponse): void {
-    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'Method not allowed' }); return; }
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
     const user = authenticateRequest(req, db);
-    if (!requireAdmin(user)) { json(res, 403, { ok: false, error: 'Admin access required' }); return; }
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
     const urlObj = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
     const q = urlObj.searchParams.get('q') ?? '';
     const users = q ? db.searchUsers(q) : db.getAllUsersAdmin();
@@ -727,26 +808,51 @@ export function createAuthHandlers(config: AuthRouteConfig) {
   }
 
   function handleAdminSessions(req: IncomingMessage, res: ServerResponse): void {
-    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'Method not allowed' }); return; }
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
     const user = authenticateRequest(req, db);
-    if (!requireAdmin(user)) { json(res, 403, { ok: false, error: 'Admin access required' }); return; }
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
     const sessions = db.getActiveSessions();
     json(res, 200, { ok: true, data: sessions });
   }
 
-  function handleAdminSessionRevoke(req: IncomingMessage, res: ServerResponse, sessionId: string): void {
-    if (req.method !== 'DELETE') { json(res, 405, { ok: false, error: 'Method not allowed' }); return; }
+  function handleAdminSessionRevoke(
+    req: IncomingMessage,
+    res: ServerResponse,
+    sessionId: string
+  ): void {
+    if (req.method !== 'DELETE') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
     const user = authenticateRequest(req, db);
-    if (!requireAdmin(user)) { json(res, 403, { ok: false, error: 'Admin access required' }); return; }
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
     const deleted = db.deleteSessionById(Number(sessionId));
-    if (!deleted) { json(res, 404, { ok: false, error: 'Session not found' }); return; }
+    if (!deleted) {
+      json(res, 404, { ok: false, error: 'Session not found' });
+      return;
+    }
     json(res, 200, { ok: true, data: { revoked: true } });
   }
 
   function handleAdminActivity(req: IncomingMessage, res: ServerResponse): void {
-    if (req.method !== 'GET') { json(res, 405, { ok: false, error: 'Method not allowed' }); return; }
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
     const user = authenticateRequest(req, db);
-    if (!requireAdmin(user)) { json(res, 403, { ok: false, error: 'Admin access required' }); return; }
+    if (!requireAdmin(user)) {
+      json(res, 403, { ok: false, error: 'Admin access required' });
+      return;
+    }
     const urlObj = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
     const limit = Math.min(parseInt(urlObj.searchParams.get('limit') ?? '20', 10) || 20, 50);
     const activity = db.getRecentActivity(limit);

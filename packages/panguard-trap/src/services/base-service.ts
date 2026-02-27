@@ -75,7 +75,7 @@ export abstract class BaseTrapService implements TrapService {
       await this.doStart();
       this._status = 'running';
       logger.info(
-        `${this.serviceType} trap started on port ${this.config.port} / ${this.serviceType} 蜜罐已啟動於埠 ${this.config.port}`,
+        `${this.serviceType} trap started on port ${this.config.port} / ${this.serviceType} 蜜罐已啟動於埠 ${this.config.port}`
       );
     } catch (err) {
       this._status = 'error';
@@ -98,9 +98,7 @@ export abstract class BaseTrapService implements TrapService {
       }
       await this.doStop();
       this._status = 'stopped';
-      logger.info(
-        `${this.serviceType} trap stopped / ${this.serviceType} 蜜罐已停止`,
-      );
+      logger.info(`${this.serviceType} trap stopped / ${this.serviceType} 蜜罐已停止`);
     } catch (err) {
       this._status = 'error';
       throw err;
@@ -142,7 +140,7 @@ export abstract class BaseTrapService implements TrapService {
     this.recordEvent(session.sessionId, 'connection', `${sourceIP}:${sourcePort}`);
 
     logger.info(
-      `New ${this.serviceType} session from ${sourceIP}:${sourcePort} (${session.sessionId}) / 新連線`,
+      `New ${this.serviceType} session from ${sourceIP}:${sourcePort} (${session.sessionId}) / 新連線`
     );
     return session;
   }
@@ -169,7 +167,7 @@ export abstract class BaseTrapService implements TrapService {
     }
 
     logger.info(
-      `Session ended: ${sessionId} (${s.durationMs}ms, ${s.events.length} events) / 連線結束`,
+      `Session ended: ${sessionId} (${s.durationMs}ms, ${s.events.length} events) / 連線結束`
     );
     return s;
   }
@@ -179,7 +177,7 @@ export abstract class BaseTrapService implements TrapService {
     sessionId: string,
     type: TrapEventType,
     data: string,
-    details?: Record<string, unknown>,
+    details?: Record<string, unknown>
   ): TrapEvent | undefined {
     const session = this.activeSessions.get(sessionId);
     if (!session) return undefined;
@@ -199,7 +197,7 @@ export abstract class BaseTrapService implements TrapService {
     sessionId: string,
     username: string,
     password: string,
-    grantedAccess: boolean,
+    grantedAccess: boolean
   ): void {
     const session = this.activeSessions.get(sessionId);
     if (!session) return;

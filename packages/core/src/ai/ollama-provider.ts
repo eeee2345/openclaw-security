@@ -103,9 +103,7 @@ export class OllamaProvider extends LLMProviderBase {
 
       // Check if the configured model is pulled
       // 檢查配置的模型是否已下載
-      const modelPulled = models.some(
-        (m) => m === this.model || m.startsWith(`${this.model}:`)
-      );
+      const modelPulled = models.some((m) => m === this.model || m.startsWith(`${this.model}:`));
 
       if (!modelPulled && models.length > 0) {
         this.logger.warn('Configured model not found in Ollama', {
@@ -149,9 +147,7 @@ export class OllamaProvider extends LLMProviderBase {
 
       const data = (await response.json()) as OllamaTagsResponse;
       const models = data.models?.map((m) => m.name) ?? [];
-      return models.some(
-        (m) => m === this.model || m.startsWith(`${this.model}:`)
-      );
+      return models.some((m) => m === this.model || m.startsWith(`${this.model}:`));
     } catch {
       return false;
     }
@@ -189,9 +185,7 @@ export class OllamaProvider extends LLMProviderBase {
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'Unknown error');
-        throw new Error(
-          `Ollama API error (${response.status}): ${errorText}`,
-        );
+        throw new Error(`Ollama API error (${response.status}): ${errorText}`);
       }
 
       const data = (await response.json()) as OllamaGenerateResponse;
@@ -216,7 +210,7 @@ export class OllamaProvider extends LLMProviderBase {
       if (error instanceof Error && error.name === 'AbortError') {
         throw new Error(
           `Ollama request timed out after ${this.config.timeout}ms. ` +
-          `Ensure Ollama is running at ${this.endpoint} and the model "${this.model}" is available.`,
+            `Ensure Ollama is running at ${this.endpoint} and the model "${this.model}" is available.`
         );
       }
 
@@ -228,7 +222,7 @@ export class OllamaProvider extends LLMProviderBase {
       ) {
         throw new Error(
           `Cannot connect to Ollama at ${this.endpoint}. ` +
-          `Ensure Ollama is installed and running: https://ollama.ai`,
+            `Ensure Ollama is installed and running: https://ollama.ai`
         );
       }
 

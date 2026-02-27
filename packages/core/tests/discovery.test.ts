@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Import from source files directly (vitest uses aliases)
 import { detectOS } from '../src/discovery/os-detector.js';
-import { getNetworkInterfaces, scanOpenPorts, getDnsServers } from '../src/discovery/network-scanner.js';
+import {
+  getNetworkInterfaces,
+  scanOpenPorts,
+  getDnsServers,
+} from '../src/discovery/network-scanner.js';
 import { detectServices } from '../src/discovery/service-detector.js';
 import { detectSecurityTools } from '../src/discovery/security-tools.js';
 import { checkFirewall } from '../src/discovery/firewall-checker.js';
@@ -32,7 +36,7 @@ describe('Network Scanner', () => {
     expect(Array.isArray(interfaces)).toBe(true);
     expect(interfaces.length).toBeGreaterThan(0);
     // At least one interface should have an IP
-    expect(interfaces.some(i => i.ip)).toBe(true);
+    expect(interfaces.some((i) => i.ip)).toBe(true);
   });
 
   it('should scan open ports', async () => {
@@ -88,7 +92,7 @@ describe('User Auditor', () => {
     // Current user should be in the list
     const currentUser = process.env['USER'] || process.env['USERNAME'];
     if (currentUser) {
-      expect(users.some(u => u.username === currentUser)).toBe(true);
+      expect(users.some((u) => u.username === currentUser)).toBe(true);
     }
   });
 });

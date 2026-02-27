@@ -72,7 +72,9 @@ export class FileMonitor extends EventEmitter {
     }
 
     this.running = true;
-    logger.info(`FileMonitor started (watching ${this.watchPaths.length} paths, poll interval: ${this.pollInterval}ms)`);
+    logger.info(
+      `FileMonitor started (watching ${this.watchPaths.length} paths, poll interval: ${this.pollInterval}ms)`
+    );
 
     // Run an initial check immediately / 立即執行首次檢查
     void this.checkFiles();
@@ -165,7 +167,10 @@ export class FileMonitor extends EventEmitter {
 
           // Only emit file_created if this is not the first run
           // 僅在非首次執行時發出 file_created 事件
-          if (this.fileHashes.size > this.watchPaths.length - (this.watchPaths.length - currentPaths.size)) {
+          if (
+            this.fileHashes.size >
+            this.watchPaths.length - (this.watchPaths.length - currentPaths.size)
+          ) {
             // We check if we have seen at least one full cycle
             // The first poll populates the baseline, subsequent polls detect changes
           }

@@ -60,46 +60,46 @@ Guard 的設定檔位於資料目錄中：
 
 #### mode
 
-| 值 | 說明 |
-|------|------|
-| `learning` | 學習模式，不產生告警 |
+| 值           | 說明                     |
+| ------------ | ------------------------ |
+| `learning`   | 學習模式，不產生告警     |
 | `protection` | 保護模式，偵測並回應威脅 |
 
 `learning` 在 7 天後自動切換為 `protection`。
 
 #### monitoring
 
-| 設定 | 類型 | 預設 | 說明 |
-|------|------|------|------|
-| `processes` | boolean | `true` | 監控程序活動 |
-| `network` | boolean | `true` | 監控網路連線 |
-| `files` | boolean | `true` | 監控檔案變更 |
-| `registry` | boolean | `false` | 監控 Windows 登錄（僅 Windows） |
+| 設定        | 類型    | 預設    | 說明                            |
+| ----------- | ------- | ------- | ------------------------------- |
+| `processes` | boolean | `true`  | 監控程序活動                    |
+| `network`   | boolean | `true`  | 監控網路連線                    |
+| `files`     | boolean | `true`  | 監控檔案變更                    |
+| `registry`  | boolean | `false` | 監控 Windows 登錄（僅 Windows） |
 
 #### response
 
-| 設定 | 類型 | 預設 | 說明 |
-|------|------|------|------|
-| `autoBlock` | boolean | `true` | 自動封鎖惡意 IP |
-| `autoQuarantine` | boolean | `true` | 自動隔離可疑檔案 |
-| `autoKill` | boolean | `true` | 自動終止惡意程序 |
-| `confirmThreshold` | number | `0.7` | 70% 以上信心度詢問確認 |
-| `autoThreshold` | number | `0.9` | 90% 以上信心度自動執行 |
+| 設定               | 類型    | 預設   | 說明                   |
+| ------------------ | ------- | ------ | ---------------------- |
+| `autoBlock`        | boolean | `true` | 自動封鎖惡意 IP        |
+| `autoQuarantine`   | boolean | `true` | 自動隔離可疑檔案       |
+| `autoKill`         | boolean | `true` | 自動終止惡意程序       |
+| `confirmThreshold` | number  | `0.7`  | 70% 以上信心度詢問確認 |
+| `autoThreshold`    | number  | `0.9`  | 90% 以上信心度自動執行 |
 
 #### threatIntel
 
-| 設定 | 類型 | 預設 | 說明 |
-|------|------|------|------|
-| `enabled` | boolean | `true` | 啟用威脅情報查詢 |
-| `feeds` | string[] | 全部 5 個 | 啟用的情報來源 |
-| `updateInterval` | number | `21600` | Feed 更新間隔（秒，預設 6 小時） |
+| 設定             | 類型     | 預設      | 說明                             |
+| ---------------- | -------- | --------- | -------------------------------- |
+| `enabled`        | boolean  | `true`    | 啟用威脅情報查詢                 |
+| `feeds`          | string[] | 全部 5 個 | 啟用的情報來源                   |
+| `updateInterval` | number   | `21600`   | Feed 更新間隔（秒，預設 6 小時） |
 
 #### dashboard
 
-| 設定 | 類型 | 預設 | 說明 |
-|------|------|------|------|
+| 設定      | 類型    | 預設    | 說明                     |
+| --------- | ------- | ------- | ------------------------ |
 | `enabled` | boolean | `false` | 啟用 WebSocket Dashboard |
-| `port` | number | `3100` | Dashboard 監聽 port |
+| `port`    | number  | `3100`  | Dashboard 監聽 port      |
 
 ---
 
@@ -223,15 +223,15 @@ CLI 登入後的憑證檔案：
 
 ### 欄位說明
 
-| 欄位 | 類型 | 說明 |
-|------|------|------|
-| `token` | string | Bearer session token |
-| `expiresAt` | string | ISO 到期時間（登入後 30 天） |
-| `email` | string | 帳號 email |
-| `tier` | string | 訂閱等級：`free` / `starter` / `pro` / `enterprise` |
-| `name` | string | 使用者名稱 |
-| `savedAt` | string | 儲存時間 |
-| `apiUrl` | string | 認證伺服器 URL |
+| 欄位        | 類型   | 說明                                                |
+| ----------- | ------ | --------------------------------------------------- |
+| `token`     | string | Bearer session token                                |
+| `expiresAt` | string | ISO 到期時間（登入後 30 天）                        |
+| `email`     | string | 帳號 email                                          |
+| `tier`      | string | 訂閱等級：`free` / `starter` / `pro` / `enterprise` |
+| `name`      | string | 使用者名稱                                          |
+| `savedAt`   | string | 儲存時間                                            |
+| `apiUrl`    | string | 認證伺服器 URL                                      |
 
 ### 管理指令
 
@@ -264,8 +264,8 @@ panguard logout
 
 部分設定可透過環境變數覆寫：
 
-| 環境變數 | 說明 |
-|---------|------|
-| `PANGUARD_DATA_DIR` | Guard 資料目錄 |
+| 環境變數             | 說明                              |
+| -------------------- | --------------------------------- |
+| `PANGUARD_DATA_DIR`  | Guard 資料目錄                    |
 | `PANGUARD_LOG_LEVEL` | 日誌等級（debug/info/warn/error） |
-| `PANGUARD_LANG` | 預設語言 |
+| `PANGUARD_LANG`      | 預設語言                          |

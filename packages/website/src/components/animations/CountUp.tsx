@@ -1,13 +1,13 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { useInView } from 'framer-motion';
 
 export default function CountUp({
   target,
-  suffix = "",
-  prefix = "",
+  suffix = '',
+  prefix = '',
   duration = 2000,
-  className = "",
+  className = '',
 }: {
   target: number;
   suffix?: string;
@@ -16,7 +16,7 @@ export default function CountUp({
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const inView = useInView(ref, { once: true, margin: '-50px' });
   const [val, setVal] = useState(0);
 
   useEffect(() => {
@@ -33,7 +33,9 @@ export default function CountUp({
 
   return (
     <span ref={ref} className={className}>
-      {prefix}{val.toLocaleString()}{suffix}
+      {prefix}
+      {val.toLocaleString()}
+      {suffix}
     </span>
   );
 }

@@ -35,10 +35,13 @@ const logger = createLogger('panguard-chat:channel:slack');
 /** Map severity to Slack attachment color */
 function severityToColor(severity?: AlertSeverity): string {
   switch (severity) {
-    case 'critical': return '#FF0000';
-    case 'warning': return '#FFA500';
+    case 'critical':
+      return '#FF0000';
+    case 'warning':
+      return '#FFA500';
     case 'info':
-    default: return '#2196F3';
+    default:
+      return '#2196F3';
   }
 }
 
@@ -112,10 +115,7 @@ export class SlackChannel implements MessagingChannel {
         ],
       });
 
-      const response = await this.httpPost(
-        'https://slack.com/api/chat.postMessage',
-        payload,
-      );
+      const response = await this.httpPost('https://slack.com/api/chat.postMessage', payload);
 
       if (!response.ok) {
         throw new Error(response.error ?? 'Slack API error');
@@ -157,19 +157,25 @@ export class SlackChannel implements MessagingChannel {
       const parts: Buffer[] = [];
 
       // channels field
-      parts.push(Buffer.from(
-        `--${boundary}\r\nContent-Disposition: form-data; name="channels"\r\n\r\n${channel}\r\n`,
-      ));
+      parts.push(
+        Buffer.from(
+          `--${boundary}\r\nContent-Disposition: form-data; name="channels"\r\n\r\n${channel}\r\n`
+        )
+      );
 
       // filename field
-      parts.push(Buffer.from(
-        `--${boundary}\r\nContent-Disposition: form-data; name="filename"\r\n\r\n${filename}\r\n`,
-      ));
+      parts.push(
+        Buffer.from(
+          `--${boundary}\r\nContent-Disposition: form-data; name="filename"\r\n\r\n${filename}\r\n`
+        )
+      );
 
       // file field
-      parts.push(Buffer.from(
-        `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: application/octet-stream\r\n\r\n`,
-      ));
+      parts.push(
+        Buffer.from(
+          `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: application/octet-stream\r\n\r\n`
+        )
+      );
       parts.push(file);
       parts.push(Buffer.from(`\r\n--${boundary}--\r\n`));
 
@@ -178,7 +184,7 @@ export class SlackChannel implements MessagingChannel {
       await this.httpPostRaw(
         'https://slack.com/api/files.upload',
         body,
-        `multipart/form-data; boundary=${boundary}`,
+        `multipart/form-data; boundary=${boundary}`
       );
 
       logger.info(`Slack file sent: ${filename} / Slack 檔案已發送: ${filename}`);
@@ -222,10 +228,7 @@ export class SlackChannel implements MessagingChannel {
     // Handle interactive button presses
     if (event.type === 'block_actions' && event.actions && event.actions.length > 0) {
       const action = event.actions[0]!;
-      return this.replyHandler(
-        event.channel ?? event.user ?? '',
-        action.value,
-      );
+      return this.replyHandler(event.channel ?? event.user ?? '', action.value);
     }
 
     return null;
@@ -235,15 +238,12 @@ export class SlackChannel implements MessagingChannel {
    * Verify Slack request signature
    * 驗證 Slack 請求簽名
    */
-  async verifySignature(
-    signature: string,
-    timestamp: string,
-    body: string,
-  ): Promise<boolean> {
+  async verifySignature(signature: string, timestamp: string, body: string): Promise<boolean> {
     try {
       const crypto = await import('node:crypto');
       const sigBasestring = `v0:${timestamp}:${body}`;
-      const mySignature = `v0=${crypto.createHmac('sha256', this.config.signingSecret)
+      const mySignature = `v0=${crypto
+        .createHmac('sha256', this.config.signingSecret)
         .update(sigBasestring)
         .digest('hex')}`;
       return mySignature === signature;
@@ -258,78 +258,82 @@ export class SlackChannel implements MessagingChannel {
 
   private async httpPost(
     url: string,
-    body: string,
+    body: string
   ): Promise<{ ok: boolean; error?: string; ts?: string }> {
     const { hostname, pathname } = new URL(url);
 
     return new Promise((resolve, reject) => {
-      import('node:https').then(({ request }) => {
-        const req = request(
-          {
-            hostname,
-            path: pathname,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-              'Authorization': `Bearer ${this.config.botToken}`,
-              'Content-Length': Buffer.byteLength(body),
+      import('node:https')
+        .then(({ request }) => {
+          const req = request(
+            {
+              hostname,
+              path: pathname,
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                Authorization: `Bearer ${this.config.botToken}`,
+                'Content-Length': Buffer.byteLength(body),
+              },
             },
-          },
-          (res) => {
-            let data = '';
-            res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
-            res.on('end', () => {
-              try {
-                resolve(JSON.parse(data) as { ok: boolean; error?: string; ts?: string });
-              } catch {
-                reject(new Error(`Invalid Slack response: ${data}`));
-              }
-            });
-          },
-        );
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-      }).catch(reject);
+            (res) => {
+              let data = '';
+              res.on('data', (chunk: Buffer) => {
+                data += chunk.toString();
+              });
+              res.on('end', () => {
+                try {
+                  resolve(JSON.parse(data) as { ok: boolean; error?: string; ts?: string });
+                } catch {
+                  reject(new Error(`Invalid Slack response: ${data}`));
+                }
+              });
+            }
+          );
+          req.on('error', reject);
+          req.write(body);
+          req.end();
+        })
+        .catch(reject);
     });
   }
 
-  private async httpPostRaw(
-    url: string,
-    body: Buffer,
-    contentType: string,
-  ): Promise<void> {
+  private async httpPostRaw(url: string, body: Buffer, contentType: string): Promise<void> {
     const { hostname, pathname } = new URL(url);
 
     return new Promise((resolve, reject) => {
-      import('node:https').then(({ request }) => {
-        const req = request(
-          {
-            hostname,
-            path: pathname,
-            method: 'POST',
-            headers: {
-              'Content-Type': contentType,
-              'Authorization': `Bearer ${this.config.botToken}`,
-              'Content-Length': body.length,
+      import('node:https')
+        .then(({ request }) => {
+          const req = request(
+            {
+              hostname,
+              path: pathname,
+              method: 'POST',
+              headers: {
+                'Content-Type': contentType,
+                Authorization: `Bearer ${this.config.botToken}`,
+                'Content-Length': body.length,
+              },
             },
-          },
-          (res) => {
-            let data = '';
-            res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
-            res.on('end', () => {
-              if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-                resolve();
-              } else {
-                reject(new Error(`Slack API error ${res.statusCode}: ${data}`));
-              }
-            });
-          },
-        );
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-      }).catch(reject);
+            (res) => {
+              let data = '';
+              res.on('data', (chunk: Buffer) => {
+                data += chunk.toString();
+              });
+              res.on('end', () => {
+                if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                  resolve();
+                } else {
+                  reject(new Error(`Slack API error ${res.statusCode}: ${data}`));
+                }
+              });
+            }
+          );
+          req.on('error', reject);
+          req.write(body);
+          req.end();
+        })
+        .catch(reject);
     });
   }
 }

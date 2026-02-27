@@ -27,7 +27,7 @@ import type { Language } from '../../types.js';
 export function getThreatAnalysisPrompt(
   prompt: string,
   context: string | undefined,
-  lang: Language,
+  lang: Language
 ): string {
   const contextSection = context
     ? lang === 'zh-TW'

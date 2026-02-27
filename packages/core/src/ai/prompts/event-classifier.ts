@@ -58,7 +58,7 @@ export function getEventClassifierPrompt(event: SecurityEvent, lang: Language): 
       metadata: event.metadata,
     },
     null,
-    2,
+    2
   );
 
   if (lang === 'zh-TW') {

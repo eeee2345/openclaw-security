@@ -58,7 +58,7 @@ export class WebhookChannel implements MessagingChannel {
     this.config = config;
     logger.info(
       `Webhook channel initialized: ${config.endpoint} (${config.authMethod}) / ` +
-      `Webhook 管道已初始化: ${config.endpoint} (${config.authMethod})`,
+        `Webhook 管道已初始化: ${config.endpoint} (${config.authMethod})`
     );
   }
 
@@ -90,8 +90,12 @@ export class WebhookChannel implements MessagingChannel {
       version: '1.0',
       type: 'alert',
       timestamp: new Date().toISOString(),
-      severity: alert.severity === 'critical' || alert.severity === 'high' ? 'critical'
-        : alert.severity === 'medium' ? 'warning' : 'info',
+      severity:
+        alert.severity === 'critical' || alert.severity === 'high'
+          ? 'critical'
+          : alert.severity === 'medium'
+            ? 'warning'
+            : 'info',
       data: {
         conclusion: alert.conclusion,
         confidence: alert.confidence,
@@ -169,9 +173,7 @@ export class WebhookChannel implements MessagingChannel {
         'Content-Type': 'application/json',
         'Content-Length': String(Buffer.byteLength(body)),
         'X-Panguard-Version': '1.0',
-        ...Object.fromEntries(
-          Object.entries(this.config.headers ?? {}).map(([k, v]) => [k, v]),
-        ),
+        ...Object.fromEntries(Object.entries(this.config.headers ?? {}).map(([k, v]) => [k, v])),
       };
 
       // Add authentication headers based on method
@@ -193,7 +195,7 @@ export class WebhookChannel implements MessagingChannel {
       await this.httpPost(body, headers);
 
       logger.info(
-        `Webhook sent to ${this.config.endpoint} / Webhook 已發送到 ${this.config.endpoint}`,
+        `Webhook sent to ${this.config.endpoint} / Webhook 已發送到 ${this.config.endpoint}`
       );
 
       return { success: true, channel: 'webhook' };
@@ -210,9 +212,7 @@ export class WebhookChannel implements MessagingChannel {
    */
   private async computeHmac(body: string): Promise<string> {
     const { createHmac } = await import('node:crypto');
-    return createHmac('sha256', this.config.secret)
-      .update(body)
-      .digest('hex');
+    return createHmac('sha256', this.config.secret).update(body).digest('hex');
   }
 
   /**
@@ -227,49 +227,53 @@ export class WebhookChannel implements MessagingChannel {
     return new Promise((resolve, reject) => {
       const moduleName = isHttps ? 'node:https' : 'node:http';
 
-      import(moduleName).then((mod) => {
-        const requestFn = (mod as { request: typeof import('node:https').request }).request;
+      import(moduleName)
+        .then((mod) => {
+          const requestFn = (mod as { request: typeof import('node:https').request }).request;
 
-        const options: Record<string, unknown> = {
-          hostname,
-          path: pathname,
-          port: port || (isHttps ? 443 : 80),
-          method: 'POST',
-          headers,
-        };
+          const options: Record<string, unknown> = {
+            hostname,
+            path: pathname,
+            port: port || (isHttps ? 443 : 80),
+            method: 'POST',
+            headers,
+          };
 
-        // For mTLS, add client certificate options
-        // In production, these would come from the config
-        // 對於 mTLS，加入客戶端憑證選項
-        if (this.config.authMethod === 'mtls') {
-          // mTLS certificates would be loaded from config
-          // options.key = fs.readFileSync(config.clientKeyPath);
-          // options.cert = fs.readFileSync(config.clientCertPath);
-          // options.ca = fs.readFileSync(config.caCertPath);
-          options['rejectUnauthorized'] = true;
-        }
+          // For mTLS, add client certificate options
+          // In production, these would come from the config
+          // 對於 mTLS，加入客戶端憑證選項
+          if (this.config.authMethod === 'mtls') {
+            // mTLS certificates would be loaded from config
+            // options.key = fs.readFileSync(config.clientKeyPath);
+            // options.cert = fs.readFileSync(config.clientCertPath);
+            // options.ca = fs.readFileSync(config.caCertPath);
+            options['rejectUnauthorized'] = true;
+          }
 
-        const req = requestFn(options, (res) => {
-          let data = '';
-          res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
-          res.on('end', () => {
-            const statusCode = res.statusCode ?? 0;
-            if (statusCode >= 200 && statusCode < 300) {
-              resolve();
-            } else {
-              reject(new Error(`Webhook error ${statusCode}: ${data}`));
-            }
+          const req = requestFn(options, (res) => {
+            let data = '';
+            res.on('data', (chunk: Buffer) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              const statusCode = res.statusCode ?? 0;
+              if (statusCode >= 200 && statusCode < 300) {
+                resolve();
+              } else {
+                reject(new Error(`Webhook error ${statusCode}: ${data}`));
+              }
+            });
           });
-        });
 
-        req.on('error', reject);
-        req.setTimeout(30000, () => {
-          req.destroy();
-          reject(new Error('Webhook connection timeout'));
-        });
-        req.write(body);
-        req.end();
-      }).catch(reject);
+          req.on('error', reject);
+          req.setTimeout(30000, () => {
+            req.destroy();
+            reject(new Error('Webhook connection timeout'));
+          });
+          req.write(body);
+          req.end();
+        })
+        .catch(reject);
     });
   }
 }

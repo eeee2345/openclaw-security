@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AI-driven adaptive cybersecurity platform / AI \u9a45\u52d5\u7684\u81ea\u9069\u61c9\u8cc7\u5b89\u9632\u8b77\u5e73\u53f0",
+  "description": "AI-driven adaptive cybersecurity platform / AI 驅動的自適應資安防護平台",
   "author": "Panguard AI Team",
   "license": "MIT",
   "engines": {

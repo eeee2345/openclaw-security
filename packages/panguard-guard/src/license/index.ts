@@ -144,12 +144,7 @@ export function generateTestLicenseKey(tier: LicenseTier): string {
 // ---------------------------------------------------------------------------
 
 /** Validate checksum of license key segments / 驗證授權金鑰段落的校驗碼 */
-function validateChecksum(
-  tierCode: string,
-  seg2: string,
-  seg3: string,
-  seg4: string,
-): boolean {
+function validateChecksum(tierCode: string, seg2: string, seg3: string, seg4: string): boolean {
   const seg4base = seg4.slice(0, 3);
   const checkChar = seg4[3];
   const expected = calculateCheckChar(tierCode, seg2, seg3, seg4base);
@@ -161,7 +156,7 @@ function calculateCheckChar(
   tierCode: string,
   seg2: string,
   seg3: string,
-  seg4base: string,
+  seg4base: string
 ): string {
   const allChars = tierCode + seg2 + seg3 + seg4base;
   let sum = 0;

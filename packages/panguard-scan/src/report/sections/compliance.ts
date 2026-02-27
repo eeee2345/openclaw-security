@@ -98,14 +98,12 @@ function statusText(status: ComplianceStatus['status'], isZh: boolean): string {
 export function renderCompliance(
   doc: PDFKit.PDFDocument,
   result: ScanResult,
-  lang: Language,
+  lang: Language
 ): void {
   const isZh = lang === 'zh-TW';
 
   // -- Section title --
-  const sectionTitle = isZh
-    ? '台灣資通安全管理法合規對照'
-    : 'Taiwan ISMS Compliance Mapping';
+  const sectionTitle = isZh ? '台灣資通安全管理法合規對照' : 'Taiwan ISMS Compliance Mapping';
 
   doc
     .font(FONTS.heading)
@@ -128,14 +126,10 @@ export function renderCompliance(
     ? '以下表格將掃描發現對應到台灣資通安全管理法的相關條文，以評估系統的合規狀態。'
     : 'The following table maps scan findings to relevant articles of the Taiwan Information Security Management Act to assess system compliance status.';
 
-  doc
-    .font(FONTS.body)
-    .fontSize(9)
-    .fillColor(COLORS.text)
-    .text(introText, LAYOUT.margin, doc.y, {
-      width: LAYOUT.contentWidth,
-      lineGap: 2,
-    });
+  doc.font(FONTS.body).fontSize(9).fillColor(COLORS.text).text(introText, LAYOUT.margin, doc.y, {
+    width: LAYOUT.contentWidth,
+    lineGap: 2,
+  });
 
   doc.moveDown(1);
 
@@ -145,25 +139,19 @@ export function renderCompliance(
   // -- Table header --
   const tableStartY = doc.y;
   const rowHeight = 24;
-  const col1X = LAYOUT.margin;           // Ref
-  const col2X = LAYOUT.margin + 40;      // Article title
-  const col3X = LAYOUT.margin + 240;     // Status
-  const col4X = LAYOUT.margin + 340;     // Related Findings
+  const col1X = LAYOUT.margin; // Ref
+  const col2X = LAYOUT.margin + 40; // Article title
+  const col3X = LAYOUT.margin + 240; // Status
+  const col4X = LAYOUT.margin + 340; // Related Findings
   const tableWidth = LAYOUT.contentWidth;
 
   // Header row background
-  doc
-    .rect(col1X, tableStartY, tableWidth, rowHeight)
-    .fillOpacity(0.08)
-    .fill(COLORS.primary);
+  doc.rect(col1X, tableStartY, tableWidth, rowHeight).fillOpacity(0.08).fill(COLORS.primary);
 
   doc.fillOpacity(1);
 
   // Header labels
-  doc
-    .font(FONTS.heading)
-    .fontSize(8)
-    .fillColor(COLORS.primary);
+  doc.font(FONTS.heading).fontSize(8).fillColor(COLORS.primary);
 
   doc.text(isZh ? '編號' : 'Ref', col1X + 4, tableStartY + 7);
   doc.text(isZh ? '條文' : 'Article', col2X + 4, tableStartY + 7);
@@ -183,10 +171,7 @@ export function renderCompliance(
 
     // Alternating row background
     if (index % 2 === 0) {
-      doc
-        .rect(col1X, currentY, tableWidth, rowHeight)
-        .fillOpacity(0.03)
-        .fill(COLORS.secondary);
+      doc.rect(col1X, currentY, tableWidth, rowHeight).fillOpacity(0.03).fill(COLORS.secondary);
       doc.fillOpacity(1);
     }
 
@@ -242,37 +227,36 @@ export function renderCompliance(
 
   doc.moveDown(0.4);
 
-  const legendItems: Array<{ status: ComplianceStatus['status']; descEn: string; descZh: string }> = [
-    {
-      status: 'compliant',
-      descEn: 'Compliant - No issues found for this area',
-      descZh: '合規 - 此領域未發現問題',
-    },
-    {
-      status: 'non_compliant',
-      descEn: 'Non-Compliant - Critical or high severity issues detected',
-      descZh: '不合規 - 偵測到嚴重或高嚴重度的問題',
-    },
-    {
-      status: 'partial',
-      descEn: 'Partial - Medium or low severity issues detected',
-      descZh: '部分合規 - 偵測到中等或低嚴重度的問題',
-    },
-    {
-      status: 'not_applicable',
-      descEn: 'N/A - Not covered by this scan',
-      descZh: '不適用 - 本次掃描未涵蓋',
-    },
-  ];
+  const legendItems: Array<{ status: ComplianceStatus['status']; descEn: string; descZh: string }> =
+    [
+      {
+        status: 'compliant',
+        descEn: 'Compliant - No issues found for this area',
+        descZh: '合規 - 此領域未發現問題',
+      },
+      {
+        status: 'non_compliant',
+        descEn: 'Non-Compliant - Critical or high severity issues detected',
+        descZh: '不合規 - 偵測到嚴重或高嚴重度的問題',
+      },
+      {
+        status: 'partial',
+        descEn: 'Partial - Medium or low severity issues detected',
+        descZh: '部分合規 - 偵測到中等或低嚴重度的問題',
+      },
+      {
+        status: 'not_applicable',
+        descEn: 'N/A - Not covered by this scan',
+        descZh: '不適用 - 本次掃描未涵蓋',
+      },
+    ];
 
   for (const item of legendItems) {
     const color = statusColor(item.status);
     const text = isZh ? item.descZh : item.descEn;
 
     // Small colored dot
-    doc
-      .circle(LAYOUT.margin + 14, doc.y + 5, 4)
-      .fill(color);
+    doc.circle(LAYOUT.margin + 14, doc.y + 5, 4).fill(color);
 
     doc
       .font(FONTS.body)

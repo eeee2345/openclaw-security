@@ -14,7 +14,7 @@ function request(
   method: string,
   path: string,
   body?: unknown,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<{ status: number; data: Record<string, unknown> }> {
   return new Promise((resolve, reject) => {
     const addr = server.address();
@@ -100,7 +100,11 @@ describe('Auth Routes', () => {
   afterEach(async () => {
     db.close();
     await new Promise<void>((resolve) => server.close(() => resolve()));
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   // ── Waitlist ────────────────────────────────────────────────────

@@ -9,7 +9,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { c, symbols, box } from '@panguard-ai/core';
-import { loadCredentials, saveCredentials, isTokenExpired, tierDisplayName, TIER_LEVEL } from './credentials.js';
+import {
+  loadCredentials,
+  saveCredentials,
+  isTokenExpired,
+  tierDisplayName,
+  TIER_LEVEL,
+} from './credentials.js';
 import type { StoredCredentials, Tier } from './credentials.js';
 
 export type RequiredTier = Tier;
@@ -67,7 +73,7 @@ export function requireAuth(requiredTier: RequiredTier = 'free'): AuthCheckResul
  */
 export function withAuth<T>(
   requiredTier: RequiredTier,
-  handler: (options: T, credentials: StoredCredentials) => Promise<void>,
+  handler: (options: T, credentials: StoredCredentials) => Promise<void>
 ): (options: T) => Promise<void> {
   return async (options: T) => {
     // In server mode, require a valid service token from environment.
@@ -87,15 +93,17 @@ export function withAuth<T>(
 
     if (!check.authenticated) {
       console.log('');
-      console.log(box(
-        [
-          `${symbols.warn} \u9700\u8981\u767B\u5165 / Authentication required`,
-          '',
-          `  \u8ACB\u57F7\u884C ${c.sage('panguard login')} \u4F86\u9A57\u8B49\u3002`,
-          `  Run ${c.sage('panguard login')} to authenticate.`,
-        ].join('\n'),
-        { borderColor: c.caution, title: 'Panguard AI' },
-      ));
+      console.log(
+        box(
+          [
+            `${symbols.warn} \u9700\u8981\u767B\u5165 / Authentication required`,
+            '',
+            `  \u8ACB\u57F7\u884C ${c.sage('panguard login')} \u4F86\u9A57\u8B49\u3002`,
+            `  Run ${c.sage('panguard login')} to authenticate.`,
+          ].join('\n'),
+          { borderColor: c.caution, title: 'Panguard AI' }
+        )
+      );
       console.log('');
       process.exitCode = 1;
       return;
@@ -104,17 +112,19 @@ export function withAuth<T>(
     if (!check.authorized) {
       const tierName = tierDisplayName(requiredTier);
       console.log('');
-      console.log(box(
-        [
-          `${symbols.fail} \u9700\u8981 ${tierName} \u7B49\u7D1A / ${tierName} tier required`,
-          '',
-          `  \u76EE\u524D\u7B49\u7D1A: ${c.sage(tierDisplayName(check.credentials!.tier))}`,
-          `  Current tier: ${c.sage(tierDisplayName(check.credentials!.tier))}`,
-          '',
-          `  \u5347\u7D1A\u8ACB\u898B ${c.underline('https://panguard.ai/pricing')}`,
-        ].join('\n'),
-        { borderColor: c.critical, title: '\u9700\u8981\u5347\u7D1A / Upgrade Required' },
-      ));
+      console.log(
+        box(
+          [
+            `${symbols.fail} \u9700\u8981 ${tierName} \u7B49\u7D1A / ${tierName} tier required`,
+            '',
+            `  \u76EE\u524D\u7B49\u7D1A: ${c.sage(tierDisplayName(check.credentials!.tier))}`,
+            `  Current tier: ${c.sage(tierDisplayName(check.credentials!.tier))}`,
+            '',
+            `  \u5347\u7D1A\u8ACB\u898B ${c.underline('https://panguard.ai/pricing')}`,
+          ].join('\n'),
+          { borderColor: c.critical, title: '\u9700\u8981\u5347\u7D1A / Upgrade Required' }
+        )
+      );
       console.log('');
       process.exitCode = 1;
       return;
@@ -154,8 +164,15 @@ export function refreshTierInBackground(): void {
     headers: { Authorization: `Bearer ${creds.token}` },
     signal: AbortSignal.timeout(5000),
   })
-    .then(res => res.ok ? res.json() as Promise<{ ok: boolean; data?: { user?: { tier?: string; name?: string; email?: string } } }> : null)
-    .then(body => {
+    .then((res) =>
+      res.ok
+        ? (res.json() as Promise<{
+            ok: boolean;
+            data?: { user?: { tier?: string; name?: string; email?: string } };
+          }>)
+        : null
+    )
+    .then((body) => {
       if (!body?.data?.user?.tier) return;
       const serverTier = body.data.user.tier as Tier;
       if (serverTier !== creds.tier || body.data.user.name !== creds.name) {
@@ -166,7 +183,9 @@ export function refreshTierInBackground(): void {
         });
       }
     })
-    .catch(() => { /* offline or timeout — keep local cache */ });
+    .catch(() => {
+      /* offline or timeout — keep local cache */
+    });
 }
 
 /**
@@ -239,11 +258,14 @@ export function showUpgradePrompt(feature: string, lang: string = 'en'): void {
   const userTierName = tierDisplayName(userTier);
   const pricing = PRICING_TIERS[tier];
   const priceStr = pricing
-    ? (pricing.price === 'custom'
-      ? (lang === 'zh-TW' ? '\u5BA2\u88FD\u5316\u5831\u50F9' : 'Custom pricing')
-      : `$${pricing.price}${pricing.unit}`)
+    ? pricing.price === 'custom'
+      ? lang === 'zh-TW'
+        ? '\u5BA2\u88FD\u5316\u5831\u50F9'
+        : 'Custom pricing'
+      : `$${pricing.price}${pricing.unit}`
     : '';
-  const featureName = FEATURE_DISPLAY[feature]?.[lang] ?? FEATURE_DISPLAY[feature]?.['en'] ?? feature;
+  const featureName =
+    FEATURE_DISPLAY[feature]?.[lang] ?? FEATURE_DISPLAY[feature]?.['en'] ?? feature;
 
   // Minimalist upgrade prompt with brand-colored border
   const W = 53;
@@ -260,32 +282,37 @@ export function showUpgradePrompt(feature: string, lang: string = 'en'): void {
     return s + ' '.repeat(Math.max(0, w - len));
   };
 
-  const lines: string[] = lang === 'zh-TW' ? [
-    `  \uD83D\uDD12  \u300C${featureName}\u300D\u9700\u8981 ${tierName} \u65B9\u6848`,
-    priceStr ? `      ${priceStr}` : '',
-    '',
-    `  \u76EE\u524D\u65B9\u6848:  ${c.sage(userTierName)}`,
-    `  \u9700\u8981\u65B9\u6848:  ${c.sage(tierName)}`,
-    '',
-    `  \u2192 ${c.underline('https://panguard.ai/pricing')}`,
-    `  \u2192 ${c.sage('panguard activate <license-key>')}`,
-    '',
-    c.dim('  \u6240\u6709\u4ED8\u8CBB\u65B9\u6848\u4EAB 30 \u5929\u514D\u8CBB\u8A66\u7528\u3002'),
-  ] : [
-    `  \uD83D\uDD12  ${featureName} requires ${tierName} plan`,
-    priceStr ? `      ${priceStr}` : '',
-    '',
-    `  Current:   ${c.sage(userTierName)}`,
-    `  Required:  ${c.sage(tierName)}`,
-    '',
-    `  \u2192 ${c.underline('https://panguard.ai/pricing')}`,
-    `  \u2192 ${c.sage('panguard activate <license-key>')}`,
-    '',
-    c.dim('  All paid plans include 30-day free trial.'),
-  ];
+  const lines: string[] =
+    lang === 'zh-TW'
+      ? [
+          `  \uD83D\uDD12  \u300C${featureName}\u300D\u9700\u8981 ${tierName} \u65B9\u6848`,
+          priceStr ? `      ${priceStr}` : '',
+          '',
+          `  \u76EE\u524D\u65B9\u6848:  ${c.sage(userTierName)}`,
+          `  \u9700\u8981\u65B9\u6848:  ${c.sage(tierName)}`,
+          '',
+          `  \u2192 ${c.underline('https://panguard.ai/pricing')}`,
+          `  \u2192 ${c.sage('panguard activate <license-key>')}`,
+          '',
+          c.dim(
+            '  \u6240\u6709\u4ED8\u8CBB\u65B9\u6848\u4EAB 30 \u5929\u514D\u8CBB\u8A66\u7528\u3002'
+          ),
+        ]
+      : [
+          `  \uD83D\uDD12  ${featureName} requires ${tierName} plan`,
+          priceStr ? `      ${priceStr}` : '',
+          '',
+          `  Current:   ${c.sage(userTierName)}`,
+          `  Required:  ${c.sage(tierName)}`,
+          '',
+          `  \u2192 ${c.underline('https://panguard.ai/pricing')}`,
+          `  \u2192 ${c.sage('panguard activate <license-key>')}`,
+          '',
+          c.dim('  All paid plans include 30-day free trial.'),
+        ];
 
   // Filter empty lines only if priceStr is empty
-  const content = lines.filter(l => l !== '' || priceStr !== '');
+  const content = lines.filter((l) => l !== '' || priceStr !== '');
 
   console.log('');
   console.log(`  ${c.sage(TL + H.repeat(W) + TR)}`);
@@ -306,8 +333,12 @@ export function showUpgradePrompt(feature: string, lang: string = 'en'): void {
  */
 export function showScanUpgradeHint(fixableCount: number, lang: string = 'en'): void {
   const W = 49;
-  const TL = '\u250C'; const TR = '\u2510'; const BL = '\u2514'; const BR = '\u2518';
-  const H = '\u2500'; const V = '\u2502';
+  const TL = '\u250C';
+  const TR = '\u2510';
+  const BL = '\u2514';
+  const BR = '\u2518';
+  const H = '\u2500';
+  const V = '\u2502';
   console.log('');
   console.log(`  ${c.sage(TL + H.repeat(W) + TR)}`);
   if (lang === 'zh-TW') {
@@ -339,11 +370,21 @@ export function showScanUpgradeHint(fixableCount: number, lang: string = 'en'): 
 export function showGuardAIHint(threatType: string, confidence: number, lang: string = 'en'): void {
   console.log('');
   if (lang === 'zh-TW') {
-    console.log(`  ${c.caution('[?]')} \u5075\u6E2C\u5230\u53EF\u7591\u6D3B\u52D5\uFF08\u4FE1\u5FC3\u5EA6 ${confidence}%\uFF09`);
+    console.log(
+      `  ${c.caution('[?]')} \u5075\u6E2C\u5230\u53EF\u7591\u6D3B\u52D5\uFF08\u4FE1\u5FC3\u5EA6 ${confidence}%\uFF09`
+    );
     console.log(`      \u985E\u578B: ${threatType}`);
     console.log('');
-    console.log(c.dim(`      \u9700\u8981 AI \u5206\u6790\u624D\u80FD\u5224\u65B7\u662F\u5426\u70BA\u5A01\u8105\u3002`));
-    console.log(c.dim(`      \u5347\u7D1A\u5230 Solo ($9/\u6708) \u89E3\u9396 AI \u6DF1\u5EA6\u5206\u6790\u3002`));
+    console.log(
+      c.dim(
+        `      \u9700\u8981 AI \u5206\u6790\u624D\u80FD\u5224\u65B7\u662F\u5426\u70BA\u5A01\u8105\u3002`
+      )
+    );
+    console.log(
+      c.dim(
+        `      \u5347\u7D1A\u5230 Solo ($9/\u6708) \u89E3\u9396 AI \u6DF1\u5EA6\u5206\u6790\u3002`
+      )
+    );
   } else {
     console.log(`  ${c.caution('[?]')} Suspicious activity detected (confidence ${confidence}%)`);
     console.log(`      Type: ${threatType}`);
@@ -356,7 +397,10 @@ export function showGuardAIHint(threatType: string, confidence: number, lang: st
 
 /* ── Pricing Constants ── */
 
-export const PRICING_TIERS: Record<string, { price: number | 'custom'; unit: string; endpoints: string }> = {
+export const PRICING_TIERS: Record<
+  string,
+  { price: number | 'custom'; unit: string; endpoints: string }
+> = {
   free: { price: 0, unit: '', endpoints: '1 endpoint' },
   solo: { price: 9, unit: '/mo', endpoints: '1 endpoint' },
   pro: { price: 19, unit: '/endpoint/mo', endpoints: 'Up to 50 endpoints' },

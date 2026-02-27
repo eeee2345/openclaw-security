@@ -41,6 +41,7 @@ panguard scan --quick
 ```
 
 完整掃描 / Full scan:
+
 ```bash
 panguard scan --verbose
 ```
@@ -53,21 +54,25 @@ panguard scan --verbose
 Generate real compliance reports for 3 frameworks.
 
 **ISO 27001（中文）：**
+
 ```bash
 panguard report generate --framework iso27001 --language zh-TW
 ```
 
 **資通安全管理法（中文） / Taiwan Cyber Security Act：**
+
 ```bash
 panguard report generate --framework tw_cyber_security_act --language zh-TW
 ```
 
 **SOC 2（英文 / English）：**
+
 ```bash
 panguard report generate --framework soc2 --language en
 ```
 
 **列出所有框架 / List all frameworks：**
+
 ```bash
 panguard report list-frameworks
 ```
@@ -84,6 +89,7 @@ panguard threat start --port 8080
 ```
 
 在另一個終端測試 / In another terminal:
+
 ```bash
 curl http://localhost:8080/health
 curl http://localhost:8080/api/stats
@@ -137,6 +143,7 @@ panguard
 ```
 
 功能 / Features:
+
 - 數字鍵快速選擇 / Number keys for quick selection
 - 安全掃描 / Security Scan
 - 合規報告 / Compliance Reports

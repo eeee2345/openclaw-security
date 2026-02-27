@@ -75,13 +75,10 @@ export class AnalyzeAgent {
    * @param baseline - Current environment baseline / 當前環境基線
    * @returns ThreatVerdict with conclusion and evidence / 包含結論和證據的威脅判決
    */
-  async analyze(
-    detection: DetectionResult,
-    baseline: EnvironmentBaseline,
-  ): Promise<ThreatVerdict> {
+  async analyze(detection: DetectionResult, baseline: EnvironmentBaseline): Promise<ThreatVerdict> {
     logger.info(
       `Analyzing detection for event ${detection.event.id} / ` +
-      `分析事件 ${detection.event.id} 的偵測結果`,
+        `分析事件 ${detection.event.id} 的偵測結果`
     );
     this.analysisCount++;
 
@@ -145,8 +142,7 @@ export class AnalyzeAgent {
           });
         } else {
           logger.info(
-            'AI unavailable, using rule-based analysis only / ' +
-            'AI 不可用，僅使用規則式分析',
+            'AI unavailable, using rule-based analysis only / ' + 'AI 不可用，僅使用規則式分析'
           );
         }
       } catch (err: unknown) {
@@ -176,9 +172,9 @@ export class AnalyzeAgent {
 
     logger.info(
       `Verdict for event ${detection.event.id}: ${conclusion} ` +
-      `(confidence: ${finalConfidence}%) / ` +
-      `事件 ${detection.event.id} 判決: ${conclusion} ` +
-      `(信心度: ${finalConfidence}%)`,
+        `(confidence: ${finalConfidence}%) / ` +
+        `事件 ${detection.event.id} 判決: ${conclusion} ` +
+        `(信心度: ${finalConfidence}%)`
     );
 
     return verdict;
@@ -210,10 +206,7 @@ export class AnalyzeAgent {
  * - 基線偏離: 0.3
  * - AI 分析: 0.3（無 AI 時重新分配至規則+基線）
  */
-function calculateFinalConfidence(
-  evidence: Evidence[],
-  hasAI: boolean,
-): number {
+function calculateFinalConfidence(evidence: Evidence[], hasAI: boolean): number {
   const bySource = groupBySource(evidence);
 
   const ruleConfidence = maxConfidence(bySource['rule_match']);
@@ -257,9 +250,7 @@ function maxConfidence(items?: Evidence[]): number {
  * Determine verdict conclusion based on confidence
  * 根據信心度決定判決結論
  */
-function determineConclusion(
-  confidence: number,
-): 'benign' | 'suspicious' | 'malicious' {
+function determineConclusion(confidence: number): 'benign' | 'suspicious' | 'malicious' {
   if (confidence >= 75) return 'malicious';
   if (confidence >= 40) return 'suspicious';
   return 'benign';
@@ -269,15 +260,10 @@ function determineConclusion(
  * Determine recommended response action based on confidence and detection context
  * 根據信心度和偵測上下文決定建議的回應動作
  */
-function determineAction(
-  confidence: number,
-  detection: DetectionResult,
-): ResponseAction {
+function determineAction(confidence: number, detection: DetectionResult): ResponseAction {
   // Critical severity rules always recommend stronger actions
   // 嚴重（critical）級別的規則總是建議更強的動作
-  const hasCritical = detection.ruleMatches.some(
-    (m) => m.severity === 'critical',
-  );
+  const hasCritical = detection.ruleMatches.some((m) => m.severity === 'critical');
 
   if (confidence >= 85 || (hasCritical && confidence >= 70)) {
     // High confidence: take source-appropriate action
@@ -294,10 +280,7 @@ function determineAction(
 /**
  * Build analysis prompt for LLM / 建立 LLM 分析提示
  */
-function buildAnalysisPrompt(
-  detection: DetectionResult,
-  deviation: DeviationResult,
-): string {
+function buildAnalysisPrompt(detection: DetectionResult, deviation: DeviationResult): string {
   const parts: string[] = [
     'Security Event Analysis / 安全事件分析',
     `Event: ${detection.event.description}`,
@@ -307,14 +290,12 @@ function buildAnalysisPrompt(
   ];
 
   if (detection.ruleMatches.length > 0) {
-    parts.push(
-      `Rule Matches: ${detection.ruleMatches.map((m) => m.ruleName).join(', ')}`,
-    );
+    parts.push(`Rule Matches: ${detection.ruleMatches.map((m) => m.ruleName).join(', ')}`);
   }
 
   if (detection.threatIntelMatch) {
     parts.push(
-      `Threat Intel: ${detection.threatIntelMatch.ip} - ${detection.threatIntelMatch.threat}`,
+      `Threat Intel: ${detection.threatIntelMatch.ip} - ${detection.threatIntelMatch.threat}`
     );
   }
 
@@ -334,7 +315,7 @@ function buildAnalysisPrompt(
 function buildReasoning(
   evidence: Evidence[],
   _deviation: DeviationResult,
-  aiAnalysis: LLMAnalysisResult | null,
+  aiAnalysis: LLMAnalysisResult | null
 ): string {
   const parts: string[] = [];
 
@@ -345,9 +326,7 @@ function buildReasoning(
   if (aiAnalysis) {
     parts.push(`AI Summary: ${aiAnalysis.summary}`);
     if (aiAnalysis.recommendations.length > 0) {
-      parts.push(
-        `Recommendations: ${aiAnalysis.recommendations.join('; ')}`,
-      );
+      parts.push(`Recommendations: ${aiAnalysis.recommendations.join('; ')}`);
     }
   }
 

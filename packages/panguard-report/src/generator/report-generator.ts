@@ -43,7 +43,7 @@ export function generateComplianceReport(
     periodStart?: Date;
     periodEnd?: Date;
     includeRecommendations?: boolean;
-  },
+  }
 ): ComplianceReportData {
   const now = new Date();
   reportCounter += 1;
@@ -62,9 +62,7 @@ export function generateComplianceReport(
 
   // Generate recommendations
   const includeRecs = options?.includeRecommendations ?? true;
-  const recommendations = includeRecs
-    ? generateRecommendations(evaluatedControls, language)
-    : [];
+  const recommendations = includeRecs ? generateRecommendations(evaluatedControls, language) : [];
 
   // Build metadata
   const metadata: ReportMetadata = {
@@ -83,7 +81,7 @@ export function generateComplianceReport(
 
   const frameworkName = getFrameworkName(framework, language);
   logger.info(
-    `Compliance report generated: ${metadata.reportId} (${frameworkName}) / 合規報告已產生`,
+    `Compliance report generated: ${metadata.reportId} (${frameworkName}) / 合規報告已產生`
   );
 
   return {
@@ -101,21 +99,23 @@ export function generateComplianceReport(
  * 從報告資料產生 JSON 輸出
  */
 export function reportToJSON(report: ComplianceReportData): string {
-  return JSON.stringify(report, (_key, value) => {
-    if (value instanceof Date) {
-      return value.toISOString();
-    }
-    return value;
-  }, 2);
+  return JSON.stringify(
+    report,
+    (_key, value) => {
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
+      return value;
+    },
+    2
+  );
 }
 
 /**
  * Generate a human-readable summary text
  * 產生人類可讀的摘要文字
  */
-export function generateSummaryText(
-  report: ComplianceReportData,
-): string {
+export function generateSummaryText(report: ComplianceReportData): string {
   const { metadata, executiveSummary: es, statistics } = report;
   const isZh = metadata.language === 'zh-TW';
   const frameworkName = getFrameworkName(metadata.framework, metadata.language);
@@ -123,37 +123,45 @@ export function generateSummaryText(
 
   // Header
   lines.push('='.repeat(60));
-  lines.push(isZh
-    ? `${frameworkName} 合規報告`
-    : `${frameworkName} Compliance Report`);
+  lines.push(isZh ? `${frameworkName} 合規報告` : `${frameworkName} Compliance Report`);
   lines.push('='.repeat(60));
   lines.push('');
 
   // Period
   const startStr = metadata.period.start.toISOString().split('T')[0];
   const endStr = metadata.period.end.toISOString().split('T')[0];
-  lines.push(isZh
-    ? `報告期間 / Report Period: ${startStr} ~ ${endStr}`
-    : `Report Period: ${startStr} ~ ${endStr}`);
+  lines.push(
+    isZh
+      ? `報告期間 / Report Period: ${startStr} ~ ${endStr}`
+      : `Report Period: ${startStr} ~ ${endStr}`
+  );
   if (metadata.organizationName) {
-    lines.push(isZh
-      ? `組織 / Organization: ${metadata.organizationName}`
-      : `Organization: ${metadata.organizationName}`);
+    lines.push(
+      isZh
+        ? `組織 / Organization: ${metadata.organizationName}`
+        : `Organization: ${metadata.organizationName}`
+    );
   }
   lines.push(`Report ID: ${metadata.reportId}`);
   lines.push('');
 
   // Executive Summary
   lines.push(isZh ? '--- 執行摘要 ---' : '--- Executive Summary ---');
-  lines.push(isZh
-    ? `整體合規分數 / Overall Score: ${es.overallScore}%`
-    : `Overall Compliance Score: ${es.overallScore}%`);
-  lines.push(isZh
-    ? `控制項: ${es.controlsPassed} 通過 / ${es.controlsFailed} 未通過 / ${es.controlsPartial} 部分 / ${es.controlsNA} 不適用`
-    : `Controls: ${es.controlsPassed} passed / ${es.controlsFailed} failed / ${es.controlsPartial} partial / ${es.controlsNA} N/A`);
-  lines.push(isZh
-    ? `發現: ${es.totalFindings} 個 (${es.criticalFindings} 嚴重, ${es.highFindings} 高風險)`
-    : `Findings: ${es.totalFindings} total (${es.criticalFindings} critical, ${es.highFindings} high)`);
+  lines.push(
+    isZh
+      ? `整體合規分數 / Overall Score: ${es.overallScore}%`
+      : `Overall Compliance Score: ${es.overallScore}%`
+  );
+  lines.push(
+    isZh
+      ? `控制項: ${es.controlsPassed} 通過 / ${es.controlsFailed} 未通過 / ${es.controlsPartial} 部分 / ${es.controlsNA} 不適用`
+      : `Controls: ${es.controlsPassed} passed / ${es.controlsFailed} failed / ${es.controlsPartial} partial / ${es.controlsNA} N/A`
+  );
+  lines.push(
+    isZh
+      ? `發現: ${es.totalFindings} 個 (${es.criticalFindings} 嚴重, ${es.highFindings} 高風險)`
+      : `Findings: ${es.totalFindings} total (${es.criticalFindings} critical, ${es.highFindings} high)`
+  );
   lines.push('');
 
   // Key Risks

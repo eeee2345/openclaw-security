@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight } from "lucide-react";
-import { caseStudies } from "@/data/case-studies";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight } from 'lucide-react';
+import { caseStudies } from '@/data/case-studies';
 
 /* ─── Stats Keys ─── */
-const statKeys = ["stat1", "stat2", "stat3", "stat4"] as const;
+const statKeys = ['stat1', 'stat2', 'stat3', 'stat4'] as const;
 
 export default function CustomersContent() {
-  const t = useTranslations("customers");
+  const t = useTranslations('customers');
 
   const featured = caseStudies[0];
   const remaining = caseStudies.slice(1);
@@ -21,11 +21,7 @@ export default function CustomersContent() {
     <>
       {/* -- Hero -- */}
       <SectionWrapper spacing="spacious">
-        <SectionTitle
-          overline={t("overline")}
-          title={t("title")}
-          subtitle={t("subtitle")}
-        />
+        <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
       </SectionWrapper>
 
       {/* -- Stats Bar -- */}
@@ -37,9 +33,7 @@ export default function CustomersContent() {
                 <p className="text-[clamp(28px,3.5vw,40px)] font-extrabold text-brand-sage leading-none">
                   {t(`stats.${key}.value`)}
                 </p>
-                <p className="text-sm text-text-secondary mt-2">
-                  {t(`stats.${key}.label`)}
-                </p>
+                <p className="text-sm text-text-secondary mt-2">{t(`stats.${key}.label`)}</p>
               </div>
             </FadeInUp>
           ))}
@@ -50,7 +44,7 @@ export default function CustomersContent() {
       <SectionWrapper>
         <FadeInUp>
           <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-6">
-            {t("featured")}
+            {t('featured')}
           </p>
         </FadeInUp>
         <FadeInUp delay={0.05}>
@@ -59,32 +53,21 @@ export default function CustomersContent() {
               <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-brand-sage/10 text-brand-sage">
                 {featured.industry}
               </span>
-              <span className="text-sm text-text-tertiary">
-                {featured.company}
-              </span>
-              <span className="text-xs text-text-muted">
-                {featured.companySize}
-              </span>
+              <span className="text-sm text-text-tertiary">{featured.company}</span>
+              <span className="text-xs text-text-muted">{featured.companySize}</span>
             </div>
 
             <h3 className="text-[clamp(24px,3vw,32px)] font-bold text-text-primary leading-tight max-w-3xl">
               {featured.headline}
             </h3>
 
-            <p className="text-text-secondary mt-4 leading-relaxed max-w-3xl">
-              {featured.excerpt}
-            </p>
+            <p className="text-text-secondary mt-4 leading-relaxed max-w-3xl">{featured.excerpt}</p>
 
             {/* Results grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
               {featured.results.map((r) => (
-                <div
-                  key={r.metric}
-                  className="bg-surface-2 rounded-xl border border-border p-4"
-                >
-                  <p className="text-xl font-bold text-brand-sage">
-                    {r.value}
-                  </p>
+                <div key={r.metric} className="bg-surface-2 rounded-xl border border-border p-4">
+                  <p className="text-xl font-bold text-brand-sage">{r.value}</p>
                   <p className="text-xs text-text-tertiary mt-1">{r.metric}</p>
                 </div>
               ))}
@@ -105,9 +88,9 @@ export default function CustomersContent() {
       {/* -- All Case Studies Grid -- */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("allScenarios.overline")}
-          title={t("allScenarios.title")}
-          subtitle={t("allScenarios.subtitle")}
+          overline={t('allScenarios.overline')}
+          title={t('allScenarios.title')}
+          subtitle={t('allScenarios.subtitle')}
         />
         <div className="grid md:grid-cols-2 gap-6 mt-14">
           {remaining.map((cs, i) => (
@@ -120,9 +103,7 @@ export default function CustomersContent() {
                   <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-brand-sage/10 text-brand-sage">
                     {cs.industry}
                   </span>
-                  <span className="text-sm font-semibold text-text-primary">
-                    {cs.company}
-                  </span>
+                  <span className="text-sm font-semibold text-text-primary">{cs.company}</span>
                 </div>
 
                 <h3 className="text-lg font-bold text-text-primary leading-snug group-hover:text-brand-sage transition-colors">
@@ -146,8 +127,7 @@ export default function CustomersContent() {
                 </div>
 
                 <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-sage mt-4 group-hover:gap-2.5 transition-all">
-                  {t("readScenario")}{" "}
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  {t('readScenario')} <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </Link>
             </FadeInUp>
@@ -160,10 +140,10 @@ export default function CustomersContent() {
         <div className="text-center">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
             <p className="text-text-secondary mt-4 max-w-xl mx-auto leading-relaxed">
-              {t("cta.desc")}
+              {t('cta.desc')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
@@ -172,13 +152,13 @@ export default function CustomersContent() {
                 href="/early-access"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/contact"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("cta.cta2")}
+                {t('cta.cta2')}
               </Link>
             </div>
           </FadeInUp>

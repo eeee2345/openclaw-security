@@ -114,7 +114,7 @@ export class Watchdog {
       if (elapsed > this.intervalMs * 3) {
         logger.error(
           `Watchdog: no heartbeat for ${elapsed}ms, triggering restart / ` +
-          `看門狗: ${elapsed}ms 無心跳，觸發重啟`,
+            `看門狗: ${elapsed}ms 無心跳，觸發重啟`
         );
         this.onFailure();
       }
@@ -122,7 +122,7 @@ export class Watchdog {
 
     logger.info(
       `Watchdog started with ${this.intervalMs}ms interval / ` +
-      `看門狗已啟動，間隔 ${this.intervalMs}ms`,
+        `看門狗已啟動，間隔 ${this.intervalMs}ms`
     );
   }
 
@@ -285,7 +285,8 @@ async function uninstallSystemd(): Promise<string> {
 
 async function installWindowsService(execPath: string): Promise<string> {
   await execFileAsync('sc', [
-    'create', SERVICE_NAME,
+    'create',
+    SERVICE_NAME,
     `binpath=${execPath} start`,
     `displayname=${SERVICE_DISPLAY_NAME}`,
     'start=auto',

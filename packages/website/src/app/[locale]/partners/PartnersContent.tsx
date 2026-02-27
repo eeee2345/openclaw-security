@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight } from 'lucide-react';
 import {
   NetworkIcon,
   SettingsIcon,
@@ -19,57 +19,52 @@ import {
   CheckIcon,
   ShieldIcon,
   EnterpriseIcon,
-} from "@/components/ui/BrandIcons";
+} from '@/components/ui/BrandIcons';
 
 /* ────────────────────────────  Config  ──────────────────────────── */
 
 const partnerTypeConfigs = [
-  { key: "msp" as const, icon: NetworkIcon },
-  { key: "technology" as const, icon: SettingsIcon },
-  { key: "reseller" as const, icon: GlobalIcon },
+  { key: 'msp' as const, icon: NetworkIcon },
+  { key: 'technology' as const, icon: SettingsIcon },
+  { key: 'reseller' as const, icon: GlobalIcon },
 ];
 
 const benefitConfigs = [
-  { key: "item1" as const, icon: AnalyticsIcon },
-  { key: "item2" as const, icon: DeployIcon },
-  { key: "item3" as const, icon: SupportIcon },
-  { key: "item4" as const, icon: TeamIcon },
-  { key: "item5" as const, icon: LockIcon },
-  { key: "item6" as const, icon: MonitorIcon },
+  { key: 'item1' as const, icon: AnalyticsIcon },
+  { key: 'item2' as const, icon: DeployIcon },
+  { key: 'item3' as const, icon: SupportIcon },
+  { key: 'item4' as const, icon: TeamIcon },
+  { key: 'item5' as const, icon: LockIcon },
+  { key: 'item6' as const, icon: MonitorIcon },
 ];
 
 const tierConfigs = [
-  { key: "registered" as const, highlighted: false },
-  { key: "silver" as const, highlighted: true },
-  { key: "gold" as const, highlighted: false },
+  { key: 'registered' as const, highlighted: false },
+  { key: 'silver' as const, highlighted: true },
+  { key: 'gold' as const, highlighted: false },
 ];
 
-const statKeys = ["stat1", "stat2", "stat3", "stat4"] as const;
+const statKeys = ['stat1', 'stat2', 'stat3', 'stat4'] as const;
 
 /* ═══════════════════════  Component  ═══════════════════════════ */
 
 export default function PartnersContent() {
-  const t = useTranslations("partners");
-  const tc = useTranslations("common");
+  const t = useTranslations('partners');
+  const tc = useTranslations('common');
 
   return (
     <>
       {/* -- Hero -- */}
       <SectionWrapper spacing="spacious">
-        <SectionTitle
-          overline={t("overline")}
-          title={t("title")}
-          serif
-          subtitle={t("subtitle")}
-        />
+        <SectionTitle overline={t('overline')} title={t('title')} serif subtitle={t('subtitle')} />
       </SectionWrapper>
 
       {/* -- Partner Types -- */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("models.overline")}
-          title={t("models.title")}
-          subtitle={t("models.subtitle")}
+          overline={t('models.overline')}
+          title={t('models.title')}
+          subtitle={t('models.subtitle')}
         />
         <div className="grid md:grid-cols-3 gap-6 mt-14">
           {partnerTypeConfigs.map((partner, i) => {
@@ -108,9 +103,9 @@ export default function PartnersContent() {
       {/* -- Benefits Grid -- */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("benefits.overline")}
-          title={t("benefits.title")}
-          subtitle={t("benefits.subtitle")}
+          overline={t('benefits.overline')}
+          title={t('benefits.title')}
+          subtitle={t('benefits.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
           {benefitConfigs.map((benefit, i) => (
@@ -132,9 +127,9 @@ export default function PartnersContent() {
       {/* -- Partner Tiers -- */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("tiers.overline")}
-          title={t("tiers.title")}
-          subtitle={t("tiers.subtitle")}
+          overline={t('tiers.overline')}
+          title={t('tiers.title')}
+          subtitle={t('tiers.subtitle')}
         />
         <div className="grid md:grid-cols-3 gap-5 mt-14 max-w-4xl mx-auto">
           {tierConfigs.map((tier, i) => {
@@ -143,14 +138,12 @@ export default function PartnersContent() {
               <FadeInUp key={tier.key} delay={i * 0.08}>
                 <div
                   className={`relative bg-surface-1 rounded-2xl p-8 border h-full flex flex-col ${
-                    tier.highlighted
-                      ? "border-brand-sage"
-                      : "border-border"
+                    tier.highlighted ? 'border-brand-sage' : 'border-border'
                   }`}
                 >
                   {tier.highlighted && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-sage text-surface-0 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
-                      {tc("mostPopular")}
+                      {tc('mostPopular')}
                     </span>
                   )}
 
@@ -187,11 +180,11 @@ export default function PartnersContent() {
                     href="/contact"
                     className={`mt-8 block text-center font-semibold rounded-full px-6 py-3 transition-all duration-200 active:scale-[0.98] ${
                       tier.highlighted
-                        ? "bg-brand-sage text-surface-0 hover:bg-brand-sage-light"
-                        : "border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary"
+                        ? 'bg-brand-sage text-surface-0 hover:bg-brand-sage-light'
+                        : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
                     }`}
                   >
-                    {t("cta.applyNow")}
+                    {t('cta.applyNow')}
                   </Link>
                 </div>
               </FadeInUp>
@@ -209,9 +202,7 @@ export default function PartnersContent() {
                 <p className="text-[clamp(28px,3.5vw,40px)] font-extrabold text-brand-sage leading-none">
                   {t(`stats.${key}.value`)}
                 </p>
-                <p className="text-sm text-text-secondary mt-2">
-                  {t(`stats.${key}.label`)}
-                </p>
+                <p className="text-sm text-text-secondary mt-2">{t(`stats.${key}.label`)}</p>
               </div>
             </FadeInUp>
           ))}
@@ -224,10 +215,10 @@ export default function PartnersContent() {
           <FadeInUp>
             <EnterpriseIcon className="w-10 h-10 text-brand-sage mx-auto mb-6" />
             <h2 className="text-[clamp(28px,3.5vw,40px)] font-bold text-text-primary leading-[1.1]">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
             <p className="text-text-secondary mt-4 max-w-xl mx-auto leading-relaxed">
-              {t("cta.desc")}
+              {t('cta.desc')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
@@ -236,13 +227,13 @@ export default function PartnersContent() {
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/demo"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("cta.cta2")}
+                {t('cta.cta2')}
               </Link>
             </div>
           </FadeInUp>

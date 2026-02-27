@@ -23,31 +23,66 @@ const logger = createLogger('panguard-trap:service:ssh');
 /** Known suspicious commands / 已知可疑指令 */
 const SUSPICIOUS_COMMANDS: { pattern: RegExp; technique: string; description: string }[] = [
   { pattern: /wget|curl.*http/i, technique: 'T1105', description: 'Ingress Tool Transfer' },
-  { pattern: /chmod\s+[+]?[0-7]*x|chmod\s+777/i, technique: 'T1222', description: 'File and Directory Permissions Modification' },
-  { pattern: /\/etc\/shadow|\/etc\/passwd/i, technique: 'T1003', description: 'OS Credential Dumping' },
+  {
+    pattern: /chmod\s+[+]?[0-7]*x|chmod\s+777/i,
+    technique: 'T1222',
+    description: 'File and Directory Permissions Modification',
+  },
+  {
+    pattern: /\/etc\/shadow|\/etc\/passwd/i,
+    technique: 'T1003',
+    description: 'OS Credential Dumping',
+  },
   { pattern: /crontab|\/etc\/cron/i, technique: 'T1053', description: 'Scheduled Task/Job' },
-  { pattern: /base64\s+-d|echo.*\|.*sh/i, technique: 'T1140', description: 'Deobfuscate/Decode Files or Information' },
+  {
+    pattern: /base64\s+-d|echo.*\|.*sh/i,
+    technique: 'T1140',
+    description: 'Deobfuscate/Decode Files or Information',
+  },
   { pattern: /nc\s+-|ncat|netcat/i, technique: 'T1571', description: 'Non-Standard Port' },
   { pattern: /iptables.*-D|ufw\s+disable/i, technique: 'T1562', description: 'Impair Defenses' },
-  { pattern: /rm\s+-rf\s+\/|dd\s+if=\/dev\/zero/i, technique: 'T1485', description: 'Data Destruction' },
-  { pattern: /xmrig|minerd|crypto/i, technique: 'T1496', description: 'Resource Hijacking (Cryptomining)' },
-  { pattern: /ssh-keygen|authorized_keys/i, technique: 'T1098', description: 'Account Manipulation' },
-  { pattern: /id\s*$|whoami|uname\s+-a/i, technique: 'T1082', description: 'System Information Discovery' },
-  { pattern: /ifconfig|ip\s+addr/i, technique: 'T1016', description: 'System Network Configuration Discovery' },
+  {
+    pattern: /rm\s+-rf\s+\/|dd\s+if=\/dev\/zero/i,
+    technique: 'T1485',
+    description: 'Data Destruction',
+  },
+  {
+    pattern: /xmrig|minerd|crypto/i,
+    technique: 'T1496',
+    description: 'Resource Hijacking (Cryptomining)',
+  },
+  {
+    pattern: /ssh-keygen|authorized_keys/i,
+    technique: 'T1098',
+    description: 'Account Manipulation',
+  },
+  {
+    pattern: /id\s*$|whoami|uname\s+-a/i,
+    technique: 'T1082',
+    description: 'System Information Discovery',
+  },
+  {
+    pattern: /ifconfig|ip\s+addr/i,
+    technique: 'T1016',
+    description: 'System Network Configuration Discovery',
+  },
   { pattern: /cat\s+\/proc|ps\s+aux/i, technique: 'T1057', description: 'Process Discovery' },
 ];
 
 /** Fake filesystem responses / 假檔案系統回應 */
 const FAKE_RESPONSES: Record<string, string> = {
-  'id': 'uid=1000(admin) gid=1000(admin) groups=1000(admin),27(sudo)',
-  'whoami': 'admin',
+  id: 'uid=1000(admin) gid=1000(admin) groups=1000(admin),27(sudo)',
+  whoami: 'admin',
   'uname -a': 'Linux web-server-01 5.15.0-91-generic #101-Ubuntu SMP x86_64 GNU/Linux',
-  'pwd': '/home/admin',
-  'ls': 'Desktop  Documents  Downloads  backup.tar.gz  deploy.sh',
-  'ls -la': 'total 48\ndrwxr-xr-x 6 admin admin 4096 Jan 15 10:30 .\ndrwxr-xr-x 3 root  root  4096 Dec  1  2024 ..\n-rw-r--r-- 1 admin admin  220 Dec  1  2024 .bash_logout\n-rw-r--r-- 1 admin admin 3771 Dec  1  2024 .bashrc\ndrwxr-xr-x 2 admin admin 4096 Jan 15 10:30 Desktop\ndrwxr-xr-x 2 admin admin 4096 Jan 10 08:15 Documents\n-rw-r--r-- 1 admin admin 8192 Jan 14 16:45 backup.tar.gz\n-rwxr-xr-x 1 admin admin  512 Jan 12 09:00 deploy.sh',
-  'cat /etc/passwd': 'root:x:0:0:root:/root:/bin/bash\nadmin:x:1000:1000:Admin:/home/admin:/bin/bash\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin',
-  'ifconfig': 'eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 10.0.1.100  netmask 255.255.255.0  broadcast 10.0.1.255',
-  'hostname': 'web-server-01',
+  pwd: '/home/admin',
+  ls: 'Desktop  Documents  Downloads  backup.tar.gz  deploy.sh',
+  'ls -la':
+    'total 48\ndrwxr-xr-x 6 admin admin 4096 Jan 15 10:30 .\ndrwxr-xr-x 3 root  root  4096 Dec  1  2024 ..\n-rw-r--r-- 1 admin admin  220 Dec  1  2024 .bash_logout\n-rw-r--r-- 1 admin admin 3771 Dec  1  2024 .bashrc\ndrwxr-xr-x 2 admin admin 4096 Jan 15 10:30 Desktop\ndrwxr-xr-x 2 admin admin 4096 Jan 10 08:15 Documents\n-rw-r--r-- 1 admin admin 8192 Jan 14 16:45 backup.tar.gz\n-rwxr-xr-x 1 admin admin  512 Jan 12 09:00 deploy.sh',
+  'cat /etc/passwd':
+    'root:x:0:0:root:/root:/bin/bash\nadmin:x:1000:1000:Admin:/home/admin:/bin/bash\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin',
+  ifconfig:
+    'eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 10.0.1.100  netmask 255.255.255.0  broadcast 10.0.1.255',
+  hostname: 'web-server-01',
 };
 
 /**
@@ -99,7 +134,7 @@ export class SSHTrapService extends BaseTrapService {
       // ssh2 is an optional dependency - may not be installed
       const moduleName = 'ssh2';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const ssh2Module = await import(/* webpackIgnore: true */ moduleName) as any;
+      const ssh2Module = (await import(/* webpackIgnore: true */ moduleName)) as any;
       const { generateKeyPairSync } = await import('node:crypto');
 
       // Generate RSA host key
@@ -121,7 +156,7 @@ export class SSHTrapService extends BaseTrapService {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (client: any) => {
           this.handleSsh2Client(client);
-        },
+        }
       );
 
       return new Promise((resolve) => {
@@ -150,27 +185,36 @@ export class SSHTrapService extends BaseTrapService {
     let authAttempts = 0;
     const maxAuthBeforeGrant = 3;
 
-    client.on('authentication', (ctx: { method: string; username: string; password?: string; accept: () => void; reject: () => void }) => {
-      authAttempts++;
-      const username = ctx.username ?? '';
-      const password = ctx.password ?? '';
+    client.on(
+      'authentication',
+      (ctx: {
+        method: string;
+        username: string;
+        password?: string;
+        accept: () => void;
+        reject: () => void;
+      }) => {
+        authAttempts++;
+        const username = ctx.username ?? '';
+        const password = ctx.password ?? '';
 
-      if (ctx.method === 'password' && password) {
-        const shouldGrant = authAttempts >= maxAuthBeforeGrant;
-        this.recordCredential(session.sessionId, username, password, shouldGrant);
+        if (ctx.method === 'password' && password) {
+          const shouldGrant = authAttempts >= maxAuthBeforeGrant;
+          this.recordCredential(session.sessionId, username, password, shouldGrant);
 
-        if (shouldGrant) {
-          this.addMitreTechnique(session.sessionId, 'T1078');
-          ctx.accept();
+          if (shouldGrant) {
+            this.addMitreTechnique(session.sessionId, 'T1078');
+            ctx.accept();
+          } else {
+            ctx.reject();
+          }
+        } else if (ctx.method === 'none') {
+          ctx.reject();
         } else {
           ctx.reject();
         }
-      } else if (ctx.method === 'none') {
-        ctx.reject();
-      } else {
-        ctx.reject();
       }
-    });
+    );
 
     client.on('ready', () => {
       logger.info(`SSH2 client authenticated: ${session.sessionId}`);
@@ -228,28 +272,31 @@ export class SSHTrapService extends BaseTrapService {
           });
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        sshSession.on('exec', (accept: () => any, _reject: () => void, info: { command: string }) => {
-          const stream = accept();
-          const command = info.command;
-          this.recordCommand(session.sessionId, command);
-          this.addMitreTechnique(session.sessionId, 'T1059');
+        sshSession.on(
+          'exec',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (accept: () => any, _reject: () => void, info: { command: string }) => {
+            const stream = accept();
+            const command = info.command;
+            this.recordCommand(session.sessionId, command);
+            this.addMitreTechnique(session.sessionId, 'T1059');
 
-          for (const sus of SUSPICIOUS_COMMANDS) {
-            if (sus.pattern.test(command)) {
-              this.addMitreTechnique(session.sessionId, sus.technique);
-              this.recordEvent(session.sessionId, 'exploit_attempt', command, {
-                technique: sus.technique,
-                description: sus.description,
-              });
+            for (const sus of SUSPICIOUS_COMMANDS) {
+              if (sus.pattern.test(command)) {
+                this.addMitreTechnique(session.sessionId, sus.technique);
+                this.recordEvent(session.sessionId, 'exploit_attempt', command, {
+                  technique: sus.technique,
+                  description: sus.description,
+                });
+              }
             }
-          }
 
-          const response = this.getFakeResponse(command);
-          stream.write(response + '\r\n');
-          stream.exit(0);
-          stream.close();
-        });
+            const response = this.getFakeResponse(command);
+            stream.write(response + '\r\n');
+            stream.exit(0);
+            stream.close();
+          }
+        );
       });
     });
 
@@ -265,7 +312,11 @@ export class SSHTrapService extends BaseTrapService {
     // Timeout
     const timeout = this.config.sessionTimeoutMs ?? 30_000;
     setTimeout(() => {
-      try { client.end(); } catch { /* ignore */ }
+      try {
+        client.end();
+      } catch {
+        /* ignore */
+      }
     }, timeout);
   }
 

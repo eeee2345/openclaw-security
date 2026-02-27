@@ -4,7 +4,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { createTrapService, SSHTrapService, HTTPTrapService, GenericTrapService } from '../src/services/index.js';
+import {
+  createTrapService,
+  SSHTrapService,
+  HTTPTrapService,
+  GenericTrapService,
+} from '../src/services/index.js';
 import type { TrapServiceConfig } from '../src/types.js';
 import { DEFAULT_SERVICE_CONFIGS } from '../src/types.js';
 

@@ -46,7 +46,11 @@ export function generateOAuthState(): string {
 /**
  * Generate the Google OAuth consent URL with PKCE and mandatory state.
  */
-export function getGoogleAuthUrl(config: GoogleOAuthConfig, state: string, codeChallenge: string): string {
+export function getGoogleAuthUrl(
+  config: GoogleOAuthConfig,
+  state: string,
+  codeChallenge: string
+): string {
   const params = new URLSearchParams({
     client_id: config.clientId,
     redirect_uri: config.redirectUri,
@@ -67,7 +71,7 @@ export function getGoogleAuthUrl(config: GoogleOAuthConfig, state: string, codeC
 export async function exchangeCodeForTokens(
   config: GoogleOAuthConfig,
   code: string,
-  codeVerifier: string,
+  codeVerifier: string
 ): Promise<{ access_token: string; refresh_token?: string; id_token?: string }> {
   const body = new URLSearchParams({
     code,

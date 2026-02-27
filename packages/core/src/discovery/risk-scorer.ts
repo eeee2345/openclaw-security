@@ -22,18 +22,18 @@ const logger = createLogger('discovery:risk-scorer');
  * 開放時表示潛在安全風險的危險埠
  */
 const DANGEROUS_PORTS = new Set([
-  22,    // SSH - can be brute-forced / SSH - 可能被暴力破解
-  23,    // Telnet - unencrypted / Telnet - 未加密
-  445,   // SMB - common attack vector / SMB - 常見攻擊向量
-  3389,  // RDP - remote desktop / RDP - 遠端桌面
-  135,   // MSRPC - Windows RPC / MSRPC - Windows RPC
-  139,   // NetBIOS - legacy protocol / NetBIOS - 舊版協定
-  1433,  // MSSQL - database / MSSQL - 資料庫
-  3306,  // MySQL - database / MySQL - 資料庫
-  5432,  // PostgreSQL - database / PostgreSQL - 資料庫
-  6379,  // Redis - often unprotected / Redis - 通常無保護
+  22, // SSH - can be brute-forced / SSH - 可能被暴力破解
+  23, // Telnet - unencrypted / Telnet - 未加密
+  445, // SMB - common attack vector / SMB - 常見攻擊向量
+  3389, // RDP - remote desktop / RDP - 遠端桌面
+  135, // MSRPC - Windows RPC / MSRPC - Windows RPC
+  139, // NetBIOS - legacy protocol / NetBIOS - 舊版協定
+  1433, // MSSQL - database / MSSQL - 資料庫
+  3306, // MySQL - database / MySQL - 資料庫
+  5432, // PostgreSQL - database / PostgreSQL - 資料庫
+  6379, // Redis - often unprotected / Redis - 通常無保護
   27017, // MongoDB - often unprotected / MongoDB - 通常無保護
-  5900,  // VNC - remote access / VNC - 遠端存取
+  5900, // VNC - remote access / VNC - 遠端存取
 ]);
 
 /**
@@ -49,7 +49,8 @@ function checkFirewallRisk(result: Partial<DiscoveryResult>): RiskFactor | null 
   if (!result.security.firewall.enabled) {
     return {
       category: 'noFirewall',
-      description: 'Firewall is disabled - system is exposed to network attacks / 防火牆已停用 - 系統暴露於網路攻擊',
+      description:
+        'Firewall is disabled - system is exposed to network attacks / 防火牆已停用 - 系統暴露於網路攻擊',
       score: 25,
       severity: 'high',
       details: `Firewall product: ${result.security.firewall.product || 'unknown'}`,
@@ -74,7 +75,8 @@ function checkAdminRisk(result: Partial<DiscoveryResult>): RiskFactor | null {
   if (adminCount > 2) {
     return {
       category: 'tooManyAdmins',
-      description: 'Too many administrator accounts increase attack surface / 過多的管理員帳號增加攻擊面',
+      description:
+        'Too many administrator accounts increase attack surface / 過多的管理員帳號增加攻擊面',
       score: 15,
       severity: 'medium',
       details: `Found ${adminCount} admin accounts (recommended: 2 or fewer). Admin users: ${result.security.users
@@ -174,12 +176,14 @@ function checkSecurityToolsRisk(result: Partial<DiscoveryResult>): RiskFactor | 
   if (runningTools.length === 0) {
     return {
       category: 'noSecurityTools',
-      description: 'No active security tools detected - system lacks protection / 未偵測到啟用中的安全工具 - 系統缺乏保護',
+      description:
+        'No active security tools detected - system lacks protection / 未偵測到啟用中的安全工具 - 系統缺乏保護',
       score: 25,
       severity: 'high',
-      details: result.security.existingTools.length > 0
-        ? `Found ${result.security.existingTools.length} tool(s) installed but none are running`
-        : 'No security tools (antivirus, EDR, IDS) were found on this system',
+      details:
+        result.security.existingTools.length > 0
+          ? `Found ${result.security.existingTools.length} tool(s) installed but none are running`
+          : 'No security tools (antivirus, EDR, IDS) were found on this system',
     };
   }
 
@@ -203,7 +207,8 @@ function checkDefaultPasswordRisk(result: Partial<DiscoveryResult>): RiskFactor 
   if (usersWithOldPasswords.length > 0) {
     return {
       category: 'defaultPasswords',
-      description: 'User accounts have very old passwords that may be weak or default / 使用者帳號的密碼非常舊，可能很弱或為預設值',
+      description:
+        'User accounts have very old passwords that may be weak or default / 使用者帳號的密碼非常舊，可能很弱或為預設值',
       score: 10,
       severity: 'medium',
       details: `${usersWithOldPasswords.length} user(s) have passwords older than 365 days: ${usersWithOldPasswords.map((u) => u.username).join(', ')}`,
@@ -228,7 +233,8 @@ function checkExcessiveServicesRisk(result: Partial<DiscoveryResult>): RiskFacto
   if (runningServices.length > 50) {
     return {
       category: 'excessiveServices',
-      description: 'Excessive number of running services increases attack surface / 過多的執行中服務增加攻擊面',
+      description:
+        'Excessive number of running services increases attack surface / 過多的執行中服務增加攻擊面',
       score: 5,
       severity: 'low',
       details: `${runningServices.length} services are running (recommended: review and disable unnecessary services)`,
@@ -263,9 +269,10 @@ function checkExcessiveServicesRisk(result: Partial<DiscoveryResult>): RiskFacto
  * @param result - Partial discovery result to evaluate / 要評估的部分偵察結果
  * @returns Risk score (0-100) and identified risk factors / 風險評分（0-100）和已識別的風險因素
  */
-export function calculateRiskScore(
-  result: Partial<DiscoveryResult>
-): { riskScore: number; factors: RiskFactor[] } {
+export function calculateRiskScore(result: Partial<DiscoveryResult>): {
+  riskScore: number;
+  factors: RiskFactor[];
+} {
   const factors: RiskFactor[] = [];
 
   logger.info('Calculating risk score');

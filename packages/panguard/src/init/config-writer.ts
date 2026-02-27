@@ -157,8 +157,11 @@ function deriveTrapServices(goals: string[]): string[] {
 
 function deriveAiProvider(preference: AiPreference): string | undefined {
   switch (preference) {
-    case 'cloud_ai': return 'claude';
-    case 'local_ai': return 'ollama';
-    case 'rules_only': return undefined;
+    case 'cloud_ai':
+      return 'claude';
+    case 'local_ai':
+      return 'ollama';
+    case 'rules_only':
+      return undefined;
   }
 }

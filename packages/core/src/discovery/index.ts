@@ -61,4 +61,8 @@ export { calculateRiskScore, getRiskLevel } from './risk-scorer.js';
 
 // osquery Integration / osquery 整合
 export { OsqueryProvider, createOsqueryProvider } from './osquery-provider.js';
-export type { OsqueryProcess, OsqueryListeningPort, OsqueryLoggedInUser } from './osquery-provider.js';
+export type {
+  OsqueryProcess,
+  OsqueryListeningPort,
+  OsqueryLoggedInUser,
+} from './osquery-provider.js';

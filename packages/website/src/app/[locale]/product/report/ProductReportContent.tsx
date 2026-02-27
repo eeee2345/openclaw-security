@@ -1,30 +1,43 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight } from 'lucide-react';
 import {
-  AnalyticsIcon, CheckIcon, ShieldIcon, HistoryIcon,
-  TerminalIcon, TeamIcon, EnterpriseIcon, DeployIcon,
-} from "@/components/ui/BrandIcons";
+  AnalyticsIcon,
+  CheckIcon,
+  ShieldIcon,
+  HistoryIcon,
+  TerminalIcon,
+  TeamIcon,
+  EnterpriseIcon,
+  DeployIcon,
+} from '@/components/ui/BrandIcons';
 
 /* ─── Icon maps ─── */
-const featureIcons = [AnalyticsIcon, CheckIcon, ShieldIcon, AnalyticsIcon, HistoryIcon, AnalyticsIcon];
-const featureKeys = ["item1", "item2", "item3", "item4", "item5", "item6"] as const;
+const featureIcons = [
+  AnalyticsIcon,
+  CheckIcon,
+  ShieldIcon,
+  AnalyticsIcon,
+  HistoryIcon,
+  AnalyticsIcon,
+];
+const featureKeys = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'] as const;
 
 const useCaseIcons = [TerminalIcon, TeamIcon, EnterpriseIcon];
-const useCaseKeys = ["item1", "item2", "item3"] as const;
+const useCaseKeys = ['item1', 'item2', 'item3'] as const;
 
-const reportKeys = ["iso27001", "soc2", "tcsa", "executive", "incident", "bilingual"] as const;
-const reportsWithControls = new Set(["iso27001", "soc2", "tcsa"]);
+const reportKeys = ['iso27001', 'soc2', 'tcsa', 'executive', 'incident', 'bilingual'] as const;
+const reportsWithControls = new Set(['iso27001', 'soc2', 'tcsa']);
 
-const costComparisonKeys = ["soc2Prep", "isoGap", "timeToReport", "freshness", "evidence"] as const;
+const costComparisonKeys = ['soc2Prep', 'isoGap', 'timeToReport', 'freshness', 'evidence'] as const;
 
 export default function ProductReportContent() {
-  const t = useTranslations("product.report");
+  const t = useTranslations('product.report');
 
   return (
     <>
@@ -41,16 +54,15 @@ export default function ProductReportContent() {
           </FadeInUp>
           <FadeInUp delay={0.05}>
             <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4">
-              {t("overline")}
+              {t('overline')}
             </p>
             <h1 className="text-[clamp(36px,4.5vw,56px)] font-extrabold leading-[1.08] tracking-tight text-text-primary max-w-3xl mx-auto">
-              {t("title")}{" "}
-              <span className="text-brand-sage">{t("titleHighlight")}</span>
+              {t('title')} <span className="text-brand-sage">{t('titleHighlight')}</span>
             </h1>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <p className="text-xl text-text-secondary max-w-xl mx-auto mt-6 leading-relaxed">
-              {t("subtitle")}
+              {t('subtitle')}
             </p>
           </FadeInUp>
         </div>
@@ -61,19 +73,15 @@ export default function ProductReportContent() {
         <div className="max-w-3xl mx-auto">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              {t("problem.overline")}
+              {t('problem.overline')}
             </p>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
-              {t("problem.title")}
+              {t('problem.title')}
             </h2>
           </FadeInUp>
           <FadeInUp delay={0.1}>
-            <p className="text-text-secondary mt-5 leading-relaxed">
-              {t("problem.desc")}
-            </p>
-            <p className="text-text-secondary mt-4 leading-relaxed">
-              {t("problem.desc2")}
-            </p>
+            <p className="text-text-secondary mt-5 leading-relaxed">{t('problem.desc')}</p>
+            <p className="text-text-secondary mt-4 leading-relaxed">{t('problem.desc2')}</p>
           </FadeInUp>
         </div>
       </SectionWrapper>
@@ -84,23 +92,21 @@ export default function ProductReportContent() {
           <div>
             <FadeInUp>
               <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-                {t("reportTypes.overline")}
+                {t('reportTypes.overline')}
               </p>
               <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
-                {t("reportTypes.title")}
+                {t('reportTypes.title')}
               </h2>
             </FadeInUp>
             <FadeInUp delay={0.1}>
-              <p className="text-text-secondary mt-5 leading-relaxed">
-                {t("reportTypes.desc")}
-              </p>
+              <p className="text-text-secondary mt-5 leading-relaxed">{t('reportTypes.desc')}</p>
             </FadeInUp>
           </div>
           <FadeInUp delay={0.15}>
             <div className="bg-surface-2 rounded-xl border border-border overflow-hidden">
               <div className="bg-surface-3 px-4 py-3 border-b border-border">
                 <span className="text-sm font-semibold text-text-primary">
-                  {t("reportTypes.libraryTitle")}
+                  {t('reportTypes.libraryTitle')}
                 </span>
               </div>
               <div className="divide-y divide-border">
@@ -117,13 +123,10 @@ export default function ProductReportContent() {
                       <div className="flex items-center gap-3 min-w-0">
                         <AnalyticsIcon className="w-4 h-4 text-brand-sage shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-text-primary truncate">
-                            {name}
-                          </p>
+                          <p className="text-sm font-medium text-text-primary truncate">{name}</p>
                           {controls && (
                             <p className="text-[11px] text-text-muted">
-                              {controls} controls | {coverage}{" "}
-                              coverage
+                              {controls} controls | {coverage} coverage
                             </p>
                           )}
                         </div>
@@ -141,9 +144,9 @@ export default function ProductReportContent() {
       {/* ── Features ── */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("features.overline")}
-          title={t("features.title")}
-          subtitle={t("features.subtitle")}
+          overline={t('features.overline')}
+          title={t('features.title')}
+          subtitle={t('features.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
           {featureKeys.map((key, i) => {
@@ -171,10 +174,10 @@ export default function ProductReportContent() {
           <FadeInUp>
             <div className="text-center mb-10">
               <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-                {t("costComparison.overline")}
+                {t('costComparison.overline')}
               </p>
               <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
-                {t("costComparison.title")}
+                {t('costComparison.title')}
               </h2>
             </div>
           </FadeInUp>
@@ -182,16 +185,16 @@ export default function ProductReportContent() {
             <div className="bg-surface-2 rounded-xl border border-border overflow-hidden">
               <div className="grid grid-cols-3 text-center text-xs font-semibold text-text-muted uppercase tracking-wider border-b border-border">
                 <div className="p-3"></div>
-                <div className="p-3 border-l border-border">{t("costComparison.consultant")}</div>
+                <div className="p-3 border-l border-border">{t('costComparison.consultant')}</div>
                 <div className="p-3 border-l border-border text-brand-sage">
-                  {t("costComparison.panguard")}
+                  {t('costComparison.panguard')}
                 </div>
               </div>
               {costComparisonKeys.map((key, i) => (
                 <div
                   key={key}
                   className={`grid grid-cols-3 text-sm ${
-                    i < costComparisonKeys.length - 1 ? "border-b border-border" : ""
+                    i < costComparisonKeys.length - 1 ? 'border-b border-border' : ''
                   }`}
                 >
                   <div className="p-3 text-text-primary font-medium">
@@ -212,10 +215,7 @@ export default function ProductReportContent() {
 
       {/* ── Use Cases ── */}
       <SectionWrapper>
-        <SectionTitle
-          overline={t("useCases.overline")}
-          title={t("useCases.title")}
-        />
+        <SectionTitle overline={t('useCases.overline')} title={t('useCases.title')} />
         <div className="grid sm:grid-cols-3 gap-6 mt-14">
           {useCaseKeys.map((key, i) => {
             const Icon = useCaseIcons[i];
@@ -241,11 +241,9 @@ export default function ProductReportContent() {
         <div className="text-center">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
-            <p className="text-text-secondary mt-3 max-w-lg mx-auto">
-              {t("cta.desc")}
-            </p>
+            <p className="text-text-secondary mt-3 max-w-lg mx-auto">{t('cta.desc')}</p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
@@ -253,13 +251,13 @@ export default function ProductReportContent() {
                 href="/early-access"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/security"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("cta.cta2")}
+                {t('cta.cta2')}
               </Link>
             </div>
           </FadeInUp>

@@ -27,9 +27,8 @@ const MAX_EVENTS_IN_PROMPT = 50;
  * @internal
  */
 function serializeEvent(event: SecurityEvent): string {
-  const ts = event.timestamp instanceof Date
-    ? event.timestamp.toISOString()
-    : String(event.timestamp);
+  const ts =
+    event.timestamp instanceof Date ? event.timestamp.toISOString() : String(event.timestamp);
   return `[${ts}] [${event.severity.toUpperCase()}] [${event.source}] ${event.host}: ${event.description}`;
 }
 
@@ -96,11 +95,12 @@ export function getReportPrompt(events: SecurityEvent[], lang: Language): string
   const included = sorted.slice(0, MAX_EVENTS_IN_PROMPT);
   const eventLines = included.map(serializeEvent).join('\n');
 
-  const truncationNote = total > MAX_EVENTS_IN_PROMPT
-    ? lang === 'zh-TW'
-      ? `\n(注意：共有 ${total} 個事件，以下僅顯示最嚴重的 ${MAX_EVENTS_IN_PROMPT} 個)\n`
-      : `\n(Note: ${total} total events, showing the ${MAX_EVENTS_IN_PROMPT} most severe below)\n`
-    : '';
+  const truncationNote =
+    total > MAX_EVENTS_IN_PROMPT
+      ? lang === 'zh-TW'
+        ? `\n(注意：共有 ${total} 個事件，以下僅顯示最嚴重的 ${MAX_EVENTS_IN_PROMPT} 個)\n`
+        : `\n(Note: ${total} total events, showing the ${MAX_EVENTS_IN_PROMPT} most severe below)\n`
+      : '';
 
   if (lang === 'zh-TW') {
     return `你是一位專業的資安報告撰寫者。請根據以下安全事件產生一份結構化的安全摘要報告。

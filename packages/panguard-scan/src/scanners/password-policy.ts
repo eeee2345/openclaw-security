@@ -78,14 +78,14 @@ async function checkMacOSPolicy(): Promise<Finding[]> {
 
   // Check for weak policy indicators
   // 檢查弱策略指標
-  const hasMinLength = output.includes('minLength') || output.includes('policyAttributeMinimumLength');
+  const hasMinLength =
+    output.includes('minLength') || output.includes('policyAttributeMinimumLength');
   const hasComplexity =
     output.includes('requiresAlpha') ||
     output.includes('requiresNumeric') ||
     output.includes('policyAttributeMinimumNumericCharacters');
   const hasExpiration =
-    output.includes('maxPINAgeInDays') ||
-    output.includes('policyAttributeExpiresEveryNDays');
+    output.includes('maxPINAgeInDays') || output.includes('policyAttributeExpiresEveryNDays');
 
   if (!hasMinLength && !hasComplexity) {
     findings.push({

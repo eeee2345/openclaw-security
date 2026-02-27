@@ -6,11 +6,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type { EnvironmentBaseline } from '../src/types.js';
-import {
-  createEmptyBaseline,
-  checkDeviation,
-  updateBaseline,
-} from '../src/memory/baseline.js';
+import { createEmptyBaseline, checkDeviation, updateBaseline } from '../src/memory/baseline.js';
 import {
   isLearningComplete,
   getLearningProgress,
@@ -90,7 +86,14 @@ describe('baseline', () => {
 
   it('should detect new network destination', () => {
     baseline.normalConnections = [
-      { remoteAddress: '1.1.1.1', remotePort: 443, protocol: 'tcp', frequency: 5, firstSeen: '2024-01-01', lastSeen: '2024-01-02' },
+      {
+        remoteAddress: '1.1.1.1',
+        remotePort: 443,
+        protocol: 'tcp',
+        frequency: 5,
+        firstSeen: '2024-01-01',
+        lastSeen: '2024-01-02',
+      },
     ];
 
     const event = makeEvent({

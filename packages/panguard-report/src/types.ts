@@ -10,10 +10,7 @@
 // ---------------------------------------------------------------------------
 
 /** Supported compliance frameworks / 支援的合規框架 */
-export type ComplianceFramework =
-  | 'tw_cyber_security_act'
-  | 'iso27001'
-  | 'soc2';
+export type ComplianceFramework = 'tw_cyber_security_act' | 'iso27001' | 'soc2';
 
 /** Compliance control status / 合規控制狀態 */
 export type ControlStatus = 'pass' | 'fail' | 'partial' | 'not_applicable';

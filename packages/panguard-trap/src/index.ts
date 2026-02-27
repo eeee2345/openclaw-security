@@ -32,10 +32,7 @@ export type {
   TrapStatistics,
 } from './types.js';
 
-export {
-  DEFAULT_SERVICE_CONFIGS,
-  DEFAULT_TRAP_CONFIG,
-} from './types.js';
+export { DEFAULT_SERVICE_CONFIGS, DEFAULT_TRAP_CONFIG } from './types.js';
 
 // Services
 export {
@@ -55,11 +52,7 @@ export {
 } from './profiler/index.js';
 
 // Intel
-export {
-  buildTrapIntel,
-  buildBatchIntel,
-  generateIntelSummary,
-} from './intel/index.js';
+export { buildTrapIntel, buildBatchIntel, generateIntelSummary } from './intel/index.js';
 export type { IntelSummary } from './intel/index.js';
 
 // Engine

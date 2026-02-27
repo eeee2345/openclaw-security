@@ -12,7 +12,13 @@
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import {
-  c, banner, header, symbols, divider, statusPanel, spinner,
+  c,
+  banner,
+  header,
+  symbols,
+  divider,
+  statusPanel,
+  spinner,
   setLogLevel,
 } from '@panguard-ai/core';
 import type { StatusItem } from '@panguard-ai/core';
@@ -104,12 +110,14 @@ async function commandStart(dataDir: string, verbose = false): Promise<void> {
   sp.succeed('PanguardGuard started');
 
   // Status box
-  console.log(statusPanel('PANGUARD AI Guard Active', [
-    { label: 'Status', value: c.safe('PROTECTED'), status: 'safe' },
-    { label: 'PID', value: c.sage(String(process.pid)) },
-    { label: 'Mode', value: c.sage(config.mode) },
-    { label: 'Data Dir', value: c.dim(dataDir) },
-  ]));
+  console.log(
+    statusPanel('PANGUARD AI Guard Active', [
+      { label: 'Status', value: c.safe('PROTECTED'), status: 'safe' },
+      { label: 'PID', value: c.sage(String(process.pid)) },
+      { label: 'Mode', value: c.sage(config.mode) },
+      { label: 'Data Dir', value: c.dim(dataDir) },
+    ])
+  );
 
   // Threat intelligence sharing transparency message
   console.log(`  ${symbols.info} Threat intelligence sharing: ${c.safe('enabled')}`);
@@ -135,7 +143,11 @@ async function commandStart(dataDir: string, verbose = false): Promise<void> {
         const events = Number(data['eventsProcessed'] ?? 0);
         const threats = Number(data['threatsDetected'] ?? 0);
         const uploaded = Number(data['uploaded'] ?? 0);
-        console.log(c.dim(`  [${time}] Events: ${events.toLocaleString()} | Threats: ${threats} | Uploaded: ${uploaded}`));
+        console.log(
+          c.dim(
+            `  [${time}] Events: ${events.toLocaleString()} | Threats: ${threats} | Uploaded: ${uploaded}`
+          )
+        );
       } else if (type === 'threat') {
         const time = new Date().toLocaleTimeString('en-US', { hour12: false });
         console.log('');
@@ -190,7 +202,7 @@ function commandStatus(dataDir: string): void {
     {
       label: 'Status',
       value: running ? c.safe('RUNNING') : c.critical('STOPPED'),
-      status: running ? 'safe' as const : 'critical' as const,
+      status: running ? ('safe' as const) : ('critical' as const),
     },
     ...(pid ? [{ label: 'PID', value: c.sage(String(pid)) }] : []),
     { label: 'Data Dir', value: c.dim(dataDir) },
@@ -208,7 +220,7 @@ function commandStatus(dataDir: string): void {
     items.push({
       label: 'License',
       value: config.licenseKey ? c.safe('configured') : c.caution('free tier'),
-      status: config.licenseKey ? 'safe' as const : 'caution' as const,
+      status: config.licenseKey ? ('safe' as const) : ('caution' as const),
     });
   } catch {
     items.push({ label: 'Config', value: c.critical('not found'), status: 'critical' as const });
@@ -283,8 +295,12 @@ function printHelp(): void {
   console.log('');
   console.log(divider('Options'));
   console.log('');
-  console.log(`  ${c.sage('--data-dir <path>'.padEnd(22))} Data directory ${c.dim('(default: ~/.panguard-guard)')}`);
-  console.log(`  ${c.sage('--verbose'.padEnd(22))} Show all event logs ${c.dim('(default: quiet mode)')}`);
+  console.log(
+    `  ${c.sage('--data-dir <path>'.padEnd(22))} Data directory ${c.dim('(default: ~/.panguard-guard)')}`
+  );
+  console.log(
+    `  ${c.sage('--verbose'.padEnd(22))} Show all event logs ${c.dim('(default: quiet mode)')}`
+  );
   console.log(`  ${c.sage('--license-key <key>'.padEnd(22))} License key for install-script`);
   console.log('');
   console.log(c.dim(`  Version: ${CLI_VERSION}`));
@@ -314,9 +330,10 @@ function extractOption(args: string[], option: string): string | undefined {
 // CLI 進入點（直接執行時）
 // ---------------------------------------------------------------------------
 
-const isDirectRun = process.argv[1] &&
+const isDirectRun =
+  process.argv[1] &&
   (process.argv[1].endsWith('/panguard-guard') ||
-   process.argv[1].includes('panguard-guard/dist/cli'));
+    process.argv[1].includes('panguard-guard/dist/cli'));
 
 if (isDirectRun) {
   runCLI(process.argv.slice(2)).catch((err) => {

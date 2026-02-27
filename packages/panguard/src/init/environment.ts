@@ -58,7 +58,12 @@ export function getConfigDir(): string {
 /**
  * Get basic environment info as structured data.
  */
-export function getEnvironmentInfo(): { os: string; hostname: string; arch: string; platform: string } {
+export function getEnvironmentInfo(): {
+  os: string;
+  hostname: string;
+  arch: string;
+  platform: string;
+} {
   return {
     os: `${os.platform()} ${os.release()}`,
     hostname: os.hostname(),

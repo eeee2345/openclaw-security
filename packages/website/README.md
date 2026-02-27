@@ -48,18 +48,18 @@ src/
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|---|---|---|
-| `LEAD_WEBHOOK_URL` | No | Webhook URL for lead capture (Zapier, Make, etc.) |
+| Variable           | Required | Description                                       |
+| ------------------ | -------- | ------------------------------------------------- |
+| `LEAD_WEBHOOK_URL` | No       | Webhook URL for lead capture (Zapier, Make, etc.) |
 
 ## Scripts
 
-| Script | Description |
-|---|---|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Production build |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
+| Script           | Description                  |
+| ---------------- | ---------------------------- |
+| `pnpm dev`       | Start dev server             |
+| `pnpm build`     | Production build             |
+| `pnpm start`     | Start production server      |
+| `pnpm lint`      | Run ESLint                   |
 | `pnpm typecheck` | Run TypeScript type checking |
 
 ## License

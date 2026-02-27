@@ -58,8 +58,13 @@ describe('Panguard Web Types', () => {
 
     it('should support all guidance step types', () => {
       const steps: GuidanceStepType[] = [
-        'welcome', 'persona_select', 'threat_assessment',
-        'product_recommendation', 'installation', 'notification_setup', 'complete',
+        'welcome',
+        'persona_select',
+        'threat_assessment',
+        'product_recommendation',
+        'installation',
+        'notification_setup',
+        'complete',
       ];
       expect(steps).toHaveLength(7);
     });

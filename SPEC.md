@@ -12,6 +12,7 @@
 **一行指令安裝，AI 全自動保護你的機器。有事它會告訴你，沒事你什麼都不用做。**
 
 我們服務三種人，他們都不懂資安：
+
 1. **個人開發者 / AI 開發者**：有 VPS，伺服器暴露公網，AI 生成 code 品質不穩定
 2. **小型企業（5-50 人）**：沒有 IT 部門，員工亂點附件，被勒索軟體打中就倒閉
 3. **中型企業（50-500 人）**：有 IT 沒有資安，需要合規報告
@@ -31,13 +32,13 @@
 
 ## 產品線
 
-| 產品 | 功能 | 優先級 |
-|------|------|--------|
-| **Panguard Scan** | 60 秒資安健檢 + PDF 報告 | P0 |
-| **Panguard Guard** | AI 即時端點監控 + 自動回應 | P0 |
-| **Panguard Chat** | AI 資安副駕駛（Guard 的展示層 + 互動介面） | P0 |
-| **Panguard Trap** | 智慧蜜罐 | P1 |
-| **Panguard Report** | AI 合規報告產生器 | P1 |
+| 產品                | 功能                                       | 優先級 |
+| ------------------- | ------------------------------------------ | ------ |
+| **Panguard Scan**   | 60 秒資安健檢 + PDF 報告                   | P0     |
+| **Panguard Guard**  | AI 即時端點監控 + 自動回應                 | P0     |
+| **Panguard Chat**   | AI 資安副駕駛（Guard 的展示層 + 互動介面） | P0     |
+| **Panguard Trap**   | 智慧蜜罐                                   | P1     |
+| **Panguard Report** | AI 合規報告產生器                          | P1     |
 
 **Panguard Chat 是 P0。** 沒有 Chat，Guard 對我們的 TA 來說就是一個裝了不知道在幹嘛的東西。
 
@@ -109,14 +110,21 @@
 **職責：** 監控系統事件，比對規則，透過三層漏斗分流事件。
 
 #### 輸入
+
 ```typescript
 // 系統監控引擎持續產出的原始事件流
 interface RawSystemEvent {
-  source: 'windows_etw' | 'windows_event_log' | 'linux_auditd' | 'linux_syslog' 
-        | 'network_monitor' | 'file_integrity' | 'process_monitor';
+  source:
+    | 'windows_etw'
+    | 'windows_event_log'
+    | 'linux_auditd'
+    | 'linux_syslog'
+    | 'network_monitor'
+    | 'file_integrity'
+    | 'process_monitor';
   timestamp: Date;
   host: string;
-  raw: Record<string, unknown>;  // 原始事件資料
+  raw: Record<string, unknown>; // 原始事件資料
 }
 ```
 
@@ -235,42 +243,43 @@ RawSystemEvent 進入
 
 **Windows 監控（透過 ETW + Event Log）：**
 
-| Event ID | 類型 | 說明 | MITRE ATT&CK |
-|----------|------|------|--------------|
-| 4625 | 登入失敗 | 暴力破解偵測 | T1110 |
-| 4720 | 帳號建立 | 後門帳號偵測 | T1136 |
-| 4732 | 群組成員變更 | 權限提升偵測 | T1098 |
-| 7045 | 服務安裝 | 持久化偵測 | T1543.003 |
-| 1 (Sysmon) | 程序建立 | 可疑程序偵測 | T1059 |
-| 3 (Sysmon) | 網路連線 | C2 通訊偵測 | T1071 |
-| 11 (Sysmon) | 檔案建立 | 惡意檔案投放 | T1105 |
-| 13 (Sysmon) | Registry 修改 | 持久化偵測 | T1547 |
-| 22 (Sysmon) | DNS 查詢 | DNS 隧道/C2 | T1071.004 |
-| 4688 | 程序建立 | PowerShell 編碼指令 | T1059.001 |
-| 4657 | Registry 修改 | 登錄檔劫持 | T1112 |
+| Event ID    | 類型          | 說明                | MITRE ATT&CK |
+| ----------- | ------------- | ------------------- | ------------ |
+| 4625        | 登入失敗      | 暴力破解偵測        | T1110        |
+| 4720        | 帳號建立      | 後門帳號偵測        | T1136        |
+| 4732        | 群組成員變更  | 權限提升偵測        | T1098        |
+| 7045        | 服務安裝      | 持久化偵測          | T1543.003    |
+| 1 (Sysmon)  | 程序建立      | 可疑程序偵測        | T1059        |
+| 3 (Sysmon)  | 網路連線      | C2 通訊偵測         | T1071        |
+| 11 (Sysmon) | 檔案建立      | 惡意檔案投放        | T1105        |
+| 13 (Sysmon) | Registry 修改 | 持久化偵測          | T1547        |
+| 22 (Sysmon) | DNS 查詢      | DNS 隧道/C2         | T1071.004    |
+| 4688        | 程序建立      | PowerShell 編碼指令 | T1059.001    |
+| 4657        | Registry 修改 | 登錄檔劫持          | T1112        |
 
 **Linux 監控（透過 auditd + syslog）：**
 
-| 來源 | 類型 | 說明 | MITRE ATT&CK |
-|------|------|------|--------------|
-| auth.log | SSH 失敗登入 | 暴力破解 | T1110 |
-| auth.log | sudo 使用 | 權限提升 | T1548 |
-| auditd | execve 系統呼叫 | 可疑程序執行 | T1059 |
-| auditd | 檔案權限變更 | chmod 777 等 | T1222 |
-| syslog | cron 變更 | 排程任務持久化 | T1053 |
-| /proc/net | 新外連 | C2 通訊 | T1071 |
-| inotify | 關鍵檔案變更 | /etc/passwd 等 | T1098 |
+| 來源      | 類型            | 說明           | MITRE ATT&CK |
+| --------- | --------------- | -------------- | ------------ |
+| auth.log  | SSH 失敗登入    | 暴力破解       | T1110        |
+| auth.log  | sudo 使用       | 權限提升       | T1548        |
+| auditd    | execve 系統呼叫 | 可疑程序執行   | T1059        |
+| auditd    | 檔案權限變更    | chmod 777 等   | T1222        |
+| syslog    | cron 變更       | 排程任務持久化 | T1053        |
+| /proc/net | 新外連          | C2 通訊        | T1071        |
+| inotify   | 關鍵檔案變更    | /etc/passwd 等 | T1098        |
 
 **跨平台監控：**
 
-| 類型 | 說明 | 實作方式 |
-|------|------|---------|
-| 網路連線 | 新外連偵測、惡意 IP 比對 | netstat 輪詢 + IP 黑名單 |
-| 程序監控 | 新程序、可疑路徑/名稱 | OS API 輪詢 |
-| 檔案完整性 | 關鍵系統檔案 hash 比對 | SHA256 定期掃描 |
-| Port 監聽 | 新開放 Port 偵測 | netstat 輪詢 |
+| 類型       | 說明                     | 實作方式                 |
+| ---------- | ------------------------ | ------------------------ |
+| 網路連線   | 新外連偵測、惡意 IP 比對 | netstat 輪詢 + IP 黑名單 |
+| 程序監控   | 新程序、可疑路徑/名稱    | OS API 輪詢              |
+| 檔案完整性 | 關鍵系統檔案 hash 比對   | SHA256 定期掃描          |
+| Port 監聽  | 新開放 Port 偵測         | netstat 輪詢             |
 
 #### Detect Agent Checkpoint
+
 - 能從 Windows Event Log 即時捕捉 Event ID 4625 並標準化為 SecurityEvent
 - 能從 Linux auth.log 即時捕捉 SSH 失敗登入
 - 三層漏斗正確分流：模擬 100 個事件，≤10% 進入 Layer 3
@@ -290,8 +299,10 @@ Detect Agent 的 Layer 1（規則引擎）和 Layer 2（本地模型）已經處
 #### Dynamic Reasoning 執行流程
 
 ```typescript
-async function analyzeEvent(event: SecurityEvent, context: AnalysisContext): Promise<ThreatVerdict> {
-  
+async function analyzeEvent(
+  event: SecurityEvent,
+  context: AnalysisContext
+): Promise<ThreatVerdict> {
   // ─── Phase 1: 制定調查計畫 ───
   const investigationPlan = await cloudLLM.call({
     system: ANALYZE_SYSTEM_PROMPT,
@@ -316,7 +327,7 @@ async function analyzeEvent(event: SecurityEvent, context: AnalysisContext): Pro
       
       ## 指令
       請制定調查計畫。你有以下調查工具可用：
-      ${AVAILABLE_TOOLS.map(t => `- ${t.name}: ${t.description}`).join('\n')}
+      ${AVAILABLE_TOOLS.map((t) => `- ${t.name}: ${t.description}`).join('\n')}
       
       回傳 JSON：
       {
@@ -328,15 +339,15 @@ async function analyzeEvent(event: SecurityEvent, context: AnalysisContext): Pro
     `,
     maxTokens: 1000,
   });
-  
+
   // ─── Phase 2: 逐步執行調查 ───
   const findings: InvestigationFinding[] = [];
-  
+
   for (const step of investigationPlan.investigationSteps) {
     // 執行調查工具
     const toolResult = await executeInvestigationTool(step.tool, step.params, event);
     findings.push({ step, result: toolResult });
-    
+
     // 每步結果可能觸發 replan
     if (toolResult.suspicious) {
       const additionalSteps = await cloudLLM.call({
@@ -354,7 +365,7 @@ async function analyzeEvent(event: SecurityEvent, context: AnalysisContext): Pro
       investigationPlan.investigationSteps.push(...additionalSteps.additionalSteps);
     }
   }
-  
+
   // ─── Phase 3: 綜合判決 ───
   const verdict = await cloudLLM.call({
     system: VERDICT_SYSTEM_PROMPT,
@@ -385,10 +396,10 @@ async function analyzeEvent(event: SecurityEvent, context: AnalysisContext): Pro
     `,
     maxTokens: 800,
   });
-  
+
   // 寫入快取（供集體情報共享）
   await threatCloud.cacheAnalysis(generateThreatPatternHash(event), verdict);
-  
+
   return verdict;
 }
 ```
@@ -407,7 +418,7 @@ const AVAILABLE_TOOLS: InvestigationTool[] = [
       // 查詢 ThreatFox IOC
       // 查詢 Panguard Threat Cloud 的集體情報
       return { abuseScore, reportCount, categories, lastSeen, phalanxCloudData };
-    }
+    },
   },
   {
     name: 'checkProcessTree',
@@ -416,7 +427,7 @@ const AVAILABLE_TOOLS: InvestigationTool[] = [
       // 取得程序樹
       // 檢查父程序是否正常（例：explorer.exe → cmd.exe 正常；svchost.exe → powershell.exe 可疑）
       return { processTree, parentChain, childProcesses, commandLine };
-    }
+    },
   },
   {
     name: 'checkFileHash',
@@ -427,49 +438,49 @@ const AVAILABLE_TOOLS: InvestigationTool[] = [
       // 比對 VirusTotal（如有 API key）
       // 比對 Panguard Threat Cloud
       return { sha256, yaraMatches, knownMalware, fileMetadata };
-    }
+    },
   },
   {
     name: 'checkNetworkConnections',
     description: '查詢特定程序或 IP 的所有網路連線',
     implementation: async (params: { pid?: number; ip?: string }) => {
       return { activeConnections, dnsQueries, bytesTransferred, geoLocation };
-    }
+    },
   },
   {
     name: 'checkUserActivity',
     description: '查詢特定使用者最近的活動記錄',
     implementation: async (username: string) => {
       return { recentLogins, loginLocations, privilegeChanges, recentFileAccess };
-    }
+    },
   },
   {
     name: 'checkTimeAnomaly',
     description: '檢查事件時間是否異常（非上班時間、假日等）',
     implementation: async (timestamp: Date) => {
       return { isBusinessHours, isHoliday, isTypicalForThisUser, baselineComparison };
-    }
+    },
   },
   {
     name: 'checkRelatedEvents',
     description: '查詢與此事件相關的其他安全事件（同 IP、同程序、同時段）',
     implementation: async (event: SecurityEvent, timeWindow: number) => {
       return { relatedEvents, correlationScore, attackChainPossibility };
-    }
+    },
   },
   {
     name: 'checkBaselineDeviation',
     description: '詳細比對事件與環境基線的偏離程度',
     implementation: async (event: SecurityEvent) => {
       return { deviationDetails, normalPattern, currentPattern, deviationScore };
-    }
+    },
   },
   {
     name: 'queryThreatCloud',
     description: '查詢 Phalanx 集體情報，看其他客戶是否遇過類似威脅',
     implementation: async (threatPattern: string) => {
       return { seenByOtherCustomers, frequency, firstSeen, lastSeen, commonResponse };
-    }
+    },
   },
 ];
 ```
@@ -515,6 +526,7 @@ const VERDICT_SYSTEM_PROMPT = `
 ```
 
 #### Analyze Agent Checkpoint
+
 - 給一個 SSH 暴力破解事件，能動態規劃 3+ 步調查（查 IP 信譽 → 查相關事件 → 查時間異常）
 - 每步調查結果影響下一步（例：IP 信譽差 → 追加查詢該 IP 的其他連線）
 - 最終判決包含信心分數和 humanSummary（人話摘要）
@@ -529,18 +541,21 @@ const VERDICT_SYSTEM_PROMPT = `
 #### 動作決策邏輯
 
 ```typescript
-async function executeResponse(verdict: ThreatVerdict, config: ResponseConfig): Promise<ResponseResult> {
-  
+async function executeResponse(
+  verdict: ThreatVerdict,
+  config: ResponseConfig
+): Promise<ResponseResult> {
   const actions: ExecutedAction[] = [];
-  
+
   // ─── 根據 Confidence Score 決定模式 ───
-  if (verdict.confidence >= config.autoRespondThreshold) {  // 預設 85
+  if (verdict.confidence >= config.autoRespondThreshold) {
+    // 預設 85
     // 自動執行，事後通知
     const result = await autoRespond(verdict);
     actions.push(result);
-    await chatAgent.notifyPostAction(verdict, result);  // 「我已經幫你處理了」
-    
-  } else if (verdict.confidence >= config.notifyThreshold) {  // 預設 50
+    await chatAgent.notifyPostAction(verdict, result); // 「我已經幫你處理了」
+  } else if (verdict.confidence >= config.notifyThreshold) {
+    // 預設 50
     // 通知用戶，等確認
     const userResponse = await chatAgent.askForConfirmation(verdict);
     if (userResponse.confirmed) {
@@ -549,15 +564,14 @@ async function executeResponse(verdict: ThreatVerdict, config: ResponseConfig): 
     } else {
       actions.push({ type: 'user_dismissed', reason: userResponse.reason });
     }
-    
   } else {
     // 信心不足，只記錄
     actions.push({ type: 'log_only' });
   }
-  
+
   // ─── 無論哪種模式，都回饋給 Report Agent ───
   await reportAgent.recordAction(verdict, actions);
-  
+
   return { verdict, actions, timestamp: new Date() };
 }
 ```
@@ -571,35 +585,35 @@ interface ResponseActions {
   // Windows: netsh advfirewall / WFP API
   // Linux: iptables -A INPUT -s {ip} -j DROP
   // 記錄到 blocklist，設定自動解除時間（預設 24hr）
-  
+
   unblockIP(ip: string): Promise<void>;
   // 從 blocklist 移除，解除防火牆規則
-  
+
   // ─── 程序層 ───
   killProcess(pid: number): Promise<void>;
   // 終止惡意程序
   // 記錄程序快照（名稱、路徑、命令列、父程序、網路連線）
-  
+
   quarantineFile(filePath: string): Promise<void>;
   // 把檔案移到隔離區（加密 + 改副檔名）
   // 記錄原始路徑和 hash，可還原
-  
+
   // ─── 帳號層 ───
   disableAccount(username: string): Promise<void>;
   // Windows: net user {username} /active:no
   // Linux: usermod -L {username}
   // 需要管理員權限，可能需要 Chat Agent 確認
-  
+
   // ─── 系統層 ───
   isolateNetwork(): Promise<void>;
   // 極端情況：切斷所有外部網路（只保留跟 Phalanx Cloud 的連線）
   // 只在 Confidence ≥ 95 且偵測到主動資料外洩時執行
   // 必須有自動解除機制
-  
+
   // ─── 通知層 ───
   notifyUser(message: HumanReadableMessage): Promise<void>;
   // 透過 Chat Agent 送通知
-  
+
   requestConfirmation(verdict: ThreatVerdict): Promise<UserConfirmation>;
   // 透過 Chat Agent 要求用戶確認
 }
@@ -612,28 +626,29 @@ interface ResponseActions {
 const SAFETY_RULES = {
   // 不會自動封鎖的 IP（避免自鎖）
   whitelistedIPs: ['127.0.0.1', 'localhost', userConfiguredIPs],
-  
+
   // 不會自動終止的程序
   protectedProcesses: ['sshd', 'systemd', 'init', 'explorer.exe', 'svchost.exe', 'phalanx-guard'],
-  
+
   // 不會自動停用的帳號
   protectedAccounts: ['root', 'Administrator', currentLoggedInUser],
-  
+
   // 自動封鎖 IP 的最長時間（預設 24 小時，之後自動解除或需要手動續封）
   maxAutoBlockDuration: 24 * 60 * 60 * 1000,
-  
+
   // 網路隔離需要 Confidence ≥ 95 且必須是 malicious 判決
   networkIsolationMinConfidence: 95,
-  
+
   // 所有動作都記錄到稽核日誌
   auditLog: true,
-  
+
   // 所有動作都可還原
   rollbackEnabled: true,
 };
 ```
 
 #### Respond Agent Checkpoint
+
 - 能根據 Confidence Score 正確決定自動處理 / 通知確認 / 僅記錄
 - 封鎖 IP 成功（Windows netsh + Linux iptables）
 - 隔離檔案成功且可還原
@@ -650,7 +665,7 @@ const SAFETY_RULES = {
 
 ```typescript
 class ContextMemoryManager {
-  
+
   // ─── 學習期（前 7 天） ───
   async recordLearningPhase(event: SecurityEvent): Promise<void> {
     // 記錄所有行為模式（不判斷好壞）
@@ -658,7 +673,7 @@ class ContextMemoryManager {
     this.baseline.connections.record(event.connectionInfo);
     this.baseline.loginPatterns.record(event.loginInfo);
     this.baseline.servicePorts.record(event.portInfo);
-    
+
     // 學習期採用「靜默模式」
     // AI 照常分析每個事件，但不推送即時告警
     // 只在每日摘要中彙報發現（降低 alert fatigue 風險）
@@ -667,33 +682,33 @@ class ContextMemoryManager {
     // 為什麼？
     // 學習期 baseline 還不完整，anomaly score 會有大量誤判
     // 如果一開始就狂推通知，用戶第二天就會把 Phalanx 移除
-    
+
     // 每天更新一次學習進度
     this.learningProgress = this.calculateLearningProgress();
     // 學習進度透過 Chat Agent 通知用戶：
     // 「Phalanx 正在學習你的環境（第 3/7 天）。目前已記錄 1,247 個正常行為模式。」
     // 「今天分析了 312 個事件，其中 3 個需要注意（詳情見下方）。」
   }
-  
+
   // ─── 防護期：基線動態更新 ───
   async updateBaseline(event: SecurityEvent, verdict: ThreatVerdict): Promise<void> {
     if (verdict.conclusion === 'benign' && verdict.confidence >= 90) {
       // 被高信心判定為安全的行為 → 更新基線（這是新的「正常」）
       this.baseline.addNormalPattern(event);
     }
-    
+
     if (verdict.conclusion === 'malicious') {
       // 確認的惡意行為 → 加入異常模式庫（未來遇到直接高分）
       this.baseline.addMaliciousPattern(event);
     }
-    
+
     // 用戶手動解除封鎖 = 用戶告訴我們這是誤報
     // → 降低這類事件的異常分數
     if (verdict.userOverride === 'false_positive') {
       this.baseline.recordFalsePositive(event);
     }
   }
-  
+
   // ─── 基線資料結構 ───
   interface EnvironmentBaseline {
     // 正常程序模式
@@ -703,27 +718,27 @@ class ContextMemoryManager {
       knownBad: Set<string>;                   // 已確認的惡意程序 hash
       frequency: Map<string, number>;          // 程序啟動頻率
     };
-    
+
     // 正常網路連線模式
     connections: {
       typicalDestinations: Map<string, ConnectionPattern>;  // 目標 IP/域名 → 正常模式
       typicalPorts: Set<number>;               // 正常外連 Port
       dailyTrafficProfile: TrafficProfile;     // 每日流量曲線
     };
-    
+
     // 正常登入模式
     loginPatterns: {
       typicalHours: TimeRange[];               // 正常登入時段
       typicalSources: Set<string>;             // 正常登入來源 IP
       typicalUsers: Map<string, LoginPattern>; // 每個使用者的正常模式
     };
-    
+
     // 正常服務 Port
     servicePorts: {
       expectedOpenPorts: Set<number>;          // 預期開放的 Port
       expectedServices: Map<number, string>;   // Port → 對應服務
     };
-    
+
     // 元資料
     learningStartDate: Date;
     learningCompleteDate: Date | null;
@@ -746,9 +761,9 @@ interface ReportTypes {
     investigation: InvestigationFinding[];
     actionsTaken: ExecutedAction[];
     timeline: TimelineEntry[];
-    recommendations: string[];  // 用人話寫
+    recommendations: string[]; // 用人話寫
   };
-  
+
   // 日報摘要（每天一份，透過 Chat 推送）
   dailySummary: {
     totalEvents: number;
@@ -756,9 +771,9 @@ interface ReportTypes {
     suspiciousEvents: number;
     topAttackSources: { ip: string; count: number; country: string }[];
     actionsTaken: ExecutedAction[];
-    estimatedDamageAvoided: number;  // 估算避免的損失金額
+    estimatedDamageAvoided: number; // 估算避免的損失金額
   };
-  
+
   // 週報摘要（每週一份）
   weeklySummary: dailySummary & {
     trendComparison: { thisWeek: number; lastWeek: number; change: number };
@@ -766,7 +781,7 @@ interface ReportTypes {
     baselineUpdates: string[];
     recommendations: string[];
   };
-  
+
   // 合規報告（Business 方案，月報）
   complianceReport: {
     framework: 'tw_cyber_security_act' | 'iso27001' | 'soc2';
@@ -779,6 +794,7 @@ interface ReportTypes {
 ```
 
 #### Report Agent Checkpoint
+
 - Context Memory 學習期 7 天後能產出完整基線
 - 基線包含程序/網路/登入/Port 四類模式
 - 高信心 benign 事件正確更新基線
@@ -813,13 +829,13 @@ function adaptMessage(verdict: ThreatVerdict, userProfile: UserProfile): string 
       // 「偵測到 SSH brute force（T1110），來源 103.xx.xx.xx，
       //  已加入 iptables 黑名單。建議 fail2ban 設 maxretry=3。」
       return formatForDeveloper(verdict);
-      
+
     case 'boss':
       // 只講結果和影響、建議下一步、估算金額
       // 「有人嘗試入侵你的系統，已被擋下。
       //  建議：提醒員工不要用簡單密碼。」
       return formatForBoss(verdict);
-      
+
     case 'it_admin':
       // 技術細節 + 管理建議 + 合規對照
       // 「SSH brute force 來自 103.xx.xx.xx，已封鎖。
@@ -874,7 +890,7 @@ ${USER_TYPE_INSTRUCTIONS}
 
 ```typescript
 // 通知管道根據方案分層（合規考量）
-// 
+//
 // Starter（個人開發者）：LINE / Telegram / Slack / Email — 方便為主
 // Pro（小型企業）：Slack / Email / Webhook — 企業標準
 // Business（中型企業 + 合規）：Slack Enterprise / Email(TLS) / Webhook(mTLS) / SIEM 整合
@@ -899,7 +915,7 @@ interface MessagingChannel {
   sendMessage(userId: string, message: FormattedMessage): Promise<void>;
   sendAlert(userId: string, alert: ThreatAlert): Promise<void>;
   listenForReplies(handler: (userId: string, text: string) => Promise<string>): void;
-  sendFile(userId: string, file: Buffer, filename: string): Promise<void>;  // PDF 報告
+  sendFile(userId: string, file: Buffer, filename: string): Promise<void>; // PDF 報告
 }
 
 // Webhook 管道（企業級，支援 mTLS）
@@ -913,12 +929,13 @@ interface WebhookChannel extends MessagingChannel {
 interface FormattedMessage {
   text: string;
   // LINE 和 Telegram 支援 rich message
-  quickReplies?: string[];  // 快速回覆按鈕：「查看詳情」「忽略」「封鎖來源」
+  quickReplies?: string[]; // 快速回覆按鈕：「查看詳情」「忽略」「封鎖來源」
   attachments?: { type: 'pdf' | 'image'; data: Buffer }[];
 }
 ```
 
 #### Chat Agent Checkpoint
+
 - 能透過 LINE/Telegram 發送威脅告警（用人話）
 - 開發者收到的通知包含技術細節；老闆收到的只有結果和建議
 - 用戶追問「這是什麼？」能在 <2000 tokens 內回答
@@ -1035,21 +1052,22 @@ function generateThreatPatternHash(event: SecurityEvent): string {
   // 取事件的「特徵」而非「實例」
   // 同一類攻擊不管來自哪個 IP，hash 都一樣
   const pattern = {
-    eventType: event.type,                    // 例：'ssh_brute_force'
-    attackMethod: event.attackMethod,          // 例：'password_spray'
-    targetService: event.targetService,        // 例：'sshd'
-    targetOS: event.targetOS,                 // 例：'ubuntu_22'
-    sigmaRulesMatched: event.sigmaRuleIds,    // 匹配的規則集合
-    yaraRulesMatched: event.yaraRuleIds,      
-    processChainPattern: event.processChain,   // 程序執行鏈模式
+    eventType: event.type, // 例：'ssh_brute_force'
+    attackMethod: event.attackMethod, // 例：'password_spray'
+    targetService: event.targetService, // 例：'sshd'
+    targetOS: event.targetOS, // 例：'ubuntu_22'
+    sigmaRulesMatched: event.sigmaRuleIds, // 匹配的規則集合
+    yaraRulesMatched: event.yaraRuleIds,
+    processChainPattern: event.processChain, // 程序執行鏈模式
     // 不包含：來源 IP、時間、主機名（這些每次都不同）
   };
-  
+
   return sha256(JSON.stringify(sortKeys(pattern)));
 }
 ```
 
 ### Threat Cloud Checkpoint
+
 - 匿名化處理正確：去除內網 IP、用戶名、主機名，保留攻擊類型和來源 IP
 - 上傳 API 正常運作（HTTPS + 加密）
 - 快取寫入/讀取正常
@@ -1064,6 +1082,7 @@ function generateThreatPatternHash(event: SecurityEvent): string {
 ### 安裝方式
 
 #### 快速安裝（適合個人開發者快速試用）
+
 ```bash
 # 方式 1: 一行安裝（自動驗證 GPG 簽章）
 curl -fsSL https://get.panguard.ai | sh
@@ -1076,6 +1095,7 @@ curl -fsSL https://get.panguard.ai | sh
 ```
 
 #### 標準安裝（適合企業 / 安全意識高的用戶）
+
 ```bash
 # 方式 2: 套件管理器（推薦企業使用）
 # Debian/Ubuntu
@@ -1099,6 +1119,7 @@ irm https://get.panguard.ai/win | iex
 ```
 
 #### 為什麼保留 `curl | sh`
+
 - Homebrew、Rust (rustup)、Node.js (nvm) 全都用這個方式
 - 我們的腳本自帶 GPG 簽章驗證，不是盲目執行
 - 但同時提供 apt/yum/brew/winget 作為標準替代方案
@@ -1151,14 +1172,14 @@ echo "📱 設定通知管道：phalanx-guard setup-notifications"
 ```typescript
 async function autoConfigureFromDiscovery(discovery: DiscoveryResult): Promise<Config> {
   const config: Config = {};
-  
+
   // 根據 OS 選擇監控方式
   if (discovery.os.type === 'windows') {
     config.monitor = { sources: ['etw', 'event_log', 'network', 'file_integrity'] };
   } else if (discovery.os.type === 'linux') {
     config.monitor = { sources: ['auditd', 'syslog', 'network', 'file_integrity'] };
   }
-  
+
   // 根據開放 Port 選擇規則
   if (discovery.openPorts.includes(22)) {
     config.rules.push('ssh_brute_force', 'ssh_key_auth_bypass');
@@ -1169,7 +1190,7 @@ async function autoConfigureFromDiscovery(discovery: DiscoveryResult): Promise<C
   if (discovery.openPorts.includes(3306)) {
     config.rules.push('mysql_brute_force', 'mysql_udf_injection');
   }
-  
+
   // 根據已裝軟體調整
   if (discovery.services.includes('nginx')) {
     config.rules.push('nginx_cve_rules');
@@ -1178,34 +1199,34 @@ async function autoConfigureFromDiscovery(discovery: DiscoveryResult): Promise<C
   if (discovery.services.includes('docker')) {
     config.rules.push('container_escape', 'docker_socket_exposure');
   }
-  
+
   // 根據現有資安工具調整
   if (discovery.security.existingTools.includes('windows_defender')) {
-    config.adapters.push('windows_defender');  // 讀取 Defender 的告警
+    config.adapters.push('windows_defender'); // 讀取 Defender 的告警
   }
-  
+
   // 本地 AI 模型選擇
   // ⚠️ Layer 2 預設只在 Server 環境啟用
   // 桌機/筆電背景跑 LLM 推論會搶 CPU/RAM，導致用戶體驗崩潰
   // 這是經過盡職調查後的設計決策
-  const isServerEnvironment = !discovery.hardware.hasGUI 
-    && discovery.hardware.availableRAM > 16 * 1024;  // 無 GUI + 16GB+ RAM
-  
+  const isServerEnvironment =
+    !discovery.hardware.hasGUI && discovery.hardware.availableRAM > 16 * 1024; // 無 GUI + 16GB+ RAM
+
   if (isServerEnvironment && discovery.hardware.availableRAM > 16 * 1024) {
-    config.localModel = 'llama3';  // VPS/Server 16GB+ RAM
+    config.localModel = 'llama3'; // VPS/Server 16GB+ RAM
   } else if (isServerEnvironment && discovery.hardware.availableRAM > 8 * 1024) {
-    config.localModel = 'phi3';   // VPS/Server 8GB+ RAM
+    config.localModel = 'phi3'; // VPS/Server 8GB+ RAM
   } else {
-    config.localModel = null;     // 桌機/筆電/低 RAM → 跳過 Layer 2
+    config.localModel = null; // 桌機/筆電/低 RAM → 跳過 Layer 2
     // Layer 1 直接到 Layer 3（雲端 AI）
     // 這會讓 Layer 3 觸發率從 ~3% 升到 ~5-8%
     // 但避免了資安軟體搞掛用戶電腦的災難
   }
-  
+
   // 用戶可手動啟用 Layer 2（進階設定）
   // phalanx-guard config set localModel llama3
   // 但預設不開，因為：資安軟體讓用戶電腦變慢 = 立即被移除
-  
+
   return config;
 }
 ```
@@ -1273,47 +1294,54 @@ phalanx-ai/
 
 > 完整清單見 [DEPENDENCIES.md](./DEPENDENCIES.md)
 
-| 元件 | 技術 |
-|------|------|
-| 主語言 | TypeScript + Node.js 20+ |
-| 套件管理 | pnpm monorepo |
-| Sigma 引擎 | Tigma (npm) |
-| 規則庫 | SigmaHQ + YARA-Forge |
-| 本地 LLM | ollama-js |
-| 雲端 LLM | @anthropic-ai/sdk + openai |
-| 通訊 | @line/bot-sdk + telegraf + @slack/bolt |
-| Windows 監控 | node-ffi-napi + ETW/WFP/AMSI |
-| Linux 監控 | auditd / eBPF |
-| 威脅情報 | AbuseIPDB + ThreatFox API |
-| 報告 | pdfkit |
-| Web | React + Vite |
-| 測試 | vitest |
-| i18n | i18next |
+| 元件         | 技術                                   |
+| ------------ | -------------------------------------- |
+| 主語言       | TypeScript + Node.js 20+               |
+| 套件管理     | pnpm monorepo                          |
+| Sigma 引擎   | Tigma (npm)                            |
+| 規則庫       | SigmaHQ + YARA-Forge                   |
+| 本地 LLM     | ollama-js                              |
+| 雲端 LLM     | @anthropic-ai/sdk + openai             |
+| 通訊         | @line/bot-sdk + telegraf + @slack/bolt |
+| Windows 監控 | node-ffi-napi + ETW/WFP/AMSI           |
+| Linux 監控   | auditd / eBPF                          |
+| 威脅情報     | AbuseIPDB + ThreatFox API              |
+| 報告         | pdfkit                                 |
+| Web          | React + Vite                           |
+| 測試         | vitest                                 |
+| i18n         | i18next                                |
 
 ---
 
 ## 開發階段
 
 ### Phase 0: 專案初始化
+
 monorepo 骨架 + TypeScript strict + ESLint + vitest + i18n
 
 ### Phase 1: 核心引擎
+
 1A 環境偵察 → 1B AI 引擎（三層漏斗 + 5 個 Agent） → 1C 規則引擎 → 1D 系統監控 → 1E 集體情報
 
 ### Phase 2: Panguard Scan
+
 CLI + 場景化結果（人話） + PDF 報告
 
 ### Phase 3: Panguard Guard + Panguard Chat
+
 Guard（一行安裝 + auto-configure + 7 天學習期）
 Chat（LINE/Telegram/Slack + 人話通知 + 追問 + 安裝引導）
 
 ### Phase 4: Panguard Trap
+
 假服務 + 攻擊者分析 + 回饋集體情報
 
 ### Phase 5: Panguard Report
+
 合規報告（資通安全管理法 + ISO 27001 + SOC 2）
 
 ### Phase 6: 官網
+
 場景化文案 + 線上引導
 
 ---

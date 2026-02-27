@@ -24,7 +24,7 @@ import { COLORS, FONTS, LAYOUT, severityColor } from '../styles.js';
 export function renderExecutiveSummary(
   doc: PDFKit.PDFDocument,
   result: ScanResult,
-  lang: Language,
+  lang: Language
 ): void {
   const isZh = lang === 'zh-TW';
 
@@ -82,10 +82,7 @@ export function renderExecutiveSummary(
 
   const severityCounts = new Map<Severity, number>();
   for (const level of severityLevels) {
-    severityCounts.set(
-      level.key,
-      result.findings.filter((f) => f.severity === level.key).length,
-    );
+    severityCounts.set(level.key, result.findings.filter((f) => f.severity === level.key).length);
   }
 
   const tableStartY = doc.y;
@@ -96,10 +93,7 @@ export function renderExecutiveSummary(
   const tableWidth = LAYOUT.contentWidth;
 
   // Table header
-  doc
-    .rect(col1X, tableStartY, tableWidth, rowHeight)
-    .fillOpacity(0.08)
-    .fill(COLORS.primary);
+  doc.rect(col1X, tableStartY, tableWidth, rowHeight).fillOpacity(0.08).fill(COLORS.primary);
 
   doc.fillOpacity(1);
 
@@ -116,24 +110,17 @@ export function renderExecutiveSummary(
   severityLevels.forEach((level, index) => {
     const y = tableStartY + rowHeight + index * rowHeight;
     const count = severityCounts.get(level.key) ?? 0;
-    const percentage = totalFindings > 0
-      ? `${Math.round((count / totalFindings) * 100)}%`
-      : '0%';
+    const percentage = totalFindings > 0 ? `${Math.round((count / totalFindings) * 100)}%` : '0%';
 
     // Alternating row background
     if (index % 2 === 0) {
-      doc
-        .rect(col1X, y, tableWidth, rowHeight)
-        .fillOpacity(0.03)
-        .fill(COLORS.secondary);
+      doc.rect(col1X, y, tableWidth, rowHeight).fillOpacity(0.03).fill(COLORS.secondary);
       doc.fillOpacity(1);
     }
 
     // Severity color badge
     const badgeColor = severityColor(level.key);
-    doc
-      .rect(col1X + 8, y + 5, 10, 12)
-      .fill(badgeColor);
+    doc.rect(col1X + 8, y + 5, 10, 12).fill(badgeColor);
 
     const label = isZh ? level.zh : level.en;
     doc
@@ -160,14 +147,15 @@ export function renderExecutiveSummary(
 
   doc.moveDown(0.5);
 
-  const ipAddresses = result.discovery.network.interfaces
-    .filter((iface) => !iface.internal && iface.ip)
-    .map((iface) => iface.ip)
-    .join(', ') || (isZh ? '未偵測到' : 'Not detected');
+  const ipAddresses =
+    result.discovery.network.interfaces
+      .filter((iface) => !iface.internal && iface.ip)
+      .map((iface) => iface.ip)
+      .join(', ') || (isZh ? '未偵測到' : 'Not detected');
 
   const openPortsCount = result.discovery.openPorts.length;
   const runningServicesCount = result.discovery.services.filter(
-    (s) => s.status === 'running',
+    (s) => s.status === 'running'
   ).length;
 
   const overviewItems: Array<{ label: string; value: string }> = [
@@ -201,11 +189,7 @@ export function renderExecutiveSummary(
       .text(`${item.label}: `, LAYOUT.margin + 10, doc.y, {
         continued: true,
       });
-    doc
-      .font(FONTS.body)
-      .fontSize(9)
-      .fillColor(COLORS.text)
-      .text(item.value);
+    doc.font(FONTS.body).fontSize(9).fillColor(COLORS.text).text(item.value);
     doc.moveDown(0.2);
   });
 
@@ -224,9 +208,7 @@ export function renderExecutiveSummary(
   const topFindings = result.findings.slice(0, 3);
 
   if (topFindings.length === 0) {
-    const noFindingsText = isZh
-      ? '未發現重大安全問題。'
-      : 'No significant security issues found.';
+    const noFindingsText = isZh ? '未發現重大安全問題。' : 'No significant security issues found.';
     doc
       .font(FONTS.body)
       .fontSize(10)

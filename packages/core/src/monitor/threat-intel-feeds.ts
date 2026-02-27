@@ -91,7 +91,9 @@ export class ThreatIntelFeedManager {
       void this.updateAll();
     }, this.config.updateIntervalMs);
     if (this.updateTimer.unref) this.updateTimer.unref();
-    logger.info(`Feed manager started. Update interval: ${Math.round(this.config.updateIntervalMs / 60000)} min`);
+    logger.info(
+      `Feed manager started. Update interval: ${Math.round(this.config.updateIntervalMs / 60000)} min`
+    );
   }
 
   /** Stop periodic updates / 停止定期更新 */
@@ -118,7 +120,9 @@ export class ThreatIntelFeedManager {
       this.trimOldest();
     }
 
-    logger.info(`Feed update complete. Total IoCs: ${this.iocs.size}, IPs indexed: ${this.ipIndex.size}`);
+    logger.info(
+      `Feed update complete. Total IoCs: ${this.iocs.size}, IPs indexed: ${this.ipIndex.size}`
+    );
     return results;
   }
 
@@ -157,10 +161,13 @@ export class ThreatIntelFeedManager {
    */
   toThreatIntelEntry(ioc: IoC): ThreatIntelEntry | null {
     if (ioc.type !== 'ip') return null;
-    const threatType = ioc.threatType.includes('c2') ? 'c2' as const
-      : ioc.threatType.includes('scan') ? 'scanner' as const
-      : ioc.threatType.includes('botnet') ? 'botnet' as const
-      : 'malware' as const;
+    const threatType = ioc.threatType.includes('c2')
+      ? ('c2' as const)
+      : ioc.threatType.includes('scan')
+        ? ('scanner' as const)
+        : ioc.threatType.includes('botnet')
+          ? ('botnet' as const)
+          : ('malware' as const);
 
     return {
       ip: ioc.value,
@@ -217,21 +224,42 @@ export class ThreatIntelFeedManager {
    * https://threatfox.abuse.ch/api/
    */
   private async fetchThreatFox(): Promise<number> {
-    const res = await fetchWithTimeout('https://threatfox-api.abuse.ch/api/v1/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: 'get_iocs', days: 1 }),
-    }, this.config.requestTimeoutMs);
+    const res = await fetchWithTimeout(
+      'https://threatfox-api.abuse.ch/api/v1/',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: 'get_iocs', days: 1 }),
+      },
+      this.config.requestTimeoutMs
+    );
 
-    const data = await res.json() as { query_status: string; data?: Array<{ ioc: string; ioc_type: string; threat_type: string; malware: string; confidence_level: number; first_seen_utc: string; last_seen_utc: string; tags: string[] | null; reference: string }> };
+    const data = (await res.json()) as {
+      query_status: string;
+      data?: Array<{
+        ioc: string;
+        ioc_type: string;
+        threat_type: string;
+        malware: string;
+        confidence_level: number;
+        first_seen_utc: string;
+        last_seen_utc: string;
+        tags: string[] | null;
+        reference: string;
+      }>;
+    };
     if (data.query_status !== 'ok' || !data.data) return 0;
 
     let count = 0;
     for (const item of data.data) {
-      const type = item.ioc_type === 'ip:port' ? 'ip' as const
-        : item.ioc_type === 'url' ? 'url' as const
-        : item.ioc_type === 'domain' ? 'domain' as const
-        : 'hash' as const;
+      const type =
+        item.ioc_type === 'ip:port'
+          ? ('ip' as const)
+          : item.ioc_type === 'url'
+            ? ('url' as const)
+            : item.ioc_type === 'domain'
+              ? ('domain' as const)
+              : ('hash' as const);
 
       const value = type === 'ip' ? (item.ioc.split(':')[0] ?? item.ioc) : item.ioc;
 
@@ -257,11 +285,24 @@ export class ThreatIntelFeedManager {
    * https://urlhaus-api.abuse.ch/v1/
    */
   private async fetchURLhaus(): Promise<number> {
-    const res = await fetchWithTimeout('https://urlhaus-api.abuse.ch/v1/urls/recent/limit/100/', {
-      method: 'GET',
-    }, this.config.requestTimeoutMs);
+    const res = await fetchWithTimeout(
+      'https://urlhaus-api.abuse.ch/v1/urls/recent/limit/100/',
+      {
+        method: 'GET',
+      },
+      this.config.requestTimeoutMs
+    );
 
-    const data = await res.json() as { urls?: Array<{ url: string; url_status: string; threat: string; host: string; date_added: string; tags: string[] | null }> };
+    const data = (await res.json()) as {
+      urls?: Array<{
+        url: string;
+        url_status: string;
+        threat: string;
+        host: string;
+        date_added: string;
+        tags: string[] | null;
+      }>;
+    };
     if (!data.urls) return 0;
 
     let count = 0;
@@ -300,11 +341,26 @@ export class ThreatIntelFeedManager {
    * https://feodotracker.abuse.ch/
    */
   private async fetchFeodoTracker(): Promise<number> {
-    const res = await fetchWithTimeout('https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.json', {
-      method: 'GET',
-    }, this.config.requestTimeoutMs);
+    const res = await fetchWithTimeout(
+      'https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.json',
+      {
+        method: 'GET',
+      },
+      this.config.requestTimeoutMs
+    );
 
-    const data = await res.json() as Array<{ ip_address: string; port: number; status: string; hostname: string; as_number: number; as_name: string; country: string; first_seen: string; last_online: string; malware: string }>;
+    const data = (await res.json()) as Array<{
+      ip_address: string;
+      port: number;
+      status: string;
+      hostname: string;
+      as_number: number;
+      as_name: string;
+      country: string;
+      first_seen: string;
+      last_online: string;
+      malware: string;
+    }>;
     if (!Array.isArray(data)) return 0;
 
     let count = 0;
@@ -332,10 +388,14 @@ export class ThreatIntelFeedManager {
   private async fetchGreyNoise(): Promise<number> {
     // GreyNoise doesn't have a bulk free endpoint, so we use their
     // popular scanner list which is publicly available
-    const res = await fetchWithTimeout('https://api.greynoise.io/v3/community/1.1.1.1', {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' },
-    }, this.config.requestTimeoutMs);
+    const res = await fetchWithTimeout(
+      'https://api.greynoise.io/v3/community/1.1.1.1',
+      {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      },
+      this.config.requestTimeoutMs
+    );
 
     // For the free tier, we just validate the API is reachable
     // and note that individual IP checks should use checkIPWithGreyNoise()
@@ -351,14 +411,24 @@ export class ThreatIntelFeedManager {
    */
   async checkIPWithGreyNoise(ip: string): Promise<IoC | null> {
     try {
-      const res = await fetchWithTimeout(`https://api.greynoise.io/v3/community/${ip}`, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-      }, this.config.requestTimeoutMs);
+      const res = await fetchWithTimeout(
+        `https://api.greynoise.io/v3/community/${ip}`,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        },
+        this.config.requestTimeoutMs
+      );
 
       if (!res.ok) return null;
 
-      const data = await res.json() as { noise: boolean; riot: boolean; classification: string; name: string; last_seen: string };
+      const data = (await res.json()) as {
+        noise: boolean;
+        riot: boolean;
+        classification: string;
+        name: string;
+        last_seen: string;
+      };
 
       if (data.noise) {
         return {
@@ -400,15 +470,22 @@ export class ThreatIntelFeedManager {
         {
           method: 'GET',
           headers: {
-            'Accept': 'application/json',
-            'Key': this.config.abuseIPDBKey,
+            Accept: 'application/json',
+            Key: this.config.abuseIPDBKey,
           },
         },
-        this.config.requestTimeoutMs,
+        this.config.requestTimeoutMs
       );
 
       if (!res.ok) return null;
-      const data = await res.json() as { data: { abuseConfidenceScore: number; totalReports: number; lastReportedAt: string; countryCode: string } };
+      const data = (await res.json()) as {
+        data: {
+          abuseConfidenceScore: number;
+          totalReports: number;
+          lastReportedAt: string;
+          countryCode: string;
+        };
+      };
 
       if (data.data.abuseConfidenceScore > 25) {
         return {
@@ -456,7 +533,11 @@ export class ThreatIntelFeedManager {
 }
 
 /** Fetch with timeout / 含逾時的 fetch */
-async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs: number
+): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {

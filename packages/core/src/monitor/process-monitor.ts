@@ -163,7 +163,7 @@ export class ProcessMonitor extends EventEmitter {
               user: proc.user,
               command: proc.command,
             },
-            'started',
+            'started'
           );
           this.emit('process_started', event);
         }
@@ -179,7 +179,7 @@ export class ProcessMonitor extends EventEmitter {
               name: proc.name,
               command: proc.command,
             },
-            'stopped',
+            'stopped'
           );
           this.emit('process_stopped', event);
         }

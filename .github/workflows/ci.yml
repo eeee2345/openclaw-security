@@ -54,6 +54,8 @@ jobs:
           restore-keys: ${{ runner.os }}-pnpm-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Build core (needed by project references)
+        run: pnpm --filter @panguard-ai/core run build
       - name: Type check
         run: pnpm run typecheck
       - name: Run tests with coverage

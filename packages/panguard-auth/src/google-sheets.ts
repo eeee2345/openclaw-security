@@ -81,7 +81,7 @@ async function getAccessToken(config: GoogleSheetsConfig): Promise<string> {
     throw new Error(`Google Sheets token error (${res.status}): ${text}`);
   }
 
-  const data = await res.json() as { access_token: string; expires_in: number };
+  const data = (await res.json()) as { access_token: string; expires_in: number };
   cachedToken = data.access_token;
   tokenExpiry = Date.now() + data.expires_in * 1000;
   return cachedToken;
@@ -92,10 +92,7 @@ async function getAccessToken(config: GoogleSheetsConfig): Promise<string> {
 /**
  * Append a row to the configured Google Sheet.
  */
-export async function appendRow(
-  config: GoogleSheetsConfig,
-  values: string[],
-): Promise<void> {
+export async function appendRow(config: GoogleSheetsConfig, values: string[]): Promise<void> {
   const token = await getAccessToken(config);
   const sheet = config.sheetName ?? 'Waitlist';
   const range = `${sheet}!A:Z`;
@@ -133,7 +130,7 @@ export async function syncWaitlistEntry(
     source?: string;
     status?: string;
     createdAt?: string;
-  },
+  }
 ): Promise<void> {
   const values = [
     entry.createdAt ?? new Date().toISOString(),
@@ -163,7 +160,7 @@ export async function ensureSheetHeaders(config: GoogleSheetsConfig): Promise<vo
   });
 
   if (checkRes.ok) {
-    const data = await checkRes.json() as { values?: string[][] };
+    const data = (await checkRes.json()) as { values?: string[][] };
     if (data.values && data.values.length > 0) return; // Headers exist
   }
 

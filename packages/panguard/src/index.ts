@@ -18,7 +18,12 @@ export type { ScanConfig, ScanResult, Finding } from '@panguard-ai/panguard-scan
 export { GuardEngine, DashboardServer, loadConfig } from '@panguard-ai/panguard-guard';
 
 // Report Generator
-export { generateComplianceReport, reportToJSON, generateSummaryText, getSupportedFrameworks } from '@panguard-ai/panguard-report';
+export {
+  generateComplianceReport,
+  reportToJSON,
+  generateSummaryText,
+  getSupportedFrameworks,
+} from '@panguard-ai/panguard-report';
 
 // Chat / Notifications
 export { ChatAgent, WebhookChannel } from '@panguard-ai/panguard-chat';

@@ -34,18 +34,18 @@ function bgRgb(r: number, g: number, b: number): string {
 
 // Brand palette
 const palette = {
-  sage:     rgb(139, 154, 142),  // #8B9A8E — primary brand
-  charcoal: rgb(26, 22, 20),     // #1A1614 — backgrounds
-  cream:    rgb(245, 241, 232),   // #F5F1E8 — primary text
-  safe:     rgb(46, 213, 115),    // #2ED573 — safe/protected
-  caution:  rgb(251, 191, 36),    // #FBBF24 — warning
-  alert:    rgb(255, 107, 53),    // #FF6B35 — alert
-  critical: rgb(239, 68, 68),     // #EF4444 — critical/danger
-  dim:      rgb(120, 120, 120),   // muted text
-  white:    rgb(255, 255, 255),   // bright white
-  bgSafe:   bgRgb(46, 213, 115),
+  sage: rgb(139, 154, 142), // #8B9A8E — primary brand
+  charcoal: rgb(26, 22, 20), // #1A1614 — backgrounds
+  cream: rgb(245, 241, 232), // #F5F1E8 — primary text
+  safe: rgb(46, 213, 115), // #2ED573 — safe/protected
+  caution: rgb(251, 191, 36), // #FBBF24 — warning
+  alert: rgb(255, 107, 53), // #FF6B35 — alert
+  critical: rgb(239, 68, 68), // #EF4444 — critical/danger
+  dim: rgb(120, 120, 120), // muted text
+  white: rgb(255, 255, 255), // bright white
+  bgSafe: bgRgb(46, 213, 115),
   bgCaution: bgRgb(251, 191, 36),
-  bgAlert:  bgRgb(255, 107, 53),
+  bgAlert: bgRgb(255, 107, 53),
   bgCritical: bgRgb(239, 68, 68),
 };
 
@@ -57,7 +57,7 @@ const UNDERLINE = `${ESC}4m`;
 type StyleFn = (text: string) => string;
 
 function wrap(code: string): StyleFn {
-  return (text: string) => isColorSupported() ? `${code}${text}${RESET}` : text;
+  return (text: string) => (isColorSupported() ? `${code}${text}${RESET}` : text);
 }
 
 /** Brand-matched ANSI color/style helpers */
@@ -132,12 +132,18 @@ export const symbols = {
 export function colorSeverity(severity: string): string {
   const s = severity.toLowerCase();
   switch (s) {
-    case 'critical': return wrap(BOLD + palette.bgCritical + rgb(255, 255, 255))(` ${severity.toUpperCase()} `);
-    case 'high': return c.critical(severity.toUpperCase());
-    case 'medium': return c.caution(severity.toUpperCase());
-    case 'low': return c.sage(severity.toUpperCase());
-    case 'info': return c.dim(severity.toUpperCase());
-    default: return severity;
+    case 'critical':
+      return wrap(BOLD + palette.bgCritical + rgb(255, 255, 255))(` ${severity.toUpperCase()} `);
+    case 'high':
+      return c.critical(severity.toUpperCase());
+    case 'medium':
+      return c.caution(severity.toUpperCase());
+    case 'low':
+      return c.sage(severity.toUpperCase());
+    case 'info':
+      return c.dim(severity.toUpperCase());
+    default:
+      return severity;
   }
 }
 
@@ -153,12 +159,18 @@ export function colorScore(score: number): string {
 /** Map grade to brand color */
 export function colorGrade(grade: string): string {
   switch (grade) {
-    case 'A': return c.success(grade);
-    case 'B': return c.safe(grade);
-    case 'C': return c.caution(grade);
-    case 'D': return c.alert(grade);
-    case 'F': return c.critical(grade);
-    default: return grade;
+    case 'A':
+      return c.success(grade);
+    case 'B':
+      return c.safe(grade);
+    case 'C':
+      return c.caution(grade);
+    case 'D':
+      return c.alert(grade);
+    case 'F':
+      return c.critical(grade);
+    default:
+      return grade;
   }
 }
 
@@ -172,12 +184,7 @@ export function colorGrade(grade: string): string {
  */
 export function banner(): string {
   if (!isColorSupported()) {
-    return [
-      '',
-      '  PANGUARD [#] AI  v0.5.0',
-      '  AI-Powered Security Platform',
-      '',
-    ].join('\n');
+    return ['', '  PANGUARD [#] AI  v0.5.0', '  AI-Powered Security Platform', ''].join('\n');
   }
 
   const shieldArt = [
@@ -369,15 +376,11 @@ export class ProgressBar {
     const empty = this.width - filled;
 
     // Mockup style: [=========================>          ] 75%
-    const barFill = filled > 0
-      ? c.safe('='.repeat(Math.max(0, filled - 1)) + '>')
-      : '';
+    const barFill = filled > 0 ? c.safe('='.repeat(Math.max(0, filled - 1)) + '>') : '';
     const barEmpty = c.dim(' '.repeat(empty));
     const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
 
-    const percentStr = percent === 100
-      ? c.success(`${percent}%`)
-      : c.cream(`${percent}%`);
+    const percentStr = percent === 100 ? c.success(`${percent}%`) : c.cream(`${percent}%`);
 
     const line = `  ${this.label}: ${c.dim('[')}${barFill}${barEmpty}${c.dim(']')}  ${percentStr}  ${c.dim(`${elapsed}s`)}`;
     process.stdout.write(`\r\x1b[K${line}`);
@@ -403,7 +406,7 @@ export interface TableColumn {
 
 /** Render a formatted table */
 export function table(columns: TableColumn[], rows: Record<string, string>[]): string {
-  const widths = columns.map(col => {
+  const widths = columns.map((col) => {
     const headerLen = stripAnsi(col.header).length;
     const maxDataLen = rows.reduce((max, row) => {
       const val = row[col.key] ?? '';
@@ -415,7 +418,7 @@ export function table(columns: TableColumn[], rows: Record<string, string>[]): s
   const lines: string[] = [];
 
   // Top border
-  const hLine = (ch: string) => c.dim('  +' + widths.map(w => ch.repeat(w + 2)).join('+') + '+');
+  const hLine = (ch: string) => c.dim('  +' + widths.map((w) => ch.repeat(w + 2)).join('+') + '+');
 
   lines.push(hLine('-'));
 
@@ -426,7 +429,7 @@ export function table(columns: TableColumn[], rows: Record<string, string>[]): s
   lines.push(c.dim('  |') + headerCells.join(c.dim('|')) + c.dim('|'));
 
   // Header separator (double line)
-  lines.push(c.dim('  +' + widths.map(w => '='.repeat(w + 2)).join('+') + '+'));
+  lines.push(c.dim('  +' + widths.map((w) => '='.repeat(w + 2)).join('+') + '+'));
 
   // Rows
   for (const row of rows) {
@@ -461,7 +464,7 @@ export function box(content: string, options: BoxOptions = {}): string {
   const contentLines = content.split('\n');
 
   const maxContentWidth = Math.max(
-    ...contentLines.map(l => stripAnsi(l).length),
+    ...contentLines.map((l) => stripAnsi(l).length),
     title ? stripAnsi(title).length + 4 : 0
   );
   const innerWidth = forceWidth ?? maxContentWidth + padding * 2;
@@ -488,7 +491,14 @@ export function box(content: string, options: BoxOptions = {}): string {
   for (const line of contentLines) {
     const stripped = stripAnsi(line);
     const padRight = innerWidth - padding - stripped.length;
-    lines.push('  ' + borderColor('|') + ' '.repeat(padding) + line + ' '.repeat(Math.max(0, padRight)) + borderColor('|'));
+    lines.push(
+      '  ' +
+        borderColor('|') +
+        ' '.repeat(padding) +
+        line +
+        ' '.repeat(Math.max(0, padRight)) +
+        borderColor('|')
+    );
   }
 
   // Padding bottom
@@ -508,9 +518,12 @@ export function box(content: string, options: BoxOptions = {}): string {
 
 /** Render security score display (matching mockup status panel) */
 export function scoreDisplay(score: number, grade: string, trend?: string): string {
-  const trendIcon = trend === 'improving' ? c.safe(' [+] Improving')
-    : trend === 'declining' ? c.critical(' [-] Declining')
-    : c.dim(' [=] Stable');
+  const trendIcon =
+    trend === 'improving'
+      ? c.safe(' [+] Improving')
+      : trend === 'declining'
+        ? c.critical(' [-] Declining')
+        : c.dim(' [=] Stable');
 
   const scoreStr = colorScore(score);
   const gradeStr = colorGrade(grade);
@@ -519,8 +532,12 @@ export function scoreDisplay(score: number, grade: string, trend?: string): stri
   const barWidth = 30;
   const filled = Math.round((score / 100) * barWidth);
   const empty = barWidth - filled;
-  const barColor = score >= 80 ? c.safe : score >= 60 ? c.caution : score >= 40 ? c.alert : c.critical;
-  const bar = c.dim('[') + barColor('='.repeat(Math.max(0, filled - 1)) + (filled > 0 ? '>' : '')) + c.dim(' '.repeat(empty) + ']');
+  const barColor =
+    score >= 80 ? c.safe : score >= 60 ? c.caution : score >= 40 ? c.alert : c.critical;
+  const bar =
+    c.dim('[') +
+    barColor('='.repeat(Math.max(0, filled - 1)) + (filled > 0 ? '>' : '')) +
+    c.dim(' '.repeat(empty) + ']');
 
   return [
     '',
@@ -548,11 +565,16 @@ export function statusPanel(title: string, items: StatusItem[]): string {
   lines.push('');
 
   for (const item of items) {
-    const dot = item.status === 'safe' ? c.safe('●')
-      : item.status === 'caution' ? c.caution('●')
-      : item.status === 'alert' ? c.alert('●')
-      : item.status === 'critical' ? c.critical('●')
-      : c.dim('●');
+    const dot =
+      item.status === 'safe'
+        ? c.safe('●')
+        : item.status === 'caution'
+          ? c.caution('●')
+          : item.status === 'alert'
+            ? c.alert('●')
+            : item.status === 'critical'
+              ? c.critical('●')
+              : c.dim('●');
 
     lines.push(`  ${dot} ${c.bold(item.label + ':')} ${item.value}`);
   }

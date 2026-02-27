@@ -17,9 +17,9 @@ const logger = createLogger('audit:syslog');
 
 /** Syslog severity mapping / Syslog 嚴重程度映射 */
 const SYSLOG_SEVERITY: Record<string, number> = {
-  error: 3,   // Error
-  warn: 4,    // Warning
-  info: 6,    // Informational
+  error: 3, // Error
+  warn: 4, // Warning
+  info: 6, // Informational
 };
 
 /** Syslog facility: local0 = 16 / Syslog 設施：local0 = 16 */

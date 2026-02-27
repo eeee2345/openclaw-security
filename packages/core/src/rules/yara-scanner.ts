@@ -67,7 +67,7 @@ export class YaraScanner {
 
     try {
       const files = await readdir(resolvedDir);
-      const yarFiles = files.filter(f => extname(f) === '.yar' || extname(f) === '.yara');
+      const yarFiles = files.filter((f) => extname(f) === '.yar' || extname(f) === '.yara');
 
       for (const file of yarFiles) {
         const filePath = join(resolvedDir, file);
@@ -75,7 +75,9 @@ export class YaraScanner {
         this.ruleFiles.push({ path: filePath, name: file, content });
       }
     } catch (err) {
-      logger.warn(`Failed to load YARA rules from ${rulesDir}: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `Failed to load YARA rules from ${rulesDir}: ${err instanceof Error ? err.message : String(err)}`
+      );
       return 0;
     }
 
@@ -85,7 +87,9 @@ export class YaraScanner {
     // Always compile fallback patterns
     this.compiledPatterns = this.compilePatterns();
 
-    logger.info(`Loaded ${this.ruleFiles.length} YARA rule files (native YARA: ${this.yaraAvailable ? 'available' : 'fallback mode'})`);
+    logger.info(
+      `Loaded ${this.ruleFiles.length} YARA rule files (native YARA: ${this.yaraAvailable ? 'available' : 'fallback mode'})`
+    );
     return this.ruleFiles.length;
   }
 
@@ -128,10 +132,14 @@ export class YaraScanner {
     try {
       await walk(resolvedDir);
     } catch (err) {
-      logger.warn(`Failed to recursively load YARA rules from ${rulesDir}: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `Failed to recursively load YARA rules from ${rulesDir}: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
 
-    logger.info(`Recursively loaded ${files.length} YARA rule files from ${rulesDir} (source: ${source ?? 'unset'})`);
+    logger.info(
+      `Recursively loaded ${files.length} YARA rule files from ${rulesDir} (source: ${source ?? 'unset'})`
+    );
     return files.length;
   }
 
@@ -159,7 +167,9 @@ export class YaraScanner {
     this.yaraAvailable = await this.checkNativeYara();
     this.compiledPatterns = this.compilePatterns();
 
-    logger.info(`Loaded ${this.ruleFiles.length} total YARA rule files (native YARA: ${this.yaraAvailable ? 'available' : 'fallback mode'})`);
+    logger.info(
+      `Loaded ${this.ruleFiles.length} total YARA rule files (native YARA: ${this.yaraAvailable ? 'available' : 'fallback mode'})`
+    );
     return this.ruleFiles.length;
   }
 
@@ -194,7 +204,9 @@ export class YaraScanner {
     try {
       await walk(resolvedDir);
     } catch (err) {
-      logger.warn(`Failed to load YARA rules from ${dir}: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `Failed to load YARA rules from ${dir}: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   }
 
@@ -239,7 +251,10 @@ export class YaraScanner {
   /**
    * Scan a directory recursively / 遞迴掃描目錄
    */
-  async scanDirectory(dirPath: string, options: { maxDepth?: number; extensions?: string[] } = {}): Promise<YaraScanResult[]> {
+  async scanDirectory(
+    dirPath: string,
+    options: { maxDepth?: number; extensions?: string[] } = {}
+  ): Promise<YaraScanResult[]> {
     const { maxDepth = 5, extensions } = options;
     const results: YaraScanResult[] = [];
     const resolvedDir = resolve(dirPath);
@@ -259,7 +274,7 @@ export class YaraScanner {
     const mitreTechnique = topMatch.meta['mitre'] ?? topMatch.meta['mitre_attack'] ?? undefined;
 
     // Determine source from the rule file that produced the top match / 從產生最高比對的規則檔判斷來源
-    const matchedRuleFile = this.ruleFiles.find(rf => rf.name === topMatch.namespace);
+    const matchedRuleFile = this.ruleFiles.find((rf) => rf.name === topMatch.namespace);
     const ruleSource = matchedRuleFile?.source;
 
     return {
@@ -268,14 +283,14 @@ export class YaraScanner {
       source: 'file',
       severity,
       category: 'malware_detection',
-      description: `YARA match: ${result.matches.map(m => m.rule).join(', ')} in ${result.filePath}`,
+      description: `YARA match: ${result.matches.map((m) => m.rule).join(', ')} in ${result.filePath}`,
       host: '',
       raw: {
         filePath: result.filePath,
         sha256: result.sha256,
         fileSize: result.fileSize,
-        yaraRules: result.matches.map(m => m.rule),
-        tags: result.matches.flatMap(m => m.tags),
+        yaraRules: result.matches.map((m) => m.rule),
+        tags: result.matches.flatMap((m) => m.tags),
         mitreTechnique,
         ruleSource,
       },
@@ -312,17 +327,21 @@ export class YaraScanner {
             namespace: ruleFile.name,
             tags: match.tags ?? [],
             meta: match.meta ?? {},
-            strings: (match.strings ?? []).map((s: { identifier: string; offset: number; data: Buffer }) => ({
-              identifier: s.identifier,
-              offset: s.offset,
-              data: s.data.toString('utf-8').slice(0, 100),
-            })),
+            strings: (match.strings ?? []).map(
+              (s: { identifier: string; offset: number; data: Buffer }) => ({
+                identifier: s.identifier,
+                offset: s.offset,
+                data: s.data.toString('utf-8').slice(0, 100),
+              })
+            ),
           });
         }
       }
       return results;
     } catch (err) {
-      logger.warn(`Native YARA scan failed, falling back to patterns: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `Native YARA scan failed, falling back to patterns: ${err instanceof Error ? err.message : String(err)}`
+      );
       const content = await readFile(filePath, 'utf-8').catch(() => '');
       return this.scanWithPatterns(content, filePath);
     }
@@ -412,7 +431,8 @@ export class YaraScanner {
         // Check condition for "any of them" vs "all of them"
         const conditionBlock = block.match(/condition\s*:\s*([\s\S]*?)(?=\}|$)/);
         const condition = conditionBlock?.[1]?.trim() ?? '';
-        const conditionAny = condition.includes('any of') || condition.includes('1 of') || condition.includes(' or ');
+        const conditionAny =
+          condition.includes('any of') || condition.includes('1 of') || condition.includes(' or ');
 
         if (strings.length > 0) {
           patterns.push({
@@ -450,7 +470,7 @@ export class YaraScanner {
     depth: number,
     maxDepth: number,
     extensions: string[] | undefined,
-    results: YaraScanResult[],
+    results: YaraScanResult[]
   ): Promise<void> {
     if (depth > maxDepth) return;
 
@@ -460,7 +480,8 @@ export class YaraScanner {
         const fullPath = join(dir, entry.name);
         if (entry.isDirectory()) {
           // Skip common non-target directories
-          if (['node_modules', '.git', '.cache', 'dist', '__pycache__'].includes(entry.name)) continue;
+          if (['node_modules', '.git', '.cache', 'dist', '__pycache__'].includes(entry.name))
+            continue;
           await this.walkDir(fullPath, depth + 1, maxDepth, extensions, results);
         } else if (entry.isFile()) {
           if (extensions && !extensions.includes(extname(entry.name))) continue;

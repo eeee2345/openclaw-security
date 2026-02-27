@@ -22,7 +22,11 @@ import { DEFAULT_WEB_CONFIG } from '../types.js';
  * Generate HTML head section
  * 產生 HTML 頭部區段
  */
-export function generateHead(page: PageMeta, language: WebLanguage, config: WebConfig = DEFAULT_WEB_CONFIG): string {
+export function generateHead(
+  page: PageMeta,
+  language: WebLanguage,
+  config: WebConfig = DEFAULT_WEB_CONFIG
+): string {
   const title = language === 'zh-TW' ? page.titleZh : page.titleEn;
   const description = language === 'zh-TW' ? page.descriptionZh : page.descriptionEn;
   const lang = language === 'zh-TW' ? 'zh-Hant-TW' : 'en';
@@ -54,10 +58,17 @@ export function generateHead(page: PageMeta, language: WebLanguage, config: WebC
  * Generate navigation bar HTML
  * 產生導覽列 HTML
  */
-export function generateNav(pages: PageMeta[], language: WebLanguage, config: WebConfig = DEFAULT_WEB_CONFIG): string {
+export function generateNav(
+  pages: PageMeta[],
+  language: WebLanguage,
+  config: WebConfig = DEFAULT_WEB_CONFIG
+): string {
   const items = pages
     .map((p) => {
-      const label = language === 'zh-TW' ? p.titleZh.split(' - ')[0] ?? p.titleZh : p.titleEn.split(' - ')[0] ?? p.titleEn;
+      const label =
+        language === 'zh-TW'
+          ? (p.titleZh.split(' - ')[0] ?? p.titleZh)
+          : (p.titleEn.split(' - ')[0] ?? p.titleEn);
       return `    <a href="${p.path}">${label}</a>`;
     })
     .join('\n');
@@ -79,7 +90,10 @@ ${items}
  * Generate hero section for homepage
  * 產生首頁英雄區段
  */
-export function generateHero(language: WebLanguage, config: WebConfig = DEFAULT_WEB_CONFIG): string {
+export function generateHero(
+  language: WebLanguage,
+  config: WebConfig = DEFAULT_WEB_CONFIG
+): string {
   const isZh = language === 'zh-TW';
 
   const headline = isZh ? config.taglineZh : config.taglineEn;
@@ -172,14 +186,15 @@ ${featureList}
  * Generate footer HTML
  * 產生頁尾 HTML
  */
-export function generateFooter(language: WebLanguage, config: WebConfig = DEFAULT_WEB_CONFIG): string {
+export function generateFooter(
+  language: WebLanguage,
+  config: WebConfig = DEFAULT_WEB_CONFIG
+): string {
   const isZh = language === 'zh-TW';
   const copyright = isZh
     ? `${config.brandName} - ${config.taglineZh}`
     : `${config.brandName} - ${config.taglineEn}`;
-  const builtWith = isZh
-    ? '由 Panguard AI 團隊打造'
-    : 'Built by the Panguard AI team';
+  const builtWith = isZh ? '由 Panguard AI 團隊打造' : 'Built by the Panguard AI team';
 
   return `<footer>
   <p>${copyright}</p>

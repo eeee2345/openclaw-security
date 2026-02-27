@@ -99,22 +99,14 @@ function formatAlertForBoss(alert: ThreatAlert, language: MessageLanguage): stri
   const label = getSeverityLabel(alert.severity, language);
 
   if (language === 'zh-TW') {
-    const lines = [
-      `${label} ${alert.humanSummary}`,
-      '',
-      `${alert.recommendedAction}`,
-    ];
+    const lines = [`${label} ${alert.humanSummary}`, '', `${alert.recommendedAction}`];
     if (alert.actionsTaken && alert.actionsTaken.length > 0) {
       lines.push(`我已經: ${alert.actionsTaken.join('、')}`);
     }
     return lines.join('\n');
   }
 
-  const lines = [
-    `${label} ${alert.humanSummary}`,
-    '',
-    `${alert.recommendedAction}`,
-  ];
+  const lines = [`${label} ${alert.humanSummary}`, '', `${alert.recommendedAction}`];
   if (alert.actionsTaken && alert.actionsTaken.length > 0) {
     lines.push(`I've already: ${alert.actionsTaken.join(', ')}`);
   }
@@ -181,7 +173,7 @@ function formatAlertForITAdmin(alert: ThreatAlert, language: MessageLanguage): s
 export function formatAlert(
   alert: ThreatAlert,
   userType: UserType,
-  language: MessageLanguage,
+  language: MessageLanguage
 ): FormattedMessage {
   let text: string;
   switch (userType) {
@@ -196,17 +188,18 @@ export function formatAlert(
       break;
   }
 
-  const quickReplies = language === 'zh-TW'
-    ? [
-        { label: '查看詳情', action: 'details' },
-        { label: '忽略', action: 'dismiss' },
-        { label: '封鎖來源', action: 'block_source' },
-      ]
-    : [
-        { label: 'View details', action: 'details' },
-        { label: 'Dismiss', action: 'dismiss' },
-        { label: 'Block source', action: 'block_source' },
-      ];
+  const quickReplies =
+    language === 'zh-TW'
+      ? [
+          { label: '查看詳情', action: 'details' },
+          { label: '忽略', action: 'dismiss' },
+          { label: '封鎖來源', action: 'block_source' },
+        ]
+      : [
+          { label: 'View details', action: 'details' },
+          { label: 'Dismiss', action: 'dismiss' },
+          { label: 'Block source', action: 'block_source' },
+        ];
 
   return {
     text,
@@ -232,11 +225,16 @@ export function formatAlert(
 export function formatSummary(
   report: SummaryReport,
   userType: UserType,
-  language: MessageLanguage,
+  language: MessageLanguage
 ): FormattedMessage {
-  const periodLabel = language === 'zh-TW'
-    ? (report.period === 'daily' ? '今日' : '本週')
-    : (report.period === 'daily' ? 'Today' : 'This Week');
+  const periodLabel =
+    language === 'zh-TW'
+      ? report.period === 'daily'
+        ? '今日'
+        : '本週'
+      : report.period === 'daily'
+        ? 'Today'
+        : 'This Week';
 
   if (language === 'zh-TW') {
     const lines = [
@@ -293,7 +291,9 @@ export function formatSummary(
   if (report.trendComparison) {
     const trend = report.trendComparison;
     const direction = trend.changePercent >= 0 ? 'increased' : 'decreased';
-    lines.push(`Trend: ${direction} by ${Math.abs(trend.changePercent)}% compared to previous period`);
+    lines.push(
+      `Trend: ${direction} by ${Math.abs(trend.changePercent)}% compared to previous period`
+    );
   }
 
   if (report.topAttackSources.length > 0 && userType !== 'boss') {
@@ -329,7 +329,7 @@ export function formatSummary(
  */
 export function formatLearningProgress(
   progress: LearningProgress,
-  language: MessageLanguage,
+  language: MessageLanguage
 ): FormattedMessage {
   const percent = Math.round((progress.day / progress.totalDays) * 100);
 
@@ -363,7 +363,10 @@ export function formatLearningProgress(
   if (progress.day >= progress.totalDays) {
     lines.push('', 'Learning period complete! System has switched to protection mode.');
   } else {
-    lines.push('', 'During the learning period, alerts are included in daily summaries only (except known attack patterns).');
+    lines.push(
+      '',
+      'During the learning period, alerts are included in daily summaries only (except known attack patterns).'
+    );
   }
   return { text: lines.join('\n'), severity: 'info' };
 }
@@ -383,7 +386,7 @@ export function formatLearningProgress(
  */
 export function formatConfirmation(
   request: ConfirmationRequest,
-  language: MessageLanguage,
+  language: MessageLanguage
 ): FormattedMessage {
   if (language === 'zh-TW') {
     const lines = [

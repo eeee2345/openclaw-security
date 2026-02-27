@@ -89,15 +89,19 @@ export class ClaudeProvider extends LLMProviderBase {
 
     if (!this.config.apiKey) {
       throw new Error(
-        'Claude API key is required. Set the apiKey field in LLMConfig or the ANTHROPIC_API_KEY environment variable.',
+        'Claude API key is required. Set the apiKey field in LLMConfig or the ANTHROPIC_API_KEY environment variable.'
       );
     }
 
     let Anthropic: AnthropicConstructor;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const module = await (import('@anthropic-ai/sdk' as string) as Promise<Record<string, unknown>>);
-      Anthropic = (module['default'] ?? module['Anthropic'] ?? module) as unknown as AnthropicConstructor;
+      const module = await (import('@anthropic-ai/sdk' as string) as Promise<
+        Record<string, unknown>
+      >);
+      Anthropic = (module['default'] ??
+        module['Anthropic'] ??
+        module) as unknown as AnthropicConstructor;
     } catch (error) {
       const message =
         error instanceof Error && error.message.includes('Cannot find')
@@ -180,10 +184,7 @@ export class ClaudeProvider extends LLMProviderBase {
       // Track token usage from API response
       // 從 API 回應追蹤 Token 使用量
       if (response.usage) {
-        this.tokenTracker.track(
-          response.usage.input_tokens,
-          response.usage.output_tokens,
-        );
+        this.tokenTracker.track(response.usage.input_tokens, response.usage.output_tokens);
       }
 
       // Extract text from content blocks
@@ -205,19 +206,13 @@ export class ClaudeProvider extends LLMProviderBase {
       // 為常見失敗提供更具體的錯誤訊息
       if (error instanceof Error) {
         if (error.message.includes('401') || error.message.includes('authentication')) {
-          throw new Error(
-            'Claude API authentication failed. Check your API key.',
-          );
+          throw new Error('Claude API authentication failed. Check your API key.');
         }
         if (error.message.includes('429') || error.message.includes('rate')) {
-          throw new Error(
-            'Claude API rate limit exceeded. Please wait and try again.',
-          );
+          throw new Error('Claude API rate limit exceeded. Please wait and try again.');
         }
         if (error.message.includes('timeout') || error.message.includes('ETIMEDOUT')) {
-          throw new Error(
-            `Claude API request timed out after ${this.config.timeout}ms.`,
-          );
+          throw new Error(`Claude API request timed out after ${this.config.timeout}ms.`);
         }
       }
 

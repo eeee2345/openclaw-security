@@ -1,53 +1,61 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import {
-  ShieldIcon, LockIcon, ScanIcon, NetworkIcon, AnalyticsIcon, CheckIcon,
-  DeployIcon, GlobalIcon, AlertIcon, HistoryIcon,
-} from "@/components/ui/BrandIcons";
+  ShieldIcon,
+  LockIcon,
+  ScanIcon,
+  NetworkIcon,
+  AnalyticsIcon,
+  CheckIcon,
+  DeployIcon,
+  GlobalIcon,
+  AlertIcon,
+  HistoryIcon,
+} from '@/components/ui/BrandIcons';
 
 /* ─── Security Practice Icons ─── */
 const practiceConfigs = [
-  { key: "item1" as const, icon: NetworkIcon },
-  { key: "item2" as const, icon: LockIcon },
-  { key: "item3" as const, icon: ScanIcon },
-  { key: "item4" as const, icon: ScanIcon },
-  { key: "item5" as const, icon: ShieldIcon },
-  { key: "item6" as const, icon: HistoryIcon },
+  { key: 'item1' as const, icon: NetworkIcon },
+  { key: 'item2' as const, icon: LockIcon },
+  { key: 'item3' as const, icon: ScanIcon },
+  { key: 'item4' as const, icon: ScanIcon },
+  { key: 'item5' as const, icon: ShieldIcon },
+  { key: 'item6' as const, icon: HistoryIcon },
 ];
 
 /* ─── Compliance Frameworks ─── */
 const compliance = [
   {
-    badge: "SOC 2 Type II",
-    status: "In Progress",
-    statusColor: "text-[#f59e0b]",
+    badge: 'SOC 2 Type II',
+    status: 'In Progress',
+    statusColor: 'text-[#f59e0b]',
     description:
-      "We are actively pursuing SOC 2 Type II certification covering Security, Availability, and Confidentiality trust service criteria. Our audit is conducted by a Big Four firm. Expected completion: Q3 2026.",
+      'We are actively pursuing SOC 2 Type II certification covering Security, Availability, and Confidentiality trust service criteria. Our audit is conducted by a Big Four firm. Expected completion: Q3 2026.',
   },
   {
-    badge: "ISO 27001",
-    status: "Planned",
-    statusColor: "text-[#60a5fa]",
+    badge: 'ISO 27001',
+    status: 'Planned',
+    statusColor: 'text-[#60a5fa]',
     description:
-      "ISO 27001 certification is on our roadmap for 2026. Our information security management system (ISMS) is being built to ISO 27001 standards from day one, making certification a formalization rather than a transformation.",
+      'ISO 27001 certification is on our roadmap for 2026. Our information security management system (ISMS) is being built to ISO 27001 standards from day one, making certification a formalization rather than a transformation.',
   },
   {
-    badge: "GDPR",
-    status: "Compliant",
-    statusColor: "text-[#22c55e]",
+    badge: 'GDPR',
+    status: 'Compliant',
+    statusColor: 'text-[#22c55e]',
     description:
-      "Panguard is designed for GDPR compliance by default. Data minimization, purpose limitation, and the right to erasure are built into the architecture. We offer Data Processing Agreements (DPA) to all customers.",
+      'Panguard is designed for GDPR compliance by default. Data minimization, purpose limitation, and the right to erasure are built into the architecture. We offer Data Processing Agreements (DPA) to all customers.',
   },
   {
-    badge: "Taiwan Cybersecurity Management Act",
-    status: "Compliant",
-    statusColor: "text-[#22c55e]",
+    badge: 'Taiwan Cybersecurity Management Act',
+    status: 'Compliant',
+    statusColor: 'text-[#22c55e]',
     description:
       "For customers operating under Taiwan's Cybersecurity Management Act, Panguard's reporting and audit capabilities are designed to meet regulatory requirements for critical infrastructure providers.",
   },
@@ -55,23 +63,23 @@ const compliance = [
 
 /* ─── Data Flow Zone Config ─── */
 const dataFlowConfigs = [
-  { key: "onDevice" as const, icon: NetworkIcon, color: "border-[#22c55e]" },
-  { key: "cloud" as const, icon: GlobalIcon, color: "border-[#f59e0b]" },
-  { key: "neverTransmitted" as const, icon: ShieldIcon, color: "border-[#ef4444]" },
+  { key: 'onDevice' as const, icon: NetworkIcon, color: 'border-[#22c55e]' },
+  { key: 'cloud' as const, icon: GlobalIcon, color: 'border-[#f59e0b]' },
+  { key: 'neverTransmitted' as const, icon: ShieldIcon, color: 'border-[#ef4444]' },
 ];
 
 /* ─── Trust Center Download Icons ─── */
 const downloadConfigs = [
-  { key: "doc1" as const, icon: AnalyticsIcon },
-  { key: "doc2" as const, icon: ShieldIcon },
-  { key: "doc3" as const, icon: AnalyticsIcon },
-  { key: "doc4" as const, icon: AnalyticsIcon },
-  { key: "doc5" as const, icon: NetworkIcon },
-  { key: "doc6" as const, icon: AlertIcon },
+  { key: 'doc1' as const, icon: AnalyticsIcon },
+  { key: 'doc2' as const, icon: ShieldIcon },
+  { key: 'doc3' as const, icon: AnalyticsIcon },
+  { key: 'doc4' as const, icon: AnalyticsIcon },
+  { key: 'doc5' as const, icon: NetworkIcon },
+  { key: 'doc6' as const, icon: AlertIcon },
 ];
 
 export default function SecurityContent() {
-  const t = useTranslations("security");
+  const t = useTranslations('security');
 
   return (
     <>
@@ -81,20 +89,19 @@ export default function SecurityContent() {
         <div className="max-w-[1200px] mx-auto relative">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-6">
-              {t("overline")}
+              {t('overline')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.05}>
             <h1 className="text-[clamp(40px,5vw,64px)] font-extrabold leading-[1.08] tracking-tight text-text-primary max-w-3xl">
-              {t("title")}
+              {t('title')}
               <br className="hidden sm:block" />
-              <span className="text-brand-sage">{t("titleHighlight")}</span>{" "}
-              {t("titleSuffix")}
+              <span className="text-brand-sage">{t('titleHighlight')}</span> {t('titleSuffix')}
             </h1>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <p className="text-xl text-text-secondary max-w-2xl mt-6 leading-relaxed">
-              {t("subtitle")}
+              {t('subtitle')}
             </p>
           </FadeInUp>
         </div>
@@ -103,9 +110,9 @@ export default function SecurityContent() {
       {/* -- Security Practices -- */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("practices.overline")}
-          title={t("practices.title")}
-          subtitle={t("practices.subtitle")}
+          overline={t('practices.overline')}
+          title={t('practices.title')}
+          subtitle={t('practices.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
           {practiceConfigs.map((p, i) => (
@@ -127,27 +134,23 @@ export default function SecurityContent() {
       {/* -- Compliance -- */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("compliance.overline")}
-          title={t("compliance.title")}
-          subtitle={t("compliance.subtitle")}
+          overline={t('compliance.overline')}
+          title={t('compliance.title')}
+          subtitle={t('compliance.subtitle')}
         />
         <div className="max-w-3xl mx-auto mt-14 space-y-4">
           {compliance.map((c, i) => (
             <FadeInUp key={c.badge} delay={i * 0.1}>
               <div className="bg-surface-2 rounded-xl border border-border p-6">
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <span className="text-sm font-bold text-text-primary">
-                    {c.badge}
-                  </span>
+                  <span className="text-sm font-bold text-text-primary">{c.badge}</span>
                   <span
                     className={`text-[11px] font-semibold uppercase tracking-wider ${c.statusColor}`}
                   >
                     {c.status}
                   </span>
                 </div>
-                <p className="text-sm text-text-secondary leading-relaxed">
-                  {c.description}
-                </p>
+                <p className="text-sm text-text-secondary leading-relaxed">{c.description}</p>
               </div>
             </FadeInUp>
           ))}
@@ -157,9 +160,9 @@ export default function SecurityContent() {
       {/* -- Data Handling -- */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("dataHandling.overline")}
-          title={t("dataHandling.title")}
-          subtitle={t("dataHandling.subtitle")}
+          overline={t('dataHandling.overline')}
+          title={t('dataHandling.title')}
+          subtitle={t('dataHandling.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
           {dataFlowConfigs.map((zone, i) => {
@@ -199,10 +202,10 @@ export default function SecurityContent() {
               <LockIcon className="w-5 h-5 text-brand-sage shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-bold text-text-primary mb-1">
-                  {t("dataHandling.anonymization.title")}
+                  {t('dataHandling.anonymization.title')}
                 </p>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  {t("dataHandling.anonymization.desc")}
+                  {t('dataHandling.anonymization.desc')}
                 </p>
               </div>
             </div>
@@ -216,10 +219,10 @@ export default function SecurityContent() {
           <FadeInUp>
             <CheckIcon className="w-8 h-8 text-brand-sage mx-auto mb-4" />
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("disclosure.title")}
+              {t('disclosure.title')}
             </h2>
             <p className="text-text-secondary mt-4 leading-relaxed max-w-xl mx-auto">
-              {t("disclosure.desc")}
+              {t('disclosure.desc')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
@@ -228,13 +231,13 @@ export default function SecurityContent() {
                 href="/legal/responsible-disclosure"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("disclosure.cta1")} <ExternalLink className="w-4 h-4" />
+                {t('disclosure.cta1')} <ExternalLink className="w-4 h-4" />
               </Link>
               <Link
                 href="mailto:security@panguard.ai"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("disclosure.cta2")}
+                {t('disclosure.cta2')}
               </Link>
             </div>
           </FadeInUp>
@@ -244,9 +247,9 @@ export default function SecurityContent() {
       {/* -- Trust Center -- */}
       <SectionWrapper>
         <SectionTitle
-          overline={t("trustCenter.overline")}
-          title={t("trustCenter.title")}
-          subtitle={t("trustCenter.subtitle")}
+          overline={t('trustCenter.overline')}
+          title={t('trustCenter.title')}
+          subtitle={t('trustCenter.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
           {downloadConfigs.map((doc, i) => (
@@ -273,11 +276,9 @@ export default function SecurityContent() {
         <div className="text-center">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
-            <p className="text-text-secondary mt-3 max-w-lg mx-auto">
-              {t("cta.desc")}
-            </p>
+            <p className="text-text-secondary mt-3 max-w-lg mx-auto">{t('cta.desc')}</p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
@@ -285,7 +286,7 @@ export default function SecurityContent() {
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </FadeInUp>

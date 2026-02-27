@@ -84,7 +84,12 @@ export const PRICING_PLANS: PricingPlanDetails[] = [
     highlighted: false,
     features: [
       feature('Everything in Solo', '個人版所有功能', true),
-      feature('Panguard Guard (up to 5 endpoints)', 'Panguard Guard（最多 5 台端點）', true, '5 endpoints'),
+      feature(
+        'Panguard Guard (up to 5 endpoints)',
+        'Panguard Guard（最多 5 台端點）',
+        true,
+        '5 endpoints'
+      ),
       feature('3 notification channels', '3 個通知管道', true, '3 channels'),
       feature('Monthly security summary', '月度資安摘要', true),
       feature('Auto-block malicious IPs', '自動封鎖惡意 IP', true),
@@ -106,7 +111,12 @@ export const PRICING_PLANS: PricingPlanDetails[] = [
     highlighted: true,
     features: [
       feature('Everything in Starter', '入門版所有功能', true),
-      feature('Panguard Guard (5-50 endpoints)', 'Panguard Guard（5-50 台端點）', true, '50 endpoints'),
+      feature(
+        'Panguard Guard (5-50 endpoints)',
+        'Panguard Guard（5-50 台端點）',
+        true,
+        '50 endpoints'
+      ),
       feature('Unlimited notification channels', '不限通知管道', true),
       feature('Weekly + monthly reports', '週報 + 月報', true),
       feature('AI auto-response', 'AI 自動回應', true),
@@ -128,7 +138,12 @@ export const PRICING_PLANS: PricingPlanDetails[] = [
     highlighted: false,
     features: [
       feature('Everything in Team', '團隊版所有功能', true),
-      feature('Panguard Guard (50-500 endpoints)', 'Panguard Guard（50-500 台端點）', true, '500 endpoints'),
+      feature(
+        'Panguard Guard (50-500 endpoints)',
+        'Panguard Guard（50-500 台端點）',
+        true,
+        '500 endpoints'
+      ),
       feature('Unlimited notification channels', '不限通知管道', true),
       feature('Daily + weekly + monthly reports', '日報 + 週報 + 月報', true),
       feature('Panguard Report (compliance)', 'Panguard Report（合規報告）', true),
@@ -149,7 +164,8 @@ export const REPORT_ADDONS: ReportAddon[] = [
     id: 'tw_cyber_security_act',
     nameEn: 'Taiwan Cyber Security Act',
     nameZh: '台灣資通安全管理法',
-    descriptionEn: 'Automated compliance assessment against Taiwan Cyber Security Management Act. Monthly monitoring and reporting.',
+    descriptionEn:
+      'Automated compliance assessment against Taiwan Cyber Security Management Act. Monthly monitoring and reporting.',
     descriptionZh: '自動化台灣資通安全管理法合規評估。每月監控與報告。',
     pricingModel: 'subscription',
     priceUsd: 149,
@@ -164,7 +180,8 @@ export const REPORT_ADDONS: ReportAddon[] = [
     id: 'iso27001',
     nameEn: 'ISO 27001 Readiness Report',
     nameZh: 'ISO 27001 準備報告',
-    descriptionEn: 'Gap analysis report for ISO/IEC 27001:2022 certification readiness. Includes control mapping and remediation plan.',
+    descriptionEn:
+      'Gap analysis report for ISO/IEC 27001:2022 certification readiness. Includes control mapping and remediation plan.',
     descriptionZh: 'ISO/IEC 27001:2022 認證準備差距分析報告。含控制項對照與改善計畫。',
     pricingModel: 'per_report',
     priceUsd: 499,
@@ -176,7 +193,8 @@ export const REPORT_ADDONS: ReportAddon[] = [
     id: 'soc2',
     nameEn: 'SOC 2 Readiness Report',
     nameZh: 'SOC 2 準備報告',
-    descriptionEn: 'Trust Services Criteria assessment for SOC 2 audit preparation. Covers all 5 trust categories.',
+    descriptionEn:
+      'Trust Services Criteria assessment for SOC 2 audit preparation. Covers all 5 trust categories.',
     descriptionZh: 'SOC 2 稽核準備的信任服務準則評估。涵蓋全部 5 大信任類別。',
     pricingModel: 'per_report',
     priceUsd: 499,
@@ -188,7 +206,8 @@ export const REPORT_ADDONS: ReportAddon[] = [
     id: 'incident_report',
     nameEn: 'Security Incident Report',
     nameZh: '資安事件報告',
-    descriptionEn: 'Formal security incident documentation required by regulators. Includes timeline, impact analysis, and remediation.',
+    descriptionEn:
+      'Formal security incident documentation required by regulators. Includes timeline, impact analysis, and remediation.',
     descriptionZh: '監管機關要求的正式資安事件文件。含時間線、影響分析及改善措施。',
     pricingModel: 'per_report',
     priceUsd: 299,
@@ -219,8 +238,10 @@ export function getAllPricingPlans(): PricingPlanDetails[] {
  * 根據角色取得推薦方案
  */
 export function getRecommendedPlan(persona: string): PricingPlanDetails | undefined {
-  return PRICING_PLANS.find((p) => p.targetPersona === persona && p.highlighted)
-    ?? PRICING_PLANS.find((p) => p.targetPersona === persona);
+  return (
+    PRICING_PLANS.find((p) => p.targetPersona === persona && p.highlighted) ??
+    PRICING_PLANS.find((p) => p.targetPersona === persona)
+  );
 }
 
 /**

@@ -54,10 +54,7 @@ export class IPBlocker {
 
   constructor(config: Partial<IPBlockerConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    this.whitelist = new Set([
-      ...DEFAULT_CONFIG.whitelist,
-      ...(config.whitelist ?? []),
-    ]);
+    this.whitelist = new Set([...DEFAULT_CONFIG.whitelist, ...(config.whitelist ?? [])]);
   }
 
   /** Check if IP is whitelisted / 檢查 IP 是否在白名單 */
@@ -79,7 +76,11 @@ export class IPBlocker {
    * Block an IP address
    * 封鎖 IP 位址
    */
-  async block(ip: string, reason: string, durationMs?: number): Promise<{ success: boolean; message: string }> {
+  async block(
+    ip: string,
+    reason: string,
+    durationMs?: number
+  ): Promise<{ success: boolean; message: string }> {
     // Whitelist check
     if (this.whitelist.has(ip)) {
       logger.warn(`Refusing to block whitelisted IP: ${ip}`);
@@ -186,8 +187,14 @@ export class IPBlocker {
       await execFilePromise('/sbin/iptables', ['-A', 'INPUT', '-s', ip, '-j', 'DROP']);
     } else if (os === 'win32') {
       await execFilePromise('netsh', [
-        'advfirewall', 'firewall', 'add', 'rule',
-        `name=Panguard_Block_${ip}`, 'dir=in', 'action=block', `remoteip=${ip}`,
+        'advfirewall',
+        'firewall',
+        'add',
+        'rule',
+        `name=Panguard_Block_${ip}`,
+        'dir=in',
+        'action=block',
+        `remoteip=${ip}`,
       ]);
     }
   }
@@ -200,7 +207,11 @@ export class IPBlocker {
       await execFilePromise('/sbin/iptables', ['-D', 'INPUT', '-s', ip, '-j', 'DROP']);
     } else if (os === 'win32') {
       await execFilePromise('netsh', [
-        'advfirewall', 'firewall', 'delete', 'rule', `name=Panguard_Block_${ip}`,
+        'advfirewall',
+        'firewall',
+        'delete',
+        'rule',
+        `name=Panguard_Block_${ip}`,
       ]);
     }
   }

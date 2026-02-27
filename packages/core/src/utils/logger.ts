@@ -38,7 +38,12 @@ export function setLogLevel(level: LogLevel): void {
  * @param module - Module name / 模組名稱
  * @param context - Additional context / 額外上下文
  */
-function log(level: 'debug' | 'info' | 'warn' | 'error', message: string, module: string, context?: Record<string, unknown>): void {
+function log(
+  level: 'debug' | 'info' | 'warn' | 'error',
+  message: string,
+  module: string,
+  context?: Record<string, unknown>
+): void {
   if (LOG_LEVELS[level] < LOG_LEVELS[currentLevel]) {
     return;
   }
@@ -87,9 +92,13 @@ export interface Logger {
  */
 export function createLogger(module: string): Logger {
   return {
-    debug: (message: string, context?: Record<string, unknown>) => log('debug', message, module, context),
-    info: (message: string, context?: Record<string, unknown>) => log('info', message, module, context),
-    warn: (message: string, context?: Record<string, unknown>) => log('warn', message, module, context),
-    error: (message: string, context?: Record<string, unknown>) => log('error', message, module, context),
+    debug: (message: string, context?: Record<string, unknown>) =>
+      log('debug', message, module, context),
+    info: (message: string, context?: Record<string, unknown>) =>
+      log('info', message, module, context),
+    warn: (message: string, context?: Record<string, unknown>) =>
+      log('warn', message, module, context),
+    error: (message: string, context?: Record<string, unknown>) =>
+      log('error', message, module, context),
   };
 }

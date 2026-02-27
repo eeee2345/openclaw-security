@@ -50,9 +50,7 @@ export class DetectAgent {
    * @returns DetectionResult if threats detected, null if clean / 偵測到威脅回傳 DetectionResult，無威脅回傳 null
    */
   detect(event: SecurityEvent): DetectionResult | null {
-    logger.info(
-      `Processing event: ${event.id} [${event.source}] / 處理事件: ${event.id}`,
-    );
+    logger.info(`Processing event: ${event.id} [${event.source}] / 處理事件: ${event.id}`);
 
     // Step 1: Match against Sigma rules / 步驟 1: 比對 Sigma 規則
     const ruleMatches: RuleMatch[] = this.ruleEngine.match(event);
@@ -61,8 +59,7 @@ export class DetectAgent {
     let threatIntelMatch: { ip: string; threat: string } | undefined;
     if (event.source === 'network') {
       const ip =
-        (event.metadata?.['remoteAddress'] as string) ??
-        (event.metadata?.['sourceIP'] as string);
+        (event.metadata?.['remoteAddress'] as string) ?? (event.metadata?.['sourceIP'] as string);
       if (ip) {
         const threatEntry = checkThreatIntel(ip);
         if (threatEntry) {
@@ -73,9 +70,7 @@ export class DetectAgent {
 
     // If no matches found, return null (normal event) / 無比對結果則回傳 null
     if (ruleMatches.length === 0 && !threatIntelMatch) {
-      logger.info(
-        `No threats detected for event ${event.id} / 事件 ${event.id} 未偵測到威脅`,
-      );
+      logger.info(`No threats detected for event ${event.id} / 事件 ${event.id} 未偵測到威脅`);
       return null;
     }
 
@@ -94,8 +89,8 @@ export class DetectAgent {
 
     logger.info(
       `Threat detected for event ${event.id}: ${ruleMatches.length} rule matches, ` +
-      `threat intel: ${threatIntelMatch ? 'yes' : 'no'} / ` +
-      `事件 ${event.id} 偵測到威脅: ${ruleMatches.length} 條規則比對`,
+        `threat intel: ${threatIntelMatch ? 'yes' : 'no'} / ` +
+        `事件 ${event.id} 偵測到威脅: ${ruleMatches.length} 條規則比對`
     );
 
     return result;

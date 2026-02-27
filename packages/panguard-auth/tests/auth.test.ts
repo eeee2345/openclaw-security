@@ -56,7 +56,9 @@ describe('Auth utilities', () => {
   describe('generateVerifyToken', () => {
     it('should produce a valid UUID', () => {
       const token = generateVerifyToken();
-      expect(token).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+      expect(token).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+      );
     });
   });
 

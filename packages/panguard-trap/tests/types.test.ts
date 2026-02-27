@@ -4,10 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  DEFAULT_SERVICE_CONFIGS,
-  DEFAULT_TRAP_CONFIG,
-} from '../src/types.js';
+import { DEFAULT_SERVICE_CONFIGS, DEFAULT_TRAP_CONFIG } from '../src/types.js';
 import type {
   TrapServiceType,
   TrapSession,
@@ -17,7 +14,16 @@ import type {
 
 describe('DEFAULT_SERVICE_CONFIGS', () => {
   it('should have configs for all 8 service types', () => {
-    const types: TrapServiceType[] = ['ssh', 'http', 'ftp', 'smb', 'mysql', 'rdp', 'telnet', 'redis'];
+    const types: TrapServiceType[] = [
+      'ssh',
+      'http',
+      'ftp',
+      'smb',
+      'mysql',
+      'rdp',
+      'telnet',
+      'redis',
+    ];
     for (const type of types) {
       expect(DEFAULT_SERVICE_CONFIGS[type]).toBeDefined();
       expect(DEFAULT_SERVICE_CONFIGS[type].type).toBe(type);
@@ -135,16 +141,28 @@ describe('Type safety', () => {
       totalCredentialAttempts: 500,
       totalCommandsCaptured: 200,
       sessionsByService: {
-        ssh: 60, http: 30, ftp: 5, smb: 2, mysql: 1, rdp: 1, telnet: 1, redis: 0,
+        ssh: 60,
+        http: 30,
+        ftp: 5,
+        smb: 2,
+        mysql: 1,
+        rdp: 1,
+        telnet: 1,
+        redis: 0,
       },
       topAttackerIPs: [{ ip: '1.2.3.4', sessions: 10, riskScore: 75 }],
       topUsernames: [{ username: 'admin', count: 100 }],
       topPasswords: [{ password: '123456', count: 80 }],
       skillDistribution: { script_kiddie: 30, intermediate: 15, advanced: 4, apt: 1 },
       intentDistribution: {
-        reconnaissance: 10, credential_harvesting: 20, ransomware_deployment: 2,
-        cryptomining: 5, data_theft: 3, botnet_recruitment: 1,
-        lateral_movement: 2, unknown: 7,
+        reconnaissance: 10,
+        credential_harvesting: 20,
+        ransomware_deployment: 2,
+        cryptomining: 5,
+        data_theft: 3,
+        botnet_recruitment: 1,
+        lateral_movement: 2,
+        unknown: 7,
       },
       uptimeMs: 3_600_000,
     };

@@ -15,8 +15,11 @@ import { exec } from 'node:child_process';
 import { c, symbols, box, statusPanel, spinner } from '@panguard-ai/core';
 import type { StatusItem } from '@panguard-ai/core';
 import {
-  saveCredentials, loadCredentials, isTokenExpired,
-  tierDisplayName, CREDENTIALS_PATH,
+  saveCredentials,
+  loadCredentials,
+  isTokenExpired,
+  tierDisplayName,
+  CREDENTIALS_PATH,
 } from '../credentials.js';
 import type { StoredCredentials, Tier } from '../credentials.js';
 
@@ -40,26 +43,28 @@ async function runLogin(opts: { apiUrl: string; browser: boolean; lang?: string 
   const existing = loadCredentials();
   if (existing && !isTokenExpired(existing)) {
     console.log('');
-    console.log(box(
-      lang === 'zh-TW'
-        ? [
-            `${symbols.pass} \u5DF2\u767B\u5165\u70BA ${c.sage(existing.email)}`,
-            '',
-            `  \u7B49\u7D1A: ${c.sage(tierDisplayName(existing.tier))}`,
-            `  \u540D\u7A31: ${existing.name}`,
-            '',
-            `  \u8981\u5207\u63DB\u5E33\u865F\uFF1F\u5148\u57F7\u884C ${c.sage('panguard logout')}`,
-          ].join('\n')
-        : [
-            `${symbols.pass} Already logged in as ${c.sage(existing.email)}`,
-            '',
-            `  Tier: ${c.sage(tierDisplayName(existing.tier))}`,
-            `  Name: ${existing.name}`,
-            '',
-            `  To switch accounts, run ${c.sage('panguard logout')} first.`,
-          ].join('\n'),
-      { borderColor: c.sage, title: 'Panguard AI' },
-    ));
+    console.log(
+      box(
+        lang === 'zh-TW'
+          ? [
+              `${symbols.pass} \u5DF2\u767B\u5165\u70BA ${c.sage(existing.email)}`,
+              '',
+              `  \u7B49\u7D1A: ${c.sage(tierDisplayName(existing.tier))}`,
+              `  \u540D\u7A31: ${existing.name}`,
+              '',
+              `  \u8981\u5207\u63DB\u5E33\u865F\uFF1F\u5148\u57F7\u884C ${c.sage('panguard logout')}`,
+            ].join('\n')
+          : [
+              `${symbols.pass} Already logged in as ${c.sage(existing.email)}`,
+              '',
+              `  Tier: ${c.sage(tierDisplayName(existing.tier))}`,
+              `  Name: ${existing.name}`,
+              '',
+              `  To switch accounts, run ${c.sage('panguard logout')} first.`,
+            ].join('\n'),
+        { borderColor: c.sage, title: 'Panguard AI' }
+      )
+    );
     console.log('');
     return;
   }
@@ -74,30 +79,40 @@ async function runLogin(opts: { apiUrl: string; browser: boolean; lang?: string 
 
   console.log('');
   if (opts.browser) {
-    const sp = spinner(lang === 'zh-TW'
-      ? '\u6B63\u5728\u958B\u555F\u700F\u89BD\u5668...'
-      : 'Opening browser...');
+    const sp = spinner(
+      lang === 'zh-TW' ? '\u6B63\u5728\u958B\u555F\u700F\u89BD\u5668...' : 'Opening browser...'
+    );
     try {
       await openBrowser(loginUrl);
-      sp.succeed(lang === 'zh-TW'
-        ? '\u700F\u89BD\u5668\u5DF2\u958B\u555F\uFF0C\u8ACB\u5728\u700F\u89BD\u5668\u4E2D\u5B8C\u6210\u767B\u5165'
-        : 'Browser opened. Please complete login in the browser.');
+      sp.succeed(
+        lang === 'zh-TW'
+          ? '\u700F\u89BD\u5668\u5DF2\u958B\u555F\uFF0C\u8ACB\u5728\u700F\u89BD\u5668\u4E2D\u5B8C\u6210\u767B\u5165'
+          : 'Browser opened. Please complete login in the browser.'
+      );
     } catch {
-      sp.warn(lang === 'zh-TW'
-        ? '\u7121\u6CD5\u958B\u555F\u700F\u89BD\u5668\uFF0C\u8ACB\u624B\u52D5\u958B\u555F\u4EE5\u4E0B\u7DB2\u5740'
-        : 'Could not open browser. Please open the following URL manually:');
+      sp.warn(
+        lang === 'zh-TW'
+          ? '\u7121\u6CD5\u958B\u555F\u700F\u89BD\u5668\uFF0C\u8ACB\u624B\u52D5\u958B\u555F\u4EE5\u4E0B\u7DB2\u5740'
+          : 'Could not open browser. Please open the following URL manually:'
+      );
       console.log(`\n  ${c.underline(loginUrl)}\n`);
     }
   } else {
-    console.log(lang === 'zh-TW'
-      ? `  \u8ACB\u5728\u700F\u89BD\u5668\u4E2D\u958B\u555F\u4EE5\u4E0B\u7DB2\u5740\u4F86\u767B\u5165\uFF1A`
-      : '  Open the following URL in your browser to log in:');
+    console.log(
+      lang === 'zh-TW'
+        ? `  \u8ACB\u5728\u700F\u89BD\u5668\u4E2D\u958B\u555F\u4EE5\u4E0B\u7DB2\u5740\u4F86\u767B\u5165\uFF1A`
+        : '  Open the following URL in your browser to log in:'
+    );
     console.log(`\n  ${c.underline(loginUrl)}\n`);
   }
 
-  console.log(c.dim(lang === 'zh-TW'
-    ? '  \u7B49\u5F85\u8A8D\u8B49\u56DE\u61C9...'
-    : '  Waiting for authentication...'));
+  console.log(
+    c.dim(
+      lang === 'zh-TW'
+        ? '  \u7B49\u5F85\u8A8D\u8B49\u56DE\u61C9...'
+        : '  Waiting for authentication...'
+    )
+  );
 
   // Wait for callback
   try {
@@ -107,21 +122,32 @@ async function runLogin(opts: { apiUrl: string; browser: boolean; lang?: string 
     const items: StatusItem[] = [
       { label: lang === 'zh-TW' ? '\u4FE1\u7BB1' : 'Email', value: creds.email, status: 'safe' },
       { label: lang === 'zh-TW' ? '\u540D\u7A31' : 'Name', value: creds.name },
-      { label: lang === 'zh-TW' ? '\u7B49\u7D1A' : 'Tier', value: tierDisplayName(creds.tier), status: 'safe' },
+      {
+        label: lang === 'zh-TW' ? '\u7B49\u7D1A' : 'Tier',
+        value: tierDisplayName(creds.tier),
+        status: 'safe',
+      },
     ];
-    console.log(statusPanel(
-      lang === 'zh-TW' ? '\u767B\u5165\u6210\u529F' : 'Login Successful',
-      items,
-    ));
-    console.log(c.dim(`  ${lang === 'zh-TW'
-      ? `\u6191\u8B49\u5DF2\u5132\u5B58\u81F3 ${CREDENTIALS_PATH}`
-      : `Credentials saved to ${CREDENTIALS_PATH}`}`));
+    console.log(
+      statusPanel(lang === 'zh-TW' ? '\u767B\u5165\u6210\u529F' : 'Login Successful', items)
+    );
+    console.log(
+      c.dim(
+        `  ${
+          lang === 'zh-TW'
+            ? `\u6191\u8B49\u5DF2\u5132\u5B58\u81F3 ${CREDENTIALS_PATH}`
+            : `Credentials saved to ${CREDENTIALS_PATH}`
+        }`
+      )
+    );
     console.log('');
   } catch (err) {
     console.log('');
-    console.log(`  ${symbols.fail} ${lang === 'zh-TW'
-      ? '\u767B\u5165\u5931\u6557'
-      : 'Login failed'}: ${err instanceof Error ? err.message : String(err)}`);
+    console.log(
+      `  ${symbols.fail} ${
+        lang === 'zh-TW' ? '\u767B\u5165\u5931\u6557' : 'Login failed'
+      }: ${err instanceof Error ? err.message : String(err)}`
+    );
     console.log('');
     process.exitCode = 1;
   }
@@ -210,10 +236,13 @@ function startCallbackServer(expectedState: string): Promise<CallbackServer> {
         port: addr.port,
         waitForCallback: async (apiUrl: string) => {
           // Set a 5-minute timeout
-          const timeout = setTimeout(() => {
-            callbackReject!(new Error('Login timed out after 5 minutes'));
-            server.close();
-          }, 5 * 60 * 1000);
+          const timeout = setTimeout(
+            () => {
+              callbackReject!(new Error('Login timed out after 5 minutes'));
+              server.close();
+            },
+            5 * 60 * 1000
+          );
 
           try {
             const creds = await callbackPromise;

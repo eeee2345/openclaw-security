@@ -19,11 +19,7 @@ import { createEmptyBaseline } from './baseline.js';
 
 const logger = createLogger('panguard-guard:memory');
 
-export {
-  createEmptyBaseline,
-  checkDeviation,
-  updateBaseline,
-} from './baseline.js';
+export { createEmptyBaseline, checkDeviation, updateBaseline } from './baseline.js';
 
 export {
   isLearningComplete,
@@ -49,7 +45,7 @@ export function loadBaseline(filePath: string): EnvironmentBaseline {
   } catch {
     logger.info(
       `No existing baseline at ${filePath}, creating empty / ` +
-      `${filePath} 無現有基線，建立空白基線`,
+        `${filePath} 無現有基線，建立空白基線`
     );
     return createEmptyBaseline();
   }

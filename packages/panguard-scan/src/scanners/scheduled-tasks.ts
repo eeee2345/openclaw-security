@@ -57,9 +57,9 @@ const SUSPICIOUS_PATTERNS: RegExp[] = [
   /\\tmp\\/i,
   /\\temp\\/i,
   /\\downloads\\/i,
-  /[A-Za-z0-9+/]{40,}={0,2}/,    // Base64-encoded strings / Base64 編碼字串
-  /\/[a-zA-Z](\s|$)/,              // Single-letter executables in paths / 路徑中的單字母執行檔
-  /\\[a-zA-Z]\.\w{2,4}(\s|$)/,    // Single-letter executables on Windows / Windows 上的單字母執行檔
+  /[A-Za-z0-9+/]{40,}={0,2}/, // Base64-encoded strings / Base64 編碼字串
+  /\/[a-zA-Z](\s|$)/, // Single-letter executables in paths / 路徑中的單字母執行檔
+  /\\[a-zA-Z]\.\w{2,4}(\s|$)/, // Single-letter executables on Windows / Windows 上的單字母執行檔
 ];
 
 /**
@@ -107,9 +107,7 @@ async function checkMacOSTasks(): Promise<Finding[]> {
     if (isSuspicious(label)) {
       findings.push({
         id: `SCAN-TASK-${String(findingCounter).padStart(3, '0')}`,
-        title:
-          `Suspicious scheduled task: ${label} / ` +
-          `可疑的排程任務：${label}`,
+        title: `Suspicious scheduled task: ${label} / ` + `可疑的排程任務：${label}`,
         description:
           `The launch agent/daemon "${label}" has characteristics associated with ` +
           'potentially suspicious activity (e.g., paths in temp/downloads directories, ' +
@@ -161,9 +159,7 @@ async function checkLinuxTasks(): Promise<Finding[]> {
       if (isSuspicious(trimmed)) {
         findings.push({
           id: `SCAN-TASK-${String(findingCounter).padStart(3, '0')}`,
-          title:
-            `Suspicious cron job detected / ` +
-            `偵測到可疑的 cron 工作`,
+          title: `Suspicious cron job detected / ` + `偵測到可疑的 cron 工作`,
           description:
             `A cron job entry contains suspicious patterns (temp/downloads paths, ` +
             'base64-encoded strings, or single-letter executables). / ' +
@@ -265,9 +261,7 @@ async function checkWindowsTasks(): Promise<Finding[]> {
     if (isSuspicious(taskName)) {
       findings.push({
         id: `SCAN-TASK-${String(findingCounter).padStart(3, '0')}`,
-        title:
-          `Suspicious scheduled task: ${taskName} / ` +
-          `可疑的排程任務：${taskName}`,
+        title: `Suspicious scheduled task: ${taskName} / ` + `可疑的排程任務：${taskName}`,
         description:
           `The Windows scheduled task "${taskName}" has characteristics associated ` +
           'with potentially suspicious activity (e.g., paths in temp/downloads directories, ' +

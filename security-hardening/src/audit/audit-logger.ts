@@ -20,9 +20,7 @@ const logger = createLogger('audit');
  *
  * @param event - Partial audit event (timestamp auto-filled) / 部分稽核事件（時間戳自動填充）
  */
-export function logAuditEvent(
-  event: Omit<AuditEvent, 'timestamp' | 'module'>
-): void {
+export function logAuditEvent(event: Omit<AuditEvent, 'timestamp' | 'module'>): void {
   const fullEvent: AuditEvent = {
     timestamp: new Date().toISOString(),
     module: 'audit',
@@ -103,10 +101,7 @@ export function logCommandExecution(command: string, result: 'success' | 'blocke
  * Log security policy check
  * 記錄安全政策檢查
  */
-export function logPolicyCheck(
-  operation: string,
-  result: 'success' | 'blocked'
-): void {
+export function logPolicyCheck(operation: string, result: 'success' | 'blocked'): void {
   logAuditEvent({
     level: result === 'blocked' ? 'warn' : 'info',
     action: 'policy_check',

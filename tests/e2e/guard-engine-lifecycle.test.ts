@@ -47,11 +47,19 @@ describe('GuardEngine Lifecycle', () => {
 
   afterEach(async () => {
     if (engine) {
-      try { await engine.stop(); } catch { /* ignore */ }
+      try {
+        await engine.stop();
+      } catch {
+        /* ignore */
+      }
       engine = null;
     }
     if (tempDir) {
-      try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+      try {
+        rmSync(tempDir, { recursive: true, force: true });
+      } catch {
+        /* ignore */
+      }
     }
   });
 

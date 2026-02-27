@@ -45,7 +45,12 @@ function detectUpdateStatus(): { pendingUpdates: number; autoUpdateEnabled: bool
       // Check if auto-update is enabled
       let autoEnabled = false;
       try {
-        const autoOutput = execSync('defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled 2>/dev/null', { timeout: 5000 }).toString().trim();
+        const autoOutput = execSync(
+          'defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled 2>/dev/null',
+          { timeout: 5000 }
+        )
+          .toString()
+          .trim();
         autoEnabled = autoOutput === '1';
       } catch {
         // Ignore — cannot determine auto-update status
@@ -56,28 +61,48 @@ function detectUpdateStatus(): { pendingUpdates: number; autoUpdateEnabled: bool
     if (platform === 'linux') {
       // Try apt (Debian/Ubuntu)
       try {
-        const output = execSync('apt list --upgradable 2>/dev/null | grep -c upgradable', { timeout: 10000 }).toString().trim();
+        const output = execSync('apt list --upgradable 2>/dev/null | grep -c upgradable', {
+          timeout: 10000,
+        })
+          .toString()
+          .trim();
         const count = parseInt(output, 10);
         const autoEnabled = (() => {
           try {
-            return execSync('systemctl is-enabled unattended-upgrades 2>/dev/null', { timeout: 5000 }).toString().trim() === 'enabled';
-          } catch { return false; }
+            return (
+              execSync('systemctl is-enabled unattended-upgrades 2>/dev/null', { timeout: 5000 })
+                .toString()
+                .trim() === 'enabled'
+            );
+          } catch {
+            return false;
+          }
         })();
         return { pendingUpdates: isNaN(count) ? 0 : count, autoUpdateEnabled: autoEnabled };
-      } catch { /* not apt-based */ }
+      } catch {
+        /* not apt-based */
+      }
 
       // Try yum/dnf (RHEL/CentOS/Fedora)
       try {
-        const output = execSync('yum check-update 2>/dev/null | tail -n +3 | wc -l', { timeout: 10000 }).toString().trim();
+        const output = execSync('yum check-update 2>/dev/null | tail -n +3 | wc -l', {
+          timeout: 10000,
+        })
+          .toString()
+          .trim();
         const count = parseInt(output, 10);
         return { pendingUpdates: isNaN(count) ? 0 : count, autoUpdateEnabled: false };
-      } catch { /* not yum-based */ }
+      } catch {
+        /* not yum-based */
+      }
     }
 
     // Fallback: unknown
     return { pendingUpdates: 0, autoUpdateEnabled: false };
   } catch (err) {
-    logger.warn('Failed to detect update status', { error: err instanceof Error ? err.message : String(err) });
+    logger.warn('Failed to detect update status', {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return { pendingUpdates: 0, autoUpdateEnabled: false };
   }
 }

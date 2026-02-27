@@ -35,10 +35,18 @@ export { scanPlaintextCredentials, migrateCredentials } from './credentials/inde
 
 // Skill Sandbox
 export { isPathAllowed, createFilesystemGuard } from './sandbox/index.js';
-export { isCommandAllowed, createCommandValidator, DEFAULT_ALLOWED_COMMANDS } from './sandbox/index.js';
+export {
+  isCommandAllowed,
+  createCommandValidator,
+  DEFAULT_ALLOWED_COMMANDS,
+} from './sandbox/index.js';
 
 // Permissions
-export { loadSecurityPolicy, isOperationAllowed, DEFAULT_SECURITY_POLICY } from './permissions/index.js';
+export {
+  loadSecurityPolicy,
+  isOperationAllowed,
+  DEFAULT_SECURITY_POLICY,
+} from './permissions/index.js';
 export type { OperationType } from './permissions/index.js';
 
 // Audit Logging

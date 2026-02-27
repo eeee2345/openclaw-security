@@ -8,11 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import type {
-  TrapSession,
-  AttackerProfile,
-  TrapServiceType,
-} from '@panguard-ai/panguard-trap';
+import type { TrapSession, AttackerProfile, TrapServiceType } from '@panguard-ai/panguard-trap';
 import {
   buildTrapIntel,
   buildBatchIntel,
@@ -188,7 +184,8 @@ describe('PanguardTrap -> Threat Cloud Intelligence Pipeline', () => {
       // Convert to ComplianceFinding for PanguardReport
       const finding: ComplianceFinding = {
         findingId: `TRAP-${session.sessionId}`,
-        severity: profile.riskScore >= 80 ? 'critical' : profile.riskScore >= 60 ? 'high' : 'medium',
+        severity:
+          profile.riskScore >= 80 ? 'critical' : profile.riskScore >= 60 ? 'high' : 'medium',
         title: `Honeypot: ${profile.intent} activity detected on ${session.serviceType}`,
         description: `Attacker (${profile.skillLevel}) from ${session.sourceIP} targeted ${session.serviceType} service. Tools: ${profile.toolsDetected.join(', ')}`,
         category: 'monitoring',
@@ -226,9 +223,7 @@ describe('PanguardTrap -> Threat Cloud Intelligence Pipeline', () => {
       const evaluated = evaluateControls(controls, trapFindings);
 
       // Some controls should be affected by trap findings
-      const affectedControls = evaluated.filter(
-        (c) => c.relatedFindings.length > 0,
-      );
+      const affectedControls = evaluated.filter((c) => c.relatedFindings.length > 0);
       expect(affectedControls.length).toBeGreaterThan(0);
 
       const summary = generateExecutiveSummary(evaluated, trapFindings, 'en');
@@ -238,7 +233,16 @@ describe('PanguardTrap -> Threat Cloud Intelligence Pipeline', () => {
 
   describe('Service Configuration Consistency', () => {
     it('should have configurations for all 8 service types', () => {
-      const serviceTypes: TrapServiceType[] = ['ssh', 'http', 'ftp', 'smb', 'mysql', 'rdp', 'telnet', 'redis'];
+      const serviceTypes: TrapServiceType[] = [
+        'ssh',
+        'http',
+        'ftp',
+        'smb',
+        'mysql',
+        'rdp',
+        'telnet',
+        'redis',
+      ];
 
       for (const type of serviceTypes) {
         expect(DEFAULT_SERVICE_CONFIGS[type]).toBeDefined();

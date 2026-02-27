@@ -21,9 +21,11 @@ export function logoutCommand(): Command {
 
       if (!creds) {
         console.log('');
-        console.log(`  ${symbols.info} ${lang === 'zh-TW'
-          ? '\u76EE\u524D\u672A\u767B\u5165\u3002'
-          : 'Not currently logged in.'}`);
+        console.log(
+          `  ${symbols.info} ${
+            lang === 'zh-TW' ? '\u76EE\u524D\u672A\u767B\u5165\u3002' : 'Not currently logged in.'
+          }`
+        );
         console.log('');
         return;
       }
@@ -33,7 +35,7 @@ export function logoutCommand(): Command {
         await fetch(`${creds.apiUrl}/api/auth/logout`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${creds.token}`,
+            Authorization: `Bearer ${creds.token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -46,9 +48,13 @@ export function logoutCommand(): Command {
       deleteCredentials();
 
       console.log('');
-      console.log(`  ${symbols.pass} ${lang === 'zh-TW'
-        ? `\u5DF2\u767B\u51FA ${c.sage(creds.email)}\u3002\u672C\u5730\u6191\u8B49\u5DF2\u522A\u9664\u3002`
-        : `Logged out ${c.sage(creds.email)}. Local credentials deleted.`}`);
+      console.log(
+        `  ${symbols.pass} ${
+          lang === 'zh-TW'
+            ? `\u5DF2\u767B\u51FA ${c.sage(creds.email)}\u3002\u672C\u5730\u6191\u8B49\u5DF2\u522A\u9664\u3002`
+            : `Logged out ${c.sage(creds.email)}. Local credentials deleted.`
+        }`
+      );
       console.log('');
     });
 }

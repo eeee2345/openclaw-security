@@ -14,11 +14,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { request } from 'node:https';
 import { createLogger } from '@panguard-ai/core';
-import type {
-  AnonymizedThreatData,
-  ThreatCloudUpdate,
-  ThreatCloudStatus,
-} from '../types.js';
+import type { AnonymizedThreatData, ThreatCloudUpdate, ThreatCloudStatus } from '../types.js';
 import { getAnonymousClientId } from './client-id.js';
 
 const logger = createLogger('panguard-guard:threat-cloud');
@@ -193,9 +189,7 @@ export class ThreatCloudClient {
       this.saveCache();
       this.status = 'connected';
 
-      logger.info(
-        `Fetched ${rules.length} rules from cloud / 從雲端取得 ${rules.length} 條規則`,
-      );
+      logger.info(`Fetched ${rules.length} rules from cloud / 從雲端取得 ${rules.length} 條規則`);
 
       return this.cache.rules;
     } catch (err: unknown) {
@@ -239,7 +233,7 @@ export class ThreatCloudClient {
 
     logger.info(
       `Queue flush: ${uploaded} uploaded, ${remaining.length} remaining / ` +
-      `佇列清空: ${uploaded} 已上傳, ${remaining.length} 剩餘`,
+        `佇列清空: ${uploaded} 已上傳, ${remaining.length} 剩餘`
     );
 
     return uploaded;
@@ -293,7 +287,9 @@ export class ThreatCloudClient {
         },
         (res) => {
           let data = '';
-          res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+          res.on('data', (chunk: Buffer) => {
+            data += chunk.toString();
+          });
           res.on('end', () => {
             if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
               resolve(data);
@@ -301,7 +297,7 @@ export class ThreatCloudClient {
               reject(new Error(`HTTP ${res.statusCode}: ${data}`));
             }
           });
-        },
+        }
       );
 
       req.on('error', reject);
@@ -331,7 +327,9 @@ export class ThreatCloudClient {
         },
         (res) => {
           let data = '';
-          res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+          res.on('data', (chunk: Buffer) => {
+            data += chunk.toString();
+          });
           res.on('end', () => {
             if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
               resolve(data);
@@ -339,7 +337,7 @@ export class ThreatCloudClient {
               reject(new Error(`HTTP ${res.statusCode}: ${data}`));
             }
           });
-        },
+        }
       );
 
       req.on('error', reject);

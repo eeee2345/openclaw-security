@@ -290,7 +290,9 @@ export async function executeCli(args: string[]): Promise<void> {
         console.log(`Validating input file: ${options.inputFile}`);
         try {
           const findings = await loadFindings(options.inputFile);
-          console.log(`Valid: ${findings.length} findings found. / 有效: 找到 ${findings.length} 個發現。`);
+          console.log(
+            `Valid: ${findings.length} findings found. / 有效: 找到 ${findings.length} 個發現。`
+          );
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
           console.error(`Validation failed: ${msg} / 驗證失敗: ${msg}`);
@@ -323,9 +325,10 @@ export async function executeCli(args: string[]): Promise<void> {
 // CLI 進入點（直接執行時）
 // ---------------------------------------------------------------------------
 
-const isDirectRun = process.argv[1] &&
+const isDirectRun =
+  process.argv[1] &&
   (process.argv[1].endsWith('/panguard-report') ||
-   process.argv[1].includes('panguard-report/dist/cli'));
+    process.argv[1].includes('panguard-report/dist/cli'));
 
 if (isDirectRun) {
   executeCli(process.argv.slice(2)).catch((err) => {

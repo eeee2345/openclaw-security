@@ -1,33 +1,30 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Link } from "@/navigation";
-import SectionWrapper from "../ui/SectionWrapper";
-import SectionTitle from "../ui/SectionTitle";
-import FadeInUp from "../FadeInUp";
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { Link } from '@/navigation';
+import SectionWrapper from '../ui/SectionWrapper';
+import SectionTitle from '../ui/SectionTitle';
+import FadeInUp from '../FadeInUp';
 
-const tabKeys = ["website", "developer", "business"] as const;
+const tabKeys = ['website', 'developer', 'business'] as const;
 type TabKey = (typeof tabKeys)[number];
 
 export default function ThreeSteps() {
-  const t = useTranslations("home.threeSteps");
-  const [activeTab, setActiveTab] = useState<TabKey>("website");
+  const t = useTranslations('home.threeSteps');
+  const [activeTab, setActiveTab] = useState<TabKey>('website');
 
   const ctaHrefs: Record<TabKey, string> = {
-    website: "/early-access",
-    developer: "/docs",
-    business: "/early-access",
+    website: '/early-access',
+    developer: '/docs',
+    business: '/early-access',
   };
 
   return (
     <SectionWrapper dark>
-      <SectionTitle
-        overline={t("overline")}
-        title={t("title")}
-      />
+      <SectionTitle overline={t('overline')} title={t('title')} />
 
       {/* Tab bar */}
       <FadeInUp delay={0.1}>
@@ -38,8 +35,8 @@ export default function ThreeSteps() {
               onClick={() => setActiveTab(key)}
               className={`relative px-5 py-2.5 text-sm font-medium rounded-full transition-colors ${
                 activeTab === key
-                  ? "bg-brand-sage text-surface-0"
-                  : "bg-surface-0/5 text-text-secondary hover:text-text-primary border border-border"
+                  ? 'bg-brand-sage text-surface-0'
+                  : 'bg-surface-0/5 text-text-secondary hover:text-text-primary border border-border'
               }`}
             >
               {t(`tabs.${key}`)}
@@ -80,17 +77,17 @@ export default function ThreeSteps() {
 
               {/* Visual mockup */}
               <div className="bg-surface-0 rounded-xl border border-border p-5 font-mono text-xs leading-relaxed min-h-[200px]">
-                {activeTab === "website" && (
+                {activeTab === 'website' && (
                   <div className="space-y-2 text-text-secondary">
                     <p className="text-brand-sage">$ Enter domain: example.com</p>
                     <p>Scanning example.com...</p>
-                    <p className="text-[#2ED573]">{"████████████████████████ 100%"}</p>
+                    <p className="text-[#2ED573]">{'████████████████████████ 100%'}</p>
                     <p className="text-text-primary mt-2">Score: 72/100 (C)</p>
                     <p className="text-[#FBBF24]">3 issues found</p>
                     <p className="text-text-muted mt-1">Report saved: example-report.pdf</p>
                   </div>
                 )}
-                {activeTab === "developer" && (
+                {activeTab === 'developer' && (
                   <div className="space-y-2 text-text-secondary">
                     <p className="text-brand-sage">$ curl -fsSL https://get.panguard.ai | sh</p>
                     <p className="text-[#2ED573]">Installed in 12s</p>
@@ -103,7 +100,7 @@ export default function ThreeSteps() {
                     <p className="text-text-secondary">Panguard: All clear. Score: 94/100.</p>
                   </div>
                 )}
-                {activeTab === "business" && (
+                {activeTab === 'business' && (
                   <div className="space-y-2 text-text-secondary">
                     <p className="text-brand-sage">$ panguard scan --target company.com</p>
                     <p>Enterprise scan complete</p>

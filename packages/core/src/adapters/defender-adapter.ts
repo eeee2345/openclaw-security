@@ -32,10 +32,7 @@ const MPCMDRUN_PATH = 'C:\\Program Files\\Windows Defender\\MpCmdRun.exe';
  * @param args - Command arguments / 命令參數
  * @returns Promise resolving to stdout/stderr / 解析為 stdout/stderr 的 Promise
  */
-function execFileAsync(
-  cmd: string,
-  args: string[],
-): Promise<{ stdout: string; stderr: string }> {
+function execFileAsync(cmd: string, args: string[]): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     execFile(cmd, args, { timeout: 60000 }, (error, stdout, stderr) => {
       if (error) {
@@ -260,11 +257,7 @@ export class DefenderAdapter extends BaseAdapter {
     this.logger.info(`Triggering ${scanTypeLabel} scan`);
 
     try {
-      await execFileAsync(MPCMDRUN_PATH, [
-        '-Scan',
-        '-ScanType',
-        String(scanType),
-      ]);
+      await execFileAsync(MPCMDRUN_PATH, ['-Scan', '-ScanType', String(scanType)]);
       this.logger.info(`${scanTypeLabel} scan completed successfully`);
       return true;
     } catch (err) {

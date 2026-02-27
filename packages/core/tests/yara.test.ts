@@ -19,7 +19,9 @@ describe('YaraScanner', () => {
     scanner = new YaraScanner();
 
     // Write a test YARA rule
-    writeFileSync(join(rulesDir, 'test-webshell.yar'), `
+    writeFileSync(
+      join(rulesDir, 'test-webshell.yar'),
+      `
 rule PHP_Webshell_Generic {
   meta:
     description = "Detects generic PHP webshell patterns"
@@ -45,11 +47,16 @@ rule Suspicious_Base64 {
   condition:
     any of them
 }
-`);
+`
+    );
   });
 
   afterEach(() => {
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   it('should load YARA rules from directory', async () => {
@@ -91,7 +98,7 @@ rule Suspicious_Base64 {
 
     const result = await scanner.scanFile(suspiciousFile);
     expect(result.matches.length).toBeGreaterThan(0);
-    expect(result.matches.some(m => m.rule === 'Suspicious_Base64')).toBe(true);
+    expect(result.matches.some((m) => m.rule === 'Suspicious_Base64')).toBe(true);
   });
 
   it('should return no matches for clean file', async () => {
@@ -169,14 +176,16 @@ rule Suspicious_Base64 {
 
     const results = await scanner.scanDirectory(testFilesDir);
     // node_modules should be skipped, so evil.php won't be found
-    expect(results.every(r => !r.filePath.includes('node_modules'))).toBe(true);
+    expect(results.every((r) => !r.filePath.includes('node_modules'))).toBe(true);
   });
 
   it('should loadAllRules from custom and community dirs', async () => {
     const communityDir = join(tempDir, 'community-rules');
     mkdirSync(communityDir, { recursive: true });
 
-    writeFileSync(join(communityDir, 'community.yar'), `
+    writeFileSync(
+      join(communityDir, 'community.yar'),
+      `
 rule Community_Ransomware {
   meta:
     description = "Community ransomware detection"
@@ -187,7 +196,8 @@ rule Community_Ransomware {
   condition:
     any of them
 }
-`);
+`
+    );
 
     const total = await scanner.loadAllRules(rulesDir, communityDir);
     expect(total).toBe(2); // 1 custom + 1 community
@@ -199,7 +209,9 @@ rule Community_Ransomware {
     mkdirSync(join(communityDir, 'apt'), { recursive: true });
     mkdirSync(join(communityDir, 'malware'), { recursive: true });
 
-    writeFileSync(join(communityDir, 'apt', 'apt.yar'), `
+    writeFileSync(
+      join(communityDir, 'apt', 'apt.yar'),
+      `
 rule APT_Tool {
   meta:
     description = "APT tool detection"
@@ -209,9 +221,12 @@ rule APT_Tool {
   condition:
     any of them
 }
-`);
+`
+    );
 
-    writeFileSync(join(communityDir, 'malware', 'trojan.yar'), `
+    writeFileSync(
+      join(communityDir, 'malware', 'trojan.yar'),
+      `
 rule Trojan_Generic {
   meta:
     description = "Trojan detection"
@@ -221,7 +236,8 @@ rule Trojan_Generic {
   condition:
     any of them
 }
-`);
+`
+    );
 
     const total = await scanner.loadAllRules(rulesDir, communityDir);
     expect(total).toBe(3); // 1 custom + 2 community

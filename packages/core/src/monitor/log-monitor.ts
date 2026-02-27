@@ -159,8 +159,10 @@ export class LogMonitor extends EventEmitter {
   private startMacOS(): void {
     this.childProcess = spawn('log', [
       'stream',
-      '--style', 'json',
-      '--predicate', 'eventType == logEvent',
+      '--style',
+      'json',
+      '--predicate',
+      'eventType == logEvent',
     ]);
 
     this.attachProcessHandlers('macOS-log-stream');
@@ -169,15 +171,11 @@ export class LogMonitor extends EventEmitter {
       // macOS 日誌串流 JSON 輸出：嘗試解析每一行
       try {
         const parsed = JSON.parse(line) as Record<string, unknown>;
-        const message = typeof parsed['eventMessage'] === 'string'
-          ? parsed['eventMessage']
-          : line;
-        const source = typeof parsed['senderImagePath'] === 'string'
-          ? parsed['senderImagePath']
-          : 'macOS';
-        const timestamp = typeof parsed['timestamp'] === 'string'
-          ? new Date(parsed['timestamp'])
-          : new Date();
+        const message = typeof parsed['eventMessage'] === 'string' ? parsed['eventMessage'] : line;
+        const source =
+          typeof parsed['senderImagePath'] === 'string' ? parsed['senderImagePath'] : 'macOS';
+        const timestamp =
+          typeof parsed['timestamp'] === 'string' ? new Date(parsed['timestamp']) : new Date();
 
         const event = normalizeLogEvent({ message, source, timestamp });
         this.emit('event', event);
@@ -221,12 +219,7 @@ export class LogMonitor extends EventEmitter {
    * 啟動 Windows 事件日誌監控
    */
   private startWindows(): void {
-    this.childProcess = spawn('wevtutil', [
-      'qe', 'Security',
-      '/f:text',
-      '/rd:true',
-      '/c:1',
-    ]);
+    this.childProcess = spawn('wevtutil', ['qe', 'Security', '/f:text', '/rd:true', '/c:1']);
 
     this.attachProcessHandlers('windows-wevtutil');
     this.parseOutputStream((line: string) => {
@@ -260,7 +253,10 @@ export class LogMonitor extends EventEmitter {
       if (this.running) {
         // Unexpected exit / 意外退出
         this.running = false;
-        this.emit('error', new Error(`${label} process exited unexpectedly (code: ${code}, signal: ${signal})`));
+        this.emit(
+          'error',
+          new Error(`${label} process exited unexpectedly (code: ${code}, signal: ${signal})`)
+        );
       }
     });
   }

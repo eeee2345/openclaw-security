@@ -276,7 +276,10 @@ export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[
         {
           id: 'emailPort',
           title: { 'zh-TW': 'SMTP 端口', en: 'SMTP Port' },
-          description: { 'zh-TW': 'SMTP 端口（常用: 587, 465）', en: 'SMTP port (common: 587, 465)' },
+          description: {
+            'zh-TW': 'SMTP 端口（常用: 587, 465）',
+            en: 'SMTP port (common: 587, 465)',
+          },
           inputType: 'text',
         },
         {
@@ -300,7 +303,10 @@ export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[
         {
           id: 'emailTo',
           title: { 'zh-TW': '收件人地址', en: 'To Address' },
-          description: { 'zh-TW': '接收通知的郵件地址', en: 'Email address to receive notifications' },
+          description: {
+            'zh-TW': '接收通知的郵件地址',
+            en: 'Email address to receive notifications',
+          },
           inputType: 'text',
         },
       ];
@@ -309,7 +315,10 @@ export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[
         {
           id: 'webhookEndpoint',
           title: { 'zh-TW': 'Webhook URL', en: 'Webhook URL' },
-          description: { 'zh-TW': '接收安全事件的 Webhook 端點', en: 'Webhook endpoint to receive security events' },
+          description: {
+            'zh-TW': '接收安全事件的 Webhook 端點',
+            en: 'Webhook endpoint to receive security events',
+          },
           inputType: 'text',
         },
         {
@@ -318,15 +327,30 @@ export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[
           description: { 'zh-TW': '選擇認證方式', en: 'Choose authentication method' },
           inputType: 'select',
           options: [
-            { value: 'bearer_token', label: { 'zh-TW': 'Bearer Token', en: 'Bearer Token' }, description: { 'zh-TW': '使用 Bearer Token', en: 'Use Bearer Token' } },
-            { value: 'hmac_signature', label: { 'zh-TW': 'HMAC 簽名', en: 'HMAC Signature' }, description: { 'zh-TW': '使用 HMAC 簽名', en: 'Use HMAC Signature' } },
-            { value: 'mtls', label: { 'zh-TW': 'mTLS', en: 'mTLS' }, description: { 'zh-TW': '雙向 TLS 認證', en: 'Mutual TLS authentication' } },
+            {
+              value: 'bearer_token',
+              label: { 'zh-TW': 'Bearer Token', en: 'Bearer Token' },
+              description: { 'zh-TW': '使用 Bearer Token', en: 'Use Bearer Token' },
+            },
+            {
+              value: 'hmac_signature',
+              label: { 'zh-TW': 'HMAC 簽名', en: 'HMAC Signature' },
+              description: { 'zh-TW': '使用 HMAC 簽名', en: 'Use HMAC Signature' },
+            },
+            {
+              value: 'mtls',
+              label: { 'zh-TW': 'mTLS', en: 'mTLS' },
+              description: { 'zh-TW': '雙向 TLS 認證', en: 'Mutual TLS authentication' },
+            },
           ],
         },
         {
           id: 'webhookSecret',
           title: { 'zh-TW': '密鑰 / Token', en: 'Secret / Token' },
-          description: { 'zh-TW': 'Bearer Token 或 HMAC Secret', en: 'Bearer Token or HMAC Secret' },
+          description: {
+            'zh-TW': 'Bearer Token 或 HMAC Secret',
+            en: 'Bearer Token or HMAC Secret',
+          },
           inputType: 'text',
         },
       ];
@@ -361,7 +385,7 @@ export function buildConfigFromAnswers(answers: SetupAnswers): ChatConfig {
 
   logger.info(
     `Config built: ${answers.userType}/${answers.language}/${answers.channel} / ` +
-    `配置已建構: ${answers.userType}/${answers.language}/${answers.channel}`,
+      `配置已建構: ${answers.userType}/${answers.language}/${answers.channel}`
   );
 
   return config;
@@ -404,12 +428,12 @@ export function getWelcomeMessage(language: MessageLanguage): string {
   return [
     'Panguard AI setup complete!',
     '',
-    'Your AI bodyguard is now on duty. Here\'s what you\'ll receive:',
+    "Your AI bodyguard is now on duty. Here's what you'll receive:",
     '',
     '- Real-time threat alerts (only when attacks are detected)',
     '- Daily security summaries',
     '- Weekly security reports',
-    '- Peace reports (we\'ll let you know when everything\'s fine too)',
+    "- Peace reports (we'll let you know when everything's fine too)",
     '',
     'You can reply to any alert message to ask follow-up questions.',
     '',

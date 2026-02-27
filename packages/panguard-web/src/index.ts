@@ -37,11 +37,7 @@ export type {
 export { DEFAULT_WEB_CONFIG } from './types.js';
 
 // Content - Personas
-export {
-  PERSONAS,
-  getPersona,
-  getAllPersonas,
-} from './content/index.js';
+export { PERSONAS, getPersona, getAllPersonas } from './content/index.js';
 
 // Content - Pricing
 export {

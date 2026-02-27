@@ -16,14 +16,14 @@
 
 在 [panguard.ai/pricing](https://panguard.ai/pricing) 瀏覽方案：
 
-| 方案 | 月費 | 適合 |
-|------|------|------|
-| **Scan** | $0 | 快速掃描、了解安全狀況 |
-| **Solo** | $9/月 | 個人開發者、1 端點 |
-| **Starter** | $19/月 | 小團隊、最多 5 端點 |
-| **Team** | $14/端點/月 | 中型團隊、5-50 端點 |
-| **Business** | $10/端點/月 | 企業、50-500 端點 |
-| **Enterprise** | 聯繫我們 | 500+ 端點、專屬支援 |
+| 方案           | 月費        | 適合                   |
+| -------------- | ----------- | ---------------------- |
+| **Scan**       | $0          | 快速掃描、了解安全狀況 |
+| **Solo**       | $9/月       | 個人開發者、1 端點     |
+| **Starter**    | $19/月      | 小團隊、最多 5 端點    |
+| **Team**       | $14/端點/月 | 中型團隊、5-50 端點    |
+| **Business**   | $10/端點/月 | 企業、50-500 端點      |
+| **Enterprise** | 聯繫我們    | 500+ 端點、專屬支援    |
 
 Scan 方案可直接使用，付費方案透過 CLI 或網站升級。合規報告為獨立加價購。
 
@@ -105,6 +105,7 @@ panguard init
 ```
 
 互動式精靈引導你完成：
+
 - 語言選擇
 - 防護模式和監控項目
 - 通知管道（LINE / Telegram / Slack / Email / Webhook）
@@ -153,14 +154,14 @@ panguard login
 
 ## 下一步
 
-| 想做什麼 | 指令 |
-|---------|------|
-| 執行安全掃描 | `panguard scan` |
+| 想做什麼     | 指令                   |
+| ------------ | ---------------------- |
+| 執行安全掃描 | `panguard scan`        |
 | 啟動即時防護 | `panguard guard start` |
-| 設定通知管道 | `panguard chat setup` |
-| 部署所有服務 | `panguard deploy` |
-| 查看系統狀態 | `panguard status` |
-| 查看所有指令 | `panguard --help` |
+| 設定通知管道 | `panguard chat setup`  |
+| 部署所有服務 | `panguard deploy`      |
+| 查看系統狀態 | `panguard status`      |
+| 查看所有指令 | `panguard --help`      |
 
 ---
 

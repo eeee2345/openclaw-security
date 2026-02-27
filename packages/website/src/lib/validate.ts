@@ -15,21 +15,22 @@ const LIMITS = {
 } as const;
 
 /** Stricter email regex (RFC 5322 simplified) */
-const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/;
+const EMAIL_RE =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/;
 
 /** Escape HTML entities to prevent stored XSS */
 export function escapeHtml(str: string): string {
   return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 /** Trim + length-check a string field */
 function cleanString(val: unknown, maxLen: number): string | null {
-  if (typeof val !== "string") return null;
+  if (typeof val !== 'string') return null;
   const trimmed = val.trim();
   if (trimmed.length > maxLen) return null;
   return escapeHtml(trimmed);
@@ -37,7 +38,7 @@ function cleanString(val: unknown, maxLen: number): string | null {
 
 /** Validate email */
 export function validateEmail(val: unknown): string | null {
-  if (typeof val !== "string") return null;
+  if (typeof val !== 'string') return null;
   const trimmed = val.trim().toLowerCase();
   if (trimmed.length > LIMITS.email) return null;
   if (!EMAIL_RE.test(trimmed)) return null;
@@ -46,7 +47,7 @@ export function validateEmail(val: unknown): string | null {
 
 /** Validate waitlist input */
 export function validateWaitlist(body: unknown): { email: string } | null {
-  if (!body || typeof body !== "object") return null;
+  if (!body || typeof body !== 'object') return null;
   const { email } = body as Record<string, unknown>;
   const cleanEmail = validateEmail(email);
   if (!cleanEmail) return null;
@@ -61,12 +62,12 @@ export function validateContact(body: unknown): {
   type: string;
   message: string;
 } | null {
-  if (!body || typeof body !== "object") return null;
+  if (!body || typeof body !== 'object') return null;
   const b = body as Record<string, unknown>;
 
   const name = cleanString(b.name, LIMITS.name);
   const email = validateEmail(b.email);
-  const company = cleanString(b.company ?? "", LIMITS.company) ?? "";
+  const company = cleanString(b.company ?? '', LIMITS.company) ?? '';
   const type = cleanString(b.type, LIMITS.type);
   const message = cleanString(b.message, LIMITS.message);
 
@@ -83,15 +84,15 @@ export function validateDemo(body: unknown): {
   stack: string;
   message: string;
 } | null {
-  if (!body || typeof body !== "object") return null;
+  if (!body || typeof body !== 'object') return null;
   const b = body as Record<string, unknown>;
 
   const name = cleanString(b.name, LIMITS.name);
   const email = validateEmail(b.email);
   const company = cleanString(b.company, LIMITS.company);
-  const teamSize = cleanString(b.teamSize ?? "", LIMITS.teamSize) ?? "";
-  const stack = cleanString(b.stack ?? "", LIMITS.stack) ?? "";
-  const message = cleanString(b.message ?? "", LIMITS.message) ?? "";
+  const teamSize = cleanString(b.teamSize ?? '', LIMITS.teamSize) ?? '';
+  const stack = cleanString(b.stack ?? '', LIMITS.stack) ?? '';
+  const message = cleanString(b.message ?? '', LIMITS.message) ?? '';
 
   if (!name || !email || !company) return null;
   return { name, email, company, teamSize, stack, message };

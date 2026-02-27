@@ -90,16 +90,46 @@ export function getNetworkInterfaces(): NetworkInterface[] {
  */
 function mapPortToService(port: number): string {
   const wellKnownPorts: Record<number, string> = {
-    20: 'ftp-data', 21: 'ftp', 22: 'ssh', 23: 'telnet', 25: 'smtp',
-    53: 'dns', 67: 'dhcp', 68: 'dhcp', 80: 'http', 110: 'pop3',
-    119: 'nntp', 123: 'ntp', 135: 'msrpc', 137: 'netbios-ns',
-    138: 'netbios-dgm', 139: 'netbios-ssn', 143: 'imap', 161: 'snmp',
-    162: 'snmp-trap', 389: 'ldap', 443: 'https', 445: 'microsoft-ds',
-    465: 'smtps', 514: 'syslog', 587: 'submission', 636: 'ldaps',
-    993: 'imaps', 995: 'pop3s', 1433: 'mssql', 1434: 'mssql-monitor',
-    1521: 'oracle', 3306: 'mysql', 3389: 'rdp', 5432: 'postgresql',
-    5900: 'vnc', 6379: 'redis', 8080: 'http-proxy', 8443: 'https-alt',
-    9200: 'elasticsearch', 27017: 'mongodb',
+    20: 'ftp-data',
+    21: 'ftp',
+    22: 'ssh',
+    23: 'telnet',
+    25: 'smtp',
+    53: 'dns',
+    67: 'dhcp',
+    68: 'dhcp',
+    80: 'http',
+    110: 'pop3',
+    119: 'nntp',
+    123: 'ntp',
+    135: 'msrpc',
+    137: 'netbios-ns',
+    138: 'netbios-dgm',
+    139: 'netbios-ssn',
+    143: 'imap',
+    161: 'snmp',
+    162: 'snmp-trap',
+    389: 'ldap',
+    443: 'https',
+    445: 'microsoft-ds',
+    465: 'smtps',
+    514: 'syslog',
+    587: 'submission',
+    636: 'ldaps',
+    993: 'imaps',
+    995: 'pop3s',
+    1433: 'mssql',
+    1434: 'mssql-monitor',
+    1521: 'oracle',
+    3306: 'mysql',
+    3389: 'rdp',
+    5432: 'postgresql',
+    5900: 'vnc',
+    6379: 'redis',
+    8080: 'http-proxy',
+    8443: 'https-alt',
+    9200: 'elasticsearch',
+    27017: 'mongodb',
   };
 
   return wellKnownPorts[port] ?? 'unknown';
@@ -354,7 +384,14 @@ export async function getActiveConnections(): Promise<ActiveConnection[]> {
     if (!output) return [];
 
     const lines = output.split('\n');
-    const validStates = new Set(['ESTABLISHED', 'TIME_WAIT', 'CLOSE_WAIT', 'ESTAB', 'TIME-WAIT', 'CLOSE-WAIT']);
+    const validStates = new Set([
+      'ESTABLISHED',
+      'TIME_WAIT',
+      'CLOSE_WAIT',
+      'ESTAB',
+      'TIME-WAIT',
+      'CLOSE-WAIT',
+    ]);
 
     for (const line of lines) {
       const parts = line.trim().split(/\s+/);

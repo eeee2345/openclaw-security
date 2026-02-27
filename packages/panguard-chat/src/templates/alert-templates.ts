@@ -70,7 +70,7 @@ export const ALERT_TEMPLATES: readonly AlertTemplate[] = [
     },
     analogy: {
       'zh-TW': '就像有人試圖用特殊技巧讓你的網站說出不該說的秘密',
-      en: 'Like someone trying to trick your website into revealing secrets it shouldn\'t',
+      en: "Like someone trying to trick your website into revealing secrets it shouldn't",
     },
     recommendedAction: {
       'zh-TW': '建議更新網站應用程式，並檢查是否有未修復的安全漏洞。',
@@ -119,7 +119,7 @@ export const ALERT_TEMPLATES: readonly AlertTemplate[] = [
     },
     recommendedAction: {
       'zh-TW': '建議檢查該程式的來源，並確認系統上的帳號權限設定是否正確。',
-      en: 'We recommend checking the program\'s origin and verifying account permission settings on the system.',
+      en: "We recommend checking the program's origin and verifying account permission settings on the system.",
     },
   },
   {
@@ -167,7 +167,7 @@ export function findAlertTemplate(attackType: string): AlertTemplate | undefined
 export function getHumanSummary(
   attackType: string,
   language: MessageLanguage,
-  params?: Record<string, string | number>,
+  params?: Record<string, string | number>
 ): string | undefined {
   const template = findAlertTemplate(attackType);
   if (!template) return undefined;

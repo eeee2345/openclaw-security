@@ -36,14 +36,14 @@ const MAX_BUFFER_SIZE = 10000;
  * See https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1
  */
 const SYSLOG_SEVERITY_MAP: Record<number, string> = {
-  0: 'critical',  // Emergency / 緊急
-  1: 'critical',  // Alert / 警報
-  2: 'critical',  // Critical / 重大
-  3: 'high',      // Error / 錯誤
-  4: 'medium',    // Warning / 警告
-  5: 'low',       // Notice / 通知
-  6: 'info',      // Informational / 資訊
-  7: 'info',      // Debug / 除錯
+  0: 'critical', // Emergency / 緊急
+  1: 'critical', // Alert / 警報
+  2: 'critical', // Critical / 重大
+  3: 'high', // Error / 錯誤
+  4: 'medium', // Warning / 警告
+  5: 'low', // Notice / 通知
+  6: 'info', // Informational / 資訊
+  7: 'info', // Debug / 除錯
 };
 
 /**
@@ -472,9 +472,12 @@ export class SyslogAdapter extends BaseAdapter {
       return alertTime >= since;
     });
 
-    this.logger.debug(`Returning ${filtered.length} syslog alerts (${buffered.length} total buffered)`, {
-      since: since.toISOString(),
-    });
+    this.logger.debug(
+      `Returning ${filtered.length} syslog alerts (${buffered.length} total buffered)`,
+      {
+        since: since.toISOString(),
+      }
+    );
 
     return filtered;
   }

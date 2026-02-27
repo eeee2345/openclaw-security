@@ -33,12 +33,30 @@ describe('Report Templates', () => {
 
     it('should have all required label fields', () => {
       const requiredKeys: (keyof ReportSectionLabels)[] = [
-        'title', 'executiveSummary', 'complianceOverview', 'controlDetails',
-        'findings', 'recommendations', 'statistics', 'appendix', 'generatedBy',
-        'reportPeriod', 'organization', 'reportId', 'overallScore',
-        'controlsPassed', 'controlsFailed', 'controlsPartial', 'controlsNA',
-        'severity', 'priority', 'estimatedEffort', 'category', 'status',
-        'evidence', 'remediation',
+        'title',
+        'executiveSummary',
+        'complianceOverview',
+        'controlDetails',
+        'findings',
+        'recommendations',
+        'statistics',
+        'appendix',
+        'generatedBy',
+        'reportPeriod',
+        'organization',
+        'reportId',
+        'overallScore',
+        'controlsPassed',
+        'controlsFailed',
+        'controlsPartial',
+        'controlsNA',
+        'severity',
+        'priority',
+        'estimatedEffort',
+        'category',
+        'status',
+        'evidence',
+        'remediation',
       ];
       const enLabels = getSectionLabels('en');
       const zhLabels = getSectionLabels('zh-TW');

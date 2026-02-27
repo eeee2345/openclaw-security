@@ -15,18 +15,18 @@ Sigma 是安全社群開發的通用規則格式，類似 Snort/YARA，但用 YA
 一條 Sigma 規則由以下部分組成：
 
 ```yaml
-title: Rule Title                    # 規則標題
-id: unique-id                        # 唯一識別碼
-status: test                         # 狀態：test / stable / experimental
-description: What this rule detects  # 規則說明
-logsource:                           # 日誌來源
+title: Rule Title # 規則標題
+id: unique-id # 唯一識別碼
+status: test # 狀態：test / stable / experimental
+description: What this rule detects # 規則說明
+logsource: # 日誌來源
   category: process_creation
   product: any
-detection:                           # 偵測邏輯
+detection: # 偵測邏輯
   selection:
     field_name: value
   condition: selection
-level: high                          # 嚴重等級：informational / low / medium / high / critical
+level: high # 嚴重等級：informational / low / medium / high / critical
 ```
 
 ---
@@ -114,9 +114,9 @@ detection:
 ```yaml
 detection:
   selection:
-    process_name: cmd.exe          # AND
-    cmdline|contains: '/c'         # AND
-    user: SYSTEM                   # 三個條件同時滿足
+    process_name: cmd.exe # AND
+    cmdline|contains: '/c' # AND
+    user: SYSTEM # 三個條件同時滿足
 ```
 
 ### Condition（條件）
@@ -170,35 +170,35 @@ detection:
 
 ### 字串修飾符
 
-| 修飾符 | 說明 | 範例 |
-|--------|------|------|
-| `|contains` | 包含子字串 | `cmdline|contains: 'wget'` |
-| `|startswith` | 開頭匹配 | `path|startswith: '/tmp'` |
-| `|endswith` | 結尾匹配 | `filename|endswith: '.exe'` |
-| `|re` | 正則表達式 | `cmdline|re: 'curl.*-o.*\.sh'` |
+| 修飾符 | 說明        | 範例       |
+| ------ | ----------- | ---------- | --------- | --------------------- |
+| `      | contains`   | 包含子字串 | `cmdline  | contains: 'wget'`     |
+| `      | startswith` | 開頭匹配   | `path     | startswith: '/tmp'`   |
+| `      | endswith`   | 結尾匹配   | `filename | endswith: '.exe'`     |
+| `      | re`         | 正則表達式 | `cmdline  | re: 'curl._-o._\.sh'` |
 
 ### 數值修飾符
 
-| 修飾符 | 說明 | 範例 |
-|--------|------|------|
-| `|gt` | 大於 | `port|gt: '1024'` |
-| `|gte` | 大於等於 | `port|gte: '80'` |
-| `|lt` | 小於 | `port|lt: '1024'` |
-| `|lte` | 小於等於 | `connections|lte: '100'` |
+| 修飾符 | 說明 | 範例     |
+| ------ | ---- | -------- | ------------ | ----------- |
+| `      | gt`  | 大於     | `port        | gt: '1024'` |
+| `      | gte` | 大於等於 | `port        | gte: '80'`  |
+| `      | lt`  | 小於     | `port        | lt: '1024'` |
+| `      | lte` | 小於等於 | `connections | lte: '100'` |
 
 ### 網路修飾符
 
-| 修飾符 | 說明 | 範例 |
-|--------|------|------|
-| `|cidr` | IP 範圍匹配 | `src_ip|cidr: '192.168.1.0/24'` |
+| 修飾符 | 說明  | 範例        |
+| ------ | ----- | ----------- | ------- | ----------------------- |
+| `      | cidr` | IP 範圍匹配 | `src_ip | cidr: '192.168.1.0/24'` |
 
 ### 編碼修飾符
 
-| 修飾符 | 說明 | 範例 |
-|--------|------|------|
-| `|base64` | Base64 編碼匹配 | `cmdline|base64: 'command'` |
-| `|utf8` | UTF-8 編碼匹配 | `data|utf8: 'text'` |
-| `|wide` | Wide string（UTF-16LE） | `filename|wide: 'virus'` |
+| 修飾符 | 說明    | 範例                    |
+| ------ | ------- | ----------------------- | --------- | ------------------ |
+| `      | base64` | Base64 編碼匹配         | `cmdline  | base64: 'command'` |
+| `      | utf8`   | UTF-8 編碼匹配          | `data     | utf8: 'text'`      |
+| `      | wide`   | Wide string（UTF-16LE） | `filename | wide: 'virus'`     |
 
 ### 萬用字元
 
@@ -207,8 +207,8 @@ detection:
 ```yaml
 detection:
   selection:
-    filename: '*.exe'            # * 匹配任意字串
-    path: '/tmp/????'            # ? 匹配單一字元
+    filename: '*.exe' # * 匹配任意字串
+    path: '/tmp/????' # ? 匹配單一字元
 ```
 
 ---

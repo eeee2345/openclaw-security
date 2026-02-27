@@ -324,7 +324,9 @@ export async function detectServices(): Promise<ServiceInfo[]> {
         return [];
     }
 
-    logger.info(`Detected ${services.length} services (${services.filter((s) => s.status === 'running').length} running)`);
+    logger.info(
+      `Detected ${services.length} services (${services.filter((s) => s.status === 'running').length} running)`
+    );
     return services;
   } catch (err) {
     logger.error('Service detection failed', {

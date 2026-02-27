@@ -133,7 +133,11 @@ export class FunnelRouter {
    */
   async analyze(prompt: string, context?: string): Promise<AnalysisResult | null> {
     // Layer 2: Try local AI (Ollama)
-    if (this.localProvider && this.localStatus.available && this.localStatus.failCount < this.maxFailures) {
+    if (
+      this.localProvider &&
+      this.localStatus.available &&
+      this.localStatus.failCount < this.maxFailures
+    ) {
       try {
         logger.debug('Attempting Layer 2 (local AI) analysis');
         const result = await this.localProvider.analyze(prompt, context);
@@ -154,7 +158,11 @@ export class FunnelRouter {
     }
 
     // Layer 3: Try cloud AI (Claude/OpenAI)
-    if (this.cloudProvider && this.cloudStatus.available && this.cloudStatus.failCount < this.maxFailures) {
+    if (
+      this.cloudProvider &&
+      this.cloudStatus.available &&
+      this.cloudStatus.failCount < this.maxFailures
+    ) {
       try {
         logger.debug('Attempting Layer 3 (cloud AI) analysis');
         const result = await this.cloudProvider.analyze(prompt, context);

@@ -74,7 +74,7 @@ describe('createLLM factory', () => {
         provider: 'unknown-provider' as 'ollama',
         model: 'test',
         lang: 'en',
-      }),
+      })
     ).toThrow('Unknown LLM provider');
   });
 });
@@ -99,11 +99,7 @@ describe('Event Classifier Prompt', () => {
 
 describe('Threat Analyzer Prompt', () => {
   it('should include severity criteria', () => {
-    const prompt = getThreatAnalysisPrompt(
-      'Analyze suspicious SSH activity',
-      undefined,
-      'en',
-    );
+    const prompt = getThreatAnalysisPrompt('Analyze suspicious SSH activity', undefined, 'en');
 
     expect(prompt).toContain('info');
     expect(prompt).toContain('low');

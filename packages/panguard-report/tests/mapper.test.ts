@@ -90,9 +90,7 @@ describe('Compliance Mapper', () => {
         createControl({ relatedCategories: ['network', 'firewall'] }),
         createControl({ controlId: 'TEST-2', relatedCategories: ['password'] }),
       ];
-      const findings = [
-        createFinding({ category: 'network_scan', severity: 'high' }),
-      ];
+      const findings = [createFinding({ category: 'network_scan', severity: 'high' })];
       const result = evaluateControls(controls, findings);
       expect(result[0]!.status).toBe('fail'); // matches 'network'
       expect(result[1]!.status).toBe('pass'); // no match
@@ -107,12 +105,14 @@ describe('Compliance Mapper', () => {
 
     it('should include evidence for fail', () => {
       const controls = [createControl()];
-      const findings = [createFinding({ severity: 'critical', category: 'test', title: 'Critical Bug' })];
+      const findings = [
+        createFinding({ severity: 'critical', category: 'test', title: 'Critical Bug' }),
+      ];
       const result = evaluateControls(controls, findings);
       expect(result[0]!.evidence.length).toBeGreaterThan(0);
       // First evidence line is the summary, severity details follow
-      expect(result[0]!.evidence.some(e => e.includes('CRITICAL'))).toBe(true);
-      expect(result[0]!.evidence.some(e => e.includes('Critical Bug'))).toBe(true);
+      expect(result[0]!.evidence.some((e) => e.includes('CRITICAL'))).toBe(true);
+      expect(result[0]!.evidence.some((e) => e.includes('Critical Bug'))).toBe(true);
     });
 
     it('should include remediation for failed controls', () => {
@@ -147,9 +147,9 @@ describe('Compliance Mapper', () => {
         createFinding({ findingId: 'F-002', category: 'network', severity: 'medium' }),
       ];
       const result = evaluateControls(controls, findings);
-      expect(result[0]!.status).toBe('fail');     // access -> critical
-      expect(result[1]!.status).toBe('partial');   // network -> medium
-      expect(result[2]!.status).toBe('pass');      // encryption -> no findings
+      expect(result[0]!.status).toBe('fail'); // access -> critical
+      expect(result[1]!.status).toBe('partial'); // network -> medium
+      expect(result[2]!.status).toBe('pass'); // encryption -> no findings
     });
   });
 
@@ -192,9 +192,7 @@ describe('Compliance Mapper', () => {
         createControl({ controlId: 'C-1', relatedCategories: ['net'] }),
         createControl({ controlId: 'C-2', relatedCategories: ['unused'] }),
       ];
-      const findings = [
-        createFinding({ category: 'network', severity: 'critical' }),
-      ];
+      const findings = [createFinding({ category: 'network', severity: 'critical' })];
       const evaluated = evaluateControls(controls, findings);
       const summary = generateExecutiveSummary(evaluated, findings, 'en');
       // 1 pass (50%) + 1 fail (0%) = 50%
@@ -205,30 +203,22 @@ describe('Compliance Mapper', () => {
       const controls = [
         createControl({ titleEn: 'Access Control', relatedCategories: ['access'] }),
       ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'high' }),
-      ];
+      const findings = [createFinding({ category: 'access', severity: 'high' })];
       const evaluated = evaluateControls(controls, findings);
       const summary = generateExecutiveSummary(evaluated, findings, 'en');
       expect(summary.keyRisks).toContain('Access Control');
     });
 
     it('should use Chinese titles for zh-TW', () => {
-      const controls = [
-        createControl({ titleZh: '存取控制', relatedCategories: ['access'] }),
-      ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'high' }),
-      ];
+      const controls = [createControl({ titleZh: '存取控制', relatedCategories: ['access'] })];
+      const findings = [createFinding({ category: 'access', severity: 'high' })];
       const evaluated = evaluateControls(controls, findings);
       const summary = generateExecutiveSummary(evaluated, findings, 'zh-TW');
       expect(summary.keyRisks).toContain('存取控制');
     });
 
     it('should include key achievements', () => {
-      const controls = [
-        createControl({ relatedCategories: ['unused'] }),
-      ];
+      const controls = [createControl({ relatedCategories: ['unused'] })];
       const evaluated = evaluateControls(controls, []);
       const summary = generateExecutiveSummary(evaluated, [], 'en');
       expect(summary.keyAchievements.length).toBeGreaterThan(0);
@@ -274,8 +264,16 @@ describe('Compliance Mapper', () => {
 
     it('should group controls by category', () => {
       const controls = [
-        createControl({ controlId: 'C-1', category: 'access_control', relatedCategories: ['unused'] }),
-        createControl({ controlId: 'C-2', category: 'access_control', relatedCategories: ['unused'] }),
+        createControl({
+          controlId: 'C-1',
+          category: 'access_control',
+          relatedCategories: ['unused'],
+        }),
+        createControl({
+          controlId: 'C-2',
+          category: 'access_control',
+          relatedCategories: ['unused'],
+        }),
         createControl({ controlId: 'C-3', category: 'network', relatedCategories: ['unused'] }),
       ];
       const evaluated = evaluateControls(controls, []);
@@ -304,12 +302,8 @@ describe('Compliance Mapper', () => {
 
   describe('generateRecommendations', () => {
     it('should generate recommendations for failed controls', () => {
-      const controls = [
-        createControl({ relatedCategories: ['access'] }),
-      ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'critical' }),
-      ];
+      const controls = [createControl({ relatedCategories: ['access'] })];
+      const findings = [createFinding({ category: 'access', severity: 'critical' })];
       const evaluated = evaluateControls(controls, findings);
       const recs = generateRecommendations(evaluated, 'en');
       expect(recs).toHaveLength(1);
@@ -317,12 +311,8 @@ describe('Compliance Mapper', () => {
     });
 
     it('should generate recommendations for partial controls', () => {
-      const controls = [
-        createControl({ relatedCategories: ['access'] }),
-      ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'medium' }),
-      ];
+      const controls = [createControl({ relatedCategories: ['access'] })];
+      const findings = [createFinding({ category: 'access', severity: 'medium' })];
       const evaluated = evaluateControls(controls, findings);
       const recs = generateRecommendations(evaluated, 'en');
       expect(recs).toHaveLength(1);
@@ -330,9 +320,7 @@ describe('Compliance Mapper', () => {
     });
 
     it('should not generate recommendations for passing controls', () => {
-      const controls = [
-        createControl({ relatedCategories: ['unused'] }),
-      ];
+      const controls = [createControl({ relatedCategories: ['unused'] })];
       const evaluated = evaluateControls(controls, []);
       const recs = generateRecommendations(evaluated, 'en');
       expect(recs).toHaveLength(0);
@@ -357,36 +345,24 @@ describe('Compliance Mapper', () => {
     });
 
     it('should use Chinese titles for zh-TW', () => {
-      const controls = [
-        createControl({ titleZh: '存取控制', relatedCategories: ['access'] }),
-      ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'high' }),
-      ];
+      const controls = [createControl({ titleZh: '存取控制', relatedCategories: ['access'] })];
+      const findings = [createFinding({ category: 'access', severity: 'high' })];
       const evaluated = evaluateControls(controls, findings);
       const recs = generateRecommendations(evaluated, 'zh-TW');
       expect(recs[0]!.title).toBe('存取控制');
     });
 
     it('should include related control IDs', () => {
-      const controls = [
-        createControl({ controlId: 'A.5.1', relatedCategories: ['access'] }),
-      ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'high' }),
-      ];
+      const controls = [createControl({ controlId: 'A.5.1', relatedCategories: ['access'] })];
+      const findings = [createFinding({ category: 'access', severity: 'high' })];
       const evaluated = evaluateControls(controls, findings);
       const recs = generateRecommendations(evaluated, 'en');
       expect(recs[0]!.relatedControlIds).toContain('A.5.1');
     });
 
     it('should include estimated effort', () => {
-      const controls = [
-        createControl({ relatedCategories: ['access'] }),
-      ];
-      const findings = [
-        createFinding({ category: 'access', severity: 'critical' }),
-      ];
+      const controls = [createControl({ relatedCategories: ['access'] })];
+      const findings = [createFinding({ category: 'access', severity: 'critical' })];
       const evaluated = evaluateControls(controls, findings);
       const recs = generateRecommendations(evaluated, 'en');
       expect(recs[0]!.estimatedEffort).toBeDefined();

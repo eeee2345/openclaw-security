@@ -18,7 +18,13 @@
  */
 
 import { join } from 'node:path';
-import { createLogger, RuleEngine, MonitorEngine, ThreatIntelFeedManager, setFeedManager } from '@panguard-ai/core';
+import {
+  createLogger,
+  RuleEngine,
+  MonitorEngine,
+  ThreatIntelFeedManager,
+  setFeedManager,
+} from '@panguard-ai/core';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type {
   GuardConfig,
@@ -35,7 +41,13 @@ import type {
 import { TIER_FEATURES } from './types.js';
 
 import { DetectAgent, AnalyzeAgent, RespondAgent, ReportAgent } from './agent/index.js';
-import { loadBaseline, saveBaseline, isLearningComplete, getLearningProgress, switchToProtectionMode } from './memory/index.js';
+import {
+  loadBaseline,
+  saveBaseline,
+  isLearningComplete,
+  getLearningProgress,
+  switchToProtectionMode,
+} from './memory/index.js';
 import { InvestigationEngine } from './investigation/index.js';
 import { sendNotifications } from './notify/index.js';
 import { ThreatCloudClient } from './threat-cloud/index.js';
@@ -109,7 +121,9 @@ async function autoDetectLLM(): Promise<AnalyzeLLM | null> {
 
     return adapter;
   } catch (err) {
-    logger.info(`LLM auto-detect failed, running without AI: ${err instanceof Error ? err.message : String(err)}`);
+    logger.info(
+      `LLM auto-detect failed, running without AI: ${err instanceof Error ? err.message : String(err)}`
+    );
     return null;
   }
 }
@@ -191,7 +205,7 @@ export class GuardEngine {
 
     logger.info(
       `License: ${license.tier} tier (valid: ${license.isValid}) / ` +
-      `授權: ${license.tier} 等級 (有效: ${license.isValid})`,
+        `授權: ${license.tier} 等級 (有效: ${license.isValid})`
     );
 
     // Initialize rule engine / 初始化規則引擎
@@ -206,20 +220,14 @@ export class GuardEngine {
     const analyzeLLM = hasFeature(license, 'ai_analysis') ? llm : null;
     this.analyzeAgent = new AnalyzeAgent(analyzeLLM);
     this.respondAgent = new RespondAgent(config.actionPolicy, this.mode);
-    this.reportAgent = new ReportAgent(
-      join(config.dataDir, 'events.jsonl'),
-      this.mode,
-    );
+    this.reportAgent = new ReportAgent(join(config.dataDir, 'events.jsonl'), this.mode);
 
     // Initialize investigation engine / 初始化調查引擎
     this.investigationEngine = new InvestigationEngine(this.baseline);
 
     // Initialize threat cloud - always enable upload for all tiers
     // Full threat cloud API access (rule fetching, stats) gated by enterprise
-    this.threatCloud = new ThreatCloudClient(
-      config.threatCloudEndpoint,
-      config.dataDir,
-    );
+    this.threatCloud = new ThreatCloudClient(config.threatCloudEndpoint, config.dataDir);
 
     // Initialize threat intel feed manager
     this.feedManager = new ThreatIntelFeedManager({
@@ -251,17 +259,26 @@ export class GuardEngine {
       return;
     }
 
-    logger.info(`Starting GuardEngine in ${this.mode} mode / 啟動 GuardEngine（${this.mode} 模式）`);
+    logger.info(
+      `Starting GuardEngine in ${this.mode} mode / 啟動 GuardEngine（${this.mode} 模式）`
+    );
 
     // Write PID file / 寫入 PID 檔案
     this.pidFile.write();
 
     // Start threat intel feeds (non-blocking, best-effort)
-    this.feedManager.start().then(() => {
-      logger.info(`Threat intel feeds loaded: ${this.feedManager.getIoCCount()} IoCs, ${this.feedManager.getIPCount()} IPs indexed`);
-    }).catch((err: unknown) => {
-      logger.warn(`Threat intel feed start failed (using hardcoded list): ${err instanceof Error ? err.message : String(err)}`);
-    });
+    this.feedManager
+      .start()
+      .then(() => {
+        logger.info(
+          `Threat intel feeds loaded: ${this.feedManager.getIoCCount()} IoCs, ${this.feedManager.getIPCount()} IPs indexed`
+        );
+      })
+      .catch((err: unknown) => {
+        logger.warn(
+          `Threat intel feed start failed (using hardcoded list): ${err instanceof Error ? err.message : String(err)}`
+        );
+      });
 
     // Load rules / 載入規則
     await this.ruleEngine.loadRules();
@@ -341,8 +358,14 @@ export class GuardEngine {
     logger.info('Stopping GuardEngine / 停止 GuardEngine');
 
     // Clear timers / 清除計時器
-    if (this.statusTimer) { clearInterval(this.statusTimer); this.statusTimer = null; }
-    if (this.learningCheckTimer) { clearInterval(this.learningCheckTimer); this.learningCheckTimer = null; }
+    if (this.statusTimer) {
+      clearInterval(this.statusTimer);
+      this.statusTimer = null;
+    }
+    if (this.learningCheckTimer) {
+      clearInterval(this.learningCheckTimer);
+      this.learningCheckTimer = null;
+    }
 
     // Stop components / 停止元件
     this.feedManager.stop();
@@ -390,10 +413,7 @@ export class GuardEngine {
 
       // Stage 2: Analyze (with Dynamic Reasoning investigation)
       // 階段 2: 分析（使用動態推理調查）
-      const verdict: ThreatVerdict = await this.analyzeAgent.analyze(
-        detection,
-        this.baseline,
-      );
+      const verdict: ThreatVerdict = await this.analyzeAgent.analyze(detection, this.baseline);
 
       // Run investigation for suspicious/malicious verdicts
       // 對可疑/惡意判決執行調查
@@ -409,12 +429,11 @@ export class GuardEngine {
       }
 
       // Send notifications if needed / 需要時發送通知
-      if (response.action === 'notify' || (verdict.confidence >= this.config.actionPolicy.notifyAndWait)) {
-        await sendNotifications(
-          this.config.notifications,
-          verdict,
-          event.description,
-        );
+      if (
+        response.action === 'notify' ||
+        verdict.confidence >= this.config.actionPolicy.notifyAndWait
+      ) {
+        await sendNotifications(this.config.notifications, verdict, event.description);
       }
 
       // Stage 4: Report / 階段 4: 報告
@@ -422,7 +441,7 @@ export class GuardEngine {
         event,
         verdict,
         response,
-        this.baseline,
+        this.baseline
       );
       this.baseline = updatedBaseline;
 
@@ -439,8 +458,10 @@ export class GuardEngine {
         conclusion: verdict.conclusion,
         confidence: verdict.confidence,
         action: response.action,
-        sourceIP: (event.metadata?.['sourceIP'] as string) ??
-                  (event.metadata?.['remoteAddress'] as string) ?? 'unknown',
+        sourceIP:
+          (event.metadata?.['sourceIP'] as string) ??
+          (event.metadata?.['remoteAddress'] as string) ??
+          'unknown',
       });
 
       // Update dashboard / 更新儀表板
@@ -453,8 +474,8 @@ export class GuardEngine {
         });
 
         // Update threat map if we have IP / 如有 IP 則更新威脅地圖
-        const sourceIP = (event.metadata?.['sourceIP'] as string) ??
-                         (event.metadata?.['remoteAddress'] as string);
+        const sourceIP =
+          (event.metadata?.['sourceIP'] as string) ?? (event.metadata?.['remoteAddress'] as string);
         if (sourceIP && verdict.conclusion !== 'benign') {
           this.dashboard.addThreatMapEntry({
             sourceIP,
@@ -516,7 +537,7 @@ export class GuardEngine {
       actionsExecuted: this.actionsExecuted,
       learningProgress: getLearningProgress(this.baseline, this.config.learningDays),
       baselineConfidence: this.baseline.confidenceLevel,
-      memoryUsageMB: Math.round(memUsage.heapUsed / 1024 / 1024 * 10) / 10,
+      memoryUsageMB: Math.round((memUsage.heapUsed / 1024 / 1024) * 10) / 10,
       cpuPercent: 0, // CPU tracking would need os.cpus()
     });
   }
@@ -545,7 +566,7 @@ export class GuardEngine {
       actionsExecuted: this.actionsExecuted,
       learningProgress: getLearningProgress(this.baseline, this.config.learningDays),
       baselineConfidence: this.baseline.confidenceLevel,
-      memoryUsageMB: Math.round(memUsage.heapUsed / 1024 / 1024 * 10) / 10,
+      memoryUsageMB: Math.round((memUsage.heapUsed / 1024 / 1024) * 10) / 10,
       licenseTier: license.tier,
     };
   }

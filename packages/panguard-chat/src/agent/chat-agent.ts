@@ -76,18 +76,20 @@ const CONTEXT_EXPIRY_MS = 24 * 60 * 60 * 1000;
 export class ChatAgent {
   private readonly config: ChatConfig;
   private readonly channels: Map<string, MessagingChannel> = new Map();
-  private readonly followUpContexts: Map<string, FollowUpContext & { expiresAt: number }> = new Map();
+  private readonly followUpContexts: Map<string, FollowUpContext & { expiresAt: number }> =
+    new Map();
   private readonly pendingConfirmations: Map<string, ConfirmationRequest> = new Map();
   private readonly systemPrompt: string;
 
   constructor(config: ChatConfig) {
     this.config = config;
-    this.systemPrompt = config.systemPromptOverride
-      ?? buildSystemPrompt(config.userProfile.type, config.userProfile.language);
+    this.systemPrompt =
+      config.systemPromptOverride ??
+      buildSystemPrompt(config.userProfile.type, config.userProfile.language);
 
     logger.info(
       `ChatAgent initialized for ${config.userProfile.type} user (${config.userProfile.language}) / ` +
-      `ChatAgent 已為 ${config.userProfile.type} 用戶初始化 (${config.userProfile.language})`,
+        `ChatAgent 已為 ${config.userProfile.type} 用戶初始化 (${config.userProfile.language})`
     );
   }
 
@@ -101,9 +103,7 @@ export class ChatAgent {
    */
   registerChannel(channel: MessagingChannel): void {
     this.channels.set(channel.channelType, channel);
-    logger.info(
-      `Channel registered: ${channel.channelType} / 管道已註冊: ${channel.channelType}`,
-    );
+    logger.info(`Channel registered: ${channel.channelType} / 管道已註冊: ${channel.channelType}`);
 
     // Register reply handler for interactive channels
     // 為互動管道註冊回覆處理器
@@ -140,7 +140,7 @@ export class ChatAgent {
     const message = formatAlert(alert, userProfile.type, userProfile.language);
     logger.info(
       `Sending alert: ${alert.severity} ${alert.conclusion} / ` +
-      `發送告警: ${alert.severity} ${alert.conclusion}`,
+        `發送告警: ${alert.severity} ${alert.conclusion}`
     );
 
     // Store context for follow-up
@@ -162,7 +162,7 @@ export class ChatAgent {
     const { userProfile } = this.config;
     const message = formatSummary(report, userProfile.type, userProfile.language);
     logger.info(
-      `Sending ${report.period} summary / 發送${report.period === 'daily' ? '日' : '週'}報`,
+      `Sending ${report.period} summary / 發送${report.period === 'daily' ? '日' : '週'}報`
     );
     return this.sendMessage(userId, message);
   }
@@ -179,7 +179,7 @@ export class ChatAgent {
     const message = formatLearningProgress(progress, this.config.userProfile.language);
     logger.info(
       `Sending learning progress: day ${progress.day}/${progress.totalDays} / ` +
-      `發送學習進度: 第 ${progress.day}/${progress.totalDays} 天`,
+        `發送學習進度: 第 ${progress.day}/${progress.totalDays} 天`
     );
     return this.sendMessage(userId, message);
   }
@@ -209,15 +209,12 @@ export class ChatAgent {
    * @param request - Confirmation request / 確認請求
    * @returns Channel result / 管道結果
    */
-  async requestConfirmation(
-    userId: string,
-    request: ConfirmationRequest,
-  ): Promise<ChannelResult> {
+  async requestConfirmation(userId: string, request: ConfirmationRequest): Promise<ChannelResult> {
     this.pendingConfirmations.set(request.verdictId, request);
     const message = formatConfirmation(request, this.config.userProfile.language);
     logger.info(
       `Requesting confirmation for verdict ${request.verdictId} / ` +
-      `請求確認判決 ${request.verdictId}`,
+        `請求確認判決 ${request.verdictId}`
     );
     return this.sendMessage(userId, message);
   }
@@ -234,13 +231,13 @@ export class ChatAgent {
   processConfirmation(
     verdictId: string,
     confirmed: boolean,
-    reason?: string,
+    reason?: string
   ): ConfirmationResponse | null {
     const request = this.pendingConfirmations.get(verdictId);
     if (!request) {
       logger.warn(
         `No pending confirmation for verdict ${verdictId} / ` +
-        `找不到判決 ${verdictId} 的待確認請求`,
+          `找不到判決 ${verdictId} 的待確認請求`
       );
       return null;
     }
@@ -249,8 +246,7 @@ export class ChatAgent {
     if (new Date(request.expiresAt).getTime() < Date.now()) {
       this.pendingConfirmations.delete(verdictId);
       logger.warn(
-        `Confirmation expired for verdict ${verdictId} / ` +
-        `判決 ${verdictId} 的確認已過期`,
+        `Confirmation expired for verdict ${verdictId} / ` + `判決 ${verdictId} 的確認已過期`
       );
       return null;
     }
@@ -265,7 +261,7 @@ export class ChatAgent {
 
     logger.info(
       `Confirmation ${confirmed ? 'accepted' : 'rejected'} for ${verdictId} / ` +
-      `判決 ${verdictId} 已${confirmed ? '確認' : '拒絕'}`,
+        `判決 ${verdictId} 已${confirmed ? '確認' : '拒絕'}`
     );
 
     return response;
@@ -294,14 +290,22 @@ export class ChatAgent {
       if (action === 'confirm') {
         const result = this.processConfirmation(verdictId!, true);
         return result
-          ? (lang === 'zh-TW' ? '已確認，正在執行動作。' : 'Confirmed. Executing action.')
-          : (lang === 'zh-TW' ? '此確認請求已過期或不存在。' : 'This confirmation request has expired or does not exist.');
+          ? lang === 'zh-TW'
+            ? '已確認，正在執行動作。'
+            : 'Confirmed. Executing action.'
+          : lang === 'zh-TW'
+            ? '此確認請求已過期或不存在。'
+            : 'This confirmation request has expired or does not exist.';
       }
       if (action === 'reject') {
         const result = this.processConfirmation(verdictId!, false, text);
         return result
-          ? (lang === 'zh-TW' ? '已取消，不會執行動作。' : 'Cancelled. Action will not be taken.')
-          : (lang === 'zh-TW' ? '此確認請求已過期或不存在。' : 'This confirmation request has expired or does not exist.');
+          ? lang === 'zh-TW'
+            ? '已取消，不會執行動作。'
+            : 'Cancelled. Action will not be taken.'
+          : lang === 'zh-TW'
+            ? '此確認請求已過期或不存在。'
+            : 'This confirmation request has expired or does not exist.';
       }
       // details action - fall through to follow-up handling
     }
@@ -361,7 +365,7 @@ export class ChatAgent {
 
     logger.info(
       `Follow-up answered for ${context.verdictId} (${trimmedHistory.length} turns) / ` +
-      `已回答追問 ${context.verdictId} (${trimmedHistory.length} 輪)`,
+        `已回答追問 ${context.verdictId} (${trimmedHistory.length} 輪)`
     );
 
     return answer;
@@ -374,7 +378,7 @@ export class ChatAgent {
   private async tryLLMFollowUp(
     context: FollowUpContext & { expiresAt: number },
     question: string,
-    lang: string,
+    lang: string
   ): Promise<string | null> {
     const llm = this.config.llmProvider;
     if (!llm) return null;
@@ -403,7 +407,9 @@ export class ChatAgent {
       }
       return null;
     } catch (err) {
-      logger.warn(`LLM follow-up failed, falling back to pattern matching: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `LLM follow-up failed, falling back to pattern matching: ${err instanceof Error ? err.message : String(err)}`
+      );
       return null;
     }
   }
@@ -419,7 +425,7 @@ export class ChatAgent {
   private generateFollowUpAnswer(
     alert: ThreatAlert,
     question: string,
-    lang: MessageLanguage,
+    lang: MessageLanguage
   ): string {
     const q = question.toLowerCase();
     const maxTokens = this.config.maxFollowUpTokens ?? MAX_FOLLOWUP_TOKENS;
@@ -430,7 +436,8 @@ export class ChatAgent {
     // "What did you do?" / "Actions taken?"
     if (q.includes('做了') || q.includes('動作') || q.includes('did you') || q.includes('action')) {
       if (alert.actionsTaken && alert.actionsTaken.length > 0) {
-        const prefix = lang === 'zh-TW' ? '我已執行以下動作:' : 'I have taken the following actions:';
+        const prefix =
+          lang === 'zh-TW' ? '我已執行以下動作:' : 'I have taken the following actions:';
         return `${prefix}\n${alert.actionsTaken.map((a) => `- ${a}`).join('\n')}`;
       }
       return lang === 'zh-TW'
@@ -439,7 +446,12 @@ export class ChatAgent {
     }
 
     // "What should I do?" / "Recommendation?"
-    if (q.includes('建議') || q.includes('怎麼辦') || q.includes('should') || q.includes('recommend')) {
+    if (
+      q.includes('建議') ||
+      q.includes('怎麼辦') ||
+      q.includes('should') ||
+      q.includes('recommend')
+    ) {
       return lang === 'zh-TW'
         ? `建議: ${alert.recommendedAction}`
         : `Recommendation: ${alert.recommendedAction}`;
@@ -447,9 +459,22 @@ export class ChatAgent {
 
     // "Is it dangerous?" / "How serious?"
     if (q.includes('嚴重') || q.includes('危險') || q.includes('serious') || q.includes('danger')) {
-      const severityExplain = lang === 'zh-TW'
-        ? { critical: '非常嚴重，需要立即處理', high: '嚴重，建議盡快處理', medium: '中等風險，建議關注', low: '低風險，已記錄', info: '僅供參考' }
-        : { critical: 'Very serious, immediate action needed', high: 'Serious, prompt attention recommended', medium: 'Moderate risk, worth monitoring', low: 'Low risk, logged for reference', info: 'Informational only' };
+      const severityExplain =
+        lang === 'zh-TW'
+          ? {
+              critical: '非常嚴重，需要立即處理',
+              high: '嚴重，建議盡快處理',
+              medium: '中等風險，建議關注',
+              low: '低風險，已記錄',
+              info: '僅供參考',
+            }
+          : {
+              critical: 'Very serious, immediate action needed',
+              high: 'Serious, prompt attention recommended',
+              medium: 'Moderate risk, worth monitoring',
+              low: 'Low risk, logged for reference',
+              info: 'Informational only',
+            };
       return `${severityExplain[alert.severity] ?? (lang === 'zh-TW' ? '已記錄' : 'Logged')}\n\n${lang === 'zh-TW' ? '信心度' : 'Confidence'}: ${Math.round(alert.confidence * 100)}%`;
     }
 
@@ -462,16 +487,15 @@ export class ChatAgent {
 
     // Default: provide a brief summary
     // Keep response within token budget
-    const response = lang === 'zh-TW'
-      ? `關於此事件:\n${alert.humanSummary}\n\n如需更多細節，請問具體想了解什麼？`
-      : `About this event:\n${alert.humanSummary}\n\nFor more details, please ask a specific question.`;
+    const response =
+      lang === 'zh-TW'
+        ? `關於此事件:\n${alert.humanSummary}\n\n如需更多細節，請問具體想了解什麼？`
+        : `About this event:\n${alert.humanSummary}\n\nFor more details, please ask a specific question.`;
 
     // Ensure we stay within token budget (rough estimate: 1 token ~ 4 chars for English, ~2 chars for CJK)
     const estimatedTokens = lang === 'zh-TW' ? response.length / 2 : response.length / 4;
     if (estimatedTokens > maxTokens) {
-      return lang === 'zh-TW'
-        ? alert.humanSummary
-        : alert.humanSummary;
+      return lang === 'zh-TW' ? alert.humanSummary : alert.humanSummary;
     }
 
     return response;

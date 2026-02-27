@@ -11,7 +11,15 @@ import { DEFAULT_TRAP_CONFIG, DEFAULT_SERVICE_CONFIGS } from '../types.js';
 import { TrapEngine } from '../trap-engine.js';
 
 /** Available CLI commands / 可用的 CLI 命令 */
-export type TrapCliCommand = 'start' | 'stop' | 'status' | 'deploy' | 'profiles' | 'intel' | 'config' | 'help';
+export type TrapCliCommand =
+  | 'start'
+  | 'stop'
+  | 'status'
+  | 'deploy'
+  | 'profiles'
+  | 'intel'
+  | 'config'
+  | 'help';
 
 /** CLI options / CLI 選項 */
 export interface TrapCliOptions {
@@ -202,8 +210,12 @@ export async function executeCli(args: string[]): Promise<void> {
       console.log('=== PanguardTrap Configuration / PanguardTrap 配置 ===');
       console.log('');
       console.log(`Data Directory / 資料目錄: ${config.dataDir}`);
-      console.log(`Threat Cloud / 威脅雲端: ${config.feedThreatCloud ? 'enabled / 啟用' : 'disabled / 停用'}`);
-      console.log(`Fake Access / 假存取: ${config.grantFakeAccess ? `after ${config.fakeAccessAfterAttempts} attempts` : 'disabled'}`);
+      console.log(
+        `Threat Cloud / 威脅雲端: ${config.feedThreatCloud ? 'enabled / 啟用' : 'disabled / 停用'}`
+      );
+      console.log(
+        `Fake Access / 假存取: ${config.grantFakeAccess ? `after ${config.fakeAccessAfterAttempts} attempts` : 'disabled'}`
+      );
       console.log('');
       console.log('Enabled Services / 已啟用服務:');
       for (const svc of config.services.filter((s) => s.enabled)) {
@@ -223,7 +235,7 @@ export async function executeCli(args: string[]): Promise<void> {
       engine.onSession((session) => {
         console.log(
           `[Session] ${session.sourceIP}:${session.sourcePort} -> ${session.serviceType} ` +
-          `(creds=${session.credentials.length}, cmds=${session.commands.length})`,
+            `(creds=${session.credentials.length}, cmds=${session.commands.length})`
         );
       });
 
@@ -307,7 +319,9 @@ export async function executeCli(args: string[]): Promise<void> {
         } else {
           console.log(`=== Intel Reports (${reports.length}) / 情報報告 ===`);
           for (const r of reports) {
-            console.log(`  [${r.serviceType}] ${r.sourceIP} - ${r.attackType} (${r.skillLevel}/${r.intent})`);
+            console.log(
+              `  [${r.serviceType}] ${r.sourceIP} - ${r.attackType} (${r.skillLevel}/${r.intent})`
+            );
           }
         }
       } else {
@@ -327,9 +341,10 @@ export async function executeCli(args: string[]): Promise<void> {
 // CLI 進入點（直接執行時）
 // ---------------------------------------------------------------------------
 
-const isDirectRun = process.argv[1] &&
+const isDirectRun =
+  process.argv[1] &&
   (process.argv[1].endsWith('/panguard-trap') ||
-   process.argv[1].includes('panguard-trap/dist/cli'));
+    process.argv[1].includes('panguard-trap/dist/cli'));
 
 if (isDirectRun) {
   executeCli(process.argv.slice(2)).catch((err) => {

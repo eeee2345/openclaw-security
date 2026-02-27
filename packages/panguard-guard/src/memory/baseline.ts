@@ -47,15 +47,13 @@ export function createEmptyBaseline(): EnvironmentBaseline {
  */
 export function checkDeviation(
   baseline: EnvironmentBaseline,
-  event: SecurityEvent,
+  event: SecurityEvent
 ): DeviationResult {
   // Check for new process / 檢查新程序
   if (event.source === 'process') {
     const processName = extractProcessName(event);
     if (processName) {
-      const known = baseline.normalProcesses.some(
-        (p: ProcessPattern) => p.name === processName,
-      );
+      const known = baseline.normalProcesses.some((p: ProcessPattern) => p.name === processName);
       if (!known) {
         return {
           isDeviation: true,
@@ -74,7 +72,7 @@ export function checkDeviation(
     const remoteAddr = extractRemoteAddress(event);
     if (remoteAddr) {
       const known = baseline.normalConnections.some(
-        (c: ConnectionPattern) => c.remoteAddress === remoteAddr,
+        (c: ConnectionPattern) => c.remoteAddress === remoteAddr
       );
       if (!known) {
         return {
@@ -92,9 +90,7 @@ export function checkDeviation(
   // Check for new user login pattern / 檢查新使用者登入模式
   const username = extractUsername(event);
   if (username) {
-    const known = baseline.normalLoginPatterns.some(
-      (l: LoginPattern) => l.username === username,
-    );
+    const known = baseline.normalLoginPatterns.some((l: LoginPattern) => l.username === username);
     if (!known) {
       return {
         isDeviation: true,
@@ -112,8 +108,7 @@ export function checkDeviation(
     isDeviation: false,
     deviationType: 'none',
     confidence: 0,
-    description:
-      'Event within normal baseline parameters / 事件在正常基線參數範圍內',
+    description: 'Event within normal baseline parameters / 事件在正常基線參數範圍內',
   };
 }
 
@@ -127,7 +122,7 @@ export function checkDeviation(
  */
 export function updateBaseline(
   baseline: EnvironmentBaseline,
-  event: SecurityEvent,
+  event: SecurityEvent
 ): EnvironmentBaseline {
   const now = new Date().toISOString();
   const updated: EnvironmentBaseline = {
@@ -144,7 +139,7 @@ export function updateBaseline(
         [...baseline.normalProcesses],
         processName,
         (event.metadata?.['processPath'] as string) ?? undefined,
-        now,
+        now
       );
     }
   }
@@ -158,7 +153,7 @@ export function updateBaseline(
         remoteAddr,
         (event.metadata?.['remotePort'] as number) ?? 0,
         (event.metadata?.['protocol'] as string) ?? 'tcp',
-        now,
+        now
       );
     }
   }
@@ -173,7 +168,7 @@ export function updateBaseline(
       (event.metadata?.['sourceIP'] as string) ?? undefined,
       eventDate.getHours(),
       eventDate.getDay(),
-      now,
+      now
     );
   }
 
@@ -182,8 +177,8 @@ export function updateBaseline(
 
   logger.info(
     `Baseline updated: ${event.source}/${event.category} ` +
-    `(events: ${updated.eventCount}, confidence: ${(updated.confidenceLevel * 100).toFixed(1)}%) / ` +
-    `基線已更新`,
+      `(events: ${updated.eventCount}, confidence: ${(updated.confidenceLevel * 100).toFixed(1)}%) / ` +
+      `基線已更新`
   );
 
   return updated;
@@ -211,9 +206,7 @@ function extractRemoteAddress(event: SecurityEvent): string | undefined {
 /** Extract username from event metadata / 從事件 metadata 提取使用者名稱 */
 function extractUsername(event: SecurityEvent): string | undefined {
   return (
-    (event.metadata?.['user'] as string) ??
-    (event.metadata?.['username'] as string) ??
-    undefined
+    (event.metadata?.['user'] as string) ?? (event.metadata?.['username'] as string) ?? undefined
   );
 }
 
@@ -222,7 +215,7 @@ function updateProcessPatterns(
   patterns: ProcessPattern[],
   name: string,
   path: string | undefined,
-  now: string,
+  now: string
 ): ProcessPattern[] {
   const existing = patterns.find((p) => p.name === name);
   if (existing) {
@@ -246,10 +239,10 @@ function updateConnectionPatterns(
   remoteAddress: string,
   remotePort: number,
   protocol: string,
-  now: string,
+  now: string
 ): ConnectionPattern[] {
   const existing = patterns.find(
-    (c) => c.remoteAddress === remoteAddress && c.remotePort === remotePort,
+    (c) => c.remoteAddress === remoteAddress && c.remotePort === remotePort
   );
   if (existing) {
     existing.frequency += 1;
@@ -274,7 +267,7 @@ function updateLoginPatterns(
   sourceIP: string | undefined,
   hourOfDay: number,
   dayOfWeek: number,
-  now: string,
+  now: string
 ): LoginPattern[] {
   const existing = patterns.find((l) => l.username === username);
   if (existing) {
@@ -306,9 +299,10 @@ function calculateConfidence(baseline: EnvironmentBaseline): number {
   const targetEvents = 10000;
 
   if (baseline.eventCount < minEvents) {
-    return baseline.eventCount / minEvents * 0.3;
+    return (baseline.eventCount / minEvents) * 0.3;
   }
 
-  const logProgress = Math.log(baseline.eventCount / minEvents) / Math.log(targetEvents / minEvents);
+  const logProgress =
+    Math.log(baseline.eventCount / minEvents) / Math.log(targetEvents / minEvents);
   return Math.min(0.95, 0.3 + logProgress * 0.65);
 }

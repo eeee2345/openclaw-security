@@ -27,14 +27,14 @@ export function visLen(s: string): number {
   for (const ch of plain) {
     const code = ch.codePointAt(0) ?? 0;
     if (
-      (code >= 0x2E80 && code <= 0x9FFF) ||
-      (code >= 0xF900 && code <= 0xFAFF) ||
-      (code >= 0xFE30 && code <= 0xFE4F) ||
-      (code >= 0xFF01 && code <= 0xFF60) ||
-      (code >= 0xFFE0 && code <= 0xFFE6) ||
-      (code >= 0x20000 && code <= 0x2FA1F) ||
-      (code >= 0x3000 && code <= 0x303F) ||
-      (code >= 0x3040 && code <= 0x30FF)
+      (code >= 0x2e80 && code <= 0x9fff) ||
+      (code >= 0xf900 && code <= 0xfaff) ||
+      (code >= 0xfe30 && code <= 0xfe4f) ||
+      (code >= 0xff01 && code <= 0xff60) ||
+      (code >= 0xffe0 && code <= 0xffe6) ||
+      (code >= 0x20000 && code <= 0x2fa1f) ||
+      (code >= 0x3000 && code <= 0x303f) ||
+      (code >= 0x3040 && code <= 0x30ff)
     ) {
       len += 2;
     } else {
@@ -101,10 +101,22 @@ function waitForKey(): Promise<string> {
       }
       stdin.pause();
 
-      if (data === '\x03') { resolve('ctrl-c'); return; }
-      if (data === '\r' || data === '\n') { resolve('enter'); return; }
-      if (data === '\x1b' && data.length === 1) { resolve('escape'); return; }
-      if (data === '\x7f' || data === '\b') { resolve('backspace'); return; }
+      if (data === '\x03') {
+        resolve('ctrl-c');
+        return;
+      }
+      if (data === '\r' || data === '\n') {
+        resolve('enter');
+        return;
+      }
+      if (data === '\x1b' && data.length === 1) {
+        resolve('escape');
+        return;
+      }
+      if (data === '\x7f' || data === '\b') {
+        resolve('backspace');
+        return;
+      }
 
       resolve(data.trim().toLowerCase());
     };
@@ -195,7 +207,16 @@ export async function promptSelect<T = string>(config: SelectConfig<T>): Promise
  * Returns the entered text, or null if the user cancelled.
  */
 export async function promptText(config: TextConfig): Promise<string | null> {
-  const { title, description, placeholder, defaultValue, validate, sensitive, lang, allowBack = true } = config;
+  const {
+    title,
+    description,
+    placeholder,
+    defaultValue,
+    validate,
+    sensitive,
+    lang,
+    allowBack = true,
+  } = config;
   const isTTY = process.stdin.isTTY;
 
   // Non-TTY fallback: return default
@@ -210,7 +231,9 @@ export async function promptText(config: TextConfig): Promise<string | null> {
     console.log(`  ${c.dim(description[lang])}`);
   }
   if (defaultValue) {
-    console.log(`  ${c.dim(`(${lang === 'zh-TW' ? '\u9810\u8A2D' : 'default'}: ${defaultValue})`)}`);
+    console.log(
+      `  ${c.dim(`(${lang === 'zh-TW' ? '\u9810\u8A2D' : 'default'}: ${defaultValue})`)}`
+    );
   }
   if (placeholder) {
     console.log(`  ${c.dim(placeholder)}`);

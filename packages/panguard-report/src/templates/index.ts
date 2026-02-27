@@ -203,11 +203,15 @@ export interface FrameworkDescription {
   scope: string;
 }
 
-const FRAMEWORK_DESCRIPTIONS: Record<ComplianceFramework, Record<ReportLanguage, FrameworkDescription>> = {
+const FRAMEWORK_DESCRIPTIONS: Record<
+  ComplianceFramework,
+  Record<ReportLanguage, FrameworkDescription>
+> = {
   tw_cyber_security_act: {
     en: {
       fullName: 'Taiwan Cyber Security Management Act',
-      shortDescription: 'Compliance assessment based on the Cyber Security Management Act and its enforcement rules.',
+      shortDescription:
+        'Compliance assessment based on the Cyber Security Management Act and its enforcement rules.',
       scope: 'Government agencies, critical infrastructure operators, and designated enterprises.',
     },
     'zh-TW': {
@@ -248,7 +252,7 @@ const FRAMEWORK_DESCRIPTIONS: Record<ComplianceFramework, Record<ReportLanguage,
  */
 export function getFrameworkDescription(
   framework: ComplianceFramework,
-  language: ReportLanguage,
+  language: ReportLanguage
 ): FrameworkDescription {
   return FRAMEWORK_DESCRIPTIONS[framework][language];
 }

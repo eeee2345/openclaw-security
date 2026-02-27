@@ -1,42 +1,34 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import {
-  ArrowRight,
-  ExternalLink,
-  Download,
-  Mail,
-  FileText,
-  Palette,
-  Monitor,
-} from "lucide-react";
-import BrandLogo from "@/components/ui/BrandLogo";
-import { CertifiedSecureBadge, AIPoweredBadge } from "@/components/ui/BrandBadges";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { pressItems, type PressItem } from "@/data/press-items";
+import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { ArrowRight, ExternalLink, Download, Mail, FileText, Palette, Monitor } from 'lucide-react';
+import BrandLogo from '@/components/ui/BrandLogo';
+import { CertifiedSecureBadge, AIPoweredBadge } from '@/components/ui/BrandBadges';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { pressItems, type PressItem } from '@/data/press-items';
 
 /* ─── Helpers ─── */
 
 function formatDate(dateStr: string, locale: string): string {
-  const date = new Date(dateStr + "T00:00:00");
-  return date.toLocaleDateString(locale === "zh" ? "zh-TW" : "en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 }
 
 /* ─── Filter Tabs ─── */
 
-type FilterTab = "All" | "Press Releases" | "Coverage";
+type FilterTab = 'All' | 'Press Releases' | 'Coverage';
 
 /* ─── Type Badge ─── */
 
-function TypeBadge({ type }: { type: PressItem["type"] }) {
-  const label = type === "press-release" ? "Press Release" : "Coverage";
+function TypeBadge({ type }: { type: PressItem['type'] }) {
+  const label = type === 'press-release' ? 'Press Release' : 'Coverage';
   return (
     <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-brand-sage/10 text-brand-sage">
       {label}
@@ -46,7 +38,15 @@ function TypeBadge({ type }: { type: PressItem["type"] }) {
 
 /* ─── Press Release Card ─── */
 
-function PressReleaseCard({ item, index, locale }: { item: PressItem; index: number; locale: string }) {
+function PressReleaseCard({
+  item,
+  index,
+  locale,
+}: {
+  item: PressItem;
+  index: number;
+  locale: string;
+}) {
   return (
     <FadeInUp delay={index * 0.06}>
       <div className="bg-surface-1 border border-border rounded-2xl p-6 hover:border-brand-sage/40 transition-all duration-200 card-glow h-full flex flex-col group">
@@ -59,9 +59,7 @@ function PressReleaseCard({ item, index, locale }: { item: PressItem; index: num
           {item.title}
         </h3>
 
-        <p className="text-sm text-text-secondary mt-3 leading-relaxed flex-1">
-          {item.excerpt}
-        </p>
+        <p className="text-sm text-text-secondary mt-3 leading-relaxed flex-1">{item.excerpt}</p>
 
         <div className="flex items-center mt-5 pt-4 border-t border-border/50">
           <span className="flex items-center gap-1.5 text-brand-sage text-sm font-semibold group-hover:gap-2.5 transition-all duration-200 cursor-pointer">
@@ -95,9 +93,7 @@ function CoverageCard({ item, index, locale }: { item: PressItem; index: number;
           {item.title}
         </h3>
 
-        <p className="text-sm text-text-secondary mt-3 leading-relaxed flex-1">
-          {item.excerpt}
-        </p>
+        <p className="text-sm text-text-secondary mt-3 leading-relaxed flex-1">{item.excerpt}</p>
 
         <div className="flex items-center mt-5 pt-4 border-t border-border/50">
           <span className="flex items-center gap-1.5 text-brand-sage text-sm font-semibold group-hover:gap-2.5 transition-all duration-200 cursor-pointer">
@@ -113,9 +109,19 @@ function CoverageCard({ item, index, locale }: { item: PressItem; index: number;
 /* ─── Brand Asset Card ─── */
 
 const brandAssetIcons = [FileText, Palette, Monitor];
-const brandAssetKeys = ["item1", "item2", "item3"] as const;
+const brandAssetKeys = ['item1', 'item2', 'item3'] as const;
 
-function BrandAssetCard({ assetKey, icon: IconComponent, index, t }: { assetKey: string; icon: React.ComponentType<{ className?: string }>; index: number; t: ReturnType<typeof useTranslations> }) {
+function BrandAssetCard({
+  assetKey,
+  icon: IconComponent,
+  index,
+  t,
+}: {
+  assetKey: string;
+  icon: React.ComponentType<{ className?: string }>;
+  index: number;
+  t: ReturnType<typeof useTranslations>;
+}) {
   return (
     <FadeInUp delay={index * 0.08}>
       <div className="bg-surface-1 border border-border rounded-2xl p-6 hover:border-brand-sage/40 transition-all duration-200 card-glow h-full flex flex-col">
@@ -150,7 +156,9 @@ function BrandAssetCard({ assetKey, icon: IconComponent, index, t }: { assetKey:
           )}
         </div>
 
-        <h3 className="text-lg font-semibold text-text-primary">{t(`brandAssets.${assetKey}.title`)}</h3>
+        <h3 className="text-lg font-semibold text-text-primary">
+          {t(`brandAssets.${assetKey}.title`)}
+        </h3>
 
         <p className="text-sm text-text-secondary mt-2 leading-relaxed flex-1">
           {t(`brandAssets.${assetKey}.desc`)}
@@ -165,7 +173,7 @@ function BrandAssetCard({ assetKey, icon: IconComponent, index, t }: { assetKey:
           className="inline-flex items-center justify-center gap-2 bg-surface-2 border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage/40 font-semibold rounded-full px-5 py-2.5 text-sm transition-all duration-200"
         >
           <Download className="w-4 h-4" />
-          {t("requestAccess")}
+          {t('requestAccess')}
         </a>
       </div>
     </FadeInUp>
@@ -175,36 +183,32 @@ function BrandAssetCard({ assetKey, icon: IconComponent, index, t }: { assetKey:
 /* ════════════════════════  Press Content  ═══════════════════════ */
 
 export default function PressContent() {
-  const t = useTranslations("press");
+  const t = useTranslations('press');
   const locale = useLocale();
 
-  const [activeTab, setActiveTab] = useState<FilterTab>("All");
+  const [activeTab, setActiveTab] = useState<FilterTab>('All');
 
   const filterTabs: { key: FilterTab; label: string }[] = [
-    { key: "All", label: t("filters.all") },
-    { key: "Press Releases", label: t("filters.pressReleases") },
-    { key: "Coverage", label: t("filters.coverage") },
+    { key: 'All', label: t('filters.all') },
+    { key: 'Press Releases', label: t('filters.pressReleases') },
+    { key: 'Coverage', label: t('filters.coverage') },
   ];
 
   const filtered =
-    activeTab === "All"
+    activeTab === 'All'
       ? pressItems
-      : activeTab === "Press Releases"
-      ? pressItems.filter((i) => i.type === "press-release")
-      : pressItems.filter((i) => i.type === "coverage");
+      : activeTab === 'Press Releases'
+        ? pressItems.filter((i) => i.type === 'press-release')
+        : pressItems.filter((i) => i.type === 'coverage');
 
-  const pressReleases = filtered.filter((i) => i.type === "press-release");
-  const coverage = filtered.filter((i) => i.type === "coverage");
+  const pressReleases = filtered.filter((i) => i.type === 'press-release');
+  const coverage = filtered.filter((i) => i.type === 'coverage');
 
   return (
     <>
       {/* ───────────── Hero ───────────── */}
       <SectionWrapper spacing="spacious">
-        <SectionTitle
-          overline={t("overline")}
-          title={t("title")}
-          subtitle={t("subtitle")}
-        />
+        <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
       </SectionWrapper>
 
       {/* ───────────── Filter Tabs ───────────── */}
@@ -217,8 +221,8 @@ export default function PressContent() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`text-sm font-semibold rounded-full px-5 py-2 transition-all duration-200 ${
                   activeTab === tab.key
-                    ? "bg-brand-sage text-surface-0"
-                    : "bg-surface-1 text-text-secondary border border-border hover:border-brand-sage/40 hover:text-text-primary"
+                    ? 'bg-brand-sage text-surface-0'
+                    : 'bg-surface-1 text-text-secondary border border-border hover:border-brand-sage/40 hover:text-text-primary'
                 }`}
               >
                 {tab.label}
@@ -233,7 +237,7 @@ export default function PressContent() {
         <SectionWrapper>
           <FadeInUp>
             <h3 className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-8">
-              {t("filters.pressReleases")}
+              {t('filters.pressReleases')}
             </h3>
           </FadeInUp>
           <div className="grid md:grid-cols-2 gap-6">
@@ -249,7 +253,7 @@ export default function PressContent() {
         <SectionWrapper dark>
           <FadeInUp>
             <h3 className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-8">
-              {t("filters.coverage")}
+              {t('filters.coverage')}
             </h3>
           </FadeInUp>
           <div className="grid md:grid-cols-2 gap-6">
@@ -276,9 +280,9 @@ export default function PressContent() {
       {/* ───────────── Brand Assets ───────────── */}
       <SectionWrapper dark={coverage.length === 0}>
         <SectionTitle
-          overline={t("brandAssets.overline")}
-          title={t("brandAssets.title")}
-          subtitle={t("brandAssets.subtitle")}
+          overline={t('brandAssets.overline')}
+          title={t('brandAssets.title')}
+          subtitle={t('brandAssets.subtitle')}
         />
         <div className="grid sm:grid-cols-3 gap-6 mt-14">
           {brandAssetKeys.map((key, i) => (
@@ -293,24 +297,20 @@ export default function PressContent() {
           <div className="text-center max-w-2xl mx-auto">
             <Mail className="w-8 h-8 text-brand-sage mx-auto mb-4" />
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("mediaInquiries.title")}
+              {t('mediaInquiries.title')}
             </h2>
-            <p className="text-text-secondary mt-4 leading-relaxed">
-              {t("mediaInquiries.desc")}
-            </p>
-            <p className="text-brand-sage font-semibold mt-4">
-              {t("mediaInquiries.email")}
-            </p>
+            <p className="text-text-secondary mt-4 leading-relaxed">{t('mediaInquiries.desc')}</p>
+            <p className="text-brand-sage font-semibold mt-4">{t('mediaInquiries.email')}</p>
           </div>
         </FadeInUp>
         <FadeInUp delay={0.1}>
           <div className="flex justify-center mt-8">
             <a
-              href={`mailto:${t("mediaInquiries.email")}`}
+              href={`mailto:${t('mediaInquiries.email')}`}
               className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
             >
               <Mail className="w-4 h-4" />
-              {t("mediaInquiries.cta")}
+              {t('mediaInquiries.cta')}
             </a>
           </div>
         </FadeInUp>

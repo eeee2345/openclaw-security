@@ -22,7 +22,9 @@ describe('Filesystem Guard', () => {
   });
 
   it('should block directory traversal attempts', () => {
-    expect(isPathAllowed('/home/user/.panguard/workspace/../../.ssh/id_rsa', allowedDirs)).toBe(false);
+    expect(isPathAllowed('/home/user/.panguard/workspace/../../.ssh/id_rsa', allowedDirs)).toBe(
+      false
+    );
     expect(isPathAllowed('/tmp/panguard-data/../../../etc/shadow', allowedDirs)).toBe(false);
   });
 

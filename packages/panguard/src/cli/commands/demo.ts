@@ -5,8 +5,14 @@
 
 import { Command } from 'commander';
 import {
-  c, banner, spinner, statusPanel, divider, scoreDisplay,
-  symbols, formatDuration,
+  c,
+  banner,
+  spinner,
+  statusPanel,
+  divider,
+  scoreDisplay,
+  symbols,
+  formatDuration,
 } from '@panguard-ai/core';
 import { runScan } from '@panguard-ai/panguard-scan';
 import { generateComplianceReport, generateSummaryText } from '@panguard-ai/panguard-report';
@@ -41,21 +47,33 @@ export function demoCommand(): Command {
         scanSp.succeed(`Scan complete ${c.dim(`(${formatDuration(result.scanDuration)})`)}`);
 
         const safetyScore = Math.max(0, 100 - result.riskScore);
-        const grade = safetyScore >= 90 ? 'A' : safetyScore >= 75 ? 'B' : safetyScore >= 60 ? 'C' : safetyScore >= 40 ? 'D' : 'F';
+        const grade =
+          safetyScore >= 90
+            ? 'A'
+            : safetyScore >= 75
+              ? 'B'
+              : safetyScore >= 60
+                ? 'C'
+                : safetyScore >= 40
+                  ? 'D'
+                  : 'F';
         console.log(scoreDisplay(safetyScore, grade));
 
-        console.log(statusPanel('Scan Results', [
-          {
-            label: 'Risk Score',
-            value: `${result.riskScore}/100`,
-            status: result.riskScore <= 25 ? 'safe' : result.riskScore <= 50 ? 'caution' : 'critical',
-          },
-          {
-            label: 'Findings',
-            value: String(result.findings.length),
-            status: result.findings.length === 0 ? 'safe' : 'caution',
-          },
-        ]));
+        console.log(
+          statusPanel('Scan Results', [
+            {
+              label: 'Risk Score',
+              value: `${result.riskScore}/100`,
+              status:
+                result.riskScore <= 25 ? 'safe' : result.riskScore <= 50 ? 'caution' : 'critical',
+            },
+            {
+              label: 'Findings',
+              value: String(result.findings.length),
+              status: result.findings.length === 0 ? 'safe' : 'caution',
+            },
+          ])
+        );
         moduleStatus['Security Scan'] = 'safe';
       } catch (err) {
         scanSp.fail(`Scan failed: ${err instanceof Error ? err.message : err}`);
@@ -136,7 +154,9 @@ export function demoCommand(): Command {
         await trapCLI(['config', '--services', 'ssh,http']);
         moduleStatus['Honeypot System'] = 'safe';
       } catch (err) {
-        console.log(`  ${symbols.fail} Trap config failed: ${err instanceof Error ? err.message : err}`);
+        console.log(
+          `  ${symbols.fail} Trap config failed: ${err instanceof Error ? err.message : err}`
+        );
       }
       console.log('');
 
@@ -151,7 +171,9 @@ export function demoCommand(): Command {
         await chatCLI(['status']);
         moduleStatus['Notification System'] = 'safe';
       } catch (err) {
-        console.log(`  ${symbols.fail} Chat status failed: ${err instanceof Error ? err.message : err}`);
+        console.log(
+          `  ${symbols.fail} Chat status failed: ${err instanceof Error ? err.message : err}`
+        );
       }
       console.log('');
 
@@ -167,13 +189,16 @@ export function demoCommand(): Command {
       const passed = Object.values(moduleStatus).filter((s) => s === 'safe').length;
       const total = Object.keys(moduleStatus).length;
 
-      console.log(statusPanel(`PANGUARD AI - Demo Summary (${passed}/${total} passed)`,
-        Object.entries(moduleStatus).map(([label, status]) => ({
-          label,
-          value: statusLabel(status),
-          status,
-        }))
-      ));
+      console.log(
+        statusPanel(
+          `PANGUARD AI - Demo Summary (${passed}/${total} passed)`,
+          Object.entries(moduleStatus).map(([label, status]) => ({
+            label,
+            value: statusLabel(status),
+            status,
+          }))
+        )
+      );
 
       console.log(`  ${c.dim('Next steps:')}`);
       console.log(`    ${c.sage('panguard')}             ${c.dim('Interactive mode')}`);

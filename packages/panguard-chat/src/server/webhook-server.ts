@@ -180,7 +180,11 @@ export class WebhookServer {
     return headers;
   }
 
-  private verifySlackSignature(body: string, headers: Record<string, string>, secret: string): boolean {
+  private verifySlackSignature(
+    body: string,
+    headers: Record<string, string>,
+    secret: string
+  ): boolean {
     const timestamp = headers['x-slack-request-timestamp'];
     const signature = headers['x-slack-signature'];
     if (!timestamp || !signature) return false;
@@ -194,7 +198,11 @@ export class WebhookServer {
     return signature === expected;
   }
 
-  private verifyLineSignature(body: string, headers: Record<string, string>, secret: string): boolean {
+  private verifyLineSignature(
+    body: string,
+    headers: Record<string, string>,
+    secret: string
+  ): boolean {
     const signature = headers['x-line-signature'];
     if (!signature) return false;
 

@@ -27,6 +27,7 @@ Guard 會建立 LaunchDaemon plist 檔案：
 ```
 
 安裝後行為：
+
 - 開機自動啟動
 - 異常退出自動重啟
 - 日誌寫入 `/var/log/panguard guard.log`
@@ -53,6 +54,7 @@ Guard 會建立 systemd service 單元檔案：
 ```
 
 安裝後行為：
+
 - 開機自動啟動（`systemctl enable`）
 - 異常退出自動重啟（`Restart=always`）
 - 日誌透過 journald 管理
@@ -81,6 +83,7 @@ Guard 會註冊為 Windows 服務：
 ```
 
 安裝後行為：
+
 - 開機自動啟動
 - 異常退出自動重啟
 - 日誌寫入 Event Log
@@ -111,6 +114,7 @@ panguard guard install-script
 ```
 
 安裝腳本會自動：
+
 1. 下載 Panguard AI
 2. 安裝依賴
 3. 安裝為系統服務
@@ -148,10 +152,10 @@ Guard 使用 PID 檔案管理程序狀態：
 
 系統服務的資料目錄預設：
 
-| 平台 | 預設路徑 |
-|------|---------|
-| macOS | `~/.panguard guard/` |
-| Linux | `~/.panguard guard/` |
+| 平台    | 預設路徑                    |
+| ------- | --------------------------- |
+| macOS   | `~/.panguard guard/`        |
+| Linux   | `~/.panguard guard/`        |
 | Windows | `%APPDATA%\panguard guard\` |
 
 可透過 `--data-dir` 自訂：
@@ -161,6 +165,7 @@ panguard guard start --data-dir /opt/panguard/data
 ```
 
 資料目錄包含：
+
 - `guard.pid` — PID 檔案
 - `baseline/` — 行為基線資料
 - `rules/` — 自訂規則

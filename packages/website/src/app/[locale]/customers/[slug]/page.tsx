@@ -1,9 +1,9 @@
-import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
-import CaseStudyContent from "./CaseStudyContent";
-import { caseStudies } from "@/data/case-studies";
+import { getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
+import CaseStudyContent from './CaseStudyContent';
+import { caseStudies } from '@/data/case-studies';
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -15,11 +15,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug, locale } = await params;
-  const t = await getTranslations({ locale, namespace: "metadata" });
+  const t = await getTranslations({ locale, namespace: 'metadata' });
   const cs = caseStudies.find((c) => c.slug === slug);
 
   if (!cs) {
-    return { title: t("customers.title"), description: t("customers.description") };
+    return { title: t('customers.title'), description: t('customers.description') };
   }
 
   return {

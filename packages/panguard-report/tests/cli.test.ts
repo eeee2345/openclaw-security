@@ -87,11 +87,16 @@ describe('PanguardReport CLI', () => {
     it('should parse multiple options', () => {
       const options = parseCliArgs([
         'generate',
-        '--framework', 'soc2',
-        '--language', 'zh-TW',
-        '--format', 'json',
-        '--org', 'TestCo',
-        '--input', 'scan.json',
+        '--framework',
+        'soc2',
+        '--language',
+        'zh-TW',
+        '--format',
+        'json',
+        '--org',
+        'TestCo',
+        '--input',
+        'scan.json',
         '-v',
       ]);
       expect(options.command).toBe('generate');

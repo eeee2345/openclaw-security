@@ -88,7 +88,7 @@ export function createCommandValidator(whitelist: readonly string[] = DEFAULT_AL
     if (!isCommandAllowed(command, whitelist)) {
       throw new Error(
         `Command execution denied: '${extractBaseCommand(command)}' is not whitelisted / ` +
-        `命令執行拒絕：'${extractBaseCommand(command)}' 未列入白名單`
+          `命令執行拒絕：'${extractBaseCommand(command)}' 未列入白名單`
       );
     }
   };

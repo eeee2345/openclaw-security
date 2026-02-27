@@ -80,7 +80,7 @@ export class TokenTracker {
    */
   constructor(
     private readonly provider: LLMProviderType,
-    private readonly model: string,
+    private readonly model: string
   ) {}
 
   /**

@@ -80,7 +80,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.1',
     titleEn: 'Access Control',
     titleZh: '存取控制',
-    descriptionEn: 'Establish and enforce access control policies to restrict unauthorized access to information systems and data.',
+    descriptionEn:
+      'Establish and enforce access control policies to restrict unauthorized access to information systems and data.',
     descriptionZh: '建立並執行存取控制政策，限制對資訊系統和資料的未經授權存取。',
     categories: ['password', 'access'],
   },
@@ -88,7 +89,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.2',
     titleEn: 'System Protection',
     titleZh: '系統保護',
-    descriptionEn: 'Implement system-level protections including firewalls, intrusion detection, and endpoint security measures.',
+    descriptionEn:
+      'Implement system-level protections including firewalls, intrusion detection, and endpoint security measures.',
     descriptionZh: '實施系統層級保護措施，包括防火牆、入侵偵測和端點安全措施。',
     categories: ['system', 'firewall'],
   },
@@ -96,7 +98,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.3',
     titleEn: 'Network Security',
     titleZh: '網路安全',
-    descriptionEn: 'Secure network infrastructure through segmentation, monitoring, and traffic analysis.',
+    descriptionEn:
+      'Secure network infrastructure through segmentation, monitoring, and traffic analysis.',
     descriptionZh: '透過網路分段、監控和流量分析來保護網路基礎設施。',
     categories: ['network'],
   },
@@ -104,7 +107,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.4',
     titleEn: 'Encryption Management',
     titleZh: '加密管理',
-    descriptionEn: 'Apply appropriate encryption standards for data in transit and at rest, and manage certificates properly.',
+    descriptionEn:
+      'Apply appropriate encryption standards for data in transit and at rest, and manage certificates properly.',
     descriptionZh: '對傳輸中和靜態資料套用適當的加密標準，並妥善管理憑證。',
     categories: ['certificate'],
   },
@@ -112,7 +116,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.5',
     titleEn: 'Authentication',
     titleZh: '身分驗證',
-    descriptionEn: 'Enforce strong authentication mechanisms including password policies and multi-factor authentication.',
+    descriptionEn:
+      'Enforce strong authentication mechanisms including password policies and multi-factor authentication.',
     descriptionZh: '強制執行強健的身分驗證機制，包括密碼政策和多因素身分驗證。',
     categories: ['password', 'authentication'],
   },
@@ -120,7 +125,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.6',
     titleEn: 'Monitoring',
     titleZh: '監控管理',
-    descriptionEn: 'Continuously monitor systems for security events, anomalies, and policy violations.',
+    descriptionEn:
+      'Continuously monitor systems for security events, anomalies, and policy violations.',
     descriptionZh: '持續監控系統的安全事件、異常行為和政策違規。',
     categories: ['system', 'monitoring'],
   },
@@ -128,7 +134,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.7',
     titleEn: 'Incident Response',
     titleZh: '事件應變',
-    descriptionEn: 'Establish procedures for detecting, reporting, and responding to security incidents.',
+    descriptionEn:
+      'Establish procedures for detecting, reporting, and responding to security incidents.',
     descriptionZh: '建立偵測、報告和回應安全事件的程序。',
     categories: ['incident'],
   },
@@ -144,7 +151,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.9',
     titleEn: 'Update Management',
     titleZh: '更新管理',
-    descriptionEn: 'Maintain systems with timely security patches and software updates to address known vulnerabilities.',
+    descriptionEn:
+      'Maintain systems with timely security patches and software updates to address known vulnerabilities.',
     descriptionZh: '透過及時的安全修補和軟體更新來維護系統，以解決已知弱點。',
     categories: ['updates', 'system'],
   },
@@ -152,7 +160,8 @@ const COMPLIANCE_ENTRIES: ComplianceEntry[] = [
     ref: '4.10',
     titleEn: 'Audit',
     titleZh: '稽核管理',
-    descriptionEn: 'Conduct regular security audits and maintain comprehensive audit logs for accountability.',
+    descriptionEn:
+      'Conduct regular security audits and maintain comprehensive audit logs for accountability.',
     descriptionZh: '定期進行安全稽核並維護完整的稽核日誌以確保可追溯性。',
     categories: ['audit', 'logging'],
   },
@@ -189,25 +198,21 @@ export function getComplianceEntries(): ComplianceEntry[] {
  */
 export function mapFindingsToCompliance(findings: Finding[]): ComplianceStatus[] {
   return COMPLIANCE_ENTRIES.map((entry) => {
-    const relatedFindings = findings.filter((f) =>
-      entry.categories.includes(f.category),
-    );
+    const relatedFindings = findings.filter((f) => entry.categories.includes(f.category));
 
     let status: ComplianceStatus['status'];
 
     if (relatedFindings.length === 0) {
       // If no findings exist at all for these categories, mark as not applicable
       // when the scan did not cover them; otherwise compliant
-      const hasAnyFindingInCategory = findings.some((f) =>
-        entry.categories.includes(f.category),
-      );
+      const hasAnyFindingInCategory = findings.some((f) => entry.categories.includes(f.category));
       status = hasAnyFindingInCategory ? 'compliant' : 'not_applicable';
     } else {
       const hasCriticalOrHigh = relatedFindings.some(
-        (f) => f.severity === 'critical' || f.severity === 'high',
+        (f) => f.severity === 'critical' || f.severity === 'high'
       );
       const hasMediumOrLow = relatedFindings.some(
-        (f) => f.severity === 'medium' || f.severity === 'low',
+        (f) => f.severity === 'medium' || f.severity === 'low'
       );
 
       if (hasCriticalOrHigh) {

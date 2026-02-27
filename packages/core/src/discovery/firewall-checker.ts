@@ -91,7 +91,10 @@ async function checkMacOSFirewall(): Promise<FirewallStatus> {
 
       // Lines like: "Allow incoming connections" or "Block incoming connections"
       // 行內容如："Allow incoming connections" 或 "Block incoming connections"
-      if (trimmed.includes('Allow incoming connections') || trimmed.includes('Block incoming connections')) {
+      if (
+        trimmed.includes('Allow incoming connections') ||
+        trimmed.includes('Block incoming connections')
+      ) {
         // The previous line typically has the app path
         // 前一行通常包含應用程式路徑
         continue;
@@ -225,11 +228,7 @@ async function checkLinuxFirewall(): Promise<FirewallStatus> {
     // 如果 iptables 有任何非預設規則，視為已啟用
     const lines = iptablesOutput.split('\n');
     const ruleLines = lines.filter(
-      (l) =>
-        l.trim() &&
-        !l.startsWith('Chain') &&
-        !l.startsWith('num') &&
-        !l.startsWith('target')
+      (l) => l.trim() && !l.startsWith('Chain') && !l.startsWith('num') && !l.startsWith('target')
     );
     enabled = ruleLines.length > 0;
 
@@ -295,11 +294,7 @@ async function checkWindowsFirewall(): Promise<FirewallStatus> {
   let enabled = false;
   const rules: FirewallRule[] = [];
 
-  const output = await safeExec('netsh', [
-    'advfirewall',
-    'show',
-    'allprofiles',
-  ]);
+  const output = await safeExec('netsh', ['advfirewall', 'show', 'allprofiles']);
 
   if (output) {
     // Check if any profile has the firewall ON
@@ -343,7 +338,8 @@ async function checkWindowsFirewall(): Promise<FirewallStatus> {
           if (dirMatch?.[1]) direction = dirMatch[1].trim().toLowerCase() === 'out' ? 'out' : 'in';
 
           const actMatch = trimmed.match(/^Action:\s*(.+)/i);
-          if (actMatch?.[1]) action = actMatch[1].trim().toLowerCase() === 'block' ? 'block' : 'allow';
+          if (actMatch?.[1])
+            action = actMatch[1].trim().toLowerCase() === 'block' ? 'block' : 'allow';
 
           const protoMatch = trimmed.match(/^Protocol:\s*(.+)/i);
           if (protoMatch?.[1]) {

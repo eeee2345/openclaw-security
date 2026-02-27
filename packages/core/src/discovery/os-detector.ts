@@ -159,12 +159,7 @@ async function detectWindows(): Promise<Partial<OSInfo>> {
   };
 
   try {
-    const wmicOutput = await safeExec('wmic', [
-      'os',
-      'get',
-      'Caption,Version',
-      '/format:csv',
-    ]);
+    const wmicOutput = await safeExec('wmic', ['os', 'get', 'Caption,Version', '/format:csv']);
     if (wmicOutput) {
       const lines = wmicOutput.split('\n').filter((l) => l.trim().length > 0);
       // CSV format: Node,Caption,Version
@@ -187,12 +182,7 @@ async function detectWindows(): Promise<Partial<OSInfo>> {
   // Detect patch level via systeminfo
   // 透過 systeminfo 偵測修補等級
   try {
-    const sysinfoOutput = await safeExec('wmic', [
-      'qfe',
-      'get',
-      'HotFixID',
-      '/format:csv',
-    ]);
+    const sysinfoOutput = await safeExec('wmic', ['qfe', 'get', 'HotFixID', '/format:csv']);
     if (sysinfoOutput) {
       const hotfixes = sysinfoOutput
         .split('\n')
@@ -200,9 +190,10 @@ async function detectWindows(): Promise<Partial<OSInfo>> {
         .map((l) => l.split(',').pop()?.trim())
         .filter((h): h is string => Boolean(h));
       const latest = hotfixes[hotfixes.length - 1];
-      result.patchLevel = hotfixes.length > 0
-        ? `${hotfixes.length} hotfixes installed (latest: ${latest ?? 'unknown'})`
-        : 'unknown';
+      result.patchLevel =
+        hotfixes.length > 0
+          ? `${hotfixes.length} hotfixes installed (latest: ${latest ?? 'unknown'})`
+          : 'unknown';
     }
   } catch {
     result.patchLevel = 'unknown';

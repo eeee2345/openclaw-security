@@ -60,29 +60,40 @@ export function parseSigmaYaml(yamlContent: string): SigmaRule | null {
     return null;
   }
 
-  if (doc['detection'] === undefined || doc['detection'] === null || typeof doc['detection'] !== 'object') {
+  if (
+    doc['detection'] === undefined ||
+    doc['detection'] === null ||
+    typeof doc['detection'] !== 'object'
+  ) {
     logger.error('Missing or invalid required field: detection / 缺少或無效的必要欄位: detection');
     return null;
   }
 
   const rawDetection = doc['detection'] as Record<string, unknown>;
   if (typeof rawDetection['condition'] !== 'string') {
-    logger.error('Missing or invalid required field: detection.condition / 缺少或無效的必要欄位: detection.condition');
+    logger.error(
+      'Missing or invalid required field: detection.condition / 缺少或無效的必要欄位: detection.condition'
+    );
     return null;
   }
 
   const levelStr = typeof doc['level'] === 'string' ? doc['level'].toLowerCase() : '';
   if (!VALID_LEVELS.has(levelStr)) {
-    logger.error(`Invalid or missing level: "${String(doc['level'])}" / 無效或缺少嚴重等級: "${String(doc['level'])}"`, {
-      validLevels: [...VALID_LEVELS],
-    });
+    logger.error(
+      `Invalid or missing level: "${String(doc['level'])}" / 無效或缺少嚴重等級: "${String(doc['level'])}"`,
+      {
+        validLevels: [...VALID_LEVELS],
+      }
+    );
     return null;
   }
 
   // --- Parse optional fields with warnings / 解析可選欄位並記錄警告 ---
 
   if (doc['id'] === undefined) {
-    logger.warn('Missing optional field: id - a unique identifier is recommended / 缺少可選欄位: id - 建議提供唯一識別碼');
+    logger.warn(
+      'Missing optional field: id - a unique identifier is recommended / 缺少可選欄位: id - 建議提供唯一識別碼'
+    );
   }
 
   if (doc['author'] === undefined) {
@@ -107,9 +118,10 @@ export function parseSigmaYaml(yamlContent: string): SigmaRule | null {
 
   // --- Build logsource / 建立日誌來源 ---
 
-  const rawLogSource = (typeof doc['logsource'] === 'object' && doc['logsource'] !== null)
-    ? doc['logsource'] as Record<string, unknown>
-    : {};
+  const rawLogSource =
+    typeof doc['logsource'] === 'object' && doc['logsource'] !== null
+      ? (doc['logsource'] as Record<string, unknown>)
+      : {};
 
   const logsource: SigmaLogSource = {};
   if (typeof rawLogSource['category'] === 'string') logsource.category = rawLogSource['category'];
@@ -142,19 +154,24 @@ export function parseSigmaYaml(yamlContent: string): SigmaRule | null {
 
   // --- Normalize status / 標準化狀態 ---
 
-  const statusStr = typeof doc['status'] === 'string' ? doc['status'].toLowerCase() : 'experimental';
+  const statusStr =
+    typeof doc['status'] === 'string' ? doc['status'].toLowerCase() : 'experimental';
   const status = VALID_STATUSES.has(statusStr)
     ? (statusStr as 'experimental' | 'test' | 'stable')
     : 'experimental';
 
   if (!VALID_STATUSES.has(typeof doc['status'] === 'string' ? doc['status'].toLowerCase() : '')) {
-    logger.warn(`Invalid or missing status "${String(doc['status'])}", defaulting to "experimental" / 無效或缺少狀態，預設為 "experimental"`);
+    logger.warn(
+      `Invalid or missing status "${String(doc['status'])}", defaulting to "experimental" / 無效或缺少狀態，預設為 "experimental"`
+    );
   }
 
   // --- Build tags and falsepositives arrays / 建立標籤和誤報陣列 ---
 
   const tags = Array.isArray(doc['tags']) ? doc['tags'].map(String) : undefined;
-  const falsepositives = Array.isArray(doc['falsepositives']) ? doc['falsepositives'].map(String) : undefined;
+  const falsepositives = Array.isArray(doc['falsepositives'])
+    ? doc['falsepositives'].map(String)
+    : undefined;
   const references = Array.isArray(doc['references']) ? doc['references'].map(String) : undefined;
 
   const rule: SigmaRule = {
@@ -172,7 +189,9 @@ export function parseSigmaYaml(yamlContent: string): SigmaRule | null {
     ...(references !== undefined ? { references } : {}),
   };
 
-  logger.info(`Successfully parsed Sigma rule: "${rule.title}" (${rule.id}) / 成功解析 Sigma 規則: "${rule.title}" (${rule.id})`);
+  logger.info(
+    `Successfully parsed Sigma rule: "${rule.title}" (${rule.id}) / 成功解析 Sigma 規則: "${rule.title}" (${rule.id})`
+  );
   return rule;
 }
 
@@ -196,7 +215,9 @@ export function parseSigmaFile(filePath: string): SigmaRule | null {
     return rule;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    logger.error(`Failed to read Sigma file: ${filePath} / 讀取 Sigma 檔案失敗: ${filePath}`, { error: message });
+    logger.error(`Failed to read Sigma file: ${filePath} / 讀取 Sigma 檔案失敗: ${filePath}`, {
+      error: message,
+    });
     return null;
   }
 }

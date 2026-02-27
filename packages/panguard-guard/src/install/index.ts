@@ -122,7 +122,9 @@ CONFIGEOF
   echo "Default config created: $CONFIG_FILE"
 fi
 
-${autoStart ? `# Install as service / 安裝為服務
+${
+  autoStart
+    ? `# Install as service / 安裝為服務
 echo "Installing as system service..."
 panguard-guard install
 
@@ -132,12 +134,14 @@ echo " PanguardGuard installed successfully!"
 echo " Dashboard: http://localhost:3743"
 echo " Data dir:  $DATA_DIR"
 echo " Status:    panguard-guard status"
-echo "========================================="` : `echo ""
+echo "========================================="`
+    : `echo ""
 echo "========================================="
 echo " PanguardGuard installed successfully!"
 echo " Start:     panguard-guard start"
 echo " Dashboard: http://localhost:3743"
-echo "========================================="`}
+echo "========================================="`
+}
 `;
 }
 
@@ -211,7 +215,9 @@ if (-not (Test-Path $configFile)) {
     Write-Host "Default config created: $configFile"
 }
 
-${autoStart ? `# Install as service / 安裝為服務
+${
+  autoStart
+    ? `# Install as service / 安裝為服務
 Write-Host "Installing as Windows service..."
 panguard-guard install
 
@@ -221,11 +227,13 @@ Write-Host " PanguardGuard installed successfully!"
 Write-Host " Dashboard: http://localhost:3743"
 Write-Host " Data dir:  $dataDir"
 Write-Host " Status:    panguard-guard status"
-Write-Host "========================================="` : `Write-Host ""
+Write-Host "========================================="`
+    : `Write-Host ""
 Write-Host "========================================="
 Write-Host " PanguardGuard installed successfully!"
 Write-Host " Start:     panguard-guard start"
 Write-Host " Dashboard: http://localhost:3743"
-Write-Host "========================================="`}
+Write-Host "========================================="`
+}
 `;
 }

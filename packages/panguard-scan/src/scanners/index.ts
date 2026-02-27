@@ -51,17 +51,9 @@ const RISK_FACTOR_TITLES: Record<string, string> = {
  * 風險因素轉換的類別到手動修復指令對應表
  */
 const RISK_FACTOR_MANUAL_FIX: Record<string, string[]> = {
-  noFirewall: [
-    'sudo ufw enable',
-    'sudo ufw default deny incoming',
-  ],
-  dangerousPorts: [
-    'sudo ufw deny <port>',
-    'sudo iptables -A INPUT -p tcp --dport <port> -j DROP',
-  ],
-  noUpdates: [
-    'sudo apt update && sudo apt upgrade -y',
-  ],
+  noFirewall: ['sudo ufw enable', 'sudo ufw default deny incoming'],
+  dangerousPorts: ['sudo ufw deny <port>', 'sudo iptables -A INPUT -p tcp --dport <port> -j DROP'],
+  noUpdates: ['sudo apt update && sudo apt upgrade -y'],
   noSecurityTools: [
     'sudo apt install fail2ban -y',
     'sudo systemctl enable fail2ban && sudo systemctl start fail2ban',
@@ -119,12 +111,14 @@ const RISK_FACTOR_REMEDIATIONS: Record<string, string> = {
  * @returns Converted Finding / 轉換後的 Finding
  */
 function riskFactorToFinding(factor: RiskFactor): Finding {
-  const title = RISK_FACTOR_TITLES[factor.category] ??
+  const title =
+    RISK_FACTOR_TITLES[factor.category] ??
     `Risk factor: ${factor.category} / 風險因素：${factor.category}`;
 
-  const remediation = RISK_FACTOR_REMEDIATIONS[factor.category] ??
+  const remediation =
+    RISK_FACTOR_REMEDIATIONS[factor.category] ??
     'Review and address this risk factor according to your security policy. / ' +
-    '根據您的安全策略審查並處理此風險因素。';
+      '根據您的安全策略審查並處理此風險因素。';
 
   const manualFix = RISK_FACTOR_MANUAL_FIX[factor.category];
 
@@ -176,13 +170,10 @@ function calculateEnhancedRiskScore(baseScore: number, additionalFindings: Findi
  * 依據發現類別/關鍵字的備用手動修復指令
  */
 const CATEGORY_MANUAL_FIX: Record<string, string[]> = {
-  password: [
-    "sudo passwd -e $(whoami)",
-    "sudo apt install libpam-pwquality -y",
-  ],
+  password: ['sudo passwd -e $(whoami)', 'sudo apt install libpam-pwquality -y'],
   ssl: [
     "sudo sed -i 's/TLSv1.1/TLSv1.3/' /etc/nginx/nginx.conf",
-    "sudo nginx -t && sudo systemctl reload nginx",
+    'sudo nginx -t && sudo systemctl reload nginx',
   ],
 };
 
@@ -254,10 +245,7 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
 
   // Collect additional findings (beyond discovery base)
   // 收集額外發現（超出偵察基礎）
-  const additionalFindings: Finding[] = [
-    ...passwordFindings,
-    ...portFindings,
-  ];
+  const additionalFindings: Finding[] = [...passwordFindings, ...portFindings];
 
   // Step 5: Full mode - additional checks
   // 步驟 5：完整模式 - 額外檢查
@@ -297,19 +285,15 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
 
   // Step 6: Merge, enrich with manual fix commands, and sort all findings
   // 步驟 6：合併、補充手動修復指令，並排序所有發現
-  const allFindings: Finding[] = [
-    ...discoveryFindings,
-    ...additionalFindings,
-  ].map(enrichManualFix).sort(sortBySeverity);
+  const allFindings: Finding[] = [...discoveryFindings, ...additionalFindings]
+    .map(enrichManualFix)
+    .sort(sortBySeverity);
 
   logger.info(`Total findings: ${allFindings.length}`);
 
   // Step 7: Calculate enhanced risk score
   // 步驟 7：計算增強風險評分
-  const enhancedRiskScore = calculateEnhancedRiskScore(
-    discovery.riskScore,
-    additionalFindings
-  );
+  const enhancedRiskScore = calculateEnhancedRiskScore(discovery.riskScore, additionalFindings);
   const riskLevel = getRiskLevel(enhancedRiskScore);
 
   logger.info(`Enhanced risk score: ${enhancedRiskScore}/100 (level: ${riskLevel})`);

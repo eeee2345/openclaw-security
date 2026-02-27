@@ -16,7 +16,11 @@ describe('AuthDB', () => {
 
   afterEach(() => {
     db.close();
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   // ── Waitlist ────────────────────────────────────────────────────
@@ -100,7 +104,7 @@ describe('AuthDB', () => {
     it('should create a user', () => {
       const user = db.createUser(
         { email: 'user@test.com', name: 'Test User', password: 'unused' },
-        'hashed_pw',
+        'hashed_pw'
       );
       expect(user.id).toBe(1);
       expect(user.email).toBe('user@test.com');
@@ -119,7 +123,7 @@ describe('AuthDB', () => {
     it('should reject duplicate user emails', () => {
       db.createUser({ email: 'dup@test.com', name: 'A', password: 'pw' }, 'hash1');
       expect(() =>
-        db.createUser({ email: 'dup@test.com', name: 'B', password: 'pw' }, 'hash2'),
+        db.createUser({ email: 'dup@test.com', name: 'B', password: 'pw' }, 'hash2')
       ).toThrow();
     });
 
@@ -136,7 +140,10 @@ describe('AuthDB', () => {
     });
 
     it('should update last login', () => {
-      const user = db.createUser({ email: 'login@test.com', name: 'Login', password: 'pw' }, 'hash');
+      const user = db.createUser(
+        { email: 'login@test.com', name: 'Login', password: 'pw' },
+        'hash'
+      );
       expect(user.lastLogin).toBeNull();
       db.updateLastLogin(user.id);
       const updated = db.getUserById(user.id);
@@ -150,7 +157,10 @@ describe('AuthDB', () => {
     let userId: number;
 
     beforeEach(() => {
-      const user = db.createUser({ email: 'sess@test.com', name: 'Session', password: 'pw' }, 'hash');
+      const user = db.createUser(
+        { email: 'sess@test.com', name: 'Session', password: 'pw' },
+        'hash'
+      );
       userId = user.id;
     });
 
@@ -225,8 +235,8 @@ describe('AuthDB', () => {
       db.createReportPurchase(userId, 'soc2', 'per_report');
       const purchases = db.getUserReportPurchases(userId);
       expect(purchases).toHaveLength(2);
-      expect(purchases.map(p => p.addonId)).toContain('iso27001');
-      expect(purchases.map(p => p.addonId)).toContain('soc2');
+      expect(purchases.map((p) => p.addonId)).toContain('iso27001');
+      expect(purchases.map((p) => p.addonId)).toContain('soc2');
     });
 
     it('should check active purchase exists', () => {

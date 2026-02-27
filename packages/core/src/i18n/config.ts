@@ -73,7 +73,17 @@ export async function initI18n(language: Language = 'en'): Promise<i18n> {
     lng: language,
     fallbackLng: 'en',
     supportedLngs: ['zh-TW', 'en'],
-    ns: ['common', 'security', 'discovery', 'panguard-scan', 'panguard-guard', 'panguard-chat', 'panguard-trap', 'panguard-report', 'panguardweb'],
+    ns: [
+      'common',
+      'security',
+      'discovery',
+      'panguard-scan',
+      'panguard-guard',
+      'panguard-chat',
+      'panguard-trap',
+      'panguard-report',
+      'panguardweb',
+    ],
     defaultNS: 'common',
     resources,
     interpolation: {
@@ -107,7 +117,9 @@ export function getI18n(): i18n | null {
  */
 export async function changeLanguage(language: Language): Promise<void> {
   if (!initialized) {
-    throw new Error('i18n not initialized. Call initI18n() first. / i18n 尚未初始化，請先呼叫 initI18n()。');
+    throw new Error(
+      'i18n not initialized. Call initI18n() first. / i18n 尚未初始化，請先呼叫 initI18n()。'
+    );
   }
   await i18next.changeLanguage(language);
 }

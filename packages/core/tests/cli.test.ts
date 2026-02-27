@@ -1,8 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import {
-  c, colorSeverity, colorScore, colorGrade,
-  table, box, banner, header, divider, scoreDisplay, statusPanel,
-  stripAnsi, formatDuration, timeAgo, symbols,
+  c,
+  colorSeverity,
+  colorScore,
+  colorGrade,
+  table,
+  box,
+  banner,
+  header,
+  divider,
+  scoreDisplay,
+  statusPanel,
+  stripAnsi,
+  formatDuration,
+  timeAgo,
+  symbols,
 } from '../src/cli/index.js';
 
 describe('CLI Colors (Brand Tokens)', () => {
@@ -81,7 +93,7 @@ describe('table', () => {
       [
         { name: 'cpu', value: '50%' },
         { name: 'ram', value: '30%' },
-      ],
+      ]
     );
     const lines = result.split('\n');
     expect(lines.length).toBeGreaterThanOrEqual(5);
@@ -92,10 +104,7 @@ describe('table', () => {
   });
 
   it('should handle empty rows', () => {
-    const result = table(
-      [{ header: 'Col', key: 'col', width: 5 }],
-      [],
-    );
+    const result = table([{ header: 'Col', key: 'col', width: 5 }], []);
     expect(stripAnsi(result)).toContain('Col');
   });
 });

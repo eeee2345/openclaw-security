@@ -35,10 +35,13 @@ const logger = createLogger('panguard-chat:channel:email');
 /** Map severity to email subject prefix */
 function subjectPrefix(severity?: AlertSeverity): string {
   switch (severity) {
-    case 'critical': return '[CRITICAL]';
-    case 'warning': return '[WARNING]';
+    case 'critical':
+      return '[CRITICAL]';
+    case 'warning':
+      return '[WARNING]';
     case 'info':
-    default: return '[INFO]';
+    default:
+      return '[INFO]';
   }
 }
 
@@ -84,7 +87,7 @@ function buildMimeMessage(options: {
     'Content-Transfer-Encoding: base64',
     '',
     Buffer.from(options.text).toString('base64'),
-    `--${boundary}`,
+    `--${boundary}`
   );
 
   // HTML part
@@ -92,7 +95,7 @@ function buildMimeMessage(options: {
     'Content-Type: text/html; charset=utf-8',
     'Content-Transfer-Encoding: base64',
     '',
-    Buffer.from(options.html).toString('base64'),
+    Buffer.from(options.html).toString('base64')
   );
 
   // Attachments
@@ -104,7 +107,7 @@ function buildMimeMessage(options: {
         `Content-Disposition: attachment; filename="${att.filename}"`,
         'Content-Transfer-Encoding: base64',
         '',
-        att.data.toString('base64'),
+        att.data.toString('base64')
       );
     }
   }
@@ -131,7 +134,7 @@ export class EmailChannel implements MessagingChannel {
     this.config = config;
     logger.info(
       `Email channel initialized: ${config.host}:${config.port} / ` +
-      `Email 管道已初始化: ${config.host}:${config.port}`,
+        `Email 管道已初始化: ${config.host}:${config.port}`
     );
   }
 
@@ -173,9 +176,7 @@ export class EmailChannel implements MessagingChannel {
 
       await this.sendSmtp(mime);
 
-      logger.info(
-        `Email sent to ${this.config.to.join(', ')} / Email 已發送`,
-      );
+      logger.info(`Email sent to ${this.config.to.join(', ')} / Email 已發送`);
 
       return { success: true, channel: 'email' };
     } catch (err: unknown) {
@@ -226,7 +227,9 @@ export class EmailChannel implements MessagingChannel {
    */
   onReply(handler: ReplyHandler): void {
     this.replyHandler = handler;
-    logger.info('Email reply handler registered (polling-based) / Email 回覆處理器已註冊（輪詢式）');
+    logger.info(
+      'Email reply handler registered (polling-based) / Email 回覆處理器已註冊（輪詢式）'
+    );
   }
 
   // -------------------------------------------------------------------------
@@ -293,19 +296,23 @@ export class EmailChannel implements MessagingChannel {
       };
 
       if (config.secure) {
-        import('node:tls').then((tls) => {
-          const socket = tls.connect({ port: config.port, host: config.host }, () => {
-            smtpConversation(socket);
-          });
-          socket.on('error', reject);
-        }).catch(reject);
+        import('node:tls')
+          .then((tls) => {
+            const socket = tls.connect({ port: config.port, host: config.host }, () => {
+              smtpConversation(socket);
+            });
+            socket.on('error', reject);
+          })
+          .catch(reject);
       } else {
-        import('node:net').then((net) => {
-          const socket = net.connect(config.port, config.host, () => {
-            smtpConversation(socket);
-          });
-          socket.on('error', reject);
-        }).catch(reject);
+        import('node:net')
+          .then((net) => {
+            const socket = net.connect(config.port, config.host, () => {
+              smtpConversation(socket);
+            });
+            socket.on('error', reject);
+          })
+          .catch(reject);
       }
     });
   }

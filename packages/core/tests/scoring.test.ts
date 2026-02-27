@@ -15,7 +15,10 @@ import {
 describe('Security Score', () => {
   const perfectInput: ScoreInput = {
     firewallEnabled: true,
-    openPorts: [{ port: 80, service: 'http' }, { port: 443, service: 'https' }],
+    openPorts: [
+      { port: 80, service: 'http' },
+      { port: 443, service: 'https' },
+    ],
     dangerousPorts: [],
     passwordPolicyStrength: 95,
     pendingUpdates: 0,
@@ -29,8 +32,12 @@ describe('Security Score', () => {
   const terribleInput: ScoreInput = {
     firewallEnabled: false,
     openPorts: [
-      { port: 22 }, { port: 23 }, { port: 445 }, { port: 3389 },
-      { port: 3306 }, { port: 6379 },
+      { port: 22 },
+      { port: 23 },
+      { port: 445 },
+      { port: 3389 },
+      { port: 3306 },
+      { port: 6379 },
     ],
     dangerousPorts: [22, 23, 445, 3389, 3306, 6379],
     passwordPolicyStrength: 10,
@@ -57,9 +64,15 @@ describe('Security Score', () => {
   it('should include all 8 factors', () => {
     const result = calculateSecurityScore(perfectInput);
     expect(result.factors.length).toBe(8);
-    expect(result.factors.map(f => f.name)).toEqual([
-      'firewall', 'open_ports', 'password_policy', 'system_updates',
-      'security_tools', 'recent_threats', 'compliance', 'response_speed',
+    expect(result.factors.map((f) => f.name)).toEqual([
+      'firewall',
+      'open_ports',
+      'password_policy',
+      'system_updates',
+      'security_tools',
+      'recent_threats',
+      'compliance',
+      'response_speed',
     ]);
   });
 
@@ -177,13 +190,13 @@ describe('AchievementTracker', () => {
 
   it('should earn 7-day streak achievement', () => {
     const earned = tracker.check({ ...baseStats, consecutiveSafeDays: 7 });
-    expect(earned.some(e => e.achievement.id === 'safe_7_days')).toBe(true);
+    expect(earned.some((e) => e.achievement.id === 'safe_7_days')).toBe(true);
   });
 
   it('should earn 30-day streak and 7-day streak together', () => {
     const earned = tracker.check({ ...baseStats, consecutiveSafeDays: 30 });
-    expect(earned.some(e => e.achievement.id === 'safe_7_days')).toBe(true);
-    expect(earned.some(e => e.achievement.id === 'safe_30_days')).toBe(true);
+    expect(earned.some((e) => e.achievement.id === 'safe_7_days')).toBe(true);
+    expect(earned.some((e) => e.achievement.id === 'safe_30_days')).toBe(true);
   });
 
   it('should not earn same achievement twice', () => {
@@ -201,7 +214,7 @@ describe('AchievementTracker', () => {
 
   it('should earn fully_armed achievement', () => {
     const earned = tracker.check({ ...baseStats, allRecommendationsEnabled: true });
-    expect(earned.some(e => e.achievement.id === 'fully_armed')).toBe(true);
+    expect(earned.some((e) => e.achievement.id === 'fully_armed')).toBe(true);
   });
 
   it('should mark achievements as notified', () => {

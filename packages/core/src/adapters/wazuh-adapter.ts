@@ -198,15 +198,13 @@ export class WazuhAdapter extends BaseAdapter {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Basic ${credentials}`,
+        Authorization: `Basic ${credentials}`,
         'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Wazuh authentication failed: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Wazuh authentication failed: ${response.status} ${response.statusText}`);
     }
 
     const body = (await response.json()) as { data?: { token?: string } };
@@ -246,14 +244,14 @@ export class WazuhAdapter extends BaseAdapter {
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
       throw new Error(
-        `Wazuh API request failed: ${response.status} ${response.statusText} for ${path}`,
+        `Wazuh API request failed: ${response.status} ${response.statusText} for ${path}`
       );
     }
 

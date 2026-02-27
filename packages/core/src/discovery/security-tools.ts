@@ -67,23 +67,21 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['falcond', 'falcon-sensor', 'CSFalconService.exe', 'CSFalconContainer'],
     serviceName: 'CSFalconService',
     type: 'edr',
-    installPaths: [
-      '/opt/CrowdStrike',
-      '/Library/CS',
-      'C:\\Program Files\\CrowdStrike',
-    ],
+    installPaths: ['/opt/CrowdStrike', '/Library/CS', 'C:\\Program Files\\CrowdStrike'],
   },
   {
     name: 'Sophos',
     vendor: 'Sophos',
-    processNames: ['SophosScanD', 'SophosAntiVirus', 'savscand', 'SophosCleanM.exe', 'SophosHealth.exe'],
+    processNames: [
+      'SophosScanD',
+      'SophosAntiVirus',
+      'savscand',
+      'SophosCleanM.exe',
+      'SophosHealth.exe',
+    ],
     serviceName: 'Sophos Anti-Virus',
     type: 'antivirus',
-    installPaths: [
-      '/opt/sophos-av',
-      '/Library/Sophos Anti-Virus',
-      'C:\\Program Files\\Sophos',
-    ],
+    installPaths: ['/opt/sophos-av', '/Library/Sophos Anti-Virus', 'C:\\Program Files\\Sophos'],
   },
   {
     name: 'Trend Micro',
@@ -91,10 +89,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['ds_agent', 'dsa_query', 'coreServiceShell', 'PccNTMon.exe', 'TMBMSRV.exe'],
     serviceName: 'ds_agent',
     type: 'antivirus',
-    installPaths: [
-      '/opt/ds_agent',
-      'C:\\Program Files\\Trend Micro',
-    ],
+    installPaths: ['/opt/ds_agent', 'C:\\Program Files\\Trend Micro'],
   },
   {
     name: 'Kaspersky',
@@ -102,10 +97,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['klnagent', 'avp', 'avp.exe', 'kavfswh.exe'],
     serviceName: 'klnagent',
     type: 'antivirus',
-    installPaths: [
-      'C:\\Program Files\\Kaspersky Lab',
-      'C:\\Program Files (x86)\\Kaspersky Lab',
-    ],
+    installPaths: ['C:\\Program Files\\Kaspersky Lab', 'C:\\Program Files (x86)\\Kaspersky Lab'],
   },
   {
     name: 'Malwarebytes',
@@ -113,10 +105,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['MBAMService', 'mbamservice.exe', 'RTProtectionDaemon'],
     serviceName: 'MBAMService',
     type: 'antivirus',
-    installPaths: [
-      '/Library/Application Support/Malwarebytes',
-      'C:\\Program Files\\Malwarebytes',
-    ],
+    installPaths: ['/Library/Application Support/Malwarebytes', 'C:\\Program Files\\Malwarebytes'],
   },
   {
     name: 'ESET',
@@ -124,10 +113,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['esets_daemon', 'ekrn.exe', 'egui.exe', 'essod'],
     serviceName: 'esets_daemon',
     type: 'antivirus',
-    installPaths: [
-      '/opt/eset',
-      'C:\\Program Files\\ESET',
-    ],
+    installPaths: ['/opt/eset', 'C:\\Program Files\\ESET'],
   },
   {
     name: 'pfSense',
@@ -142,10 +128,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['forticlient', 'FortiClient.exe', 'FortiTray.exe', 'FCDBLog.exe'],
     serviceName: 'FortiClientMonitor',
     type: 'edr',
-    installPaths: [
-      '/opt/forticlient',
-      'C:\\Program Files\\Fortinet',
-    ],
+    installPaths: ['/opt/forticlient', 'C:\\Program Files\\Fortinet'],
   },
   {
     name: 'Snort',
@@ -185,11 +168,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['splunkd', 'splunk-optimize'],
     serviceName: 'Splunkd',
     type: 'siem',
-    installPaths: [
-      '/opt/splunk',
-      '/opt/splunkforwarder',
-      'C:\\Program Files\\Splunk',
-    ],
+    installPaths: ['/opt/splunk', '/opt/splunkforwarder', 'C:\\Program Files\\Splunk'],
   },
   {
     name: 'Elastic Agent',
@@ -197,10 +176,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['elastic-agent', 'filebeat', 'metricbeat', 'auditbeat'],
     serviceName: 'elastic-agent',
     type: 'siem',
-    installPaths: [
-      '/opt/Elastic',
-      'C:\\Program Files\\Elastic',
-    ],
+    installPaths: ['/opt/Elastic', 'C:\\Program Files\\Elastic'],
   },
   {
     name: 'Carbon Black',
@@ -208,10 +184,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['cbagentd', 'cbdaemon', 'CbDefense.exe'],
     serviceName: 'CbDefense',
     type: 'edr',
-    installPaths: [
-      '/opt/carbonblack',
-      'C:\\Program Files\\Confer',
-    ],
+    installPaths: ['/opt/carbonblack', 'C:\\Program Files\\Confer'],
   },
   {
     name: 'SentinelOne',
@@ -219,10 +192,7 @@ const KNOWN_SECURITY_TOOLS: KnownSecurityTool[] = [
     processNames: ['sentinelone-agent', 'SentinelAgent.exe', 'sentineld'],
     serviceName: 'SentinelAgent',
     type: 'edr',
-    installPaths: [
-      '/opt/sentinelone',
-      'C:\\Program Files\\SentinelOne',
-    ],
+    installPaths: ['/opt/sentinelone', 'C:\\Program Files\\SentinelOne'],
   },
 ];
 
@@ -343,14 +313,14 @@ export async function detectSecurityTools(services: ServiceInfo[]): Promise<Secu
   const detectedTools: SecurityTool[] = [];
   const processSet = await getRunningProcesses();
 
-  logger.info(`Checking ${KNOWN_SECURITY_TOOLS.length} known security tools against ${processSet.size} running processes`);
+  logger.info(
+    `Checking ${KNOWN_SECURITY_TOOLS.length} known security tools against ${processSet.size} running processes`
+  );
 
   // Build a set of running service names for quick lookup
   // 建立執行中服務名稱集合以快速查找
   const runningServiceNames = new Set(
-    services
-      .filter((s) => s.status === 'running')
-      .map((s) => s.name.toLowerCase())
+    services.filter((s) => s.status === 'running').map((s) => s.name.toLowerCase())
   );
 
   for (const tool of KNOWN_SECURITY_TOOLS) {

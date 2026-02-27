@@ -14,7 +14,14 @@ import { HTTPTrapService } from './http-trap.js';
 import { GenericTrapService } from './generic-trap.js';
 
 /** Service types that use generic handler / 使用通用處理器的服務類型 */
-const GENERIC_TYPES: Set<TrapServiceType> = new Set(['ftp', 'telnet', 'mysql', 'redis', 'smb', 'rdp']);
+const GENERIC_TYPES: Set<TrapServiceType> = new Set([
+  'ftp',
+  'telnet',
+  'mysql',
+  'redis',
+  'smb',
+  'rdp',
+]);
 
 /**
  * Create a trap service instance for the given config

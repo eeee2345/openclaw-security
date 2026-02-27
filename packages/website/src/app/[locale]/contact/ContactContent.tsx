@@ -1,24 +1,22 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import {
-  AnalyticsIcon, SupportIcon, TeamIcon, GlobalIcon,
-} from "@/components/ui/BrandIcons";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import ContactForm from "./ContactForm";
+import { useTranslations } from 'next-intl';
+import { AnalyticsIcon, SupportIcon, TeamIcon, GlobalIcon } from '@/components/ui/BrandIcons';
+import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import ContactForm from './ContactForm';
 
 /* ────────────────────────  Channel Cards  ─────────────────────── */
 
 const channelIcons = [AnalyticsIcon, SupportIcon, TeamIcon, AnalyticsIcon];
-const channelKeys = ["sales", "support", "partnership", "press"] as const;
+const channelKeys = ['sales', 'support', 'partnership', 'press'] as const;
 
 /* ════════════════════════  Component  ═══════════════════════ */
 
 export default function ContactContent() {
-  const t = useTranslations("contact");
+  const t = useTranslations('contact');
 
   return (
     <>
@@ -28,13 +26,13 @@ export default function ContactContent() {
         <section className="pt-24 pb-4 px-6 text-center">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              {t("overline")}
+              {t('overline')}
             </p>
             <h1 className="text-[clamp(40px,5vw,64px)] font-bold text-text-primary leading-[1.08] max-w-3xl mx-auto">
-              {t("title")}
+              {t('title')}
             </h1>
             <p className="text-text-secondary mt-4 text-lg max-w-xl mx-auto leading-relaxed">
-              {t("subtitle")}
+              {t('subtitle')}
             </p>
           </FadeInUp>
         </section>
@@ -76,11 +74,9 @@ export default function ContactContent() {
             <div className="lg:col-span-3">
               <FadeInUp>
                 <h2 className="text-2xl font-bold text-text-primary mb-2">
-                  {t("formSection.title")}
+                  {t('formSection.title')}
                 </h2>
-                <p className="text-text-secondary text-sm mb-8">
-                  {t("formSection.subtitle")}
-                </p>
+                <p className="text-text-secondary text-sm mb-8">{t('formSection.subtitle')}</p>
                 <ContactForm />
               </FadeInUp>
             </div>
@@ -91,31 +87,29 @@ export default function ContactContent() {
                 <div className="bg-surface-0 rounded-2xl border border-border p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <GlobalIcon className="w-4 h-4 text-brand-sage" />
-                    <h3 className="text-text-primary font-semibold">
-                      {t("location.title")}
-                    </h3>
+                    <h3 className="text-text-primary font-semibold">{t('location.title')}</h3>
                   </div>
                   <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
-                    {t("location.address")}
+                    {t('location.address')}
                   </p>
                   <div className="mt-6 pt-6 border-t border-border">
                     <p className="text-xs uppercase tracking-wider text-text-muted font-semibold mb-3">
-                      {t("hours.title")}
+                      {t('hours.title')}
                     </p>
                     <p className="text-sm text-text-secondary whitespace-pre-line">
-                      {t("hours.schedule")}
+                      {t('hours.schedule')}
                     </p>
                   </div>
                   <div className="mt-6 pt-6 border-t border-border">
                     <p className="text-xs uppercase tracking-wider text-text-muted font-semibold mb-3">
-                      {t("responseTime.title")}
+                      {t('responseTime.title')}
                     </p>
                     <p className="text-sm text-text-secondary">
-                      {t("responseTime.general")}
+                      {t('responseTime.general')}
                       <br />
-                      {t("responseTime.support")}
+                      {t('responseTime.support')}
                       <br />
-                      {t("responseTime.security")}
+                      {t('responseTime.security')}
                     </p>
                   </div>
                 </div>

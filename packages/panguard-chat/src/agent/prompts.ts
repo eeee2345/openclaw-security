@@ -76,10 +76,7 @@ const USER_TYPE_INSTRUCTIONS: Record<UserType, Record<MessageLanguage, string>> 
  * Get user-type-specific instructions
  * 取得用戶類型專用指示
  */
-export function getUserTypeInstructions(
-  userType: UserType,
-  language: MessageLanguage,
-): string {
+export function getUserTypeInstructions(userType: UserType, language: MessageLanguage): string {
   return USER_TYPE_INSTRUCTIONS[userType][language];
 }
 
@@ -168,10 +165,7 @@ If the question goes beyond existing context, trigger a new investigation (send 
  * @param language - Target language / 目標語言
  * @returns Complete system prompt / 完整的系統提示詞
  */
-export function buildSystemPrompt(
-  userType: UserType,
-  language: MessageLanguage,
-): string {
+export function buildSystemPrompt(userType: UserType, language: MessageLanguage): string {
   const template = language === 'zh-TW' ? SYSTEM_PROMPT_ZH_TW : SYSTEM_PROMPT_EN;
   const instructions = getUserTypeInstructions(userType, language);
   return template.replace('{{USER_TYPE_INSTRUCTIONS}}', instructions);

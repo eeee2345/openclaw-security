@@ -98,31 +98,31 @@ CLI 會印出認證 URL，你可以複製到有瀏覽器的裝置開啟：
 
 ### 6 個訂閱等級
 
-| 等級 | 月費 | 定位 |
-|------|------|------|
-| **Scan** | $0 | 快速掃描、了解安全狀況（轉換入口） |
-| **Solo** | $9 | 防護 + 1 通知管道（個人開發者） |
-| **Starter** | $19 | 防護 + 3 通知管道（小團隊、最多 5 端點） |
-| **Team** | $14/端點 | 全功能含蜜罐（中型團隊、5-50 端點） |
-| **Business** | $10/端點 | 全功能 + 基礎合規報告（企業、50-500 端點） |
-| **Enterprise** | 聯繫我們 | 500+ 端點 + 專屬支援 |
+| 等級           | 月費     | 定位                                       |
+| -------------- | -------- | ------------------------------------------ |
+| **Scan**       | $0       | 快速掃描、了解安全狀況（轉換入口）         |
+| **Solo**       | $9       | 防護 + 1 通知管道（個人開發者）            |
+| **Starter**    | $19      | 防護 + 3 通知管道（小團隊、最多 5 端點）   |
+| **Team**       | $14/端點 | 全功能含蜜罐（中型團隊、5-50 端點）        |
+| **Business**   | $10/端點 | 全功能 + 基礎合規報告（企業、50-500 端點） |
+| **Enterprise** | 聯繫我們 | 500+ 端點 + 專屬支援                       |
 
 ### CLI 功能對照
 
-| 指令 | 最低等級 | 說明 |
-|------|---------|------|
-| `panguard init` | 無需登入 | 設定精靈 |
-| `panguard login / logout / whoami` | 無需等級 | 認證指令 |
-| `panguard status` | Scan | 狀態查詢 |
-| `panguard demo` | Scan | 功能展示 |
-| `panguard scan --quick` | Scan | 快速掃描 |
-| `panguard scan` | Solo | 完整掃描 |
-| `panguard guard start` | Solo | 即時防護 |
-| `panguard chat setup` | Solo | 通知設定 |
-| `panguard deploy` | Solo | 部署服務 |
-| `panguard trap` | Team | 蜜罐系統 |
-| `panguard report` | Team | 合規報告（需加價購或 Business 方案） |
-| `panguard threat` | Business | 威脅情報 API |
+| 指令                               | 最低等級 | 說明                                 |
+| ---------------------------------- | -------- | ------------------------------------ |
+| `panguard init`                    | 無需登入 | 設定精靈                             |
+| `panguard login / logout / whoami` | 無需等級 | 認證指令                             |
+| `panguard status`                  | Scan     | 狀態查詢                             |
+| `panguard demo`                    | Scan     | 功能展示                             |
+| `panguard scan --quick`            | Scan     | 快速掃描                             |
+| `panguard scan`                    | Solo     | 完整掃描                             |
+| `panguard guard start`             | Solo     | 即時防護                             |
+| `panguard chat setup`              | Solo     | 通知設定                             |
+| `panguard deploy`                  | Solo     | 部署服務                             |
+| `panguard trap`                    | Team     | 蜜罐系統                             |
+| `panguard report`                  | Team     | 合規報告（需加價購或 Business 方案） |
+| `panguard threat`                  | Business | 威脅情報 API                         |
 
 ### 等級檢查機制
 
@@ -136,13 +136,13 @@ CLI 使用 `withAuth()` 裝飾器檢查登入狀態和訂閱等級：
 
 ## 安全措施
 
-| 項目 | 說明 |
-|------|------|
-| CSRF 防護 | 隨機 state token 驗證 callback |
-| Callback 限制 | 只接受 localhost callback URL |
-| 檔案權限 | credentials.json 設為 0o600 |
-| Token 到期 | 30 天自動過期 |
-| 流程逾時 | 待處理認證流程 10 分鐘後自動清理 |
+| 項目          | 說明                             |
+| ------------- | -------------------------------- |
+| CSRF 防護     | 隨機 state token 驗證 callback   |
+| Callback 限制 | 只接受 localhost callback URL    |
+| 檔案權限      | credentials.json 設為 0o600      |
+| Token 到期    | 30 天自動過期                    |
+| 流程逾時      | 待處理認證流程 10 分鐘後自動清理 |
 
 ---
 

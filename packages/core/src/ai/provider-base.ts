@@ -44,7 +44,8 @@ export abstract class LLMProviderBase implements LLMProvider {
   /** Provider configuration / 供應商配置 */
   protected readonly config: Required<
     Pick<LLMConfig, 'provider' | 'model' | 'lang' | 'temperature' | 'maxTokens' | 'timeout'>
-  > & Pick<LLMConfig, 'endpoint' | 'apiKey'>;
+  > &
+    Pick<LLMConfig, 'endpoint' | 'apiKey'>;
 
   /** Token usage tracker / Token 使用追蹤器 */
   protected readonly tokenTracker: TokenTracker;
@@ -129,7 +130,7 @@ export abstract class LLMProviderBase implements LLMProvider {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new Error(
-        `Analysis failed (${this.providerType}/${this.model}): ${error instanceof Error ? error.message : String(error)}`,
+        `Analysis failed (${this.providerType}/${this.model}): ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
@@ -166,7 +167,7 @@ export abstract class LLMProviderBase implements LLMProvider {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new Error(
-        `Classification failed (${this.providerType}/${this.model}): ${error instanceof Error ? error.message : String(error)}`,
+        `Classification failed (${this.providerType}/${this.model}): ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
@@ -205,7 +206,7 @@ export abstract class LLMProviderBase implements LLMProvider {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new Error(
-        `Summarization failed (${this.providerType}/${this.model}): ${error instanceof Error ? error.message : String(error)}`,
+        `Summarization failed (${this.providerType}/${this.model}): ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }

@@ -58,8 +58,12 @@ function calculateRelevance(control: ComplianceControl, finding: ComplianceFindi
   }
 
   // CVE findings + vulnerability management controls get a boost
-  if (finding.findingId.startsWith('CVE-') && control.relatedCategories.some(c =>
-    c.toLowerCase().includes('vulnerability') || c.toLowerCase().includes('patch'))) {
+  if (
+    finding.findingId.startsWith('CVE-') &&
+    control.relatedCategories.some(
+      (c) => c.toLowerCase().includes('vulnerability') || c.toLowerCase().includes('patch')
+    )
+  ) {
     score += 5;
   }
 
@@ -68,11 +72,27 @@ function calculateRelevance(control: ComplianceControl, finding: ComplianceFindi
 
 /** Extract meaningful keywords from a description (>3 chars, lowercase) */
 function extractKeywords(text: string): string[] {
-  const stopWords = new Set(['the', 'and', 'for', 'are', 'this', 'that', 'with', 'from', 'shall', 'should', 'must', 'have', 'been', 'will']);
-  return text.toLowerCase()
+  const stopWords = new Set([
+    'the',
+    'and',
+    'for',
+    'are',
+    'this',
+    'that',
+    'with',
+    'from',
+    'shall',
+    'should',
+    'must',
+    'have',
+    'been',
+    'will',
+  ]);
+  return text
+    .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
-    .filter(w => w.length > 3 && !stopWords.has(w))
+    .filter((w) => w.length > 3 && !stopWords.has(w))
     .slice(0, 10); // Limit to avoid excessive processing
 }
 
@@ -82,12 +102,12 @@ function extractKeywords(text: string): string[] {
  */
 export function evaluateControls(
   controls: ComplianceControl[],
-  findings: ComplianceFinding[],
+  findings: ComplianceFinding[]
 ): EvaluatedControl[] {
   return controls.map((control) => {
     // Find related findings using relevance scoring
-    const relatedFindings = findings.filter((finding) =>
-      calculateRelevance(control, finding) >= RELEVANCE_THRESHOLD,
+    const relatedFindings = findings.filter(
+      (finding) => calculateRelevance(control, finding) >= RELEVANCE_THRESHOLD
     );
 
     // Determine status
@@ -97,9 +117,10 @@ export function evaluateControls(
     const evidence = buildEvidence(control, relatedFindings, status);
 
     // Build remediation
-    const remediation = status === 'fail' || status === 'partial'
-      ? buildRemediation(control, relatedFindings)
-      : undefined;
+    const remediation =
+      status === 'fail' || status === 'partial'
+        ? buildRemediation(control, relatedFindings)
+        : undefined;
 
     return {
       ...control,
@@ -141,30 +162,30 @@ function determineControlStatus(findings: ComplianceFinding[]): ControlStatus {
 function buildEvidence(
   control: ComplianceControl,
   findings: ComplianceFinding[],
-  status: ControlStatus,
+  status: ControlStatus
 ): string[] {
   const evidence: string[] = [];
 
   if (status === 'pass') {
     // Describe what was actually checked rather than a generic "no findings"
     evidence.push(
-      `Automated scan of ${control.relatedCategories.join(', ')} controls completed. `
-      + `No issues detected for ${control.controlId} (${control.titleEn}).`,
+      `Automated scan of ${control.relatedCategories.join(', ')} controls completed. ` +
+        `No issues detected for ${control.controlId} (${control.titleEn}).`
     );
     evidence.push(
-      `自動掃描 ${control.relatedCategories.join('、')} 控制項完成。`
-      + `${control.controlId}（${control.titleZh}）未偵測到問題。`,
+      `自動掃描 ${control.relatedCategories.join('、')} 控制項完成。` +
+        `${control.controlId}（${control.titleZh}）未偵測到問題。`
     );
   } else {
     evidence.push(
-      `${findings.length} finding(s) detected related to ${control.controlId} (${control.titleEn}):`,
+      `${findings.length} finding(s) detected related to ${control.controlId} (${control.titleEn}):`
     );
     evidence.push(
-      `偵測到 ${findings.length} 個與 ${control.controlId}（${control.titleZh}）相關的發現：`,
+      `偵測到 ${findings.length} 個與 ${control.controlId}（${control.titleZh}）相關的發現：`
     );
     for (const finding of findings) {
       evidence.push(
-        `  [${finding.severity.toUpperCase()}] ${finding.title}: ${finding.description}`,
+        `  [${finding.severity.toUpperCase()}] ${finding.title}: ${finding.description}`
       );
     }
   }
@@ -176,15 +197,14 @@ function buildEvidence(
  * Build remediation suggestion
  * 建構修復建議
  */
-function buildRemediation(
-  control: ComplianceControl,
-  findings: ComplianceFinding[],
-): string {
-  const criticalCount = findings.filter((f) => f.severity === 'critical' || f.severity === 'high').length;
+function buildRemediation(control: ComplianceControl, findings: ComplianceFinding[]): string {
+  const criticalCount = findings.filter(
+    (f) => f.severity === 'critical' || f.severity === 'high'
+  ).length;
   const prefix = criticalCount > 0 ? 'URGENT / 緊急: ' : '';
   return (
-    `${prefix}Address ${findings.length} finding(s) related to ${control.titleEn} (${control.controlId}). `
-    + `處理與 ${control.titleZh}（${control.controlId}）相關的 ${findings.length} 個發現。`
+    `${prefix}Address ${findings.length} finding(s) related to ${control.titleEn} (${control.controlId}). ` +
+    `處理與 ${control.titleZh}（${control.controlId}）相關的 ${findings.length} 個發現。`
   );
 }
 
@@ -195,16 +215,14 @@ function buildRemediation(
 export function generateExecutiveSummary(
   controls: EvaluatedControl[],
   findings: ComplianceFinding[],
-  language: 'zh-TW' | 'en',
+  language: 'zh-TW' | 'en'
 ): ExecutiveSummary {
   const passed = controls.filter((c) => c.status === 'pass').length;
   const failed = controls.filter((c) => c.status === 'fail').length;
   const partial = controls.filter((c) => c.status === 'partial').length;
   const na = controls.filter((c) => c.status === 'not_applicable').length;
   const applicable = controls.length - na;
-  const score = applicable > 0
-    ? Math.round(((passed + partial * 0.5) / applicable) * 100)
-    : 100;
+  const score = applicable > 0 ? Math.round(((passed + partial * 0.5) / applicable) * 100) : 100;
 
   const critical = findings.filter((f) => f.severity === 'critical').length;
   const high = findings.filter((f) => f.severity === 'high').length;
@@ -220,22 +238,14 @@ export function generateExecutiveSummary(
   const keyAchievements: string[] = [];
   if (passed > 0) {
     keyAchievements.push(
-      language === 'zh-TW'
-        ? `${passed} 個控制項完全符合`
-        : `${passed} controls fully compliant`,
+      language === 'zh-TW' ? `${passed} 個控制項完全符合` : `${passed} controls fully compliant`
     );
   }
   if (critical === 0) {
-    keyAchievements.push(
-      language === 'zh-TW'
-        ? '無嚴重等級發現'
-        : 'No critical findings',
-    );
+    keyAchievements.push(language === 'zh-TW' ? '無嚴重等級發現' : 'No critical findings');
   }
 
-  logger.info(
-    `Executive summary generated: score=${score}% / 執行摘要已產生: 分數=${score}%`,
-  );
+  logger.info(`Executive summary generated: score=${score}% / 執行摘要已產生: 分數=${score}%`);
 
   return {
     overallScore: score,
@@ -258,7 +268,7 @@ export function generateExecutiveSummary(
  */
 export function generateStatistics(
   controls: EvaluatedControl[],
-  findings: ComplianceFinding[],
+  findings: ComplianceFinding[]
 ): ComplianceStatistics {
   const byStatus: Record<ControlStatus, number> = {
     pass: 0,
@@ -286,9 +296,10 @@ export function generateStatistics(
   }
 
   const applicable = controls.length - byStatus.not_applicable;
-  const compliancePercentage = applicable > 0
-    ? Math.round(((byStatus.pass + byStatus.partial * 0.5) / applicable) * 100)
-    : 100;
+  const compliancePercentage =
+    applicable > 0
+      ? Math.round(((byStatus.pass + byStatus.partial * 0.5) / applicable) * 100)
+      : 100;
 
   return {
     byStatus,
@@ -304,7 +315,7 @@ export function generateStatistics(
  */
 export function generateRecommendations(
   controls: EvaluatedControl[],
-  language: 'zh-TW' | 'en',
+  language: 'zh-TW' | 'en'
 ): ReportRecommendation[] {
   const recommendations: ReportRecommendation[] = [];
 
@@ -319,15 +330,17 @@ export function generateRecommendations(
 
   for (const control of actionableControls) {
     const hasCritical = control.relatedFindings.some(
-      (f) => f.severity === 'critical' || f.severity === 'high',
+      (f) => f.severity === 'critical' || f.severity === 'high'
     );
 
     recommendations.push({
       priority: hasCritical ? 'immediate' : control.status === 'fail' ? 'high' : 'medium',
       title: language === 'zh-TW' ? control.titleZh : control.titleEn,
-      description: control.remediation ?? (language === 'zh-TW'
-        ? `處理與 ${control.controlId} 相關的 ${control.relatedFindings.length} 個發現`
-        : `Address ${control.relatedFindings.length} finding(s) related to ${control.controlId}`),
+      description:
+        control.remediation ??
+        (language === 'zh-TW'
+          ? `處理與 ${control.controlId} 相關的 ${control.relatedFindings.length} 個發現`
+          : `Address ${control.relatedFindings.length} finding(s) related to ${control.controlId}`),
       relatedControlIds: [control.controlId],
       estimatedEffort: hasCritical ? '1-3 days' : '1-2 weeks',
     });

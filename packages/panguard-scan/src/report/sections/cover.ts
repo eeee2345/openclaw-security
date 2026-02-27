@@ -21,11 +21,7 @@ import { COLORS, FONTS, LAYOUT, severityColor } from '../styles.js';
  * @param result - Complete scan result / 完整掃描結果
  * @param lang - Output language / 輸出語言
  */
-export function renderCoverPage(
-  doc: PDFKit.PDFDocument,
-  result: ScanResult,
-  lang: Language,
-): void {
+export function renderCoverPage(doc: PDFKit.PDFDocument, result: ScanResult, lang: Language): void {
   const isZh = lang === 'zh-TW';
   const centerX = LAYOUT.pageWidth / 2;
 
@@ -41,13 +37,10 @@ export function renderCoverPage(
 
   // -- Report title --
   const reportTitle = isZh ? '資安健檢報告' : 'Security Health Check Report';
-  doc
-    .fontSize(20)
-    .fillColor(COLORS.secondary)
-    .text(reportTitle, LAYOUT.margin, 170, {
-      width: LAYOUT.contentWidth,
-      align: 'center',
-    });
+  doc.fontSize(20).fillColor(COLORS.secondary).text(reportTitle, LAYOUT.margin, 170, {
+    width: LAYOUT.contentWidth,
+    align: 'center',
+  });
 
   // -- Horizontal separator line --
   const lineY = 210;
@@ -59,13 +52,19 @@ export function renderCoverPage(
     .stroke();
 
   // -- Scan information --
-  const scanDate = new Date(result.scannedAt).toLocaleDateString(
-    isZh ? 'zh-TW' : 'en-US',
-    { year: 'numeric', month: 'long', day: 'numeric' },
-  );
-  const scanMode = result.config.depth === 'full'
-    ? (isZh ? '完整掃描' : 'Full Scan')
-    : (isZh ? '快速掃描' : 'Quick Scan');
+  const scanDate = new Date(result.scannedAt).toLocaleDateString(isZh ? 'zh-TW' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const scanMode =
+    result.config.depth === 'full'
+      ? isZh
+        ? '完整掃描'
+        : 'Full Scan'
+      : isZh
+        ? '快速掃描'
+        : 'Quick Scan';
 
   const infoStartY = 240;
   const labelWidth = 160;
@@ -155,8 +154,12 @@ export function renderCoverPage(
 
   const riskLabel = riskLevelLabels[result.riskLevel];
   const riskText = riskLabel
-    ? (isZh ? riskLabel.zh : riskLabel.en)
-    : (isZh ? '未知風險' : 'UNKNOWN RISK');
+    ? isZh
+      ? riskLabel.zh
+      : riskLabel.en
+    : isZh
+      ? '未知風險'
+      : 'UNKNOWN RISK';
 
   doc
     .font(FONTS.heading)

@@ -1,28 +1,25 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import { Rocket, ShoppingCart, Building2, User } from "lucide-react";
-import SectionWrapper from "../ui/SectionWrapper";
-import SectionTitle from "../ui/SectionTitle";
-import FadeInUp from "../FadeInUp";
-import Card from "../ui/Card";
+import { useTranslations } from 'next-intl';
+import { Rocket, ShoppingCart, Building2, User } from 'lucide-react';
+import SectionWrapper from '../ui/SectionWrapper';
+import SectionTitle from '../ui/SectionTitle';
+import FadeInUp from '../FadeInUp';
+import Card from '../ui/Card';
 
 const cases = [
-  { key: "saas", icon: Rocket },
-  { key: "ecommerce", icon: ShoppingCart },
-  { key: "taiwan", icon: Building2 },
-  { key: "freelance", icon: User },
+  { key: 'saas', icon: Rocket },
+  { key: 'ecommerce', icon: ShoppingCart },
+  { key: 'taiwan', icon: Building2 },
+  { key: 'freelance', icon: User },
 ] as const;
 
 export default function UseCases() {
-  const t = useTranslations("home.useCases");
+  const t = useTranslations('home.useCases');
 
   return (
     <SectionWrapper id="use-cases">
-      <SectionTitle
-        overline={t("overline")}
-        title={t("title")}
-      />
+      <SectionTitle overline={t('overline')} title={t('title')} />
 
       <div className="grid sm:grid-cols-2 gap-6 mt-14 max-w-4xl mx-auto">
         {cases.map((c, i) => (

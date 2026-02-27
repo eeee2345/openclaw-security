@@ -3,7 +3,9 @@ import { matchEvent, matchEventAgainstRules } from '../src/rules/sigma-matcher.j
 import type { SigmaRule } from '../src/rules/types.js';
 import type { SecurityEvent } from '../src/types.js';
 
-function makeEvent(overrides: Partial<SecurityEvent> & { metadata?: Record<string, unknown> }): SecurityEvent {
+function makeEvent(
+  overrides: Partial<SecurityEvent> & { metadata?: Record<string, unknown> }
+): SecurityEvent {
   return {
     id: 'test-001',
     timestamp: new Date(),
@@ -266,6 +268,6 @@ describe('Enhanced Sigma Matcher - Complex Conditions', () => {
 
     const matches = matchEventAgainstRules(makeEvent({}), rules);
     expect(matches.length).toBe(2);
-    expect(matches.map(m => m.rule.id)).toEqual(['r1', 'r2']);
+    expect(matches.map((m) => m.rule.id)).toEqual(['r1', 'r2']);
   });
 });

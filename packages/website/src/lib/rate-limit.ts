@@ -17,7 +17,7 @@ interface RateLimitEntry {
 const store = new Map<string, RateLimitEntry>();
 
 const WINDOW_MS = 60_000; // 1 minute
-const MAX_REQUESTS = 5;   // per window per IP
+const MAX_REQUESTS = 5; // per window per IP
 
 /** Prune expired entries periodically to prevent memory leak */
 let lastPrune = Date.now();
@@ -51,16 +51,16 @@ export function checkRateLimit(ip: string): boolean {
  * Extract client IP from request headers (works with Vercel, Cloudflare, etc.)
  */
 export function getClientIP(req: Request): string {
-  const forwarded = req.headers.get("x-forwarded-for");
+  const forwarded = req.headers.get('x-forwarded-for');
   // Prefer x-real-ip (set by Vercel/Cloudflare to the actual client IP)
-  const realIp = req.headers.get("x-real-ip");
+  const realIp = req.headers.get('x-real-ip');
   if (realIp) return realIp;
 
   if (forwarded) {
     // Take the FIRST IP (the original client, set by the first trusted proxy)
-    const ips = forwarded.split(",").map((s) => s.trim());
-    return ips[0] || "unknown";
+    const ips = forwarded.split(',').map((s) => s.trim());
+    return ips[0] || 'unknown';
   }
 
-  return "unknown";
+  return 'unknown';
 }

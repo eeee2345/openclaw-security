@@ -16,7 +16,13 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { SETUP_STEPS, getWelcomeMessage } from '../onboarding/index.js';
-import type { ChatConfig, MessageLanguage, ChannelType, UserType, WebhookConfig } from '../types.js';
+import type {
+  ChatConfig,
+  MessageLanguage,
+  ChannelType,
+  UserType,
+  WebhookConfig,
+} from '../types.js';
 import { ChatAgent } from '../agent/chat-agent.js';
 import { WebhookChannel } from '../channels/webhook.js';
 
@@ -66,9 +72,9 @@ async function commandSetup(args: string[]): Promise<void> {
   const lang: MessageLanguage = extractOption(args, '--lang') === 'en' ? 'en' : 'zh-TW';
 
   console.log('');
-  console.log(lang === 'zh-TW'
-    ? 'Panguard AI - 通知管道設定精靈'
-    : 'Panguard AI - Notification Setup Wizard');
+  console.log(
+    lang === 'zh-TW' ? 'Panguard AI - 通知管道設定精靈' : 'Panguard AI - Notification Setup Wizard'
+  );
   console.log('='.repeat(40));
 
   // Display available steps
@@ -84,9 +90,11 @@ async function commandSetup(args: string[]): Promise<void> {
   }
 
   console.log('');
-  console.log(lang === 'zh-TW'
-    ? '使用 --channel, --user-type, --language 選項進行非互動式設定'
-    : 'Use --channel, --user-type, --language options for non-interactive setup');
+  console.log(
+    lang === 'zh-TW'
+      ? '使用 --channel, --user-type, --language 選項進行非互動式設定'
+      : 'Use --channel, --user-type, --language options for non-interactive setup'
+  );
 
   // Non-interactive mode
   const channel = extractOption(args, '--channel') as ChannelType | undefined;
@@ -94,9 +102,11 @@ async function commandSetup(args: string[]): Promise<void> {
 
   if (channel && userType) {
     console.log('');
-    console.log(lang === 'zh-TW'
-      ? `配置: 管道=${channel}, 用戶類型=${userType}, 語言=${lang}`
-      : `Config: channel=${channel}, userType=${userType}, language=${lang}`);
+    console.log(
+      lang === 'zh-TW'
+        ? `配置: 管道=${channel}, 用戶類型=${userType}, 語言=${lang}`
+        : `Config: channel=${channel}, userType=${userType}, language=${lang}`
+    );
     console.log('');
     console.log(getWelcomeMessage(lang));
   }
@@ -110,19 +120,21 @@ async function commandTest(args: string[]): Promise<void> {
   const lang: MessageLanguage = extractOption(args, '--lang') === 'en' ? 'en' : 'zh-TW';
   const url = extractOption(args, '--url');
 
-  console.log(`Sending test notification via ${channelType}... / 正在透過 ${channelType} 發送測試通知...`);
+  console.log(
+    `Sending test notification via ${channelType}... / 正在透過 ${channelType} 發送測試通知...`
+  );
 
   if (channelType === 'webhook') {
     if (!url) {
       console.log('');
-      console.log(lang === 'zh-TW'
-        ? '使用 Webhook 需要指定 URL。範例:'
-        : 'Webhook requires a URL. Example:');
+      console.log(
+        lang === 'zh-TW' ? '使用 Webhook 需要指定 URL。範例:' : 'Webhook requires a URL. Example:'
+      );
       console.log('  panguard-chat test --channel webhook --url https://httpbin.org/post');
       console.log('');
-      console.log(lang === 'zh-TW'
-        ? '或使用其他管道 (需先設定):'
-        : 'Or use other channels (setup required):');
+      console.log(
+        lang === 'zh-TW' ? '或使用其他管道 (需先設定):' : 'Or use other channels (setup required):'
+      );
       console.log('  panguard-chat test --channel slack');
       console.log('  panguard-chat test --channel telegram');
       console.log('  panguard-chat test --channel line');
@@ -160,36 +172,40 @@ async function commandTest(args: string[]): Promise<void> {
       severity: 'medium',
       conclusion: 'suspicious',
       confidence: 0.95,
-      humanSummary: lang === 'zh-TW'
-        ? 'This is a test alert from Panguard AI / 這是 Panguard AI 的測試告警'
-        : 'This is a test alert from Panguard AI',
+      humanSummary:
+        lang === 'zh-TW'
+          ? 'This is a test alert from Panguard AI / 這是 Panguard AI 的測試告警'
+          : 'This is a test alert from Panguard AI',
       reasoning: 'CLI test command invoked',
-      recommendedAction: lang === 'zh-TW'
-        ? 'No action required - this is a test / 無需動作 - 這是測試'
-        : 'No action required - this is a test',
+      recommendedAction:
+        lang === 'zh-TW'
+          ? 'No action required - this is a test / 無需動作 - 這是測試'
+          : 'No action required - this is a test',
       eventDescription: 'Test notification',
       actionsTaken: [],
       timestamp: new Date().toISOString(),
     });
 
     if (result.success) {
-      console.log(lang === 'zh-TW'
-        ? `Test notification sent successfully to ${url}`
-        : `Test notification sent successfully to ${url}`);
-      console.log(lang === 'zh-TW'
-        ? '測試通知已成功發送!'
-        : 'Test notification sent!');
+      console.log(
+        lang === 'zh-TW'
+          ? `Test notification sent successfully to ${url}`
+          : `Test notification sent successfully to ${url}`
+      );
+      console.log(lang === 'zh-TW' ? '測試通知已成功發送!' : 'Test notification sent!');
     } else {
-      console.error(lang === 'zh-TW'
-        ? `發送失敗: ${result.error}`
-        : `Send failed: ${result.error}`);
+      console.error(
+        lang === 'zh-TW' ? `發送失敗: ${result.error}` : `Send failed: ${result.error}`
+      );
     }
   } else {
     // For other channels, show setup instructions
     console.log('');
-    console.log(lang === 'zh-TW'
-      ? `管道 ${channelType} 需要先完成設定。請執行:`
-      : `Channel ${channelType} requires setup first. Run:`);
+    console.log(
+      lang === 'zh-TW'
+        ? `管道 ${channelType} 需要先完成設定。請執行:`
+        : `Channel ${channelType} requires setup first. Run:`
+    );
     console.log(`  panguard-chat setup --channel ${channelType}`);
   }
 }
@@ -228,13 +244,15 @@ function commandStatus(): void {
 
   const channels = config.channels;
   const configuredChannels = Object.keys(channels).filter(
-    (k) => channels[k as keyof typeof channels] !== null,
+    (k) => channels[k as keyof typeof channels] !== null
   );
 
   console.log(`User type: ${config.userProfile.type}`);
   console.log(`Language: ${config.userProfile.language}`);
   console.log(`Notification channel: ${config.userProfile.notificationChannel}`);
-  console.log(`Configured channels: ${configuredChannels.length > 0 ? configuredChannels.join(', ') : '(none)'}`);
+  console.log(
+    `Configured channels: ${configuredChannels.length > 0 ? configuredChannels.join(', ') : '(none)'}`
+  );
   console.log(`Max follow-up tokens: ${config.maxFollowUpTokens}`);
 }
 
@@ -307,7 +325,12 @@ function commandPrefs(args: string[]): void {
   }
 }
 
-function showPrefs(prefs: { criticalAlerts: boolean; dailySummary: boolean; weeklySummary: boolean; peacefulReport: boolean }): void {
+function showPrefs(prefs: {
+  criticalAlerts: boolean;
+  dailySummary: boolean;
+  weeklySummary: boolean;
+  peacefulReport: boolean;
+}): void {
   const on = '\x1b[32mON\x1b[0m';
   const off = '\x1b[31mOFF\x1b[0m';
   console.log('Notification Preferences / 通知偏好');
@@ -371,9 +394,10 @@ function extractOption(args: string[], option: string): string | undefined {
 // CLI 進入點（直接執行時）
 // ---------------------------------------------------------------------------
 
-const isDirectRun = process.argv[1] &&
+const isDirectRun =
+  process.argv[1] &&
   (process.argv[1].endsWith('/panguard-chat') ||
-   process.argv[1].includes('panguard-chat/dist/cli'));
+    process.argv[1].includes('panguard-chat/dist/cli'));
 
 if (isDirectRun) {
   runCLI(process.argv.slice(2)).catch((err) => {

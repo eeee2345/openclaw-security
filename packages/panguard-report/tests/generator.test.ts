@@ -59,7 +59,7 @@ describe('Report Generator', () => {
       const report = generateComplianceReport(
         createTestFindings(),
         'tw_cyber_security_act',
-        'zh-TW',
+        'zh-TW'
       );
       expect(report.metadata.framework).toBe('tw_cyber_security_act');
       expect(report.metadata.language).toBe('zh-TW');
@@ -68,42 +68,26 @@ describe('Report Generator', () => {
     });
 
     it('should generate a report for iso27001', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'iso27001',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'iso27001', 'en');
       expect(report.metadata.framework).toBe('iso27001');
       expect(report.controls.length).toBeGreaterThan(0);
     });
 
     it('should generate a report for soc2', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'soc2',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'soc2', 'en');
       expect(report.metadata.framework).toBe('soc2');
       expect(report.controls.length).toBeGreaterThan(0);
     });
 
     it('should include executive summary', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       expect(report.executiveSummary).toBeDefined();
       expect(report.executiveSummary.totalControls).toBeGreaterThan(0);
       expect(report.executiveSummary.overallScore).toBeDefined();
     });
 
     it('should include statistics', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       expect(report.statistics).toBeDefined();
       expect(report.statistics.compliancePercentage).toBeDefined();
     });
@@ -115,44 +99,32 @@ describe('Report Generator', () => {
     });
 
     it('should include recommendations by default', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       // There should be some recommendations since we have critical/high findings
       expect(report.recommendations.length).toBeGreaterThanOrEqual(0);
     });
 
     it('should exclude recommendations when option is false', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-        { includeRecommendations: false },
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en', {
+        includeRecommendations: false,
+      });
       expect(report.recommendations).toHaveLength(0);
     });
 
     it('should set organization name from options', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-        { organizationName: 'Test Corp' },
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en', {
+        organizationName: 'Test Corp',
+      });
       expect(report.metadata.organizationName).toBe('Test Corp');
     });
 
     it('should set period from options', () => {
       const start = new Date('2025-01-01');
       const end = new Date('2025-01-31');
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-        { periodStart: start, periodEnd: end },
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en', {
+        periodStart: start,
+        periodEnd: end,
+      });
       expect(report.metadata.period.start).toEqual(start);
       expect(report.metadata.period.end).toEqual(end);
     });
@@ -177,22 +149,14 @@ describe('Report Generator', () => {
 
   describe('reportToJSON', () => {
     it('should serialize report to JSON string', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const json = reportToJSON(report);
       expect(typeof json).toBe('string');
       expect(json.length).toBeGreaterThan(0);
     });
 
     it('should produce valid JSON', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const json = reportToJSON(report);
       const parsed = JSON.parse(json);
       expect(parsed.metadata).toBeDefined();
@@ -200,11 +164,7 @@ describe('Report Generator', () => {
     });
 
     it('should serialize dates as ISO strings', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const json = reportToJSON(report);
       const parsed = JSON.parse(json);
       expect(typeof parsed.metadata.generatedAt).toBe('string');
@@ -222,11 +182,7 @@ describe('Report Generator', () => {
 
   describe('generateSummaryText', () => {
     it('should generate English summary text', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const text = generateSummaryText(report);
       expect(text).toContain('Compliance Report');
       expect(text).toContain('Report Period');
@@ -238,7 +194,7 @@ describe('Report Generator', () => {
       const report = generateComplianceReport(
         createTestFindings(),
         'tw_cyber_security_act',
-        'zh-TW',
+        'zh-TW'
       );
       const text = generateSummaryText(report);
       expect(text).toContain('合規報告');
@@ -247,43 +203,28 @@ describe('Report Generator', () => {
     });
 
     it('should include report ID', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const text = generateSummaryText(report);
       expect(text).toContain(report.metadata.reportId);
     });
 
     it('should include organization name when provided', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-        { organizationName: 'ACME Corp' },
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en', {
+        organizationName: 'ACME Corp',
+      });
       const text = generateSummaryText(report);
       expect(text).toContain('ACME Corp');
     });
 
     it('should include compliance percentage', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const text = generateSummaryText(report);
       expect(text).toContain('Compliance:');
       expect(text).toContain('%');
     });
 
     it('should include recommendations section', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'tw_cyber_security_act',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'tw_cyber_security_act', 'en');
       const text = generateSummaryText(report);
       // Should have recommendations since we have critical findings
       if (report.recommendations.length > 0) {
@@ -292,11 +233,7 @@ describe('Report Generator', () => {
     });
 
     it('should include framework name', () => {
-      const report = generateComplianceReport(
-        createTestFindings(),
-        'iso27001',
-        'en',
-      );
+      const report = generateComplianceReport(createTestFindings(), 'iso27001', 'en');
       const text = generateSummaryText(report);
       expect(text).toContain('ISO/IEC 27001:2022');
     });

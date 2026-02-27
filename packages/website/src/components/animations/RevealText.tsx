@@ -1,22 +1,22 @@
-"use client";
-import { motion } from "framer-motion";
+'use client';
+import { motion } from 'framer-motion';
 
 export default function RevealText({
   text,
-  className = "",
+  className = '',
   delay = 0,
 }: {
   text: string;
   className?: string;
   delay?: number;
 }) {
-  const words = text.split(" ");
+  const words = text.split(' ');
 
   return (
     <motion.span
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: '-60px' }}
       className={className}
     >
       {words.map((word, i) => (

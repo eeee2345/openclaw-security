@@ -1,25 +1,39 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
-import FadeInUp from "@/components/FadeInUp";
-import SectionWrapper from "@/components/ui/SectionWrapper";
-import SectionTitle from "@/components/ui/SectionTitle";
-import { Link } from "@/navigation";
-import { ArrowRight } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import FadeInUp from '@/components/FadeInUp';
+import SectionWrapper from '@/components/ui/SectionWrapper';
+import SectionTitle from '@/components/ui/SectionTitle';
+import { Link } from '@/navigation';
+import { ArrowRight } from 'lucide-react';
 import {
-  ScanIcon, ResponseIcon, AnalyticsIcon, ShieldIcon, NetworkIcon,
-  HistoryIcon, TerminalIcon, TeamIcon, EnterpriseIcon,
-} from "@/components/ui/BrandIcons";
+  ScanIcon,
+  ResponseIcon,
+  AnalyticsIcon,
+  ShieldIcon,
+  NetworkIcon,
+  HistoryIcon,
+  TerminalIcon,
+  TeamIcon,
+  EnterpriseIcon,
+} from '@/components/ui/BrandIcons';
 
 /* ─── Icon maps for features and use cases ─── */
-const featureIcons = [ResponseIcon, AnalyticsIcon, ShieldIcon, NetworkIcon, NetworkIcon, HistoryIcon];
-const featureKeys = ["item1", "item2", "item3", "item4", "item5", "item6"] as const;
+const featureIcons = [
+  ResponseIcon,
+  AnalyticsIcon,
+  ShieldIcon,
+  NetworkIcon,
+  NetworkIcon,
+  HistoryIcon,
+];
+const featureKeys = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'] as const;
 
 const useCaseIcons = [TerminalIcon, TeamIcon, EnterpriseIcon];
-const useCaseKeys = ["item1", "item2", "item3"] as const;
+const useCaseKeys = ['item1', 'item2', 'item3'] as const;
 
 export default function ProductScanContent() {
-  const t = useTranslations("product.scan");
+  const t = useTranslations('product.scan');
 
   return (
     <>
@@ -36,16 +50,15 @@ export default function ProductScanContent() {
           </FadeInUp>
           <FadeInUp delay={0.05}>
             <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4">
-              {t("overline")}
+              {t('overline')}
             </p>
             <h1 className="text-[clamp(36px,4.5vw,56px)] font-extrabold leading-[1.08] tracking-tight text-text-primary max-w-3xl mx-auto">
-              {t("title")}{" "}
-              <span className="text-brand-sage">{t("titleHighlight")}</span>
+              {t('title')} <span className="text-brand-sage">{t('titleHighlight')}</span>
             </h1>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <p className="text-xl text-text-secondary max-w-xl mx-auto mt-6 leading-relaxed">
-              {t("subtitle")}
+              {t('subtitle')}
             </p>
           </FadeInUp>
         </div>
@@ -56,19 +69,15 @@ export default function ProductScanContent() {
         <div className="max-w-3xl mx-auto">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              {t("problem.overline")}
+              {t('problem.overline')}
             </p>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
-              {t("problem.title")}
+              {t('problem.title')}
             </h2>
           </FadeInUp>
           <FadeInUp delay={0.1}>
-            <p className="text-text-secondary mt-5 leading-relaxed">
-              {t("problem.desc")}
-            </p>
-            <p className="text-text-secondary mt-4 leading-relaxed">
-              {t("problem.conclusion")}
-            </p>
+            <p className="text-text-secondary mt-5 leading-relaxed">{t('problem.desc')}</p>
+            <p className="text-text-secondary mt-4 leading-relaxed">{t('problem.conclusion')}</p>
           </FadeInUp>
         </div>
       </SectionWrapper>
@@ -76,9 +85,9 @@ export default function ProductScanContent() {
       {/* ── Features ── */}
       <SectionWrapper dark>
         <SectionTitle
-          overline={t("features.overline")}
-          title={t("features.title")}
-          subtitle={t("features.subtitle")}
+          overline={t('features.overline')}
+          title={t('features.title')}
+          subtitle={t('features.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
           {featureKeys.map((key, i) => {
@@ -102,10 +111,7 @@ export default function ProductScanContent() {
 
       {/* ── Use Cases ── */}
       <SectionWrapper>
-        <SectionTitle
-          overline={t("useCases.overline")}
-          title={t("useCases.title")}
-        />
+        <SectionTitle overline={t('useCases.overline')} title={t('useCases.title')} />
         <div className="grid sm:grid-cols-3 gap-6 mt-14">
           {useCaseKeys.map((key, i) => {
             const Icon = useCaseIcons[i];
@@ -131,11 +137,9 @@ export default function ProductScanContent() {
         <div className="text-center">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary">
-              {t("cta.title")}
+              {t('cta.title')}
             </h2>
-            <p className="text-text-secondary mt-3 max-w-lg mx-auto">
-              {t("cta.desc")}
-            </p>
+            <p className="text-text-secondary mt-3 max-w-lg mx-auto">{t('cta.desc')}</p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
@@ -143,13 +147,13 @@ export default function ProductScanContent() {
                 href="/early-access"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t("cta.cta1")} <ArrowRight className="w-4 h-4" />
+                {t('cta.cta1')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/docs"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                {t("cta.cta2")}
+                {t('cta.cta2')}
               </Link>
             </div>
           </FadeInUp>

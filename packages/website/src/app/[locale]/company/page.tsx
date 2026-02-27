@@ -1,13 +1,13 @@
-import { getTranslations } from "next-intl/server";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
-import CompanyContent from "./CompanyContent";
+import { getTranslations } from 'next-intl/server';
+import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
+import CompanyContent from './CompanyContent';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
-  const t = await getTranslations({ locale: params.locale, namespace: "metadata" });
+  const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
   return {
-    title: t("company.title"),
-    description: t("company.description"),
+    title: t('company.title'),
+    description: t('company.description'),
   };
 }
 

@@ -51,18 +51,14 @@ export class InvestigationEngine {
    * @returns Completed investigation plan with all results / 包含所有結果的已完成調查計畫
    */
   async investigate(event: SecurityEvent): Promise<InvestigationPlan> {
-    logger.info(
-      `Starting investigation for event ${event.id} / 開始調查事件 ${event.id}`,
-    );
+    logger.info(`Starting investigation for event ${event.id} / 開始調查事件 ${event.id}`);
 
     const plan = this.createPlan(event);
     const completedSteps: InvestigationStep[] = [];
 
     for (const step of plan.steps) {
       if (completedSteps.length >= MAX_STEPS) {
-        logger.info(
-          `Max investigation steps (${MAX_STEPS}) reached / 已達最大調查步驟數`,
-        );
+        logger.info(`Max investigation steps (${MAX_STEPS}) reached / 已達最大調查步驟數`);
         break;
       }
 
@@ -79,8 +75,8 @@ export class InvestigationEngine {
 
       logger.info(
         `Step ${step.tool}: risk=${result.riskContribution}, ` +
-        `needs_more=${result.needsAdditionalInvestigation} / ` +
-        `步驟 ${step.tool}: 風險=${result.riskContribution}`,
+          `needs_more=${result.needsAdditionalInvestigation} / ` +
+          `步驟 ${step.tool}: 風險=${result.riskContribution}`
       );
 
       // Dynamic reasoning: add follow-up steps if needed
@@ -178,7 +174,8 @@ export class InvestigationEngine {
 
     return {
       steps,
-      reasoning: `Investigation plan for ${event.source}/${event.category} event / ` +
+      reasoning:
+        `Investigation plan for ${event.source}/${event.category} event / ` +
         `${event.source}/${event.category} 事件的調查計畫`,
     };
   }
@@ -189,7 +186,7 @@ export class InvestigationEngine {
    */
   private async executeStep(
     tool: InvestigationTool,
-    event: SecurityEvent,
+    event: SecurityEvent
   ): Promise<InvestigationResult> {
     switch (tool) {
       case 'checkIPHistory':
@@ -223,7 +220,7 @@ export class InvestigationEngine {
    */
   private getFollowUpTools(
     tool: InvestigationTool,
-    result: InvestigationResult,
+    result: InvestigationResult
   ): InvestigationTool[] {
     const followUps: InvestigationTool[] = [];
 
@@ -249,8 +246,8 @@ export class InvestigationEngine {
 
   /** Check IP history against threat intelligence / 檢查 IP 歷史（威脅情報） */
   private checkIPHistory(event: SecurityEvent): InvestigationResult {
-    const ip = (event.metadata?.['sourceIP'] as string) ??
-               (event.metadata?.['remoteAddress'] as string);
+    const ip =
+      (event.metadata?.['sourceIP'] as string) ?? (event.metadata?.['remoteAddress'] as string);
     if (!ip) {
       return {
         finding: 'No IP address available for lookup / 無可查詢的 IP 地址',
@@ -262,7 +259,8 @@ export class InvestigationEngine {
     const threatEntry = checkThreatIntel(ip);
     if (threatEntry) {
       return {
-        finding: `IP ${ip} found in threat intel: ${threatEntry.type} (${threatEntry.source}) / ` +
+        finding:
+          `IP ${ip} found in threat intel: ${threatEntry.type} (${threatEntry.source}) / ` +
           `IP ${ip} 在威脅情報中: ${threatEntry.type} (${threatEntry.source})`,
         riskContribution: 80,
         needsAdditionalInvestigation: true,
@@ -280,8 +278,7 @@ export class InvestigationEngine {
 
   /** Check user privilege level / 檢查使用者權限等級 */
   private checkUserPrivilege(event: SecurityEvent): InvestigationResult {
-    const user = (event.metadata?.['user'] as string) ??
-                 (event.metadata?.['username'] as string);
+    const user = (event.metadata?.['user'] as string) ?? (event.metadata?.['username'] as string);
     if (!user) {
       return {
         finding: 'No user information available / 無可用的使用者資訊',
@@ -291,8 +288,13 @@ export class InvestigationEngine {
     }
 
     // Check if root/admin / 檢查是否為 root/admin
-    const isPrivileged = ['root', 'admin', 'administrator', 'system', 'nt authority\\system']
-      .includes(user.toLowerCase());
+    const isPrivileged = [
+      'root',
+      'admin',
+      'administrator',
+      'system',
+      'nt authority\\system',
+    ].includes(user.toLowerCase());
 
     if (isPrivileged) {
       return {
@@ -304,9 +306,7 @@ export class InvestigationEngine {
     }
 
     // Check if user is in baseline / 檢查使用者是否在基線中
-    const knownUser = this.baseline.normalLoginPatterns.some(
-      (l) => l.username === user,
-    );
+    const knownUser = this.baseline.normalLoginPatterns.some((l) => l.username === user);
     if (!knownUser) {
       return {
         finding: `Unknown user: ${user} (not in baseline) / 未知使用者: ${user}`,
@@ -326,9 +326,7 @@ export class InvestigationEngine {
 
   /** Check time anomaly / 檢查時間異常 */
   private checkTimeAnomaly(event: SecurityEvent): InvestigationResult {
-    const eventTime = event.timestamp instanceof Date
-      ? event.timestamp
-      : new Date(event.timestamp);
+    const eventTime = event.timestamp instanceof Date ? event.timestamp : new Date(event.timestamp);
     const hour = eventTime.getHours();
 
     // Business hours: 6-22 / 營業時間: 6-22
@@ -337,17 +335,17 @@ export class InvestigationEngine {
     if (outsideBusinessHours) {
       // Check if this user normally operates at this hour
       // 檢查該使用者是否通常在此時間操作
-      const user = (event.metadata?.['user'] as string) ??
-                   (event.metadata?.['username'] as string);
+      const user = (event.metadata?.['user'] as string) ?? (event.metadata?.['username'] as string);
       const hasNightPattern = user
         ? this.baseline.normalLoginPatterns.some(
-            (l) => l.username === user && (l.hourOfDay < 6 || l.hourOfDay > 22),
+            (l) => l.username === user && (l.hourOfDay < 6 || l.hourOfDay > 22)
           )
         : false;
 
       if (hasNightPattern) {
         return {
-          finding: `Off-hours activity (${hour}:00) but user has night pattern / ` +
+          finding:
+            `Off-hours activity (${hour}:00) but user has night pattern / ` +
             `非工作時間活動但使用者有夜間模式`,
           riskContribution: 15,
           needsAdditionalInvestigation: false,
@@ -373,8 +371,8 @@ export class InvestigationEngine {
 
   /** Check geographic location / 檢查地理位置 */
   private checkGeoLocation(event: SecurityEvent): InvestigationResult {
-    const ip = (event.metadata?.['sourceIP'] as string) ??
-               (event.metadata?.['remoteAddress'] as string);
+    const ip =
+      (event.metadata?.['sourceIP'] as string) ?? (event.metadata?.['remoteAddress'] as string);
     if (!ip) {
       return {
         finding: 'No IP for geolocation / 無可查詢的 IP',
@@ -384,13 +382,12 @@ export class InvestigationEngine {
     }
 
     // Check if from known baseline connections / 檢查是否來自已知基線連線
-    const knownConnection = this.baseline.normalConnections.some(
-      (c) => c.remoteAddress === ip,
-    );
+    const knownConnection = this.baseline.normalConnections.some((c) => c.remoteAddress === ip);
 
     if (!knownConnection) {
       return {
-        finding: `Connection from new IP: ${ip} (not in baseline) / ` +
+        finding:
+          `Connection from new IP: ${ip} (not in baseline) / ` +
           `來自新 IP 的連線: ${ip} (不在基線中)`,
         riskContribution: 35,
         needsAdditionalInvestigation: true,
@@ -411,7 +408,8 @@ export class InvestigationEngine {
     // In a production system, this would query the event store
     // 在生產系統中，這會查詢事件儲存庫
     return {
-      finding: 'Related event analysis requires event store integration / ' +
+      finding:
+        'Related event analysis requires event store integration / ' +
         '相關事件分析需要事件儲存庫整合',
       riskContribution: 0,
       needsAdditionalInvestigation: false,
@@ -420,8 +418,8 @@ export class InvestigationEngine {
 
   /** Check process tree / 檢查程序樹 */
   private checkProcessTree(event: SecurityEvent): InvestigationResult {
-    const processName = (event.metadata?.['processName'] as string);
-    const parentProcess = (event.metadata?.['parentProcess'] as string);
+    const processName = event.metadata?.['processName'] as string;
+    const parentProcess = event.metadata?.['parentProcess'] as string;
 
     if (!processName) {
       return {
@@ -432,19 +430,27 @@ export class InvestigationEngine {
     }
 
     // Check if process is in baseline / 檢查程序是否在基線中
-    const knownProcess = this.baseline.normalProcesses.some(
-      (p) => p.name === processName,
-    );
+    const knownProcess = this.baseline.normalProcesses.some((p) => p.name === processName);
 
     if (!knownProcess) {
       // Suspicious parent processes / 可疑的父程序
-      const suspiciousParents = ['cmd.exe', 'powershell.exe', 'bash', 'sh', 'python', 'python3', 'perl', 'ruby'];
+      const suspiciousParents = [
+        'cmd.exe',
+        'powershell.exe',
+        'bash',
+        'sh',
+        'python',
+        'python3',
+        'perl',
+        'ruby',
+      ];
       const hasSuspiciousParent = parentProcess
         ? suspiciousParents.some((sp) => parentProcess.toLowerCase().includes(sp))
         : false;
 
       return {
-        finding: `New process: ${processName}${hasSuspiciousParent ? ` (suspicious parent: ${parentProcess})` : ''} / ` +
+        finding:
+          `New process: ${processName}${hasSuspiciousParent ? ` (suspicious parent: ${parentProcess})` : ''} / ` +
           `新程序: ${processName}`,
         riskContribution: hasSuspiciousParent ? 65 : 40,
         needsAdditionalInvestigation: hasSuspiciousParent,
@@ -462,8 +468,8 @@ export class InvestigationEngine {
 
   /** Check file reputation / 檢查檔案信譽 */
   private checkFileReputation(event: SecurityEvent): InvestigationResult {
-    const filePath = (event.metadata?.['filePath'] as string) ??
-                     (event.metadata?.['processPath'] as string);
+    const filePath =
+      (event.metadata?.['filePath'] as string) ?? (event.metadata?.['processPath'] as string);
     if (!filePath) {
       return {
         finding: 'No file path available for reputation check / 無可用的檔案路徑',
@@ -474,25 +480,28 @@ export class InvestigationEngine {
 
     // Check for suspicious file locations / 檢查可疑檔案位置
     const suspiciousLocations = ['/tmp/', '/dev/shm/', '\\Temp\\', '\\AppData\\Local\\Temp\\'];
-    const inSuspiciousLocation = suspiciousLocations.some(
-      (loc) => filePath.includes(loc),
-    );
+    const inSuspiciousLocation = suspiciousLocations.some((loc) => filePath.includes(loc));
 
     // Check for suspicious extensions / 檢查可疑副檔名
     const suspiciousExtensions = ['.ps1', '.vbs', '.bat', '.cmd', '.scr', '.pif', '.hta'];
-    const hasSuspiciousExt = suspiciousExtensions.some(
-      (ext) => filePath.toLowerCase().endsWith(ext),
+    const hasSuspiciousExt = suspiciousExtensions.some((ext) =>
+      filePath.toLowerCase().endsWith(ext)
     );
 
     if (inSuspiciousLocation || hasSuspiciousExt) {
       return {
-        finding: `Suspicious file: ${filePath}` +
+        finding:
+          `Suspicious file: ${filePath}` +
           `${inSuspiciousLocation ? ' (temp directory)' : ''}` +
           `${hasSuspiciousExt ? ' (suspicious extension)' : ''} / ` +
           `可疑檔案: ${filePath}`,
         riskContribution: inSuspiciousLocation && hasSuspiciousExt ? 70 : 45,
         needsAdditionalInvestigation: true,
-        data: { filePath, suspiciousLocation: inSuspiciousLocation, suspiciousExtension: hasSuspiciousExt },
+        data: {
+          filePath,
+          suspiciousLocation: inSuspiciousLocation,
+          suspiciousExtension: hasSuspiciousExt,
+        },
       };
     }
 
@@ -506,8 +515,9 @@ export class InvestigationEngine {
 
   /** Check network communication pattern / 檢查網路通訊模式 */
   private checkNetworkPattern(event: SecurityEvent): InvestigationResult {
-    const remoteAddr = (event.metadata?.['remoteAddress'] as string) ??
-                       (event.metadata?.['destinationIP'] as string);
+    const remoteAddr =
+      (event.metadata?.['remoteAddress'] as string) ??
+      (event.metadata?.['destinationIP'] as string);
     const remotePort = event.metadata?.['remotePort'] as number | undefined;
 
     if (!remoteAddr) {
@@ -520,7 +530,7 @@ export class InvestigationEngine {
 
     // Check against baseline connections / 與基線連線比較
     const knownConnection = this.baseline.normalConnections.some(
-      (c) => c.remoteAddress === remoteAddr && (!remotePort || c.remotePort === remotePort),
+      (c) => c.remoteAddress === remoteAddr && (!remotePort || c.remotePort === remotePort)
     );
 
     // Check for suspicious ports / 檢查可疑埠
@@ -529,7 +539,8 @@ export class InvestigationEngine {
 
     if (!knownConnection) {
       return {
-        finding: `New network connection: ${remoteAddr}:${remotePort ?? 'unknown'}` +
+        finding:
+          `New network connection: ${remoteAddr}:${remotePort ?? 'unknown'}` +
           `${isSuspiciousPort ? ' (suspicious port)' : ''} / ` +
           `新網路連線: ${remoteAddr}:${remotePort ?? 'unknown'}`,
         riskContribution: isSuspiciousPort ? 75 : 30,
@@ -556,15 +567,12 @@ export class InvestigationEngine {
     for (const step of steps) {
       if (step.result) {
         parts.push(
-          `  [${step.tool}] ${step.result.finding} (risk: ${step.result.riskContribution}%)`,
+          `  [${step.tool}] ${step.result.finding} (risk: ${step.result.riskContribution}%)`
         );
       }
     }
 
-    const totalRisk = steps.reduce(
-      (sum, s) => sum + (s.result?.riskContribution ?? 0),
-      0,
-    );
+    const totalRisk = steps.reduce((sum, s) => sum + (s.result?.riskContribution ?? 0), 0);
     const avgRisk = steps.length > 0 ? Math.round(totalRisk / steps.length) : 0;
     parts.push(`Average risk contribution: ${avgRisk}% / 平均風險貢獻: ${avgRisk}%`);
 

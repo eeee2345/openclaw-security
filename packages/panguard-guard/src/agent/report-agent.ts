@@ -93,7 +93,7 @@ export class ReportAgent {
     event: SecurityEvent,
     verdict: ThreatVerdict,
     response: ResponseResult,
-    baseline: EnvironmentBaseline,
+    baseline: EnvironmentBaseline
   ): { updatedBaseline: EnvironmentBaseline; anonymizedData?: AnonymizedThreatData } {
     this.reportCount++;
 
@@ -111,9 +111,7 @@ export class ReportAgent {
     let updatedBaseline = baseline;
     if (this.mode === 'learning') {
       updatedBaseline = updateBaseline(baseline, event);
-      logger.info(
-        `Baseline updated during learning / 學習模式下已更新基線`,
-      );
+      logger.info(`Baseline updated during learning / 學習模式下已更新基線`);
     }
 
     // Step 3: Generate anonymized data for malicious/suspicious verdicts
@@ -125,8 +123,8 @@ export class ReportAgent {
 
     logger.info(
       `Report #${this.reportCount}: ${verdict.conclusion} ` +
-      `(action: ${response.action}, success: ${response.success}) / ` +
-      `報告 #${this.reportCount}: ${verdict.conclusion}`,
+        `(action: ${response.action}, success: ${response.success}) / ` +
+        `報告 #${this.reportCount}: ${verdict.conclusion}`
     );
 
     return { updatedBaseline, anonymizedData };
@@ -138,20 +136,22 @@ export class ReportAgent {
    */
   private generateAnonymizedData(
     event: SecurityEvent,
-    verdict: ThreatVerdict,
+    verdict: ThreatVerdict
   ): AnonymizedThreatData {
     // Extract source IP, anonymize last octet / 提取來源 IP，匿名化最後一段
-    const rawIP = (event.metadata?.['sourceIP'] as string) ??
-                  (event.metadata?.['remoteAddress'] as string) ??
-                  'unknown';
+    const rawIP =
+      (event.metadata?.['sourceIP'] as string) ??
+      (event.metadata?.['remoteAddress'] as string) ??
+      'unknown';
     const attackSourceIP = anonymizeIP(rawIP);
 
     // Find matching Sigma rule ID / 查找匹配的 Sigma 規則 ID
-    const sigmaRuleMatched = verdict.evidence
-      .filter((e) => e.source === 'rule_match')
-      .map((e) => (e.data as Record<string, unknown>)?.['ruleId'] as string)
-      .filter(Boolean)
-      .join(',') || 'none';
+    const sigmaRuleMatched =
+      verdict.evidence
+        .filter((e) => e.source === 'rule_match')
+        .map((e) => (e.data as Record<string, unknown>)?.['ruleId'] as string)
+        .filter(Boolean)
+        .join(',') || 'none';
 
     return {
       attackSourceIP,
@@ -201,13 +201,18 @@ export class ReportAgent {
       }
 
       // Count blocked threats / 統計已阻擋威脅
-      if (r.response.action !== 'log_only' && r.response.action !== 'notify' && r.response.success) {
+      if (
+        r.response.action !== 'log_only' &&
+        r.response.action !== 'notify' &&
+        r.response.success
+      ) {
         threatsBlocked++;
       }
 
       // Count attack source IPs / 統計攻擊來源 IP
-      const ip = (r.event.metadata?.['sourceIP'] as string) ??
-                 (r.event.metadata?.['remoteAddress'] as string);
+      const ip =
+        (r.event.metadata?.['sourceIP'] as string) ??
+        (r.event.metadata?.['remoteAddress'] as string);
       if (ip && conclusion !== 'benign') {
         ipCounts.set(ip, (ipCounts.get(ip) ?? 0) + 1);
       }
@@ -223,8 +228,7 @@ export class ReportAgent {
       .slice(0, 10)
       .map(([ip, count]) => ({ ip, count }));
 
-    const actionsTaken = [...actionCounts.entries()]
-      .map(([action, count]) => ({ action, count }));
+    const actionsTaken = [...actionCounts.entries()].map(([action, count]) => ({ action, count }));
 
     return {
       period: { start: cutoff.toISOString(), end: now.toISOString() },

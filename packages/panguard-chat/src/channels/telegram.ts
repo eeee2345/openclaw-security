@@ -37,16 +37,19 @@ const logger = createLogger('panguard-chat:channel:telegram');
 /** Map severity to status icon (text-based, no emoji per project rules) */
 function severityPrefix(severity?: AlertSeverity): string {
   switch (severity) {
-    case 'critical': return '[!!]';
-    case 'warning': return '[!]';
+    case 'critical':
+      return '[!!]';
+    case 'warning':
+      return '[!]';
     case 'info':
-    default: return '[i]';
+    default:
+      return '[i]';
   }
 }
 
 /** Build Telegram inline keyboard from quick replies */
 function buildInlineKeyboard(
-  quickReplies?: readonly { label: string; action: string }[],
+  quickReplies?: readonly { label: string; action: string }[]
 ): Record<string, unknown> | undefined {
   if (!quickReplies || quickReplies.length === 0) return undefined;
   return {
@@ -101,9 +104,7 @@ export class TelegramChannel implements MessagingChannel {
 
       const response = await this.httpPost('sendMessage', JSON.stringify(payload));
 
-      logger.info(
-        `Telegram message sent to ${chatId} / Telegram 訊息已發送`,
-      );
+      logger.info(`Telegram message sent to ${chatId} / Telegram 訊息已發送`);
 
       return {
         success: true,
@@ -139,14 +140,18 @@ export class TelegramChannel implements MessagingChannel {
       const parts: Buffer[] = [];
 
       // chat_id field
-      parts.push(Buffer.from(
-        `--${boundary}\r\nContent-Disposition: form-data; name="chat_id"\r\n\r\n${chatId}\r\n`,
-      ));
+      parts.push(
+        Buffer.from(
+          `--${boundary}\r\nContent-Disposition: form-data; name="chat_id"\r\n\r\n${chatId}\r\n`
+        )
+      );
 
       // document field
-      parts.push(Buffer.from(
-        `--${boundary}\r\nContent-Disposition: form-data; name="document"; filename="${filename}"\r\nContent-Type: application/octet-stream\r\n\r\n`,
-      ));
+      parts.push(
+        Buffer.from(
+          `--${boundary}\r\nContent-Disposition: form-data; name="document"; filename="${filename}"\r\nContent-Type: application/octet-stream\r\n\r\n`
+        )
+      );
       parts.push(file);
       parts.push(Buffer.from(`\r\n--${boundary}--\r\n`));
 
@@ -196,9 +201,12 @@ export class TelegramChannel implements MessagingChannel {
       const data = update.callback_query.data;
 
       // Answer the callback query
-      await this.httpPost('answerCallbackQuery', JSON.stringify({
-        callback_query_id: update.callback_query.id,
-      }));
+      await this.httpPost(
+        'answerCallbackQuery',
+        JSON.stringify({
+          callback_query_id: update.callback_query.id,
+        })
+      );
 
       return this.replyHandler(userId, data);
     }
@@ -212,82 +220,86 @@ export class TelegramChannel implements MessagingChannel {
 
   private async httpPost(
     method: string,
-    body: string,
+    body: string
   ): Promise<{ result?: { message_id?: number } }> {
     const url = `https://api.telegram.org/bot${this.config.botToken}/${method}`;
     const { hostname, pathname } = new URL(url);
 
     return new Promise((resolve, reject) => {
-      import('node:https').then(({ request }) => {
-        const req = request(
-          {
-            hostname,
-            path: pathname,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(body),
+      import('node:https')
+        .then(({ request }) => {
+          const req = request(
+            {
+              hostname,
+              path: pathname,
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body),
+              },
             },
-          },
-          (res) => {
-            let data = '';
-            res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
-            res.on('end', () => {
-              if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-                try {
-                  resolve(JSON.parse(data) as { result?: { message_id?: number } });
-                } catch {
-                  resolve({});
+            (res) => {
+              let data = '';
+              res.on('data', (chunk: Buffer) => {
+                data += chunk.toString();
+              });
+              res.on('end', () => {
+                if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                  try {
+                    resolve(JSON.parse(data) as { result?: { message_id?: number } });
+                  } catch {
+                    resolve({});
+                  }
+                } else {
+                  reject(new Error(`Telegram API error ${res.statusCode}: ${data}`));
                 }
-              } else {
-                reject(new Error(`Telegram API error ${res.statusCode}: ${data}`));
-              }
-            });
-          },
-        );
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-      }).catch(reject);
+              });
+            }
+          );
+          req.on('error', reject);
+          req.write(body);
+          req.end();
+        })
+        .catch(reject);
     });
   }
 
-  private async httpPostRaw(
-    method: string,
-    body: Buffer,
-    contentType: string,
-  ): Promise<void> {
+  private async httpPostRaw(method: string, body: Buffer, contentType: string): Promise<void> {
     const url = `https://api.telegram.org/bot${this.config.botToken}/${method}`;
     const { hostname, pathname } = new URL(url);
 
     return new Promise((resolve, reject) => {
-      import('node:https').then(({ request }) => {
-        const req = request(
-          {
-            hostname,
-            path: pathname,
-            method: 'POST',
-            headers: {
-              'Content-Type': contentType,
-              'Content-Length': body.length,
+      import('node:https')
+        .then(({ request }) => {
+          const req = request(
+            {
+              hostname,
+              path: pathname,
+              method: 'POST',
+              headers: {
+                'Content-Type': contentType,
+                'Content-Length': body.length,
+              },
             },
-          },
-          (res) => {
-            let data = '';
-            res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
-            res.on('end', () => {
-              if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-                resolve();
-              } else {
-                reject(new Error(`Telegram API error ${res.statusCode}: ${data}`));
-              }
-            });
-          },
-        );
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-      }).catch(reject);
+            (res) => {
+              let data = '';
+              res.on('data', (chunk: Buffer) => {
+                data += chunk.toString();
+              });
+              res.on('end', () => {
+                if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                  resolve();
+                } else {
+                  reject(new Error(`Telegram API error ${res.statusCode}: ${data}`));
+                }
+              });
+            }
+          );
+          req.on('error', reject);
+          req.write(body);
+          req.end();
+        })
+        .catch(reject);
     });
   }
 }

@@ -60,8 +60,8 @@ refreshTierInBackground();
 
 const userArgs = process.argv.slice(2);
 const helpFlags = new Set(['-h', '--help', '-V', '--version']);
-const hasSubcommand = userArgs.some(a => !a.startsWith('-'));
-const hasHelpOrVersion = userArgs.some(a => helpFlags.has(a));
+const hasSubcommand = userArgs.some((a) => !a.startsWith('-'));
+const hasHelpOrVersion = userArgs.some((a) => helpFlags.has(a));
 
 if (!hasSubcommand && !hasHelpOrVersion) {
   // Extract --lang value if present

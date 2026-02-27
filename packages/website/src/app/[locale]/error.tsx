@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { RefreshCw, ArrowLeft } from "lucide-react";
+import { RefreshCw, ArrowLeft } from 'lucide-react';
 
 export default function Error({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -10,7 +10,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-
   return (
     <div className="min-h-screen bg-surface-0 flex items-center justify-center px-6">
       <div className="max-w-md w-full text-center">
@@ -18,9 +17,7 @@ export default function Error({
           <span className="text-status-alert text-xl font-bold">!</span>
         </div>
 
-        <h1 className="text-2xl font-bold text-text-primary mb-3">
-          Something went wrong
-        </h1>
+        <h1 className="text-2xl font-bold text-text-primary mb-3">Something went wrong</h1>
         <p className="text-text-secondary text-sm leading-relaxed mb-8">
           An unexpected error occurred. Please try again or go back to the homepage.
         </p>

@@ -20,7 +20,7 @@ export interface DNSCheckResult {
  */
 export async function checkDNS(
   host: string,
-  lang: Language,
+  lang: Language
 ): Promise<{ findings: Finding[]; result: DNSCheckResult }> {
   const findings: Finding[] = [];
   const result: DNSCheckResult = {
@@ -77,14 +77,16 @@ export async function checkDNS(
     findings.push({
       id: 'remote-dns-no-spf',
       title: lang === 'zh-TW' ? '\u7F3A\u5C11 SPF \u8A18\u9304' : 'Missing SPF record',
-      description: lang === 'zh-TW'
-        ? '\u672A\u8A2D\u5B9A SPF \u8A18\u9304\uFF0C\u57DF\u540D\u5BB9\u6613\u88AB\u7528\u65BC\u91E3\u9B5A\u90F5\u4EF6'
-        : 'No SPF record found. Domain is vulnerable to email spoofing',
+      description:
+        lang === 'zh-TW'
+          ? '\u672A\u8A2D\u5B9A SPF \u8A18\u9304\uFF0C\u57DF\u540D\u5BB9\u6613\u88AB\u7528\u65BC\u91E3\u9B5A\u90F5\u4EF6'
+          : 'No SPF record found. Domain is vulnerable to email spoofing',
       severity: 'medium',
       category: 'dns',
-      remediation: lang === 'zh-TW'
-        ? '\u5728 DNS \u4E2D\u52A0\u5165 SPF TXT \u8A18\u9304'
-        : 'Add an SPF TXT record to your DNS configuration',
+      remediation:
+        lang === 'zh-TW'
+          ? '\u5728 DNS \u4E2D\u52A0\u5165 SPF TXT \u8A18\u9304'
+          : 'Add an SPF TXT record to your DNS configuration',
     });
   }
 
@@ -92,29 +94,34 @@ export async function checkDNS(
     findings.push({
       id: 'remote-dns-no-dmarc',
       title: lang === 'zh-TW' ? '\u7F3A\u5C11 DMARC \u8A18\u9304' : 'Missing DMARC record',
-      description: lang === 'zh-TW'
-        ? '\u672A\u8A2D\u5B9A DMARC \u8A18\u9304\uFF0C\u7121\u6CD5\u9632\u6B62\u57DF\u540D\u88AB\u5048\u9020'
-        : 'No DMARC record found. Cannot prevent domain spoofing',
+      description:
+        lang === 'zh-TW'
+          ? '\u672A\u8A2D\u5B9A DMARC \u8A18\u9304\uFF0C\u7121\u6CD5\u9632\u6B62\u57DF\u540D\u88AB\u5048\u9020'
+          : 'No DMARC record found. Cannot prevent domain spoofing',
       severity: 'medium',
       category: 'dns',
-      remediation: lang === 'zh-TW'
-        ? '\u5728 DNS \u4E2D\u52A0\u5165 _dmarc TXT \u8A18\u9304'
-        : 'Add a _dmarc TXT record to your DNS configuration',
+      remediation:
+        lang === 'zh-TW'
+          ? '\u5728 DNS \u4E2D\u52A0\u5165 _dmarc TXT \u8A18\u9304'
+          : 'Add a _dmarc TXT record to your DNS configuration',
     });
   }
 
   if (!result.hasDKIM) {
     findings.push({
       id: 'remote-dns-no-dkim',
-      title: lang === 'zh-TW' ? '\u672A\u5075\u6E2C\u5230 DKIM \u8A18\u9304' : 'No DKIM record detected',
-      description: lang === 'zh-TW'
-        ? '\u672A\u627E\u5230 DKIM \u8A18\u9304\uFF0C\u90F5\u4EF6\u9A57\u8B49\u4E0D\u5B8C\u6574'
-        : 'No DKIM record found. Email authentication is incomplete',
+      title:
+        lang === 'zh-TW' ? '\u672A\u5075\u6E2C\u5230 DKIM \u8A18\u9304' : 'No DKIM record detected',
+      description:
+        lang === 'zh-TW'
+          ? '\u672A\u627E\u5230 DKIM \u8A18\u9304\uFF0C\u90F5\u4EF6\u9A57\u8B49\u4E0D\u5B8C\u6574'
+          : 'No DKIM record found. Email authentication is incomplete',
       severity: 'low',
       category: 'dns',
-      remediation: lang === 'zh-TW'
-        ? '\u8A2D\u5B9A\u90F5\u4EF6\u4F3A\u670D\u5668\u7684 DKIM \u7C3D\u540D\u4E26\u52A0\u5165 DNS \u8A18\u9304'
-        : 'Configure DKIM signing on your mail server and add DNS records',
+      remediation:
+        lang === 'zh-TW'
+          ? '\u8A2D\u5B9A\u90F5\u4EF6\u4F3A\u670D\u5668\u7684 DKIM \u7C3D\u540D\u4E26\u52A0\u5165 DNS \u8A18\u9304'
+          : 'Configure DKIM signing on your mail server and add DNS records',
     });
   }
 

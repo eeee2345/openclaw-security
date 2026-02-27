@@ -87,8 +87,6 @@ describe('SyslogAdapter', () => {
     expect(parsed.procId).toBe('12345');
     expect(parsed.msgId).toBe('AUTH_FAIL');
     expect(parsed.structuredData).toBe('[meta key="value"]');
-    expect(parsed.message).toBe(
-      'Failed password for root from 10.0.0.1',
-    );
+    expect(parsed.message).toBe('Failed password for root from 10.0.0.1');
   });
 });

@@ -1,15 +1,15 @@
-"use client";
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { Copy, Check, ArrowRight, CheckCircle } from "lucide-react";
-import { Link } from "@/navigation";
+'use client';
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
+import { Copy, Check, ArrowRight, CheckCircle } from 'lucide-react';
+import { Link } from '@/navigation';
 
 /* ─── Install Command (never translated) ─── */
-const installCmd = "curl -fsSL https://get.panguard.ai | sh";
+const installCmd = 'curl -fsSL https://get.panguard.ai | sh';
 
 function InstallBar() {
-  const t = useTranslations("home.hero");
+  const t = useTranslations('home.hero');
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(installCmd);
@@ -26,15 +26,11 @@ function InstallBar() {
           className="text-text-muted hover:text-text-secondary transition-colors p-1 shrink-0"
           aria-label="Copy install command"
         >
-          {copied ? (
-            <Check className="w-4 h-4 text-status-safe" />
-          ) : (
-            <Copy className="w-4 h-4" />
-          )}
+          {copied ? <Check className="w-4 h-4 text-status-safe" /> : <Copy className="w-4 h-4" />}
         </button>
         {copied && (
           <span className="toast-copied absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-status-safe bg-surface-1 border border-border rounded px-2 py-1">
-            {t("copied")}
+            {t('copied')}
           </span>
         )}
       </div>
@@ -45,7 +41,7 @@ function InstallBar() {
 /* ═══════════════════════  Hero Component  ═══════════════════════ */
 
 export default function Hero() {
-  const t = useTranslations("home.hero");
+  const t = useTranslations('home.hero');
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -56,8 +52,8 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(139,154,142,1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,154,142,1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
+            'linear-gradient(rgba(139,154,142,1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,154,142,1) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
         }}
       />
 
@@ -76,7 +72,7 @@ export default function Hero() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <h1 className="text-[clamp(48px,8vw,96px)] font-extrabold leading-[1.05] tracking-tight text-text-primary">
-            {t("title")}
+            {t('title')}
           </h1>
         </motion.div>
 
@@ -88,13 +84,13 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <p className="text-xl lg:text-2xl text-text-secondary leading-relaxed">
-            {t("subtitle1")}
+            {t('subtitle1')}
           </p>
           <p className="text-xl lg:text-2xl text-text-secondary leading-relaxed mt-1">
-            {t("subtitle2")}
+            {t('subtitle2')}
           </p>
           <p className="text-base lg:text-lg text-text-tertiary leading-relaxed mt-3 font-mono">
-            {t("subtitle3")}
+            {t('subtitle3')}
           </p>
         </motion.div>
 
@@ -119,7 +115,7 @@ export default function Hero() {
             href="/early-access"
             className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
           >
-            {t("getStarted")} <ArrowRight className="w-4 h-4" />
+            {t('getStarted')} <ArrowRight className="w-4 h-4" />
           </Link>
           <a
             href="https://github.com/panguard-ai/panguard-ai"
@@ -127,7 +123,7 @@ export default function Hero() {
             rel="noopener noreferrer"
             className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
           >
-            {t("github")}
+            {t('github')}
           </a>
         </motion.div>
 
@@ -138,7 +134,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.7 }}
         >
-          {(["mit", "tests", "typescript", "taiwan"] as const).map((key) => (
+          {(['mit', 'tests', 'typescript', 'taiwan'] as const).map((key) => (
             <span
               key={key}
               className="inline-flex items-center gap-1.5 text-xs text-text-tertiary bg-surface-1/50 border border-border/50 rounded-full px-3 py-1.5"

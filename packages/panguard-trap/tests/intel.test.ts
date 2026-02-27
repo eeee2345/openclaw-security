@@ -4,11 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  buildTrapIntel,
-  buildBatchIntel,
-  generateIntelSummary,
-} from '../src/intel/index.js';
+import { buildTrapIntel, buildBatchIntel, generateIntelSummary } from '../src/intel/index.js';
 import type { TrapSession, AttackerProfile, TrapIntelligence } from '../src/types.js';
 
 /** Create a test session / 建立測試連線 */
@@ -48,7 +44,11 @@ function createTestProfile(overrides: Partial<AttackerProfile> = {}): AttackerPr
     intent: 'credential_harvesting',
     toolsDetected: [],
     mitreTechniques: ['T1110'],
-    credentialPatterns: { commonUsernames: ['admin'], commonPasswords: ['123456'], totalAttempts: 5 },
+    credentialPatterns: {
+      commonUsernames: ['admin'],
+      commonPasswords: ['123456'],
+      totalAttempts: 5,
+    },
     geoHints: { country: 'CN' },
     riskScore: 15,
     ...overrides,

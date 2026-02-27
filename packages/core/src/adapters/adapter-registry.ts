@@ -143,8 +143,7 @@ export class AdapterRegistry {
       // Look for Wazuh in detected tools / 在偵測到的工具中尋找 Wazuh
       const wazuhTool = tools.find(
         (tool) =>
-          tool.name.toLowerCase().includes('wazuh') ||
-          tool.vendor.toLowerCase().includes('wazuh'),
+          tool.name.toLowerCase().includes('wazuh') || tool.vendor.toLowerCase().includes('wazuh')
       );
 
       if (wazuhTool) {
@@ -160,7 +159,7 @@ export class AdapterRegistry {
           tool.type === 'ids' ||
           tool.name.toLowerCase().includes('syslog') ||
           tool.name.toLowerCase().includes('rsyslog') ||
-          tool.name.toLowerCase().includes('syslog-ng'),
+          tool.name.toLowerCase().includes('syslog-ng')
       );
 
       if (syslogCapable) {
@@ -279,7 +278,7 @@ export class AdapterRegistry {
           });
           return [] as SecurityEvent[];
         }
-      }),
+      })
     );
 
     for (const result of results) {

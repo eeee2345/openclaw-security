@@ -37,25 +37,28 @@ const logger = createLogger('panguard-guard:respond-agent');
  */
 const SAFETY_RULES = {
   /** IPs that must never be auto-blocked / 不可自動封鎖的 IP */
-  whitelistedIPs: new Set([
-    '127.0.0.1',
-    '::1',
-    'localhost',
-    '0.0.0.0',
-  ]),
+  whitelistedIPs: new Set(['127.0.0.1', '::1', 'localhost', '0.0.0.0']),
 
   /** Processes that must never be auto-killed / 不可自動終止的程序 */
   protectedProcesses: new Set([
-    'sshd', 'systemd', 'init', 'launchd', 'loginwindow',
-    'explorer.exe', 'svchost.exe', 'csrss.exe', 'lsass.exe',
-    'services.exe', 'winlogon.exe', 'wininit.exe',
-    'panguard-guard', 'node',
+    'sshd',
+    'systemd',
+    'init',
+    'launchd',
+    'loginwindow',
+    'explorer.exe',
+    'svchost.exe',
+    'csrss.exe',
+    'lsass.exe',
+    'services.exe',
+    'winlogon.exe',
+    'wininit.exe',
+    'panguard-guard',
+    'node',
   ]),
 
   /** Accounts that must never be auto-disabled / 不可自動停用的帳號 */
-  protectedAccounts: new Set([
-    'root', 'Administrator', 'admin', 'SYSTEM', 'LocalSystem',
-  ]),
+  protectedAccounts: new Set(['root', 'Administrator', 'admin', 'SYSTEM', 'LocalSystem']),
 
   /** Max auto-block duration in ms (24 hours) / 最大自動封鎖時長 */
   maxAutoBlockDurationMs: 24 * 60 * 60 * 1000,
@@ -114,9 +117,7 @@ export class RespondAgent {
   async respond(verdict: ThreatVerdict): Promise<ResponseResult> {
     // Learning mode: never take active response / 學習模式：不執行主動回應
     if (this.mode === 'learning') {
-      logger.info(
-        'Learning mode: no response action taken / 學習模式: 未執行回應動作',
-      );
+      logger.info('Learning mode: no response action taken / 學習模式: 未執行回應動作');
       return {
         action: 'log_only',
         success: true,
@@ -132,8 +133,8 @@ export class RespondAgent {
     if (confidence >= this.actionPolicy.autoRespond) {
       logger.info(
         `Auto-responding (confidence ${confidence}% >= ${this.actionPolicy.autoRespond}%): ` +
-        `${verdict.recommendedAction} / ` +
-        `自動回應 (信心度 ${confidence}%): ${verdict.recommendedAction}`,
+          `${verdict.recommendedAction} / ` +
+          `自動回應 (信心度 ${confidence}%): ${verdict.recommendedAction}`
       );
       return this.executeAction(verdict.recommendedAction, verdict);
     }
@@ -143,7 +144,7 @@ export class RespondAgent {
     if (confidence >= this.actionPolicy.notifyAndWait) {
       logger.info(
         `Notify mode (confidence ${confidence}%): will notify user / ` +
-        `通知模式 (信心度 ${confidence}%): 將通知用戶`,
+          `通知模式 (信心度 ${confidence}%): 將通知用戶`
       );
       return {
         action: 'notify',
@@ -156,9 +157,7 @@ export class RespondAgent {
     }
 
     // Log only / 僅記錄
-    logger.info(
-      `Log only (confidence ${confidence}%) / 僅記錄 (信心度 ${confidence}%)`,
-    );
+    logger.info(`Log only (confidence ${confidence}%) / 僅記錄 (信心度 ${confidence}%)`);
     return {
       action: 'log_only',
       success: true,
@@ -172,7 +171,7 @@ export class RespondAgent {
    */
   private async executeAction(
     action: ResponseAction,
-    verdict: ThreatVerdict,
+    verdict: ThreatVerdict
   ): Promise<ResponseResult> {
     this.actionCount++;
 
@@ -212,17 +211,14 @@ export class RespondAgent {
       return {
         action: 'block_ip',
         success: false,
-        details:
-          'No IP address found in verdict evidence / 判決證據中未找到 IP 地址',
+        details: 'No IP address found in verdict evidence / 判決證據中未找到 IP 地址',
         timestamp: new Date().toISOString(),
       };
     }
 
     // Safety: check whitelisted IPs / 安全：檢查白名單 IP
     if (SAFETY_RULES.whitelistedIPs.has(ip) || this.additionalWhitelistedIPs.has(ip)) {
-      logger.warn(
-        `Refusing to block whitelisted IP: ${ip} / 拒絕封鎖白名單 IP: ${ip}`,
-      );
+      logger.warn(`Refusing to block whitelisted IP: ${ip} / 拒絕封鎖白名單 IP: ${ip}`);
       return {
         action: 'block_ip',
         success: false,
@@ -247,19 +243,20 @@ export class RespondAgent {
     try {
       if (os === 'darwin') {
         // macOS: use pfctl (requires root)
-        await execFilePromise('/sbin/pfctl', [
-          '-t', 'panguard-guard_blocked', '-T', 'add', ip,
-        ]);
+        await execFilePromise('/sbin/pfctl', ['-t', 'panguard-guard_blocked', '-T', 'add', ip]);
       } else if (os === 'linux') {
         // Linux: use iptables
-        await execFilePromise('/sbin/iptables', [
-          '-A', 'INPUT', '-s', ip, '-j', 'DROP',
-        ]);
+        await execFilePromise('/sbin/iptables', ['-A', 'INPUT', '-s', ip, '-j', 'DROP']);
       } else if (os === 'win32') {
         // Windows: use netsh
         await execFilePromise('netsh', [
-          'advfirewall', 'firewall', 'add', 'rule',
-          `name=PanguardGuard_Block_${ip}`, 'dir=in', 'action=block',
+          'advfirewall',
+          'firewall',
+          'add',
+          'rule',
+          `name=PanguardGuard_Block_${ip}`,
+          'dir=in',
+          'action=block',
           `remoteip=${ip}`,
         ]);
       }
@@ -304,12 +301,13 @@ export class RespondAgent {
     if (processName && SAFETY_RULES.protectedProcesses.has(processName)) {
       logger.warn(
         `Refusing to kill protected process: ${processName} (PID ${pid}) / ` +
-        `拒絕終止受保護程序: ${processName} (PID ${pid})`,
+          `拒絕終止受保護程序: ${processName} (PID ${pid})`
       );
       return {
         action: 'kill_process',
         success: false,
-        details: `Process ${processName} is protected and cannot be killed / ` +
+        details:
+          `Process ${processName} is protected and cannot be killed / ` +
           `程序 ${processName} 受保護，無法終止`,
         timestamp: new Date().toISOString(),
         target: String(pid),
@@ -340,9 +338,7 @@ export class RespondAgent {
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(
-        `Failed to kill process ${pid}: ${msg} / 終止程序失敗: ${msg}`,
-      );
+      logger.error(`Failed to kill process ${pid}: ${msg} / 終止程序失敗: ${msg}`);
       return {
         action: 'kill_process',
         success: false,
@@ -356,16 +352,13 @@ export class RespondAgent {
   /**
    * Disable a user account / 停用使用者帳號
    */
-  private async disableAccount(
-    verdict: ThreatVerdict,
-  ): Promise<ResponseResult> {
+  private async disableAccount(verdict: ThreatVerdict): Promise<ResponseResult> {
     const username = this.extractUsername(verdict);
     if (!username) {
       return {
         action: 'disable_account',
         success: false,
-        details:
-          'No username found in verdict evidence / 判決證據中未找到使用者名稱',
+        details: 'No username found in verdict evidence / 判決證據中未找到使用者名稱',
         timestamp: new Date().toISOString(),
       };
     }
@@ -373,13 +366,13 @@ export class RespondAgent {
     // Safety: check protected accounts / 安全：檢查受保護帳號
     if (SAFETY_RULES.protectedAccounts.has(username)) {
       logger.warn(
-        `Refusing to disable protected account: ${username} / ` +
-        `拒絕停用受保護帳號: ${username}`,
+        `Refusing to disable protected account: ${username} / ` + `拒絕停用受保護帳號: ${username}`
       );
       return {
         action: 'disable_account',
         success: false,
-        details: `Account ${username} is protected and cannot be disabled / ` +
+        details:
+          `Account ${username} is protected and cannot be disabled / ` +
           `帳號 ${username} 受保護，無法停用`,
         timestamp: new Date().toISOString(),
         target: username,
@@ -401,8 +394,11 @@ export class RespondAgent {
     try {
       if (os === 'darwin') {
         await execFilePromise('/usr/bin/dscl', [
-          '.', '-create', `/Users/${username}`,
-          'AuthenticationAuthority', ';DisabledUser;',
+          '.',
+          '-create',
+          `/Users/${username}`,
+          'AuthenticationAuthority',
+          ';DisabledUser;',
         ]);
       } else if (os === 'linux') {
         await execFilePromise('/usr/sbin/usermod', ['-L', username]);
@@ -420,9 +416,7 @@ export class RespondAgent {
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(
-        `Failed to disable account ${username}: ${msg} / 停用帳號失敗: ${msg}`,
-      );
+      logger.error(`Failed to disable account ${username}: ${msg} / 停用帳號失敗: ${msg}`);
       return {
         action: 'disable_account',
         success: false,
@@ -442,8 +436,7 @@ export class RespondAgent {
       return {
         action: 'isolate_file',
         success: false,
-        details:
-          'No file path found in verdict evidence / 判決證據中未找到檔案路徑',
+        details: 'No file path found in verdict evidence / 判決證據中未找到檔案路徑',
         timestamp: new Date().toISOString(),
       };
     }

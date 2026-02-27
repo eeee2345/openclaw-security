@@ -13,10 +13,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { COLORS, FONTS, LAYOUT, severityColor } from '../src/report/styles.js';
-import {
-  getComplianceEntries,
-  mapFindingsToCompliance,
-} from '../src/report/compliance-map.js';
+import { getComplianceEntries, mapFindingsToCompliance } from '../src/report/compliance-map.js';
 import { generatePdfReport } from '../src/report/index.js';
 import type { Finding } from '../src/scanners/types.js';
 

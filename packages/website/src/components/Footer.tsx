@@ -1,12 +1,12 @@
-import { useTranslations } from "next-intl";
-import { Github, Twitter, Linkedin } from "lucide-react";
-import { Link } from "@/navigation";
-import BrandLogo from "./ui/BrandLogo";
+import { useTranslations } from 'next-intl';
+import { Github, Twitter, Linkedin } from 'lucide-react';
+import { Link } from '@/navigation';
+import BrandLogo from './ui/BrandLogo';
 
 const socials = [
-  { icon: Github, href: "https://github.com/panguard-ai/panguard-ai", label: "GitHub" },
-  { icon: Twitter, href: "https://x.com/panguard_ai", label: "Twitter" },
-  { icon: Linkedin, href: "https://linkedin.com/company/panguard-ai", label: "LinkedIn" },
+  { icon: Github, href: 'https://github.com/panguard-ai/panguard-ai', label: 'GitHub' },
+  { icon: Twitter, href: 'https://x.com/panguard_ai', label: 'Twitter' },
+  { icon: Linkedin, href: 'https://linkedin.com/company/panguard-ai', label: 'LinkedIn' },
 ];
 
 function FooterLogo() {
@@ -20,31 +20,31 @@ function FooterLogo() {
 }
 
 export default function Footer() {
-  const t = useTranslations("footer");
-  const tc = useTranslations("common");
+  const t = useTranslations('footer');
+  const tc = useTranslations('common');
 
   const columns = [
     {
-      title: t("product"),
+      title: t('product'),
       links: [
-        { label: t("guard"), href: "/product/guard" },
-        { label: t("chat"), href: "/product/chat" },
-        { label: t("trap"), href: "/product/trap" },
-        { label: t("report"), href: "/product/report" },
+        { label: t('guard'), href: '/product/guard' },
+        { label: t('chat'), href: '/product/chat' },
+        { label: t('trap'), href: '/product/trap' },
+        { label: t('report'), href: '/product/report' },
       ],
     },
     {
-      title: t("resources"),
+      title: t('resources'),
       links: [
-        { label: t("documentation"), href: "/docs" },
-        { label: "GitHub", href: "https://github.com/panguard-ai/panguard-ai", external: true },
+        { label: t('documentation'), href: '/docs' },
+        { label: 'GitHub', href: 'https://github.com/panguard-ai/panguard-ai', external: true },
       ],
     },
     {
-      title: t("legal"),
+      title: t('legal'),
       links: [
-        { label: t("privacyPolicy"), href: "/legal/privacy" },
-        { label: t("termsOfService"), href: "/legal/terms" },
+        { label: t('privacyPolicy'), href: '/legal/privacy' },
+        { label: t('termsOfService'), href: '/legal/terms' },
       ],
     },
   ];
@@ -55,9 +55,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           <div className="col-span-2 md:col-span-1">
             <FooterLogo />
-            <p className="text-sm text-text-tertiary mt-3 leading-relaxed">
-              {tc("footerTagline")}
-            </p>
+            <p className="text-sm text-text-tertiary mt-3 leading-relaxed">{tc('footerTagline')}</p>
             <div className="flex gap-3 mt-4">
               {socials.map((s) => (
                 <a
@@ -82,7 +80,7 @@ export default function Footer() {
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    {"external" in link && link.external ? (
+                    {'external' in link && link.external ? (
                       <a
                         href={link.href}
                         target="_blank"
@@ -107,9 +105,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-text-muted">
-            &copy; {tc("copyright")}
-          </p>
+          <p className="text-xs text-text-muted">&copy; {tc('copyright')}</p>
         </div>
       </div>
     </footer>

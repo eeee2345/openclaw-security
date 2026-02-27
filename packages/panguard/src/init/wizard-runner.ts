@@ -6,14 +6,28 @@
  */
 
 import {
-  banner, box, c, symbols, statusPanel, divider, spinner,
-  WizardEngine, promptConfirm,
+  banner,
+  box,
+  c,
+  symbols,
+  statusPanel,
+  divider,
+  spinner,
+  WizardEngine,
+  promptConfirm,
 } from '@panguard-ai/core';
 import type { WizardAnswers as CoreWizardAnswers } from '@panguard-ai/core';
 import { getWizardSteps } from './steps.js';
 import { hasExistingConfig, getEnvironmentInfo } from './environment.js';
 import { buildPanguardConfig, writeConfig } from './config-writer.js';
-import type { WizardAnswers, Lang, OrgSize, DeployEnv, AiPreference, ProtectionLevel } from './types.js';
+import type {
+  WizardAnswers,
+  Lang,
+  OrgSize,
+  DeployEnv,
+  AiPreference,
+  ProtectionLevel,
+} from './types.js';
 
 /**
  * Run the full init wizard.
@@ -26,18 +40,20 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
   console.clear();
   console.log(banner());
   console.log('');
-  console.log(box(
-    [
-      initialLang === 'zh-TW'
-        ? 'Panguard AI Setup Wizard / \u8A2D\u5B9A\u7CBE\u9748'
-        : 'Panguard AI Setup Wizard',
-      '',
-      initialLang === 'zh-TW'
-        ? '\u901A\u904E\u5E7E\u500B\u554F\u984C\u4E86\u89E3\u4F60\u7684\u74B0\u5883\uFF0C\u81EA\u52D5\u914D\u7F6E\u6240\u6709\u5B89\u5168\u6A21\u7D44\u3002'
-        : 'A few questions to understand your environment and auto-configure all security modules.',
-    ].join('\n'),
-    { borderColor: c.sage },
-  ));
+  console.log(
+    box(
+      [
+        initialLang === 'zh-TW'
+          ? 'Panguard AI Setup Wizard / \u8A2D\u5B9A\u7CBE\u9748'
+          : 'Panguard AI Setup Wizard',
+        '',
+        initialLang === 'zh-TW'
+          ? '\u901A\u904E\u5E7E\u500B\u554F\u984C\u4E86\u89E3\u4F60\u7684\u74B0\u5883\uFF0C\u81EA\u52D5\u914D\u7F6E\u6240\u6709\u5B89\u5168\u6A21\u7D44\u3002'
+          : 'A few questions to understand your environment and auto-configure all security modules.',
+      ].join('\n'),
+      { borderColor: c.sage }
+    )
+  );
   console.log('');
 
   // ── Check for existing config ───────────────────────────────
@@ -52,7 +68,9 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
     });
 
     if (!overwrite) {
-      console.log(`\n  ${symbols.info} ${initialLang === 'zh-TW' ? '\u5DF2\u53D6\u6D88\u3002' : 'Cancelled.'}\n`);
+      console.log(
+        `\n  ${symbols.info} ${initialLang === 'zh-TW' ? '\u5DF2\u53D6\u6D88\u3002' : 'Cancelled.'}\n`
+      );
       return null;
     }
   }
@@ -63,7 +81,9 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
   const rawAnswers = await engine.run();
 
   if (!rawAnswers) {
-    console.log(`\n  ${symbols.info} ${initialLang === 'zh-TW' ? '\u5DF2\u53D6\u6D88\u8A2D\u5B9A\u3002' : 'Setup cancelled.'}\n`);
+    console.log(
+      `\n  ${symbols.info} ${initialLang === 'zh-TW' ? '\u5DF2\u53D6\u6D88\u8A2D\u5B9A\u3002' : 'Setup cancelled.'}\n`
+    );
     return null;
   }
 
@@ -92,19 +112,28 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
     {
       label: lang === 'zh-TW' ? '\u9632\u8B77\u6A21\u5F0F' : 'Protection',
       value: config.security.protectionLevel,
-      status: config.security.protectionLevel === 'aggressive' ? 'alert' as const : 'safe' as const,
+      status:
+        config.security.protectionLevel === 'aggressive' ? ('alert' as const) : ('safe' as const),
     },
     {
       label: 'AI',
-      value: config.ai.preference === 'cloud_ai' ? 'Cloud AI (Claude/OpenAI)'
-        : config.ai.preference === 'local_ai' ? 'Local AI (Ollama)'
-        : lang === 'zh-TW' ? '\u50C5\u898F\u5247' : 'Rules Only',
+      value:
+        config.ai.preference === 'cloud_ai'
+          ? 'Cloud AI (Claude/OpenAI)'
+          : config.ai.preference === 'local_ai'
+            ? 'Local AI (Ollama)'
+            : lang === 'zh-TW'
+              ? '\u50C5\u898F\u5247'
+              : 'Rules Only',
     },
     {
       label: lang === 'zh-TW' ? '\u901A\u77E5' : 'Notifications',
-      value: config.notifications.channel === 'none'
-        ? (lang === 'zh-TW' ? '\u672A\u8A2D\u5B9A' : 'Not configured')
-        : config.notifications.channel.toUpperCase(),
+      value:
+        config.notifications.channel === 'none'
+          ? lang === 'zh-TW'
+            ? '\u672A\u8A2D\u5B9A'
+            : 'Not configured'
+          : config.notifications.channel.toUpperCase(),
     },
   ];
 
@@ -119,10 +148,12 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
     value: enabledModules,
   });
 
-  console.log(statusPanel(
-    lang === 'zh-TW' ? 'Panguard AI \u914D\u7F6E' : 'Panguard AI Configuration',
-    summaryItems,
-  ));
+  console.log(
+    statusPanel(
+      lang === 'zh-TW' ? 'Panguard AI \u914D\u7F6E' : 'Panguard AI Configuration',
+      summaryItems
+    )
+  );
 
   // ── Confirm and write ──────────────────────────────────────
   const confirm = await promptConfirm({
@@ -135,14 +166,20 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
   });
 
   if (!confirm) {
-    console.log(`\n  ${symbols.info} ${lang === 'zh-TW' ? '\u5DF2\u53D6\u6D88\u3002' : 'Cancelled.'}\n`);
+    console.log(
+      `\n  ${symbols.info} ${lang === 'zh-TW' ? '\u5DF2\u53D6\u6D88\u3002' : 'Cancelled.'}\n`
+    );
     return null;
   }
 
   // Write config
   const sp = spinner(lang === 'zh-TW' ? '\u5BEB\u5165\u914D\u7F6E...' : 'Writing configuration...');
   const configPath = writeConfig(config);
-  sp.succeed(lang === 'zh-TW' ? `\u914D\u7F6E\u5DF2\u5BEB\u5165 ${configPath}` : `Config saved to ${configPath}`);
+  sp.succeed(
+    lang === 'zh-TW'
+      ? `\u914D\u7F6E\u5DF2\u5BEB\u5165 ${configPath}`
+      : `Config saved to ${configPath}`
+  );
 
   // ── Post-setup actions ─────────────────────────────────────
   console.log('');
@@ -166,39 +203,47 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
       scanSp.succeed(
         lang === 'zh-TW'
           ? `\u6383\u63CF\u5B8C\u6210\uFF01\u98A8\u96AA\u5206\u6578: ${result.riskScore}/100\uFF0C${result.findings.length} \u500B\u767C\u73FE`
-          : `Scan complete! Risk score: ${result.riskScore}/100, ${result.findings.length} finding(s)`,
+          : `Scan complete! Risk score: ${result.riskScore}/100, ${result.findings.length} finding(s)`
       );
     } catch {
-      scanSp.warn(lang === 'zh-TW' ? '\u6383\u63CF\u5931\u6557\uFF08\u53EF\u7A0D\u5F8C\u7528 panguard scan \u57F7\u884C\uFF09' : 'Scan failed (run panguard scan later)');
+      scanSp.warn(
+        lang === 'zh-TW'
+          ? '\u6383\u63CF\u5931\u6557\uFF08\u53EF\u7A0D\u5F8C\u7528 panguard scan \u57F7\u884C\uFF09'
+          : 'Scan failed (run panguard scan later)'
+      );
     }
   }
 
   // ── Final guidance ─────────────────────────────────────────
   console.log('');
-  console.log(box(
-    lang === 'zh-TW' ? [
-      `${symbols.pass} Panguard AI \u8A2D\u5B9A\u5B8C\u6210\uFF01`,
-      '',
-      '\u63A5\u4E0B\u4F86\u4F60\u53EF\u4EE5\uFF1A',
-      '',
-      `  ${c.sage('panguard deploy')}     \u90E8\u7F72\u5DF2\u914D\u7F6E\u7684\u670D\u52D9`,
-      `  ${c.sage('panguard scan')}       \u57F7\u884C\u5B8C\u6574\u5B89\u5168\u6383\u63CF`,
-      `  ${c.sage('panguard status')}     \u67E5\u770B\u7CFB\u7D71\u72C0\u614B`,
-      `  ${c.sage('panguard guard start')}\u555F\u52D5\u5373\u6642\u9632\u8B77`,
-      `  ${c.sage('panguard')}            \u958B\u555F\u4E92\u52D5\u6A21\u5F0F`,
-    ].join('\n') : [
-      `${symbols.pass} Panguard AI setup complete!`,
-      '',
-      'Next steps:',
-      '',
-      `  ${c.sage('panguard deploy')}      Deploy configured services`,
-      `  ${c.sage('panguard scan')}        Run a full security scan`,
-      `  ${c.sage('panguard status')}      Check system status`,
-      `  ${c.sage('panguard guard start')} Start real-time protection`,
-      `  ${c.sage('panguard')}             Open interactive mode`,
-    ].join('\n'),
-    { borderColor: c.safe },
-  ));
+  console.log(
+    box(
+      lang === 'zh-TW'
+        ? [
+            `${symbols.pass} Panguard AI \u8A2D\u5B9A\u5B8C\u6210\uFF01`,
+            '',
+            '\u63A5\u4E0B\u4F86\u4F60\u53EF\u4EE5\uFF1A',
+            '',
+            `  ${c.sage('panguard deploy')}     \u90E8\u7F72\u5DF2\u914D\u7F6E\u7684\u670D\u52D9`,
+            `  ${c.sage('panguard scan')}       \u57F7\u884C\u5B8C\u6574\u5B89\u5168\u6383\u63CF`,
+            `  ${c.sage('panguard status')}     \u67E5\u770B\u7CFB\u7D71\u72C0\u614B`,
+            `  ${c.sage('panguard guard start')}\u555F\u52D5\u5373\u6642\u9632\u8B77`,
+            `  ${c.sage('panguard')}            \u958B\u555F\u4E92\u52D5\u6A21\u5F0F`,
+          ].join('\n')
+        : [
+            `${symbols.pass} Panguard AI setup complete!`,
+            '',
+            'Next steps:',
+            '',
+            `  ${c.sage('panguard deploy')}      Deploy configured services`,
+            `  ${c.sage('panguard scan')}        Run a full security scan`,
+            `  ${c.sage('panguard status')}      Check system status`,
+            `  ${c.sage('panguard guard start')} Start real-time protection`,
+            `  ${c.sage('panguard')}             Open interactive mode`,
+          ].join('\n'),
+      { borderColor: c.safe }
+    )
+  );
   console.log('');
 
   return configPath;
@@ -208,7 +253,7 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
 
 function parseAnswers(
   raw: CoreWizardAnswers,
-  envInfo: { os: string; hostname: string },
+  envInfo: { os: string; hostname: string }
 ): WizardAnswers {
   return {
     language: (raw['language'] as Lang) ?? 'zh-TW',

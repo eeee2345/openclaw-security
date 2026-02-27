@@ -26,11 +26,14 @@ const logger = createLogger('panguard-guard:notify:slack');
 export async function sendSlackNotify(
   config: SlackConfig,
   verdict: ThreatVerdict,
-  eventDescription: string,
+  eventDescription: string
 ): Promise<NotificationResult> {
   const color =
-    verdict.conclusion === 'malicious' ? '#dc3545' :
-    verdict.conclusion === 'suspicious' ? '#ffc107' : '#28a745';
+    verdict.conclusion === 'malicious'
+      ? '#dc3545'
+      : verdict.conclusion === 'suspicious'
+        ? '#ffc107'
+        : '#28a745';
 
   const payload = {
     attachments: [
@@ -83,7 +86,9 @@ function postSlack(webhookUrl: string, payload: unknown): Promise<void> {
       },
       (res) => {
         let data = '';
-        res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+        res.on('data', (chunk: Buffer) => {
+          data += chunk.toString();
+        });
         res.on('end', () => {
           if (res.statusCode === 200) {
             resolve();
@@ -91,7 +96,7 @@ function postSlack(webhookUrl: string, payload: unknown): Promise<void> {
             reject(new Error(`Slack HTTP ${res.statusCode}: ${data}`));
           }
         });
-      },
+      }
     );
 
     req.on('error', reject);
