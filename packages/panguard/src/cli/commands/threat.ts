@@ -127,11 +127,13 @@ export function threatCommand(): Command {
             { header: 'Technique', key: 'technique', width: 30 },
             { header: 'Count', key: 'count', width: 10, align: 'right' as const },
           ];
-          const mitreRows = stats.topMitreTechniques.map((t: { technique: string; count: number }, i: number) => ({
-            rank: String(i + 1),
-            technique: t.technique,
-            count: String(t.count),
-          }));
+          const mitreRows = stats.topMitreTechniques.map(
+            (t: { technique: string; count: number }, i: number) => ({
+              rank: String(i + 1),
+              technique: t.technique,
+              count: String(t.count),
+            })
+          );
           console.log(table(mitreColumns, mitreRows));
           console.log('');
         }
