@@ -138,9 +138,15 @@ export default function GettingStartedContent() {
             <p className="text-text-secondary mb-6">{t('step1Desc')}</p>
             <PlatformTabs selected={platform} onChange={setPlatform} />
             {platform === 'unix' ? (
-              <CodeBlock code="curl -fsSL https://get.panguard.ai | sh" label="Terminal (macOS / Linux)" />
+              <CodeBlock
+                code="curl -fsSL https://get.panguard.ai | sh"
+                label="Terminal (macOS / Linux)"
+              />
             ) : (
-              <CodeBlock code="irm https://get.panguard.ai/windows | iex" label="PowerShell (Windows)" />
+              <CodeBlock
+                code="irm https://get.panguard.ai/windows | iex"
+                label="PowerShell (Windows)"
+              />
             )}
             <p className="text-xs text-text-muted mt-3">{t('step1Note')}</p>
             <TerminalOutput
