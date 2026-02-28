@@ -44,6 +44,8 @@ import {
   createCheckoutUrl,
   getCustomerPortalUrl,
 } from './lemonsqueezy.js';
+import { checkQuota, recordUsage, getUsageSummary, getQuotaLimits } from './usage-meter.js';
+import type { MeterableResource } from './usage-meter.js';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -1154,7 +1156,8 @@ export function createAuthHandlers(config: AuthRouteConfig) {
   /**
    * POST /api/billing/checkout
    * Creates a checkout URL for the authenticated user.
-   * Body: { variantId: string }
+   * Body: { variantId: string } or { tier: string }
+   * When `tier` is provided, the server resolves it to a variant ID via variantTierMap.
    */
   async function handleBillingCheckout(req: IncomingMessage, res: ServerResponse): Promise<void> {
     if (req.method !== 'POST') {
@@ -1179,13 +1182,30 @@ export function createAuthHandlers(config: AuthRouteConfig) {
       return;
     }
 
-    const { variantId } = body.data;
-    if (typeof variantId !== 'string' || variantId.length === 0) {
-      json(res, 400, { ok: false, error: 'variantId is required' });
+    let resolvedVariantId: string | undefined;
+
+    // Accept variantId directly
+    if (typeof body.data['variantId'] === 'string' && (body.data['variantId'] as string).length > 0) {
+      resolvedVariantId = body.data['variantId'] as string;
+    }
+    // Or resolve from tier name
+    else if (typeof body.data['tier'] === 'string' && (body.data['tier'] as string).length > 0) {
+      const tierMap = config.lemonsqueezy.variantTierMap;
+      // Reverse lookup: find variant ID for this tier
+      const entry = Object.entries(tierMap).find(([, t]) => t === body.data['tier']);
+      if (!entry) {
+        json(res, 400, { ok: false, error: `No variant configured for tier: ${body.data['tier']}` });
+        return;
+      }
+      resolvedVariantId = entry[0];
+    }
+
+    if (!resolvedVariantId) {
+      json(res, 400, { ok: false, error: 'variantId or tier is required' });
       return;
     }
 
-    const checkoutUrl = await createCheckoutUrl(config.lemonsqueezy, variantId, {
+    const checkoutUrl = await createCheckoutUrl(config.lemonsqueezy, resolvedVariantId, {
       id: user.id,
       email: user.email,
       name: user.name,
@@ -1557,6 +1577,127 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     });
   }
 
+  // ── Usage / Quota ─────────────────────────────────────────────────
+
+  /**
+   * GET /api/usage
+   * Returns current usage and quota for the authenticated user.
+   */
+  function handleUsageSummary(req: IncomingMessage, res: ServerResponse): void {
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const summary = getUsageSummary(db, user.id, user.tier);
+    json(res, 200, { ok: true, data: { usage: summary, tier: user.tier } });
+  }
+
+  /**
+   * GET /api/usage/limits
+   * Returns quota limits for the authenticated user's tier.
+   */
+  function handleUsageLimits(req: IncomingMessage, res: ServerResponse): void {
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const limits = getQuotaLimits(user.tier);
+    json(res, 200, { ok: true, data: { limits, tier: user.tier } });
+  }
+
+  /**
+   * POST /api/usage/check
+   * Checks if the user has quota for a specific resource.
+   * Body: { resource: string }
+   */
+  async function handleUsageCheck(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const body = await readBody(req);
+    if (!body.ok) {
+      json(res, body.status, { ok: false, error: 'Invalid request body' });
+      return;
+    }
+
+    const resource = body.data['resource'] as MeterableResource;
+    if (!resource) {
+      json(res, 400, { ok: false, error: 'resource is required' });
+      return;
+    }
+
+    const check = checkQuota(db, user.id, user.tier, resource);
+    json(res, 200, { ok: true, data: check });
+  }
+
+  /**
+   * POST /api/usage/record
+   * Records usage for a resource. Intended for internal/trusted callers.
+   * Body: { resource: string, count?: number }
+   */
+  async function handleUsageRecord(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const body = await readBody(req);
+    if (!body.ok) {
+      json(res, body.status, { ok: false, error: 'Invalid request body' });
+      return;
+    }
+
+    const resource = body.data['resource'] as MeterableResource;
+    const count = typeof body.data['count'] === 'number' ? body.data['count'] : 1;
+
+    if (!resource) {
+      json(res, 400, { ok: false, error: 'resource is required' });
+      return;
+    }
+
+    // Check quota before recording
+    const check = checkQuota(db, user.id, user.tier, resource);
+    if (!check.allowed) {
+      json(res, 429, {
+        ok: false,
+        error: 'Quota exceeded',
+        data: { current: check.current, limit: check.limit, resource },
+      });
+      return;
+    }
+
+    recordUsage(db, user.id, resource, count);
+    json(res, 200, { ok: true, data: { recorded: count, resource } });
+  }
+
   return {
     handleWaitlistJoin,
     handleWaitlistVerify,
@@ -1597,5 +1738,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     handleBillingCheckout,
     handleBillingPortal,
     handleBillingStatus,
+    // Usage / Quota
+    handleUsageSummary,
+    handleUsageLimits,
+    handleUsageCheck,
+    handleUsageRecord,
   };
 }

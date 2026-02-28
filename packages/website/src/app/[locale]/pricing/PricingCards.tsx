@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Fragment } from 'react';
+import { useState, useCallback, Fragment } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/navigation';
 import { X } from 'lucide-react';
@@ -12,15 +12,19 @@ import SectionTitle from '@/components/ui/SectionTitle';
 
 const planKeys = ['community', 'solo', 'pro', 'business'] as const;
 
+type PlanKey = (typeof planKeys)[number];
+
 interface PlanMeta {
   price: number;
   unit: string;
   ctaHref: string;
   popular: boolean;
   machines: string;
+  /** If set, clicking CTA triggers checkout for this tier */
+  checkoutTier?: string;
 }
 
-const planMeta: Record<(typeof planKeys)[number], PlanMeta> = {
+const planMeta: Record<PlanKey, PlanMeta> = {
   community: {
     price: 0,
     unit: '',
@@ -28,9 +32,30 @@ const planMeta: Record<(typeof planKeys)[number], PlanMeta> = {
     popular: false,
     machines: '1',
   },
-  solo: { price: 9, unit: '/mo', ctaHref: '/early-access', popular: false, machines: '3' },
-  pro: { price: 29, unit: '/mo', ctaHref: '/early-access', popular: true, machines: '10' },
-  business: { price: 79, unit: '/mo', ctaHref: '/early-access', popular: false, machines: '25' },
+  solo: {
+    price: 9,
+    unit: '/mo',
+    ctaHref: '/early-access',
+    popular: false,
+    machines: '3',
+    checkoutTier: 'solo',
+  },
+  pro: {
+    price: 29,
+    unit: '/mo',
+    ctaHref: '/early-access',
+    popular: true,
+    machines: '10',
+    checkoutTier: 'pro',
+  },
+  business: {
+    price: 79,
+    unit: '/mo',
+    ctaHref: '/early-access',
+    popular: false,
+    machines: '25',
+    checkoutTier: 'business',
+  },
 };
 
 /* ── Feature comparison (4 columns) ── */
@@ -152,12 +177,39 @@ export default function PricingCards() {
   const t = useTranslations('pricingPage');
   const tc = useTranslations('common');
   const [annual, setAnnual] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
 
   const displayPrice = (price: number) => {
     if (price === 0) return '$0';
     const effective = annual ? Math.round(price * 0.8 * 100) / 100 : price;
     return `$${effective % 1 === 0 ? effective : effective.toFixed(2)}`;
   };
+
+  const handleCheckout = useCallback(async (tier: string) => {
+    setLoading(tier);
+    try {
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.ok && data.data?.url) {
+        window.location.href = data.data.url;
+      } else if (res.status === 401) {
+        // Not logged in — redirect to login, then come back
+        window.location.href = `/login?redirect=/pricing`;
+      } else {
+        // Fallback to early access
+        window.location.href = '/early-access';
+      }
+    } catch {
+      window.location.href = '/early-access';
+    } finally {
+      setLoading(null);
+    }
+  }, []);
 
   return (
     <>
@@ -240,16 +292,30 @@ export default function PricingCards() {
                   ))}
                 </ul>
 
-                <Link
-                  href={meta.ctaHref}
-                  className={`mt-6 block text-center font-semibold rounded-full px-5 py-3 text-sm transition-all duration-200 active:scale-[0.98] ${
-                    meta.popular
-                      ? 'bg-brand-sage text-surface-0 hover:bg-brand-sage-light'
-                      : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
-                  }`}
-                >
-                  {t(`plans.${key}.cta`)}
-                </Link>
+                {meta.checkoutTier ? (
+                  <button
+                    onClick={() => handleCheckout(meta.checkoutTier!)}
+                    disabled={loading === meta.checkoutTier}
+                    className={`mt-6 block w-full text-center font-semibold rounded-full px-5 py-3 text-sm transition-all duration-200 active:scale-[0.98] disabled:opacity-50 ${
+                      meta.popular
+                        ? 'bg-brand-sage text-surface-0 hover:bg-brand-sage-light'
+                        : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
+                    }`}
+                  >
+                    {loading === meta.checkoutTier ? '...' : t(`plans.${key}.cta`)}
+                  </button>
+                ) : (
+                  <Link
+                    href={meta.ctaHref}
+                    className={`mt-6 block text-center font-semibold rounded-full px-5 py-3 text-sm transition-all duration-200 active:scale-[0.98] ${
+                      meta.popular
+                        ? 'bg-brand-sage text-surface-0 hover:bg-brand-sage-light'
+                        : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
+                    }`}
+                  >
+                    {t(`plans.${key}.cta`)}
+                  </Link>
+                )}
               </div>
             </FadeInUp>
           );

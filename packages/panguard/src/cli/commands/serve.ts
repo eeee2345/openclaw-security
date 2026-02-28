@@ -11,7 +11,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { c, banner } from '@panguard-ai/core';
-import { AuthDB, createAuthHandlers, sendExpirationWarningEmail } from '@panguard-ai/panguard-auth';
+import {
+  AuthDB,
+  createAuthHandlers,
+  sendExpirationWarningEmail,
+  initErrorTracking,
+  captureRequestError,
+} from '@panguard-ai/panguard-auth';
 import type {
   AuthRouteConfig,
   SmtpConfig,
@@ -33,6 +39,9 @@ export function serveCommand(): Command {
       console.log(banner());
       console.log(`  ${c.sage('Panguard Serve')} - Unified Server Gateway`);
       console.log('');
+
+      // Initialize error tracking (Sentry if configured, console fallback)
+      await initErrorTracking();
 
       // Initialize database
       const db = new AuthDB(options.db);
@@ -105,6 +114,7 @@ export function serveCommand(): Command {
         if (lemonsqueezy) {
           console.log(`    ${c.dim('/api/billing/*')}  Billing API (Lemon Squeezy)`);
         }
+        console.log(`    ${c.dim('/api/usage/*')}    Usage & Quota API`);
         if (adminDir) {
           console.log(`    ${c.dim('/admin')}          Admin Dashboard`);
         } else {
@@ -308,6 +318,24 @@ async function handleRequest(
       return;
     }
 
+    // Usage / Quota API routes
+    if (pathname === '/api/usage') {
+      handlers.handleUsageSummary(req, res);
+      return;
+    }
+    if (pathname === '/api/usage/limits') {
+      handlers.handleUsageLimits(req, res);
+      return;
+    }
+    if (pathname === '/api/usage/check') {
+      await handlers.handleUsageCheck(req, res);
+      return;
+    }
+    if (pathname === '/api/usage/record') {
+      await handlers.handleUsageRecord(req, res);
+      return;
+    }
+
     // Admin API routes
     if (pathname === '/api/admin/dashboard') {
       handlers.handleAdminDashboard(req, res);
@@ -381,7 +409,7 @@ async function handleRequest(
 
     sendJson(res, 404, { ok: false, error: 'Not found' });
   } catch (err) {
-    console.error('Request error:', err);
+    captureRequestError(err, req.method ?? 'UNKNOWN', pathname);
     sendJson(res, 500, { ok: false, error: 'Internal server error' });
   }
 }
@@ -398,15 +426,15 @@ function serveStaticFile(
   if (pathname === '/admin' || pathname === '/admin/') {
     filePath = join(resolvedAdminDir, 'index.html');
   } else {
-    // Strip /admin prefix
-    const relative = pathname.slice('/admin'.length);
-    filePath = resolve(resolvedAdminDir, relative);
+    // Strip /admin prefix and leading slash
+    const relative = pathname.slice('/admin'.length).replace(/^\//, '');
+    filePath = join(resolvedAdminDir, relative);
 
     // If no extension, try .html
     if (!relative.includes('.')) {
-      filePath = resolve(resolvedAdminDir, relative + '.html');
+      filePath = join(resolvedAdminDir, relative + '.html');
       if (!existsSync(filePath)) {
-        filePath = resolve(resolvedAdminDir, relative, 'index.html');
+        filePath = join(resolvedAdminDir, relative, 'index.html');
       }
     }
   }

@@ -100,6 +100,7 @@ const MENU_DEFS: MenuDef[] = [
   { key: '__sep__', en: '', zh: '', tier: '' },
   { key: 'setup', en: 'Initial configuration', zh: '\u521D\u59CB\u8A2D\u5B9A', tier: 'free' },
   { key: 'demo', en: 'Feature demo', zh: '\u529F\u80FD\u5C55\u793A', tier: 'free' },
+  { key: 'upgrade', en: 'Upgrade plan', zh: '\u5347\u7D1A\u65B9\u6848', tier: 'free' },
 ];
 
 function buildMenuItems(lang: Lang): MenuItem[] {
@@ -252,6 +253,9 @@ async function dispatch(key: string): Promise<void> {
       break;
     case 'demo':
       await actionDemo();
+      break;
+    case 'upgrade':
+      await actionUpgrade();
       break;
   }
 }
@@ -1010,4 +1014,20 @@ async function actionDemo(): Promise<void> {
         ],
     currentLang
   );
+}
+
+// ---------------------------------------------------------------------------
+// 8. Upgrade Plan
+// ---------------------------------------------------------------------------
+
+async function actionUpgrade(): Promise<void> {
+  breadcrumb([
+    'Panguard',
+    currentLang === 'zh-TW' ? '\u5347\u7D1A\u65B9\u6848' : 'Upgrade Plan',
+  ]);
+
+  // Delegate to the upgrade command module
+  const { upgradeCommand } = await import('./commands/upgrade.js');
+  const cmd = upgradeCommand();
+  await cmd.parseAsync(['upgrade', '--lang', currentLang], { from: 'user' });
 }

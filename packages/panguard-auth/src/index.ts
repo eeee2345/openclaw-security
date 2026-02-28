@@ -51,6 +51,16 @@ export {
   getCustomerPortalUrl,
 } from './lemonsqueezy.js';
 export type { LemonSqueezyConfig, WebhookResult } from './lemonsqueezy.js';
+export {
+  checkQuota,
+  recordUsage,
+  setUsage,
+  getUsageSummary,
+  getQuotaLimits,
+  currentPeriod,
+} from './usage-meter.js';
+export type { MeterableResource, QuotaCheck, UsageSummary } from './usage-meter.js';
+export { initErrorTracking, captureException, captureRequestError } from './error-tracker.js';
 export type {
   WaitlistEntry,
   WaitlistInput,

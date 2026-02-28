@@ -151,6 +151,21 @@ export class AuthDB {
       CREATE INDEX IF NOT EXISTS idx_reset_tokens_hash ON password_reset_tokens(token_hash);
       CREATE INDEX IF NOT EXISTS idx_reset_tokens_user ON password_reset_tokens(user_id);
     `);
+
+    // Migration: usage_meters table (usage metering)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS usage_meters (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        resource TEXT NOT NULL,
+        period TEXT NOT NULL,
+        count INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT DEFAULT (datetime('now')),
+        UNIQUE(user_id, resource, period)
+      );
+      CREATE INDEX IF NOT EXISTS idx_usage_meters_user ON usage_meters(user_id);
+      CREATE INDEX IF NOT EXISTS idx_usage_meters_lookup ON usage_meters(user_id, resource, period);
+    `);
   }
 
   // ── Waitlist ───────────────────────────────────────────────────────
@@ -982,6 +997,68 @@ export class AuthDB {
       .prepare("UPDATE totp_secrets SET backup_codes = ?, updated_at = datetime('now') WHERE user_id = ?")
       .run(JSON.stringify(remaining), userId);
     return true;
+  }
+
+  // ── Usage Metering ─────────────────────────────────────────────────
+
+  /**
+   * Get usage count for a resource in a given period.
+   */
+  getUsage(userId: number, resource: string, period: string): number {
+    const row = this.db
+      .prepare('SELECT count FROM usage_meters WHERE user_id = ? AND resource = ? AND period = ?')
+      .get(userId, resource, period) as { count: number } | undefined;
+    return row?.count ?? 0;
+  }
+
+  /**
+   * Increment usage counter for a resource.
+   */
+  incrementUsage(userId: number, resource: string, period: string, amount: number = 1): void {
+    this.db
+      .prepare(
+        `INSERT INTO usage_meters (user_id, resource, period, count, updated_at)
+         VALUES (?, ?, ?, ?, datetime('now'))
+         ON CONFLICT(user_id, resource, period) DO UPDATE SET
+           count = count + ?,
+           updated_at = datetime('now')`
+      )
+      .run(userId, resource, period, amount, amount);
+  }
+
+  /**
+   * Set absolute usage value for a resource (for count-based resources).
+   */
+  setUsage(userId: number, resource: string, period: string, count: number): void {
+    this.db
+      .prepare(
+        `INSERT INTO usage_meters (user_id, resource, period, count, updated_at)
+         VALUES (?, ?, ?, ?, datetime('now'))
+         ON CONFLICT(user_id, resource, period) DO UPDATE SET
+           count = ?,
+           updated_at = datetime('now')`
+      )
+      .run(userId, resource, period, count, count);
+  }
+
+  /**
+   * Get all usage meters for a user.
+   */
+  getUserUsage(userId: number): Array<{ resource: string; period: string; count: number }> {
+    return this.db
+      .prepare('SELECT resource, period, count FROM usage_meters WHERE user_id = ? ORDER BY resource, period')
+      .all(userId) as Array<{ resource: string; period: string; count: number }>;
+  }
+
+  /**
+   * Delete old usage meters (periods older than given cutoff).
+   * Used for cleanup of historical data.
+   */
+  cleanupOldUsage(cutoffPeriod: string): number {
+    const result = this.db
+      .prepare("DELETE FROM usage_meters WHERE period != 'lifetime' AND period < ?")
+      .run(cutoffPeriod);
+    return result.changes;
   }
 
   close(): void {
