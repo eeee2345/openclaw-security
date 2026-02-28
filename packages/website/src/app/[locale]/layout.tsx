@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Instrument_Serif, Noto_Sans_TC } from 'next/font
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { AuthProvider } from '@/lib/auth';
 
 const locales = ['en', 'zh'] as const;
 
@@ -159,7 +160,9 @@ export default async function LocaleLayout({
         )}
       </head>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
+          <AuthProvider>{children}</AuthProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

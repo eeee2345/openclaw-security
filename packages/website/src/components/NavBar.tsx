@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User, LogOut } from 'lucide-react';
 import { Link, usePathname, useRouter } from '@/navigation';
 import type { Locale } from '@/navigation';
 import BrandLogo from './ui/BrandLogo';
+import { useAuth } from '@/lib/auth';
 
 /* ─── Locale Switcher ─── */
 function LocaleSwitcher() {
@@ -55,6 +56,8 @@ function Logo() {
 
 export default function NavBar() {
   const t = useTranslations('nav');
+  const { user, loading: authLoading, logout } = useAuth();
+  const navRouter = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -82,58 +85,88 @@ export default function NavBar() {
       <div className="h-[2px] bg-gradient-to-r from-transparent via-brand-sage/60 to-transparent" />
 
       <div className="h-16 flex items-center justify-between px-6 lg:px-[120px]">
-      <Logo />
+        <Logo />
 
-      {/* Desktop nav */}
-      <div className="hidden lg:flex items-center gap-1">
-        {navLinks.map((link) =>
-          link.href.startsWith('/#') ? (
-            <a
-              key={link.href}
-              href={link.href}
-              className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
-            >
-              {link.label}
-            </a>
+        {/* Desktop nav */}
+        <div className="hidden lg:flex items-center gap-1">
+          {navLinks.map((link) =>
+            link.href.startsWith('/#') ? (
+              <a
+                key={link.href}
+                href={link.href}
+                className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
+          <a
+            href="https://github.com/panguard-ai/panguard-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+          >
+            GitHub
+          </a>
+        </div>
+
+        {/* Desktop CTA + Locale Switcher */}
+        <div className="hidden lg:flex items-center gap-4">
+          <LocaleSwitcher />
+          {!authLoading && user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+              >
+                <User className="w-4 h-4" />
+                Dashboard
+              </Link>
+              <button
+                onClick={() => {
+                  void logout();
+                  navRouter.push('/');
+                }}
+                className="text-text-tertiary hover:text-text-secondary transition-colors"
+                title="Log out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </>
           ) : (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
-            >
-              {link.label}
-            </Link>
-          )
-        )}
-        <a
-          href="https://github.com/panguard-ai/panguard-ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
-        >
-          GitHub
-        </a>
-      </div>
+            <>
+              <Link
+                href="/login"
+                className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+              >
+                {t('login')}
+              </Link>
+              <Link
+                href="/register"
+                className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
+              >
+                {t('getStarted')}
+              </Link>
+            </>
+          )}
+        </div>
 
-      {/* Desktop CTA + Locale Switcher */}
-      <div className="hidden lg:flex items-center gap-4">
-        <LocaleSwitcher />
-        <Link
-          href="/early-access"
-          className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
+        {/* Mobile hamburger */}
+        <button
+          className="lg:hidden text-text-secondary"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
         >
-          {t('getStarted')}
-        </Link>
-      </div>
-
-      {/* Mobile hamburger */}
-      <button
-        className="lg:hidden text-text-secondary"
-        onClick={() => setMobileOpen(!mobileOpen)}
-        aria-label="Toggle menu"
-      >
-        {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
+          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
 
       {/* Mobile menu */}
@@ -173,14 +206,45 @@ export default function NavBar() {
             >
               GitHub
             </a>
-            <div className="pt-4 border-t border-border">
-              <Link
-                href="/early-access"
-                className="block text-center bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-3"
-                onClick={() => setMobileOpen(false)}
-              >
-                {t('getStarted')}
-              </Link>
+            <div className="pt-4 border-t border-border space-y-3">
+              {!authLoading && user ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="block text-center bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-3"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => {
+                      void logout();
+                      navRouter.push('/');
+                      setMobileOpen(false);
+                    }}
+                    className="block w-full text-center text-sm text-text-secondary py-2"
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="block text-center border border-border text-text-secondary font-semibold text-sm rounded-full px-5 py-3"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t('login')}
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="block text-center bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-3"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t('getStarted')}
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

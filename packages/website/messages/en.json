@@ -38,6 +38,7 @@
     "useCases": "Use Cases",
     "startFreeScan": "Start Free Scan",
     "getStarted": "Get Started",
+    "login": "Log In",
     "productLinks": {
       "overview": "Product Overview",
       "overviewDesc": "See the full platform",
@@ -485,14 +486,54 @@
         "panguard": "Panguard AI"
       },
       "rows": {
-        "setup": { "label": "Setup time", "diy": "Weeks", "outsource": "Days", "panguard": "60 seconds" },
-        "cost": { "label": "Monthly cost", "diy": "$0 (your time)", "outsource": "$2,000+", "panguard": "From $0" },
-        "detection": { "label": "Threat detection", "diy": "partial", "outsource": "yes", "panguard": "yes" },
-        "response": { "label": "Auto response", "diy": "no", "outsource": "partial", "panguard": "yes" },
-        "learning": { "label": "Learns your env", "diy": "no", "outsource": "no", "panguard": "yes" },
-        "reporting": { "label": "Compliance reports", "diy": "no", "outsource": "partial", "panguard": "yes" },
-        "maintenance": { "label": "Ongoing maintenance", "diy": "High", "outsource": "Low", "panguard": "Zero" },
-        "scalability": { "label": "Scales with you", "diy": "no", "outsource": "partial", "panguard": "yes" }
+        "setup": {
+          "label": "Setup time",
+          "diy": "Weeks",
+          "outsource": "Days",
+          "panguard": "60 seconds"
+        },
+        "cost": {
+          "label": "Monthly cost",
+          "diy": "$0 (your time)",
+          "outsource": "$2,000+",
+          "panguard": "From $0"
+        },
+        "detection": {
+          "label": "Threat detection",
+          "diy": "partial",
+          "outsource": "yes",
+          "panguard": "yes"
+        },
+        "response": {
+          "label": "Auto response",
+          "diy": "no",
+          "outsource": "partial",
+          "panguard": "yes"
+        },
+        "learning": {
+          "label": "Learns your env",
+          "diy": "no",
+          "outsource": "no",
+          "panguard": "yes"
+        },
+        "reporting": {
+          "label": "Compliance reports",
+          "diy": "no",
+          "outsource": "partial",
+          "panguard": "yes"
+        },
+        "maintenance": {
+          "label": "Ongoing maintenance",
+          "diy": "High",
+          "outsource": "Low",
+          "panguard": "Zero"
+        },
+        "scalability": {
+          "label": "Scales with you",
+          "diy": "no",
+          "outsource": "partial",
+          "panguard": "yes"
+        }
       },
       "cta": "Try the 60-second setup"
     },
@@ -501,11 +542,26 @@
       "title": "Security shouldn't require a security team.",
       "philosophy": "We built Panguard on a simple belief: enterprise-grade protection should be as easy to deploy as a single command. No dashboards to watch. No alerts to triage. No rules to write. AI handles the boring work so you can focus on building.",
       "architectureTitle": "Five layers of defense",
-      "layer1": { "title": "Environment Discovery", "desc": "Automatically maps your infrastructure: OS, services, open ports, installed packages." },
-      "layer2": { "title": "Rules Engine", "desc": "3,158 Sigma rules + 425 YARA rules detect known attack patterns instantly." },
-      "layer3": { "title": "Behavioral Baseline", "desc": "7-day learning period builds a model of your normal system behavior." },
-      "layer4": { "title": "AI Analysis", "desc": "Three-layer AI funnel: local rules, local AI (Ollama), cloud AI for the hardest threats." },
-      "layer5": { "title": "Automated Response", "desc": "6 response actions: block IP, kill process, quarantine file, alert, snapshot, escalate." },
+      "layer1": {
+        "title": "Environment Discovery",
+        "desc": "Automatically maps your infrastructure: OS, services, open ports, installed packages."
+      },
+      "layer2": {
+        "title": "Rules Engine",
+        "desc": "3,158 Sigma rules + 425 YARA rules detect known attack patterns instantly."
+      },
+      "layer3": {
+        "title": "Behavioral Baseline",
+        "desc": "7-day learning period builds a model of your normal system behavior."
+      },
+      "layer4": {
+        "title": "AI Analysis",
+        "desc": "Three-layer AI funnel: local rules, local AI (Ollama), cloud AI for the hardest threats."
+      },
+      "layer5": {
+        "title": "Automated Response",
+        "desc": "6 response actions: block IP, kill process, quarantine file, alert, snapshot, escalate."
+      },
       "funnelTitle": "Three-layer AI Funnel",
       "funnel1": { "percent": "90%", "title": "Rules Engine", "desc": "Instant pattern matching" },
       "funnel2": { "percent": "7%", "title": "Local AI", "desc": "On-device deep analysis" },
@@ -525,12 +581,24 @@
       "left4": { "time": "3:15 AM", "text": "Data exfiltration starts. Customer database copied." },
       "left5": { "time": "3:30 AM", "text": "Ransomware deployed. Files encrypted." },
       "left6": { "time": "7:00 AM", "text": "You wake up. Check Slack. Nothing unusual." },
-      "left7": { "time": "9:00 AM", "text": "Customer calls: \"I can't log in.\" You discover the breach." },
+      "left7": {
+        "time": "9:00 AM",
+        "text": "Customer calls: \"I can't log in.\" You discover the breach."
+      },
       "leftOutcome": "6 hours undetected. 50,000 customer records exposed. $4.35M average breach cost.",
-      "right1": { "time": "3:00 AM", "text": "SSH brute-force detected by Layer 1 (Sigma rule match)" },
+      "right1": {
+        "time": "3:00 AM",
+        "text": "SSH brute-force detected by Layer 1 (Sigma rule match)"
+      },
       "right2": { "time": "3:00 AM", "text": "IP blocked automatically. Threat Cloud notified." },
-      "right3": { "time": "3:01 AM", "text": "Attack pattern shared across all Panguard users globally" },
-      "right4": { "time": "3:01 AM", "text": "LINE notification sent to you with full incident summary" },
+      "right3": {
+        "time": "3:01 AM",
+        "text": "Attack pattern shared across all Panguard users globally"
+      },
+      "right4": {
+        "time": "3:01 AM",
+        "text": "LINE notification sent to you with full incident summary"
+      },
       "right5": { "time": "3:02 AM", "text": "Incident documented. Evidence snapshot saved." },
       "lineLabel": "Panguard AI via LINE",
       "lineMessage": "Blocked SSH brute-force from 103.xx.xx.xx. IP banned. No data accessed. All clear.",
@@ -540,12 +608,30 @@
       "overline": "Product Suite",
       "title": "One platform. Six layers of defense.",
       "coreLabel": "Core",
-      "scan": { "title": "Panguard Scan", "desc": "60-second AI security audit with PDF report. Find vulnerabilities before attackers do." },
-      "guard": { "title": "Panguard Guard", "desc": "24/7 AI endpoint monitoring with automated response. 4 AI agents working around the clock." },
-      "chat": { "title": "Panguard Chat", "desc": "AI security copilot via LINE, Telegram, Slack, or Email. Ask questions in plain language." },
-      "trap": { "title": "Panguard Trap", "desc": "Smart honeypot system with 8 protocols. Detect attackers before they reach real systems." },
-      "report": { "title": "Panguard Report", "desc": "AI compliance report generator for ISO 27001, SOC 2, and Taiwan Cyber Security Act." },
-      "threatCloud": { "title": "Threat Cloud", "desc": "Collective intelligence. Evolving defense. Every Panguard installation feeds anonymous threat data into a shared network. Threat Cloud correlates attack patterns, clusters IP behavior, and automatically generates new Sigma detection rules from real community attacks. More users = smarter defense for all. Privacy-first. Open source. One command to opt out." },
+      "scan": {
+        "title": "Panguard Scan",
+        "desc": "60-second AI security audit with PDF report. Find vulnerabilities before attackers do."
+      },
+      "guard": {
+        "title": "Panguard Guard",
+        "desc": "24/7 AI endpoint monitoring with automated response. 4 AI agents working around the clock."
+      },
+      "chat": {
+        "title": "Panguard Chat",
+        "desc": "AI security copilot via LINE, Telegram, Slack, or Email. Ask questions in plain language."
+      },
+      "trap": {
+        "title": "Panguard Trap",
+        "desc": "Smart honeypot system with 8 protocols. Detect attackers before they reach real systems."
+      },
+      "report": {
+        "title": "Panguard Report",
+        "desc": "AI compliance report generator for ISO 27001, SOC 2, and Taiwan Cyber Security Act."
+      },
+      "threatCloud": {
+        "title": "Threat Cloud",
+        "desc": "Collective intelligence. Evolving defense. Every Panguard installation feeds anonymous threat data into a shared network. Threat Cloud correlates attack patterns, clusters IP behavior, and automatically generates new Sigma detection rules from real community attacks. More users = smarter defense for all. Privacy-first. Open source. One command to opt out."
+      },
       "learnMore": "Learn more",
       "subtitle": "All products work together. Install what you need, add more as you grow."
     },

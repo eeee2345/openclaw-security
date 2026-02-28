@@ -38,6 +38,7 @@
     "useCases": "使用場景",
     "startFreeScan": "免費掃描",
     "getStarted": "立即開始",
+    "login": "登入",
     "productLinks": {
       "overview": "產品總覽",
       "overviewDesc": "查看完整平台",
@@ -458,13 +459,33 @@
       },
       "rows": {
         "setup": { "label": "設定時間", "diy": "數週", "outsource": "數天", "panguard": "60 秒" },
-        "cost": { "label": "月費", "diy": "$0（你的時間）", "outsource": "$2,000+", "panguard": "從 $0 起" },
-        "detection": { "label": "威脅偵測", "diy": "partial", "outsource": "yes", "panguard": "yes" },
+        "cost": {
+          "label": "月費",
+          "diy": "$0（你的時間）",
+          "outsource": "$2,000+",
+          "panguard": "從 $0 起"
+        },
+        "detection": {
+          "label": "威脅偵測",
+          "diy": "partial",
+          "outsource": "yes",
+          "panguard": "yes"
+        },
         "response": { "label": "自動回應", "diy": "no", "outsource": "partial", "panguard": "yes" },
         "learning": { "label": "學習你的環境", "diy": "no", "outsource": "no", "panguard": "yes" },
-        "reporting": { "label": "合規報告", "diy": "no", "outsource": "partial", "panguard": "yes" },
+        "reporting": {
+          "label": "合規報告",
+          "diy": "no",
+          "outsource": "partial",
+          "panguard": "yes"
+        },
         "maintenance": { "label": "持續維護", "diy": "高", "outsource": "低", "panguard": "零" },
-        "scalability": { "label": "跟你一起擴展", "diy": "no", "outsource": "partial", "panguard": "yes" }
+        "scalability": {
+          "label": "跟你一起擴展",
+          "diy": "no",
+          "outsource": "partial",
+          "panguard": "yes"
+        }
       },
       "cta": "試試 60 秒安裝"
     },
@@ -473,11 +494,23 @@
       "title": "資安不應該需要資安團隊。",
       "philosophy": "我們建立 Panguard 基於一個簡單的信念：企業級防護應該像一行指令一樣簡單。不用盯著儀表板。不用分類警報。不用寫規則。AI 處理無聊的工作，讓你專注在產品開發。",
       "architectureTitle": "五層防禦架構",
-      "layer1": { "title": "環境探索", "desc": "自動掃描你的基礎設施：作業系統、服務、開放 port、已安裝套件。" },
-      "layer2": { "title": "規則引擎", "desc": "3,158 條 Sigma 規則 + 425 條 YARA 規則，即時偵測已知攻擊模式。" },
+      "layer1": {
+        "title": "環境探索",
+        "desc": "自動掃描你的基礎設施：作業系統、服務、開放 port、已安裝套件。"
+      },
+      "layer2": {
+        "title": "規則引擎",
+        "desc": "3,158 條 Sigma 規則 + 425 條 YARA 規則，即時偵測已知攻擊模式。"
+      },
       "layer3": { "title": "行為基線", "desc": "7 天學習期建立你系統正常行為的模型。" },
-      "layer4": { "title": "AI 分析", "desc": "三層 AI 漏斗：本地規則、本地 AI（Ollama）、雲端 AI 處理最困難的威脅。" },
-      "layer5": { "title": "自動回應", "desc": "6 種回應動作：封鎖 IP、終止程序、隔離檔案、發送警報、快照、升級處理。" },
+      "layer4": {
+        "title": "AI 分析",
+        "desc": "三層 AI 漏斗：本地規則、本地 AI（Ollama）、雲端 AI 處理最困難的威脅。"
+      },
+      "layer5": {
+        "title": "自動回應",
+        "desc": "6 種回應動作：封鎖 IP、終止程序、隔離檔案、發送警報、快照、升級處理。"
+      },
       "funnelTitle": "三層 AI 漏斗",
       "funnel1": { "percent": "90%", "title": "規則引擎", "desc": "即時模式比對" },
       "funnel2": { "percent": "7%", "title": "本地 AI", "desc": "裝置端深度分析" },
@@ -512,12 +545,30 @@
       "overline": "產品套件",
       "title": "一個平台。六層防禦。",
       "coreLabel": "核心",
-      "scan": { "title": "Panguard Scan", "desc": "60 秒 AI 資安掃描，附 PDF 報告。在攻擊者之前找到漏洞。" },
-      "guard": { "title": "Panguard Guard", "desc": "24/7 AI 端點監控，自動回應。4 個 AI 代理全天候運作。" },
-      "chat": { "title": "Panguard Chat", "desc": "透過 LINE、Telegram、Slack 或 Email 的 AI 資安助手。用白話問問題。" },
-      "trap": { "title": "Panguard Trap", "desc": "8 種協定的智慧蜜罐系統。在攻擊者接觸真實系統前就偵測到。" },
-      "report": { "title": "Panguard Report", "desc": "AI 合規報告產生器，支援 ISO 27001、SOC 2 和台灣資安法。" },
-      "threatCloud": { "title": "Threat Cloud", "desc": "集體智慧。持續進化的防禦。每一個 Panguard 安裝節點都會匿名回報威脅數據。Threat Cloud 關聯攻擊模式、聚類可疑 IP 行為，並從社群的真實攻擊中自動產生新的 Sigma 偵測規則。參與的節點越多，所有人的防護越強。隱私優先，開源架構。一行指令即可退出。" },
+      "scan": {
+        "title": "Panguard Scan",
+        "desc": "60 秒 AI 資安掃描，附 PDF 報告。在攻擊者之前找到漏洞。"
+      },
+      "guard": {
+        "title": "Panguard Guard",
+        "desc": "24/7 AI 端點監控，自動回應。4 個 AI 代理全天候運作。"
+      },
+      "chat": {
+        "title": "Panguard Chat",
+        "desc": "透過 LINE、Telegram、Slack 或 Email 的 AI 資安助手。用白話問問題。"
+      },
+      "trap": {
+        "title": "Panguard Trap",
+        "desc": "8 種協定的智慧蜜罐系統。在攻擊者接觸真實系統前就偵測到。"
+      },
+      "report": {
+        "title": "Panguard Report",
+        "desc": "AI 合規報告產生器，支援 ISO 27001、SOC 2 和台灣資安法。"
+      },
+      "threatCloud": {
+        "title": "Threat Cloud",
+        "desc": "集體智慧。持續進化的防禦。每一個 Panguard 安裝節點都會匿名回報威脅數據。Threat Cloud 關聯攻擊模式、聚類可疑 IP 行為，並從社群的真實攻擊中自動產生新的 Sigma 偵測規則。參與的節點越多，所有人的防護越強。隱私優先，開源架構。一行指令即可退出。"
+      },
       "learnMore": "了解更多",
       "subtitle": "所有產品協同運作。安裝你需要的，隨時擴充。"
     },
