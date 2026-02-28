@@ -58,6 +58,9 @@ export type { IntelSummary } from './intel/index.js';
 // Engine
 export { TrapEngine } from './trap-engine.js';
 
+// Threat Cloud uploader
+export { ThreatCloudUploader } from './threat-cloud-uploader.js';
+
 // CLI
 export {
   executeCli,

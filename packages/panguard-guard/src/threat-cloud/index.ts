@@ -240,6 +240,36 @@ export class ThreatCloudClient {
   }
 
   /**
+   * Fetch IP blocklist from the cloud (plain text, one IP per line).
+   * 從雲端取得 IP 封鎖清單（純文字，每行一個 IP）。
+   *
+   * @returns Array of blocked IPs / 封鎖 IP 陣列
+   */
+  async fetchBlocklist(): Promise<string[]> {
+    if (this.status === 'offline' || !this.endpoint) {
+      return [];
+    }
+
+    try {
+      const url = `${this.endpoint}/api/feeds/ip-blocklist`;
+      const response = await this.httpGet(url);
+      const ips = response
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0 && !line.startsWith('#'));
+
+      this.status = 'connected';
+      logger.info(`Fetched ${ips.length} IPs from blocklist / 從封鎖清單取得 ${ips.length} 個 IP`);
+      return ips;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error(`Fetch blocklist failed: ${msg} / 取得封鎖清單失敗: ${msg}`);
+      this.status = 'disconnected';
+      return [];
+    }
+  }
+
+  /**
    * Get cached rules without network call / 取得快取規則（不進行網路呼叫）
    */
   getCachedRules(): ThreatCloudUpdate[] {

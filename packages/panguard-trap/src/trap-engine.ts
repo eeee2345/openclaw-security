@@ -28,6 +28,7 @@ import type {
 import { createTrapService } from './services/index.js';
 import { AttackerProfiler } from './profiler/index.js';
 import { buildTrapIntel, generateIntelSummary } from './intel/index.js';
+import { ThreatCloudUploader } from './threat-cloud-uploader.js';
 
 const logger = createLogger('panguard-trap:engine');
 
@@ -38,6 +39,7 @@ const logger = createLogger('panguard-trap:engine');
 export class TrapEngine {
   private readonly config: TrapConfig;
   private readonly profiler: AttackerProfiler;
+  private readonly cloudUploader: ThreatCloudUploader | null;
   private services: TrapService[] = [];
   private _status: TrapEngineStatus = 'idle';
   private startTime: Date | null = null;
@@ -48,6 +50,18 @@ export class TrapEngine {
   constructor(config: TrapConfig) {
     this.config = config;
     this.profiler = new AttackerProfiler();
+
+    // Initialize Threat Cloud uploader if endpoint configured
+    // 如有設定端點則初始化 Threat Cloud 上傳器
+    if (config.feedThreatCloud && config.threatCloudEndpoint) {
+      this.cloudUploader = new ThreatCloudUploader(config.threatCloudEndpoint);
+      logger.info(
+        `Threat Cloud uploader initialized: ${config.threatCloudEndpoint} / ` +
+          `Threat Cloud 上傳器已初始化`
+      );
+    } else {
+      this.cloudUploader = null;
+    }
   }
 
   get status(): TrapEngineStatus {
@@ -98,6 +112,12 @@ export class TrapEngine {
 
     logger.info('Stopping PanguardTrap engine / 停止 PanguardTrap 引擎');
     this._status = 'stopping';
+
+    // Flush and stop cloud uploader / 清空並停止上傳器
+    if (this.cloudUploader) {
+      await this.cloudUploader.flush();
+      this.cloudUploader.stop();
+    }
 
     for (const service of this.services) {
       try {
@@ -279,11 +299,17 @@ export class TrapEngine {
     // Profile the attacker
     const profile = this.profiler.processSession(session);
 
-    // Build intel
+    // Build intel and upload to Threat Cloud / 建立情報並上傳至 Threat Cloud
     if (this.config.feedThreatCloud) {
       const intel = buildTrapIntel(session, profile);
       if (intel) {
         this.intelReports.push(intel);
+
+        // Upload to Threat Cloud if uploader is available
+        if (this.cloudUploader) {
+          this.cloudUploader.enqueue(intel);
+        }
+
         logger.info(`Intel report generated for ${session.sourceIP} / 情報報告已產生`);
       }
     }

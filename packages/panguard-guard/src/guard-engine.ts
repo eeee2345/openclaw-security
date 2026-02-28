@@ -62,6 +62,7 @@ import {
 } from '@panguard-ai/security-hardening';
 import { FalcoMonitor } from './monitors/falco-monitor.js';
 import { SuricataMonitor } from './monitors/suricata-monitor.js';
+import { BUILTIN_RULES } from './rules/builtin-rules.js';
 import { PanguardAgentClient } from './agent-client/index.js';
 import type { AgentHeartbeat } from './agent-client/index.js';
 
@@ -222,10 +223,11 @@ export class GuardEngine {
         `授權: ${license.tier} 等級 (有效: ${license.isValid})`
     );
 
-    // Initialize rule engine / 初始化規則引擎
+    // Initialize rule engine with built-in Sigma rules / 初始化規則引擎（含內建 Sigma 規則）
     this.ruleEngine = new RuleEngine({
       rulesDir: join(config.dataDir, 'rules'),
       hotReload: true,
+      customRules: BUILTIN_RULES,
     });
 
     // Initialize agents / 初始化代理
