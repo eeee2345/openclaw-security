@@ -1561,6 +1561,16 @@
           "label": "證據收集",
           "consultant": "人工",
           "panguard": "自動化"
+        },
+        "tcsaRow": {
+          "label": "TCSA 合規報告",
+          "consultant": "NT$300,000 - 800,000",
+          "panguard": "$3/端點/月起"
+        },
+        "freshnessRow": {
+          "label": "報告時效性",
+          "consultant": "時間點快照",
+          "panguard": "即時更新"
         }
       },
       "cta": {

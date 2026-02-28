@@ -1469,6 +1469,16 @@
           "label": "Evidence Gathering",
           "consultant": "Manual",
           "panguard": "Automatic"
+        },
+        "tcsaRow": {
+          "label": "TCSA Compliance Report",
+          "consultant": "NT$300,000 - 800,000",
+          "panguard": "From $3/endpoint/mo"
+        },
+        "freshnessRow": {
+          "label": "Report Freshness",
+          "consultant": "Point-in-time",
+          "panguard": "Real-time"
         }
       },
       "cta": {

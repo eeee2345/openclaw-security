@@ -14,6 +14,7 @@ import type {
   UserAdmin,
   SessionAdmin,
   ActivityItem,
+  AuditLogFilter,
 } from './types.js';
 import { hashToken } from './auth.js';
 
@@ -166,6 +167,13 @@ export class AuthDB {
       CREATE INDEX IF NOT EXISTS idx_usage_meters_user ON usage_meters(user_id);
       CREATE INDEX IF NOT EXISTS idx_usage_meters_lookup ON usage_meters(user_id, resource, period);
     `);
+
+    // Migration: add suspended column to users
+    try {
+      this.db.exec(`ALTER TABLE users ADD COLUMN suspended INTEGER DEFAULT 0`);
+    } catch {
+      // Column already exists — ignore
+    }
   }
 
   // ── Waitlist ───────────────────────────────────────────────────────
@@ -435,7 +443,7 @@ export class AuthDB {
     return this.db
       .prepare(
         `
-      SELECT id, email, name, role, tier, verified,
+      SELECT id, email, name, role, tier, verified, COALESCE(suspended, 0) as suspended,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users ORDER BY created_at DESC
     `
@@ -448,7 +456,7 @@ export class AuthDB {
     return this.db
       .prepare(
         `
-      SELECT id, email, name, role, tier, verified,
+      SELECT id, email, name, role, tier, verified, COALESCE(suspended, 0) as suspended,
              created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
       FROM users WHERE email LIKE ? OR name LIKE ?
       ORDER BY created_at DESC
@@ -1059,6 +1067,147 @@ export class AuthDB {
       .prepare("DELETE FROM usage_meters WHERE period != 'lifetime' AND period < ?")
       .run(cutoffPeriod);
     return result.changes;
+  }
+
+  // ── Admin: Suspend ──────────────────────────────────────────────
+
+  suspendUser(userId: number): void {
+    this.db.prepare('UPDATE users SET suspended = 1 WHERE id = ?').run(userId);
+    this.db.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
+  }
+
+  unsuspendUser(userId: number): void {
+    this.db.prepare('UPDATE users SET suspended = 0 WHERE id = ?').run(userId);
+  }
+
+  // ── Admin: Audit Log (filtered + paginated) ───────────────────
+
+  getAuditLogFiltered(filter: AuditLogFilter): { items: AuditLogEntry[]; total: number } {
+    const conditions: string[] = ['1=1'];
+    const params: unknown[] = [];
+
+    if (filter.action) {
+      conditions.push('action = ?');
+      params.push(filter.action);
+    }
+    if (filter.actorId != null) {
+      conditions.push('actor_id = ?');
+      params.push(filter.actorId);
+    }
+    if (filter.dateFrom) {
+      conditions.push('created_at >= ?');
+      params.push(filter.dateFrom);
+    }
+    if (filter.dateTo) {
+      conditions.push('created_at <= ?');
+      params.push(filter.dateTo + ' 23:59:59');
+    }
+
+    const where = conditions.join(' AND ');
+    const page = Math.max(1, filter.page ?? 1);
+    const perPage = Math.min(200, Math.max(1, filter.perPage ?? 50));
+    const offset = (page - 1) * perPage;
+
+    const countRow = this.db
+      .prepare(`SELECT COUNT(*) as cnt FROM audit_log WHERE ${where}`)
+      .get(...params) as { cnt: number };
+
+    const items = this.db
+      .prepare(
+        `SELECT id, action, actor_id as actorId, target_id as targetId,
+                details, created_at as createdAt
+         FROM audit_log WHERE ${where}
+         ORDER BY created_at DESC LIMIT ? OFFSET ?`
+      )
+      .all(...params, perPage, offset) as AuditLogEntry[];
+
+    return { items, total: countRow.cnt };
+  }
+
+  getDistinctAuditActions(): string[] {
+    const rows = this.db
+      .prepare('SELECT DISTINCT action FROM audit_log ORDER BY action')
+      .all() as Array<{ action: string }>;
+    return rows.map((r) => r.action);
+  }
+
+  // ── Admin: User Detail ────────────────────────────────────────
+
+  getUserDetailById(userId: number): {
+    user: UserAdmin;
+    subscription: { status: string; tier: string; renewsAt: string | null; endsAt: string | null } | null;
+    usage: Array<{ resource: string; period: string; count: number }>;
+    sessions: Array<{ id: number; expiresAt: string; createdAt: string }>;
+    recentAudit: AuditLogEntry[];
+    totpEnabled: boolean;
+  } | null {
+    const user = this.db
+      .prepare(
+        `SELECT id, email, name, role, tier, verified, COALESCE(suspended, 0) as suspended,
+                created_at as createdAt, last_login as lastLogin, plan_expires_at as planExpiresAt
+         FROM users WHERE id = ?`
+      )
+      .get(userId) as UserAdmin | undefined;
+    if (!user) return null;
+
+    const subscription = this.getActiveSubscription(userId);
+    const subData = subscription
+      ? { status: subscription.status, tier: subscription.tier, renewsAt: subscription.renewsAt, endsAt: subscription.endsAt }
+      : null;
+
+    const usage = this.getUserUsage(userId);
+
+    const sessions = this.db
+      .prepare(
+        `SELECT id, expires_at as expiresAt, created_at as createdAt
+         FROM sessions WHERE user_id = ? AND expires_at > datetime('now')
+         ORDER BY created_at DESC`
+      )
+      .all(userId) as Array<{ id: number; expiresAt: string; createdAt: string }>;
+
+    const recentAudit = this.db
+      .prepare(
+        `SELECT id, action, actor_id as actorId, target_id as targetId,
+                details, created_at as createdAt
+         FROM audit_log WHERE actor_id = ? OR target_id = ?
+         ORDER BY created_at DESC LIMIT 10`
+      )
+      .all(userId, userId) as AuditLogEntry[];
+
+    const totp = this.getTotpSecret(userId);
+    const totpEnabled = totp ? totp.enabled === 1 : false;
+
+    return { user, subscription: subData, usage, sessions, recentAudit, totpEnabled };
+  }
+
+  // ── Admin: Usage Aggregate ────────────────────────────────────
+
+  getAdminUsageAggregate(): Array<{
+    userId: number;
+    email: string;
+    name: string;
+    tier: string;
+    resource: string;
+    period: string;
+    count: number;
+  }> {
+    return this.db
+      .prepare(
+        `SELECT u.id as userId, u.email, u.name, u.tier,
+                um.resource, um.period, um.count
+         FROM usage_meters um
+         JOIN users u ON um.user_id = u.id
+         ORDER BY um.count DESC`
+      )
+      .all() as Array<{
+      userId: number;
+      email: string;
+      name: string;
+      tier: string;
+      resource: string;
+      period: string;
+      count: number;
+    }>;
   }
 
   close(): void {

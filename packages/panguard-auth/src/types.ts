@@ -33,6 +33,7 @@ export interface User {
   role: 'user' | 'admin';
   tier: 'free' | 'solo' | 'starter' | 'team' | 'business' | 'enterprise';
   verified: number;
+  suspended: number;
   createdAt: string;
   lastLogin: string | null;
   planExpiresAt: string | null;
@@ -84,6 +85,7 @@ export interface UserAdmin {
   role: string;
   tier: string;
   verified: number;
+  suspended: number;
   createdAt: string;
   lastLogin: string | null;
   planExpiresAt: string | null;
@@ -108,4 +110,48 @@ export interface AuthResult {
   ok: boolean;
   error?: string;
   data?: unknown;
+}
+
+// ── Admin Detail Types ───────────────────────────────────────
+
+export interface AuditLogFilter {
+  action?: string;
+  actorId?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  page?: number;
+  perPage?: number;
+}
+
+export interface UserDetailAdmin {
+  user: UserAdmin;
+  subscription: {
+    status: string;
+    tier: string;
+    renewsAt: string | null;
+    endsAt: string | null;
+  } | null;
+  usage: Array<{ resource: string; current: number; limit: number; percentage: number }>;
+  sessions: Array<{ id: number; expiresAt: string; createdAt: string }>;
+  recentAudit: Array<{
+    id: number;
+    action: string;
+    actorId: number | null;
+    targetId: number | null;
+    details: string | null;
+    createdAt: string;
+  }>;
+  twoFactor: { enabled: boolean };
+}
+
+export interface BulkActionRequest {
+  userIds: number[];
+  action: 'change_tier' | 'change_role' | 'suspend' | 'unsuspend';
+  value?: string;
+}
+
+export interface BulkActionResult {
+  processed: number;
+  failed: number;
+  results: Array<{ userId: number; success: boolean; error?: string }>;
 }

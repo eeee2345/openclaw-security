@@ -390,6 +390,22 @@ async function handleRequest(
       handlers.handleAdminActivity(req, res);
       return;
     }
+    if (pathname === '/api/admin/audit/actions') {
+      handlers.handleAdminAuditActions(req, res);
+      return;
+    }
+    if (pathname === '/api/admin/audit') {
+      handlers.handleAdminAuditLog(req, res);
+      return;
+    }
+    if (pathname === '/api/admin/usage') {
+      handlers.handleAdminUsageOverview(req, res);
+      return;
+    }
+    if (pathname === '/api/admin/users/bulk-action') {
+      await handlers.handleAdminBulkAction(req, res);
+      return;
+    }
 
     // /api/admin/sessions/:id (DELETE)
     const sessionRevokeMatch = pathname.match(/^\/api\/admin\/sessions\/(\d+)$/);
@@ -423,6 +439,27 @@ async function handleRequest(
     const rejectMatch = pathname.match(/^\/api\/admin\/waitlist\/(\d+)\/reject$/);
     if (rejectMatch) {
       await handlers.handleAdminWaitlistReject(req, res, rejectMatch[1]!);
+      return;
+    }
+
+    // /api/admin/users/:id/suspend
+    const suspendMatch = pathname.match(/^\/api\/admin\/users\/(\d+)\/suspend$/);
+    if (suspendMatch) {
+      await handlers.handleAdminUserSuspend(req, res, suspendMatch[1]!);
+      return;
+    }
+
+    // /api/admin/usage/:userId
+    const usageUserMatch = pathname.match(/^\/api\/admin\/usage\/(\d+)$/);
+    if (usageUserMatch) {
+      handlers.handleAdminUsageUser(req, res, usageUserMatch[1]!);
+      return;
+    }
+
+    // /api/admin/users/:id (GET — user detail)
+    const userDetailMatch = pathname.match(/^\/api\/admin\/users\/(\d+)$/);
+    if (userDetailMatch && req.method === 'GET') {
+      handlers.handleAdminUserDetail(req, res, userDetailMatch[1]!);
       return;
     }
 

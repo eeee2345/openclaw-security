@@ -75,4 +75,8 @@ export type {
   UserAdmin,
   SessionAdmin,
   ActivityItem,
+  AuditLogFilter,
+  UserDetailAdmin,
+  BulkActionRequest,
+  BulkActionResult,
 } from './types.js';
