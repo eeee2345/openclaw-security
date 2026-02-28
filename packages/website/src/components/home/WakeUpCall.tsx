@@ -22,7 +22,7 @@ export default function WakeUpCall() {
   ];
 
   return (
-    <SectionWrapper dark>
+    <SectionWrapper dark className="bg-gradient-to-b from-[#1F1C19] to-[#261A18]">
       <FadeInUp>
         <h2 className="text-3xl lg:text-4xl font-extrabold text-text-primary text-center">
           {t('title')}

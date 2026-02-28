@@ -19,7 +19,7 @@ function FunnelBars() {
   return (
     <div ref={ref} className="space-y-5">
       {items.map((item, i) => (
-        <div key={item.key}>
+        <div key={item.key} className="group relative">
           <div className="flex justify-between items-baseline mb-2">
             <div>
               <span className="text-sm font-semibold text-text-primary">
@@ -41,6 +41,9 @@ function FunnelBars() {
                 transition: `width 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) ${i * 0.2}s`,
               }}
             />
+          </div>
+          <div className="absolute left-0 right-0 top-full mt-2 px-3 py-2 bg-surface-3 border border-border rounded-lg text-xs text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+            {t(`${item.key}.tooltip`)}
           </div>
         </div>
       ))}
@@ -130,7 +133,7 @@ export default function TheShift() {
   ];
 
   return (
-    <SectionWrapper dark>
+    <SectionWrapper dark className="bg-gradient-to-b from-[#1F1C19] via-[#1D211C] to-[#1B261F]">
       {/* Blinking cursor top */}
       <FadeInUp>
         <div className="flex items-center gap-2 text-brand-sage font-mono text-sm mb-8">

@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Copy, Check, ArrowRight, CheckCircle } from 'lucide-react';
 import { Link } from '@/navigation';
@@ -9,16 +9,50 @@ function InstallBar() {
   const t = useTranslations('home.hero');
   const { installCmd, prompt } = useOS();
   const [copied, setCopied] = useState(false);
+  const [typedLen, setTypedLen] = useState(0);
+  const [typing, setTyping] = useState(false);
+  const [done, setDone] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current || !ref.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          setTimeout(() => setTyping(true), 600);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!typing || done) return;
+    if (typedLen >= installCmd.length) {
+      setDone(true);
+      return;
+    }
+    const timeout = setTimeout(() => setTypedLen((l) => l + 1), 35);
+    return () => clearTimeout(timeout);
+  }, [typing, typedLen, installCmd, done]);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(installCmd);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto" ref={ref}>
       <div className="relative flex items-center gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-5 py-3.5 font-mono text-sm">
         <span className="text-brand-sage select-none">{prompt}</span>
-        <code className="text-text-secondary flex-1 select-all truncate">{installCmd}</code>
+        <code className="text-text-secondary flex-1 truncate">
+          {done ? installCmd : installCmd.slice(0, typedLen)}
+          {!done && typing && <span className="cursor-blink text-brand-sage">_</span>}
+        </code>
         <button
           onClick={handleCopy}
           className="text-text-muted hover:text-text-secondary transition-colors p-1 shrink-0"

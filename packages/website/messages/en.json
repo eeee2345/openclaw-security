@@ -224,7 +224,7 @@
       "stat3Label": "Honeypot Protocols",
       "stat4Label": "Tests Passing",
       "stat5Label": "AI Agents + Investigation Engine",
-      "stat6Label": "AI Layers",
+      "stat6Label": "Detection Layers",
       "stat7Label": "Product Modules",
       "stat8Label": "Open Source License",
       "footnote": "Every number is verifiable on GitHub.",
@@ -333,6 +333,7 @@
     "finalCta": {
       "title": "60 seconds. Free. No account needed.",
       "subtitle": "Scan any server or domain right now.",
+      "manifesto0": "Security is a right, not a privilege.",
       "manifesto1": "We believe: the next step in security",
       "manifesto2": "isn't more dashboards — it's smarter agents.",
       "manifesto3": "You deploy. We defend.",
@@ -562,11 +563,11 @@
         "title": "Automated Response",
         "desc": "6 response actions: block IP, kill process, quarantine file, alert, snapshot, escalate."
       },
-      "funnelTitle": "Three-layer AI Funnel",
-      "funnel1": { "percent": "90%", "title": "Rules Engine", "desc": "Instant pattern matching" },
-      "funnel2": { "percent": "7%", "title": "Local AI", "desc": "On-device deep analysis" },
-      "funnel3": { "percent": "3%", "title": "Cloud AI", "desc": "Dynamic reasoning" },
-      "collectiveTitle": "Collective Defense (Threat Cloud)",
+      "funnelTitle": "This is not AI-washing.",
+      "funnel1": { "percent": "90%", "title": "Rules Engine", "desc": "Instant pattern matching", "tooltip": "3,158 Sigma rules + 425 YARA rules + Suricata + Falco + behavioral baseline. Sub-50ms response." },
+      "funnel2": { "percent": "7%", "title": "Local AI", "desc": "On-device deep analysis", "tooltip": "Ollama local model running on your NVIDIA GPU. Fully offline. Data never leaves your machine." },
+      "funnel3": { "percent": "3%", "title": "Cloud AI", "desc": "Dynamic reasoning", "tooltip": "Claude Haiku, ~$0.008 per analysis. Only called when local rules and local AI can't determine the threat." },
+      "collectiveTitle": "One gets attacked. Everyone learns to defend.",
       "collectiveDesc": "Every Panguard instance shares anonymized threat intelligence. When one user detects a new attack, all users are protected. The network gets smarter with every deployment.",
       "closing": "Install once. Protected forever."
     },
@@ -1412,6 +1413,9 @@
         }
       },
       "reports": {
+        "overline": "Report Library",
+        "title": "Every framework. One click.",
+        "desc": "Select the compliance framework you need, and Panguard generates a complete report mapped to every control. Coverage percentages show exactly where you stand. Gaps are highlighted with specific remediation guidance.",
         "iso27001": {
           "name": "ISO 27001 Gap Analysis",
           "coverage": "94%",
@@ -1483,9 +1487,11 @@
       },
       "cta": {
         "title": "Compliance without the consultant bill.",
-        "desc": "Join the early access program and generate your first compliance report in minutes, not months.",
+        "desc": "Generate your first compliance report in minutes, not months. ISO 27001, SOC 2, and Taiwan Cyber Security Act -- all from one platform.",
         "cta1": "Get Early Access",
-        "cta2": "Our Security Practices"
+        "cta2": "See Panguard Report",
+        "trustNote": "Want to see our own compliance status?",
+        "trustLink": "Visit our Trust Center"
       },
       "reportTypes": {
         "overline": "Available Reports",
@@ -2011,6 +2017,8 @@
     "costComparison": {
       "overline": "Cost Comparison",
       "title": "The math is simple.",
+      "consultant": "Consultant",
+      "panguard": "Panguard",
       "tcsaRow": {
         "label": "TCSA Compliance Report",
         "consultant": "NT$300,000 - 800,000",

@@ -21,7 +21,7 @@ export default function FinalCTA() {
   };
 
   return (
-    <SectionWrapper dark spacing="spacious">
+    <SectionWrapper dark spacing="spacious" className="bg-gradient-to-b from-[#1F1C19] to-[#1B261F]">
       <div className="max-w-3xl mx-auto text-center">
         {/* Title */}
         <FadeInUp>
@@ -84,6 +84,7 @@ export default function FinalCTA() {
         {/* Manifesto */}
         <FadeInUp delay={0.3}>
           <div className="mt-12 space-y-1">
+            <p className="text-sm text-text-secondary font-semibold">{t('manifesto0')}</p>
             <p className="text-sm text-text-tertiary">{t('manifesto1')}</p>
             <p className="text-sm text-text-secondary font-medium">{t('manifesto2')}</p>
             <p className="text-sm text-brand-sage font-semibold">{t('manifesto3')}</p>

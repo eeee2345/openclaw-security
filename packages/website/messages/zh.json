@@ -191,7 +191,7 @@
       "stat5": "4+1",
       "stat5Label": "AI Agent + 調查引擎",
       "stat6": "3",
-      "stat6Label": "AI 分析層",
+      "stat6Label": "偵測層",
       "stat7": "6",
       "stat7Label": "產品模組",
       "stat8": "MIT",
@@ -511,11 +511,11 @@
         "title": "自動回應",
         "desc": "6 種回應動作：封鎖 IP、終止程序、隔離檔案、發送警報、快照、升級處理。"
       },
-      "funnelTitle": "三層 AI 漏斗",
-      "funnel1": { "percent": "90%", "title": "規則引擎", "desc": "即時模式比對" },
-      "funnel2": { "percent": "7%", "title": "本地 AI", "desc": "裝置端深度分析" },
-      "funnel3": { "percent": "3%", "title": "雲端 AI", "desc": "動態推理" },
-      "collectiveTitle": "集體防禦（Threat Cloud）",
+      "funnelTitle": "這不是 AI 包裝。",
+      "funnel1": { "percent": "90%", "title": "規則引擎", "desc": "即時模式比對", "tooltip": "3,158 Sigma 規則 + 425 YARA 規則 + Suricata + Falco + 行為基線。50ms 內回應。" },
+      "funnel2": { "percent": "7%", "title": "本地 AI", "desc": "裝置端深度分析", "tooltip": "Ollama 本地模型，跑在你的 NVIDIA GPU 上。完全離線，資料不離開你的機器。" },
+      "funnel3": { "percent": "3%", "title": "雲端 AI", "desc": "動態推理", "tooltip": "Claude Haiku，每次分析約 $0.008。只在本地規則和本地 AI 無法判斷時才調用。" },
+      "collectiveTitle": "一個人被攻擊，所有人學會防禦。",
       "collectiveDesc": "每個 Panguard 實例都會分享匿名化的威脅情報。當一個用戶偵測到新攻擊，所有用戶都受到保護。網路隨著每次部署變得更聰明。",
       "closing": "安裝一次，永遠受保護。"
     },
@@ -695,6 +695,7 @@
     "finalCta": {
       "title": "60 秒。免費。不需要帳號。",
       "subtitle": "立即掃描任何伺服器或網域。",
+      "manifesto0": "資安是權利，不是特權。",
       "manifesto1": "我們相信：資安的下一步，",
       "manifesto2": "不是更多儀表板，而是更聰明的 Agent。",
       "manifesto3": "你部署。我們防禦。",

@@ -24,35 +24,6 @@ body {
   background-size: 64px 64px;
 }
 
-/* Loading bar animation */
-@keyframes loading-bar {
-  0% {
-    width: 0%;
-    margin-left: 0;
-  }
-  50% {
-    width: 60%;
-    margin-left: 20%;
-  }
-  100% {
-    width: 0%;
-    margin-left: 100%;
-  }
-}
-
-/* Breathing animation for ComingSoon shield */
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
-}
-
 /* Sage glow card effect */
 .card-glow {
   box-shadow:
@@ -156,16 +127,6 @@ body {
   }
   100% {
     top: 0;
-  }
-}
-
-/* Infinite scroll for logo bars */
-@keyframes scroll-x {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
   }
 }
 
@@ -274,72 +235,6 @@ body {
     0 0 40px rgba(139, 154, 142, 0.2);
 }
 
-/* ─── Metallic Logo Animation ─── */
-
-@keyframes metallic-float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-14px);
-  }
-}
-
-@keyframes metallic-shine-sweep {
-  0% {
-    transform: translateX(-150%) skewX(-20deg);
-  }
-  100% {
-    transform: translateX(250%) skewX(-20deg);
-  }
-}
-
-@keyframes metallic-rotate {
-  0%,
-  100% {
-    transform: perspective(800px) rotateY(-6deg) rotateX(2deg);
-  }
-  50% {
-    transform: perspective(800px) rotateY(6deg) rotateX(-2deg);
-  }
-}
-
-.metallic-logo-wrapper {
-  animation: metallic-float 6s ease-in-out infinite;
-  filter: drop-shadow(0 20px 40px rgba(139, 154, 142, 0.15))
-    drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-}
-
-.metallic-logo-inner {
-  animation: metallic-rotate 8s ease-in-out infinite;
-  transform-style: preserve-3d;
-}
-
-/* Shine sweep overlay */
-.metallic-shine {
-  position: relative;
-  overflow: hidden;
-}
-.metallic-shine::after {
-  content: '';
-  position: absolute;
-  top: -10%;
-  left: 0;
-  width: 40%;
-  height: 120%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.06) 30%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.06) 70%,
-    transparent
-  );
-  animation: metallic-shine-sweep 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
 /* ─── Agent Flow Diagram Animations ─── */
 
 @keyframes flow-dash {
@@ -429,16 +324,6 @@ body {
 
 .shield-inner-pulse {
   animation: shield-ring-pulse 4s ease-in-out infinite;
-}
-
-/* Metallic floor reflection */
-.metallic-reflection {
-  background: linear-gradient(to bottom, rgba(139, 154, 142, 0.08), transparent 80%);
-  filter: blur(8px);
-  transform: scaleY(-0.3) translateY(-20%);
-  opacity: 0.4;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
 }
 
 /* ─── Scroll-Reveal Animation System (replaces Framer Motion) ─── */
@@ -577,6 +462,15 @@ body {
 }
 .animate-pulse-danger {
   animation: pulse-danger 2.5s ease-in-out infinite;
+}
+
+/* ─── Typewriter Cursor ─── */
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink-cursor 0.7s step-end infinite;
 }
 
 /* ─── Pricing Card Glow Pulse ─── */
