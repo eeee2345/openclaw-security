@@ -411,6 +411,8 @@ export interface GuardConfig {
   };
   watchdogEnabled: boolean;
   watchdogInterval: number;
+  /** YARA rules directory (custom + community) / YARA 規則目錄 */
+  yaraRulesDir?: string;
   /** Manager URL for agent mode (distributed architecture) */
   managerUrl?: string;
   /** Agent ID (auto-assigned on registration) */

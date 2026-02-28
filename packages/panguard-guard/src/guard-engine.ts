@@ -23,6 +23,7 @@ import {
   RuleEngine,
   MonitorEngine,
   ThreatIntelFeedManager,
+  YaraScanner,
   setFeedManager,
 } from '@panguard-ai/core';
 import type { SecurityEvent } from '@panguard-ai/core';
@@ -169,6 +170,9 @@ export class GuardEngine {
   private suricataMonitor: SuricataMonitor | null = null;
   private agentClient: PanguardAgentClient | null = null;
 
+  // YARA scanner / YARA 掃描器
+  private readonly yaraScanner: YaraScanner;
+
   // State / 狀態
   private running = false;
   private startTime = 0;
@@ -178,6 +182,7 @@ export class GuardEngine {
   private threatCloudUploaded = 0;
   private statusTimer: ReturnType<typeof setInterval> | null = null;
   private learningCheckTimer: ReturnType<typeof setInterval> | null = null;
+  private cloudSyncTimer: ReturnType<typeof setInterval> | null = null;
   private eventCallback?: (type: string, data: Record<string, unknown>) => void;
 
   constructor(config: GuardConfig, llm: AnalyzeLLM | null = null) {
@@ -229,6 +234,9 @@ export class GuardEngine {
       hotReload: true,
       customRules: BUILTIN_RULES,
     });
+
+    // Initialize YARA scanner / 初始化 YARA 掃描器
+    this.yaraScanner = new YaraScanner();
 
     // Initialize agents / 初始化代理
     this.detectAgent = new DetectAgent(this.ruleEngine);
@@ -355,6 +363,29 @@ export class GuardEngine {
         );
       });
 
+    // Load YARA rules (non-blocking, best-effort) / 載入 YARA 規則
+    if (this.config.yaraRulesDir) {
+      this.yaraScanner
+        .loadAllRules(
+          join(this.config.yaraRulesDir, 'custom'),
+          join(this.config.yaraRulesDir, 'community')
+        )
+        .then((count) => {
+          logger.info(`YARA rules loaded: ${count} rules / YARA 規則已載入: ${count} 條`);
+        })
+        .catch((err: unknown) => {
+          logger.warn(
+            `YARA rules load failed: ${err instanceof Error ? err.message : String(err)}`
+          );
+        });
+    }
+
+    // Periodic Threat Cloud sync (rules + blocklist every hour)
+    // 定期同步 Threat Cloud（每小時更新規則和封鎖清單）
+    this.cloudSyncTimer = setInterval(() => {
+      void this.syncThreatCloud();
+    }, 60 * 60 * 1000); // 1 hour
+
     // Start monitor engine / 啟動監控引擎
     this.monitorEngine = new MonitorEngine({
       networkPollInterval: this.config.monitors.networkPollInterval,
@@ -471,6 +502,10 @@ export class GuardEngine {
       clearInterval(this.learningCheckTimer);
       this.learningCheckTimer = null;
     }
+    if (this.cloudSyncTimer) {
+      clearInterval(this.cloudSyncTimer);
+      this.cloudSyncTimer = null;
+    }
 
     // Stop components / 停止元件
     this.feedManager.stop();
@@ -534,6 +569,31 @@ export class GuardEngine {
     }
 
     try {
+      // YARA scan for file events / 對檔案事件執行 YARA 掃描
+      if (
+        event.source === 'file' &&
+        this.yaraScanner.getRuleCount() > 0 &&
+        event.metadata?.['filePath'] &&
+        event.metadata?.['action'] !== 'deleted'
+      ) {
+        try {
+          const yaraResult = await this.yaraScanner.scanFile(
+            event.metadata['filePath'] as string
+          );
+          const yaraEvent = this.yaraScanner.toSecurityEvent(yaraResult);
+          if (yaraEvent) {
+            // Process YARA match as a separate high-priority event
+            // 將 YARA 比對結果作為獨立高優先事件處理
+            logger.warn(
+              `YARA match: ${yaraResult.matches.map((m) => m.rule).join(', ')} in ${yaraResult.filePath}`
+            );
+            void this.processEvent(yaraEvent);
+          }
+        } catch {
+          // YARA scan failure is non-fatal / YARA 掃描失敗不影響主流程
+        }
+      }
+
       // Stage 1: Detect / 階段 1: 偵測
       const detection = this.detectAgent.detect(event);
 
@@ -675,6 +735,44 @@ export class GuardEngine {
           timestamp: new Date().toISOString(),
         });
       }
+    }
+  }
+
+  /**
+   * Periodic Threat Cloud sync: re-fetch rules and blocklist
+   * 定期同步 Threat Cloud：重新取得規則和封鎖清單
+   */
+  private async syncThreatCloud(): Promise<void> {
+    try {
+      // Refresh rules / 更新規則
+      const cloudRules = await this.threatCloud.fetchRules();
+      let newRules = 0;
+      for (const rule of cloudRules) {
+        try {
+          const parsed = JSON.parse(rule.ruleContent) as import('@panguard-ai/core').SigmaRule;
+          if (parsed.id && parsed.title && parsed.detection) {
+            this.ruleEngine.addRule(parsed);
+            newRules++;
+          }
+        } catch {
+          // skip invalid
+        }
+      }
+
+      // Refresh blocklist / 更新封鎖清單
+      const ips = await this.threatCloud.fetchBlocklist();
+      const added = ips.length > 0
+        ? this.feedManager.addExternalIPs(ips, 'threat_cloud_blocklist', 85)
+        : 0;
+
+      logger.info(
+        `Threat Cloud sync: ${newRules} rules, ${added} blocklist IPs / ` +
+          `Threat Cloud 同步: ${newRules} 條規則, ${added} 個封鎖 IP`
+      );
+    } catch (err: unknown) {
+      logger.warn(
+        `Threat Cloud sync failed: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   }
 

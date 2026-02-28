@@ -5,12 +5,17 @@
   "description": "Panguard AI official website engine - scenario-based copy + online guidance / Panguard AI 官網引擎 - 場景化文案 + 線上引導",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "package.json", "README.md"],
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "dev": "tsc --build --watch"
+    "dev": "tsc --build --watch",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "@panguard-ai/core": "workspace:*"

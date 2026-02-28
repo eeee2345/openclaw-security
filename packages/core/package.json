@@ -19,12 +19,17 @@
       "types": "./dist/utils/index.d.ts"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "package.json", "README.md"],
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "dev": "tsc --build --watch"
+    "dev": "tsc --build --watch",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "i18next": "^24.2.2",

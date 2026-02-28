@@ -11,12 +11,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { c, banner } from '@panguard-ai/core';
-import { AuthDB, createAuthHandlers } from '@panguard-ai/panguard-auth';
+import { AuthDB, createAuthHandlers, sendExpirationWarningEmail } from '@panguard-ai/panguard-auth';
 import type {
   AuthRouteConfig,
   SmtpConfig,
   GoogleOAuthConfig,
   GoogleSheetsConfig,
+  LemonSqueezyConfig,
 } from '@panguard-ai/panguard-auth';
 
 export function serveCommand(): Command {
@@ -68,9 +69,18 @@ export function serveCommand(): Command {
           }
         : undefined;
 
+      const lemonsqueezy: LemonSqueezyConfig | undefined = process.env['LEMON_SQUEEZY_API_KEY']
+        ? {
+            apiKey: process.env['LEMON_SQUEEZY_API_KEY'],
+            storeId: process.env['LEMON_SQUEEZY_STORE_ID'] ?? '',
+            webhookSecret: process.env['LEMON_SQUEEZY_WEBHOOK_SECRET'] ?? '',
+            variantTierMap: JSON.parse(process.env['LEMON_SQUEEZY_VARIANT_MAP'] ?? '{}') as Record<string, string>,
+          }
+        : undefined;
+
       const baseUrl = process.env['PANGUARD_BASE_URL'] ?? `http://${host}:${port}`;
 
-      const authConfig: AuthRouteConfig = { db, smtp, baseUrl, google, sheets };
+      const authConfig: AuthRouteConfig = { db, smtp, baseUrl, google, sheets, lemonsqueezy };
       const handlers = createAuthHandlers(authConfig);
 
       // Resolve admin static directory
@@ -92,6 +102,9 @@ export function serveCommand(): Command {
         console.log(`  Routes:`);
         console.log(`    ${c.dim('/api/auth/*')}     Auth API`);
         console.log(`    ${c.dim('/api/admin/*')}    Admin API`);
+        if (lemonsqueezy) {
+          console.log(`    ${c.dim('/api/billing/*')}  Billing API (Lemon Squeezy)`);
+        }
         if (adminDir) {
           console.log(`    ${c.dim('/admin')}          Admin Dashboard`);
         } else {
@@ -103,9 +116,43 @@ export function serveCommand(): Command {
         console.log('');
       });
 
+      // Subscription lifecycle: check expired plans hourly
+      const runPlanCheck = () => {
+        const expired = db.checkExpiredPlans();
+        if (expired.length > 0) {
+          console.log(`  [Plan] Downgraded ${expired.length} expired plan(s) to free tier`);
+        }
+
+        // Send warning emails for plans expiring in 3 days
+        if (smtp) {
+          const expiring = db.getExpiringPlans(3);
+          for (const user of expiring) {
+            sendExpirationWarningEmail(
+              smtp,
+              user.email,
+              user.name,
+              user.tier,
+              user.planExpiresAt,
+              baseUrl
+            ).catch(() => {
+              // Best-effort email delivery
+            });
+          }
+          if (expiring.length > 0) {
+            console.log(`  [Plan] Sent ${expiring.length} expiration warning email(s)`);
+          }
+        }
+      };
+
+      // Run immediately on startup, then every hour
+      runPlanCheck();
+      const planCheckTimer = setInterval(runPlanCheck, 60 * 60 * 1000);
+      if (planCheckTimer.unref) planCheckTimer.unref();
+
       // Graceful shutdown
       const shutdown = () => {
         console.log('\n  Shutting down...');
+        clearInterval(planCheckTimer);
         server.close(() => {
           db.close();
           process.exit(0);
@@ -172,6 +219,14 @@ async function handleRequest(
       handlers.handleMe(req, res);
       return;
     }
+    if (pathname === '/api/auth/forgot-password') {
+      await handlers.handleForgotPassword(req, res);
+      return;
+    }
+    if (pathname === '/api/auth/reset-password') {
+      await handlers.handleResetPassword(req, res);
+      return;
+    }
     if (pathname === '/api/auth/google') {
       handlers.handleGoogleAuth(req, res);
       return;
@@ -208,6 +263,24 @@ async function handleRequest(
     }
     if (pathname === '/api/waitlist/list') {
       handlers.handleWaitlistList(req, res);
+      return;
+    }
+
+    // Billing API routes (Lemon Squeezy)
+    if (pathname === '/api/billing/webhook') {
+      await handlers.handleBillingWebhook(req, res);
+      return;
+    }
+    if (pathname === '/api/billing/checkout') {
+      await handlers.handleBillingCheckout(req, res);
+      return;
+    }
+    if (pathname === '/api/billing/portal') {
+      await handlers.handleBillingPortal(req, res);
+      return;
+    }
+    if (pathname === '/api/billing/status') {
+      handlers.handleBillingStatus(req, res);
       return;
     }
 

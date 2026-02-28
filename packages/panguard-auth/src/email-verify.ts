@@ -176,6 +176,83 @@ export async function sendVerificationEmail(
 }
 
 /**
+ * Send a subscription expiration warning email.
+ */
+export async function sendExpirationWarningEmail(
+  config: SmtpConfig,
+  to: string,
+  name: string,
+  tier: string,
+  expiresAt: string,
+  baseUrl: string
+): Promise<void> {
+  const renewLink = `${baseUrl}/pricing`;
+  const daysLeft = Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000)));
+  const subject = `Panguard AI - Your ${tier} plan expires in ${daysLeft} day(s)`;
+  const html = `
+    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+      <h2 style="color: #1A1614;">Plan Expiring Soon</h2>
+      <p style="color: #4a4a4a; line-height: 1.6;">
+        Hi ${name || 'there'},<br><br>
+        Your Panguard AI <strong>${tier}</strong> plan will expire on
+        <strong>${new Date(expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>
+        (${daysLeft} day(s) remaining).
+      </p>
+      <p style="color: #4a4a4a; line-height: 1.6;">
+        After expiration, your account will be downgraded to the free tier.
+        Renew now to keep all your features.
+      </p>
+      <p style="text-align: center; margin: 24px 0;">
+        <a href="${renewLink}"
+           style="background: #8B9A8E; color: #fff; padding: 12px 24px;
+                  text-decoration: none; border-radius: 6px; display: inline-block;">
+          Renew Plan
+        </a>
+      </p>
+    </div>
+  `;
+
+  const mime = buildMime(config.from, to, subject, html);
+  await sendSmtp(config, to, mime);
+}
+
+/**
+ * Send a password reset email with a one-time token link.
+ */
+export async function sendResetEmail(
+  config: SmtpConfig,
+  to: string,
+  resetToken: string,
+  baseUrl: string
+): Promise<void> {
+  const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
+  const subject = 'Panguard AI - Reset your password';
+  const html = `
+    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+      <h2 style="color: #1A1614;">Reset Your Password</h2>
+      <p style="color: #4a4a4a; line-height: 1.6;">
+        We received a request to reset the password for your Panguard AI account.
+        Click the link below to set a new password. This link expires in 1 hour.
+      </p>
+      <p style="text-align: center; margin: 24px 0;">
+        <a href="${resetLink}"
+           style="background: #8B9A8E; color: #fff; padding: 12px 24px;
+                  text-decoration: none; border-radius: 6px; display: inline-block;">
+          Reset Password
+        </a>
+      </p>
+      <p style="color: #999; font-size: 12px;">
+        If you did not request a password reset, you can safely ignore this email.
+        Your password will remain unchanged.
+      </p>
+    </div>
+  `;
+
+  const mime = buildMime(config.from, to, subject, html);
+  await sendSmtp(config, to, mime);
+}
+
+/**
  * Send a welcome email after waitlist approval.
  */
 export async function sendWelcomeEmail(

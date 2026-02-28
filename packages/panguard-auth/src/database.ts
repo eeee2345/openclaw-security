@@ -104,6 +104,39 @@ export class AuthDB {
     } catch {
       // Column already exists — ignore
     }
+
+    // Migration: subscriptions table (Lemon Squeezy)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        ls_subscription_id TEXT UNIQUE,
+        ls_customer_id TEXT,
+        ls_variant_id TEXT,
+        tier TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'active',
+        renews_at TEXT,
+        ends_at TEXT,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+      );
+      CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
+      CREATE INDEX IF NOT EXISTS idx_subscriptions_ls_id ON subscriptions(ls_subscription_id);
+    `);
+
+    // Migration: password_reset_tokens table
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        token_hash TEXT NOT NULL UNIQUE,
+        expires_at TEXT NOT NULL,
+        used INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+      CREATE INDEX IF NOT EXISTS idx_reset_tokens_hash ON password_reset_tokens(token_hash);
+      CREATE INDEX IF NOT EXISTS idx_reset_tokens_user ON password_reset_tokens(user_id);
+    `);
   }
 
   // ── Waitlist ───────────────────────────────────────────────────────
@@ -583,6 +616,179 @@ export class AuthDB {
       .all(Math.min(limit, 200)) as AuditLogEntry[];
   }
 
+  // ── Subscriptions (Lemon Squeezy) ──────────────────────────
+
+  upsertSubscription(data: {
+    userId: number;
+    lsSubscriptionId: string;
+    lsCustomerId: string;
+    lsVariantId: string;
+    tier: string;
+    status: string;
+    renewsAt: string | null;
+    endsAt: string | null;
+  }): void {
+    this.db
+      .prepare(
+        `INSERT INTO subscriptions (user_id, ls_subscription_id, ls_customer_id, ls_variant_id, tier, status, renews_at, ends_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+         ON CONFLICT(ls_subscription_id) DO UPDATE SET
+           status = excluded.status,
+           tier = excluded.tier,
+           renews_at = excluded.renews_at,
+           ends_at = excluded.ends_at,
+           updated_at = datetime('now')`
+      )
+      .run(
+        data.userId,
+        data.lsSubscriptionId,
+        data.lsCustomerId,
+        data.lsVariantId,
+        data.tier,
+        data.status,
+        data.renewsAt,
+        data.endsAt
+      );
+  }
+
+  getSubscriptionByLsId(lsSubscriptionId: string): Subscription | undefined {
+    return this.db
+      .prepare(
+        `SELECT id, user_id as userId, ls_subscription_id as lsSubscriptionId,
+                ls_customer_id as lsCustomerId, ls_variant_id as lsVariantId,
+                tier, status, renews_at as renewsAt, ends_at as endsAt,
+                created_at as createdAt, updated_at as updatedAt
+         FROM subscriptions WHERE ls_subscription_id = ?`
+      )
+      .get(lsSubscriptionId) as Subscription | undefined;
+  }
+
+  getActiveSubscription(userId: number): Subscription | undefined {
+    return this.db
+      .prepare(
+        `SELECT id, user_id as userId, ls_subscription_id as lsSubscriptionId,
+                ls_customer_id as lsCustomerId, ls_variant_id as lsVariantId,
+                tier, status, renews_at as renewsAt, ends_at as endsAt,
+                created_at as createdAt, updated_at as updatedAt
+         FROM subscriptions WHERE user_id = ? AND status IN ('active', 'on_trial', 'past_due')
+         ORDER BY created_at DESC LIMIT 1`
+      )
+      .get(userId) as Subscription | undefined;
+  }
+
+  updateSubscriptionStatus(lsSubscriptionId: string, status: string, endsAt: string | null): void {
+    this.db
+      .prepare(
+        `UPDATE subscriptions SET status = ?, ends_at = ?, updated_at = datetime('now')
+         WHERE ls_subscription_id = ?`
+      )
+      .run(status, endsAt, lsSubscriptionId);
+  }
+
+  // ── Subscription Lifecycle ─────────────────────────────────
+
+  /**
+   * Downgrade all users whose plan_expires_at has passed to free tier.
+   * Returns the list of downgraded user emails (for notification).
+   */
+  checkExpiredPlans(): Array<{ id: number; email: string; tier: string }> {
+    const expired = this.db
+      .prepare(
+        `SELECT id, email, tier FROM users
+         WHERE plan_expires_at IS NOT NULL
+           AND plan_expires_at <= datetime('now')
+           AND tier != 'free'`
+      )
+      .all() as Array<{ id: number; email: string; tier: string }>;
+
+    if (expired.length > 0) {
+      this.db
+        .prepare(
+          `UPDATE users SET tier = 'free', plan_expires_at = NULL
+           WHERE plan_expires_at IS NOT NULL
+             AND plan_expires_at <= datetime('now')
+             AND tier != 'free'`
+        )
+        .run();
+
+      for (const user of expired) {
+        this.addAuditLog(
+          'plan_expired',
+          null,
+          user.id,
+          JSON.stringify({ previousTier: user.tier })
+        );
+      }
+    }
+
+    return expired;
+  }
+
+  /**
+   * Get users whose plans expire within the given number of days.
+   * Used for sending expiration warning emails.
+   */
+  getExpiringPlans(withinDays: number): Array<{ id: number; email: string; name: string; tier: string; planExpiresAt: string }> {
+    return this.db
+      .prepare(
+        `SELECT id, email, name, tier, plan_expires_at as planExpiresAt FROM users
+         WHERE plan_expires_at IS NOT NULL
+           AND plan_expires_at > datetime('now')
+           AND plan_expires_at <= datetime('now', '+' || ? || ' days')
+           AND tier != 'free'`
+      )
+      .all(withinDays) as Array<{ id: number; email: string; name: string; tier: string; planExpiresAt: string }>;
+  }
+
+  // ── Password Reset ──────────────────────────────────────────
+
+  /**
+   * Store a hashed reset token for a user. Invalidates any previous tokens.
+   * Returns the token expiry time.
+   */
+  createResetToken(userId: number, tokenHash: string): string {
+    // Invalidate any existing unused tokens for this user
+    this.db
+      .prepare('UPDATE password_reset_tokens SET used = 1 WHERE user_id = ? AND used = 0')
+      .run(userId);
+
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19); // 1 hour
+    this.db
+      .prepare(
+        `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)`
+      )
+      .run(userId, tokenHash, expiresAt);
+    return expiresAt;
+  }
+
+  /**
+   * Validate a reset token hash. Returns the user_id if valid, undefined otherwise.
+   * Marks the token as used atomically.
+   */
+  validateResetToken(tokenHash: string): number | undefined {
+    const row = this.db
+      .prepare(
+        `SELECT id, user_id as userId FROM password_reset_tokens
+         WHERE token_hash = ? AND used = 0 AND expires_at > datetime('now')`
+      )
+      .get(tokenHash) as { id: number; userId: number } | undefined;
+
+    if (!row) return undefined;
+
+    // Mark as used
+    this.db.prepare('UPDATE password_reset_tokens SET used = 1 WHERE id = ?').run(row.id);
+    return row.userId;
+  }
+
+  /**
+   * Update a user's password hash.
+   */
+  updateUserPassword(userId: number, passwordHash: string): void {
+    this.db
+      .prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+      .run(passwordHash, userId);
+  }
+
   // ── Session Management ────────────────────────────────────────
 
   deleteSessionsByUserId(userId: number): number {
@@ -603,6 +809,20 @@ export interface ReportPurchase {
   status: string;
   purchasedAt: string;
   expiresAt: string | null;
+}
+
+export interface Subscription {
+  id: number;
+  userId: number;
+  lsSubscriptionId: string;
+  lsCustomerId: string;
+  lsVariantId: string;
+  tier: string;
+  status: string;
+  renewsAt: string | null;
+  endsAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuditLogEntry {

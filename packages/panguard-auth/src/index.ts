@@ -4,7 +4,7 @@
  */
 
 export { AuthDB } from './database.js';
-export type { ReportPurchase, AuditLogEntry } from './database.js';
+export type { ReportPurchase, AuditLogEntry, Subscription } from './database.js';
 export {
   hashPassword,
   verifyPassword,
@@ -17,7 +17,12 @@ export { extractToken, authenticateRequest, requireAdmin } from './middleware.js
 export { createAuthHandlers } from './routes.js';
 export { RateLimiter } from './rate-limiter.js';
 export type { RateLimitConfig, RateLimitResult } from './rate-limiter.js';
-export { sendVerificationEmail, sendWelcomeEmail } from './email-verify.js';
+export {
+  sendVerificationEmail,
+  sendWelcomeEmail,
+  sendResetEmail,
+  sendExpirationWarningEmail,
+} from './email-verify.js';
 export type { SmtpConfig } from './email-verify.js';
 export {
   getGoogleAuthUrl,
@@ -31,6 +36,13 @@ export type { GoogleOAuthConfig, GoogleUserInfo } from './google-oauth.js';
 export { syncWaitlistEntry, appendRow, ensureSheetHeaders } from './google-sheets.js';
 export type { GoogleSheetsConfig } from './google-sheets.js';
 export type { AuthRouteConfig } from './routes.js';
+export {
+  verifyWebhookSignature,
+  handleWebhookEvent,
+  createCheckoutUrl,
+  getCustomerPortalUrl,
+} from './lemonsqueezy.js';
+export type { LemonSqueezyConfig, WebhookResult } from './lemonsqueezy.js';
 export type {
   WaitlistEntry,
   WaitlistInput,

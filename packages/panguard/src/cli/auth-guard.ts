@@ -175,6 +175,39 @@ export function refreshTierInBackground(): void {
     .then((body) => {
       if (!body?.data?.user?.tier) return;
       const serverTier = body.data.user.tier as Tier;
+      const serverPlanExpires = (body.data.user as Record<string, unknown>).planExpiresAt as
+        | string
+        | null
+        | undefined;
+
+      // Check if plan has expired server-side (tier got downgraded to free)
+      if (serverTier === 'free' && creds.tier !== 'free') {
+        console.log('');
+        console.log(
+          c.caution(
+            `  [!] Your ${tierDisplayName(creds.tier)} plan has expired. Account downgraded to free tier.`
+          )
+        );
+        console.log(c.dim(`      Renew at https://panguard.ai/pricing`));
+        console.log('');
+      }
+
+      // Warn if plan expiring soon (within 3 days)
+      if (serverPlanExpires) {
+        const expiresDate = new Date(serverPlanExpires);
+        const daysLeft = Math.ceil((expiresDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
+        if (daysLeft > 0 && daysLeft <= 3) {
+          console.log('');
+          console.log(
+            c.caution(
+              `  [!] Your ${tierDisplayName(serverTier)} plan expires in ${daysLeft} day(s).`
+            )
+          );
+          console.log(c.dim(`      Renew at https://panguard.ai/pricing`));
+          console.log('');
+        }
+      }
+
       if (serverTier !== creds.tier || body.data.user.name !== creds.name) {
         saveCredentials({
           ...creds,

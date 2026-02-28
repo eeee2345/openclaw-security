@@ -8,11 +8,16 @@
   "bin": {
     "panguard": "./dist/cli/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "package.json", "README.md"],
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit",
-    "dev": "tsc --build --watch"
+    "dev": "tsc --build --watch",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "@panguard-ai/core": "workspace:*",

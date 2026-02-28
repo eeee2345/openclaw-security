@@ -11,11 +11,12 @@ import {
   verifyPassword,
   generateSessionToken,
   generateVerifyToken,
+  hashToken,
   sessionExpiry,
 } from './auth.js';
 import { authenticateRequest, requireAdmin } from './middleware.js';
 import type { SmtpConfig } from './email-verify.js';
-import { sendVerificationEmail } from './email-verify.js';
+import { sendVerificationEmail, sendResetEmail } from './email-verify.js';
 import type { GoogleOAuthConfig } from './google-oauth.js';
 import {
   getGoogleAuthUrl,
@@ -30,6 +31,13 @@ import { syncWaitlistEntry, ensureSheetHeaders } from './google-sheets.js';
 import { RateLimiter } from './rate-limiter.js';
 import type { UserPublic } from './types.js';
 import { logAuditEvent } from '@panguard-ai/security-hardening';
+import type { LemonSqueezyConfig } from './lemonsqueezy.js';
+import {
+  verifyWebhookSignature,
+  handleWebhookEvent,
+  createCheckoutUrl,
+  getCustomerPortalUrl,
+} from './lemonsqueezy.js';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -63,6 +71,36 @@ function readBody(req: IncomingMessage): Promise<ReadBodyResult> {
       } catch {
         resolve({ ok: false, status: 400 });
       }
+    });
+    req.on('error', () => {
+      if (!aborted) resolve({ ok: false, status: 400 });
+    });
+  });
+}
+
+type ReadRawBodyResult =
+  | { ok: true; raw: string }
+  | { ok: false; status: 400 | 413 };
+
+function readRawBody(req: IncomingMessage): Promise<ReadRawBodyResult> {
+  return new Promise((resolve) => {
+    const chunks: Buffer[] = [];
+    let totalSize = 0;
+    let aborted = false;
+
+    req.on('data', (chunk: Buffer) => {
+      totalSize += chunk.length;
+      if (totalSize > MAX_BODY_SIZE) {
+        aborted = true;
+        req.destroy();
+        resolve({ ok: false, status: 413 });
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      if (aborted) return;
+      resolve({ ok: true, raw: Buffer.concat(chunks).toString('utf-8') });
     });
     req.on('error', () => {
       if (!aborted) resolve({ ok: false, status: 400 });
@@ -112,6 +150,7 @@ export interface AuthRouteConfig {
   baseUrl?: string;
   google?: GoogleOAuthConfig;
   sheets?: GoogleSheetsConfig;
+  lemonsqueezy?: LemonSqueezyConfig;
 }
 
 /**
@@ -123,6 +162,7 @@ export function createAuthHandlers(config: AuthRouteConfig) {
   // Rate limiters
   const loginLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 10 });
   const registerLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, maxRequests: 5 });
+  const resetLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 5 });
 
   // Pending OAuth flows: state -> { codeVerifier, createdAt }
   const pendingOAuthFlows = new Map<string, { codeVerifier: string; createdAt: number }>();
@@ -436,6 +476,141 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     json(res, 200, { ok: true, data: { user: toPublicUser(user) } });
   }
 
+  // ── Password Reset ─────────────────────────────────────────────
+
+  async function handleForgotPassword(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    // Rate limit
+    const ip = getClientIP(req);
+    const rl = resetLimiter.check(ip);
+    if (!rl.allowed) {
+      res.setHeader('Retry-After', String(Math.ceil(rl.retryAfterMs / 1000)));
+      json(res, 429, { ok: false, error: 'Too many requests. Try again later.' });
+      return;
+    }
+
+    const result = await readBody(req);
+    if (!result.ok) {
+      json(res, result.status, {
+        ok: false,
+        error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body',
+      });
+      return;
+    }
+    const body = result.data;
+
+    const { email } = body;
+    if (!isValidEmail(email)) {
+      json(res, 400, { ok: false, error: 'Valid email is required' });
+      return;
+    }
+
+    // Always return success to prevent email enumeration
+    const successResponse = {
+      ok: true,
+      data: { message: 'If that email is registered, a reset link has been sent.' },
+    };
+
+    const user = db.getUserByEmail(email);
+    if (!user) {
+      json(res, 200, successResponse);
+      return;
+    }
+
+    // Generate token (plaintext to user, hash in DB)
+    const resetToken = generateSessionToken();
+    const resetTokenHash = hashToken(resetToken);
+    db.createResetToken(user.id, resetTokenHash);
+
+    // Audit log
+    db.addAuditLog('password_reset_request', null, user.id, JSON.stringify({ email }));
+    logAuditEvent({
+      level: 'info',
+      action: 'credential_access',
+      target: email,
+      result: 'success',
+      context: { details: 'Password reset requested' },
+    });
+
+    // Send reset email (non-blocking)
+    if (config.smtp && config.baseUrl) {
+      sendResetEmail(config.smtp, email, resetToken, config.baseUrl).catch(() => {
+        // Best-effort email delivery
+      });
+    }
+
+    json(res, 200, successResponse);
+  }
+
+  async function handleResetPassword(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    // Rate limit
+    const ip = getClientIP(req);
+    const rl = resetLimiter.check(ip);
+    if (!rl.allowed) {
+      res.setHeader('Retry-After', String(Math.ceil(rl.retryAfterMs / 1000)));
+      json(res, 429, { ok: false, error: 'Too many requests. Try again later.' });
+      return;
+    }
+
+    const result = await readBody(req);
+    if (!result.ok) {
+      json(res, result.status, {
+        ok: false,
+        error: result.status === 413 ? 'Payload too large' : 'Invalid JSON body',
+      });
+      return;
+    }
+    const body = result.data;
+
+    const { token, password } = body;
+    if (typeof token !== 'string' || token.length === 0) {
+      json(res, 400, { ok: false, error: 'Reset token is required' });
+      return;
+    }
+    if (typeof password !== 'string' || password.length < 8) {
+      json(res, 400, { ok: false, error: 'Password must be at least 8 characters' });
+      return;
+    }
+
+    const tokenHash = hashToken(token);
+    const userId = db.validateResetToken(tokenHash);
+    if (!userId) {
+      json(res, 400, { ok: false, error: 'Invalid or expired reset token' });
+      return;
+    }
+
+    const passwordHash = await hashPassword(password);
+    db.updateUserPassword(userId, passwordHash);
+
+    // Invalidate all existing sessions (force re-login with new password)
+    db.deleteSessionsByUserId(userId);
+
+    // Audit log
+    const user = db.getUserById(userId);
+    db.addAuditLog('password_reset_complete', null, userId, null);
+    logAuditEvent({
+      level: 'info',
+      action: 'credential_access',
+      target: user?.email ?? `user:${userId}`,
+      result: 'success',
+      context: { details: 'Password reset completed' },
+    });
+
+    json(res, 200, {
+      ok: true,
+      data: { message: 'Password has been reset. Please log in with your new password.' },
+    });
+  }
+
   // ── Google OAuth ─────────────────────────────────────────────────
 
   function handleGoogleAuth(_req: IncomingMessage, res: ServerResponse): void {
@@ -615,6 +790,168 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     const redirectUrl = `${flow.callbackUrl}?${params.toString()}`;
 
     json(res, 200, { ok: true, data: { redirectUrl } });
+  }
+
+  // ── Lemon Squeezy (Billing) ─────────────────────────────────────
+
+  /**
+   * POST /api/billing/webhook
+   * Receives Lemon Squeezy webhook events. Verifies HMAC signature.
+   */
+  async function handleBillingWebhook(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    if (!config.lemonsqueezy) {
+      json(res, 501, { ok: false, error: 'Billing not configured' });
+      return;
+    }
+
+    const rawResult = await readRawBody(req);
+    if (!rawResult.ok) {
+      json(res, rawResult.status, { ok: false, error: 'Invalid request body' });
+      return;
+    }
+
+    // Verify HMAC signature
+    const signature = req.headers['x-signature'] as string | undefined;
+    if (!signature || !verifyWebhookSignature(rawResult.raw, signature, config.lemonsqueezy.webhookSecret)) {
+      json(res, 401, { ok: false, error: 'Invalid webhook signature' });
+      return;
+    }
+
+    let payload: { meta: { event_name: string; custom_data?: Record<string, string> }; data: { type: string; id: string; attributes: Record<string, unknown> } };
+    try {
+      payload = JSON.parse(rawResult.raw);
+    } catch {
+      json(res, 400, { ok: false, error: 'Invalid JSON' });
+      return;
+    }
+
+    const result = handleWebhookEvent(payload, config.lemonsqueezy, db);
+
+    // Always return 200 to prevent Lemon Squeezy from retrying
+    json(res, 200, { ok: true, data: result });
+  }
+
+  /**
+   * POST /api/billing/checkout
+   * Creates a checkout URL for the authenticated user.
+   * Body: { variantId: string }
+   */
+  async function handleBillingCheckout(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'POST') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    if (!config.lemonsqueezy) {
+      json(res, 501, { ok: false, error: 'Billing not configured' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const body = await readBody(req);
+    if (!body.ok) {
+      json(res, body.status, { ok: false, error: 'Invalid request body' });
+      return;
+    }
+
+    const { variantId } = body.data;
+    if (typeof variantId !== 'string' || variantId.length === 0) {
+      json(res, 400, { ok: false, error: 'variantId is required' });
+      return;
+    }
+
+    const checkoutUrl = await createCheckoutUrl(config.lemonsqueezy, variantId, {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    });
+
+    if (!checkoutUrl) {
+      json(res, 502, { ok: false, error: 'Failed to create checkout session' });
+      return;
+    }
+
+    json(res, 200, { ok: true, data: { url: checkoutUrl } });
+  }
+
+  /**
+   * GET /api/billing/portal
+   * Returns the customer portal URL for the authenticated user.
+   */
+  async function handleBillingPortal(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    if (!config.lemonsqueezy) {
+      json(res, 501, { ok: false, error: 'Billing not configured' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const subscription = db.getActiveSubscription(user.id);
+    if (!subscription?.lsSubscriptionId) {
+      json(res, 404, { ok: false, error: 'No active subscription found' });
+      return;
+    }
+
+    const portalUrl = await getCustomerPortalUrl(config.lemonsqueezy, subscription.lsSubscriptionId);
+    if (!portalUrl) {
+      json(res, 502, { ok: false, error: 'Failed to get portal URL' });
+      return;
+    }
+
+    json(res, 200, { ok: true, data: { url: portalUrl } });
+  }
+
+  /**
+   * GET /api/billing/status
+   * Returns the current subscription status for the authenticated user.
+   */
+  function handleBillingStatus(req: IncomingMessage, res: ServerResponse): void {
+    if (req.method !== 'GET') {
+      json(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const user = authenticateRequest(req, db);
+    if (!user) {
+      json(res, 401, { ok: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const subscription = db.getActiveSubscription(user.id);
+    json(res, 200, {
+      ok: true,
+      data: {
+        tier: user.tier,
+        planExpiresAt: user.planExpiresAt,
+        subscription: subscription
+          ? {
+              status: subscription.status,
+              tier: subscription.tier,
+              renewsAt: subscription.renewsAt,
+              endsAt: subscription.endsAt,
+            }
+          : null,
+      },
+    });
   }
 
   // ── Admin: User Management ──────────────────────────────────────
@@ -914,6 +1251,8 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     handleLogin,
     handleLogout,
     handleMe,
+    handleForgotPassword,
+    handleResetPassword,
     handleGoogleAuth,
     handleGoogleCallback,
     handleCliAuth,
@@ -930,5 +1269,10 @@ export function createAuthHandlers(config: AuthRouteConfig) {
     handleAdminSessions,
     handleAdminSessionRevoke,
     handleAdminActivity,
+    // Billing (Lemon Squeezy)
+    handleBillingWebhook,
+    handleBillingCheckout,
+    handleBillingPortal,
+    handleBillingStatus,
   };
 }
