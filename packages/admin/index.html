@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .stat-card { transition: border-color 0.2s, transform 0.15s; }
+    .stat-card:hover { border-color: #8B9A8E; transform: translateY(-1px); }
+    .bar-col { transition: height 0.6s ease-out; }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fade-in 0.4s ease-out forwards; }
+    .fade-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .fade-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .fade-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
+  </style>
+</head>
+<body class="bg-surface-0 text-text-primary min-h-screen">
+  <div id="nav"></div>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- System Status Hero -->
+    <div id="heroSection" class="bg-surface-1 border border-border rounded-xl p-6 mb-6 flex items-center justify-between fade-in">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-safe/10 flex items-center justify-center" id="heroIcon"></div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-lg font-bold">System Status</h2>
+            <span id="statusBadge" class="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-safe/10 text-safe border border-safe/20">
+              <span id="statusDot"></span>
+              Normal
+            </span>
+          </div>
+          <p class="text-sm text-text-tertiary mt-0.5">All services operational</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-xs text-text-tertiary">Uptime</p>
+        <p id="uptimeValue" class="text-lg font-bold text-safe">--</p>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-1">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Total Users</p>
+          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconUsers"></div>
+        </div>
+        <p id="kpiUsers" class="text-2xl font-bold">--</p>
+        <p id="kpiUsersChange" class="text-xs text-text-tertiary mt-1"></p>
+      </div>
+      <div class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-1">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">7-Day Signups</p>
+          <div class="w-8 h-8 rounded-lg bg-safe/10 flex items-center justify-center" id="kpiIconSignups"></div>
+        </div>
+        <p id="kpiSignups" class="text-2xl font-bold text-safe">--</p>
+        <p class="text-xs text-text-tertiary mt-1">recent registrations</p>
+      </div>
+      <div class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Waitlist Pending</p>
+          <div class="w-8 h-8 rounded-lg bg-caution/10 flex items-center justify-center" id="kpiIconWaitlist"></div>
+        </div>
+        <p id="kpiWaitlist" class="text-2xl font-bold text-caution">--</p>
+        <p id="kpiWaitlistInfo" class="text-xs text-text-tertiary mt-1"></p>
+      </div>
+      <div class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Active Sessions</p>
+          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconSessions"></div>
+        </div>
+        <p id="kpiSessions" class="text-2xl font-bold">--</p>
+        <p id="kpiSessionsInfo" class="text-xs text-text-tertiary mt-1"></p>
+      </div>
+    </div>
+
+    <!-- User Growth Chart + Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <!-- User Growth (30-day bar chart) -->
+      <div class="lg:col-span-2 bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold flex items-center gap-2">
+            <span id="chartIcon"></span>
+            User Growth (30 Days)
+          </h3>
+          <span id="chartTotal" class="text-xs text-text-tertiary"></span>
+        </div>
+        <div id="growthChart" class="flex items-end gap-[2px] h-32">
+          <!-- Bars injected by JS -->
+        </div>
+        <div class="flex justify-between mt-2">
+          <span id="chartStart" class="text-[10px] text-text-muted"></span>
+          <span id="chartEnd" class="text-[10px] text-text-muted"></span>
+        </div>
+      </div>
+
+      <!-- Recent Activity Feed -->
+      <div class="bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-3">
+        <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+          <span id="activityIcon"></span>
+          Recent Activity
+        </h3>
+        <div id="activityFeed" class="space-y-3 max-h-[280px] overflow-y-auto pr-1">
+          <!-- Activity items injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier Distribution + Conversion Funnel + Waitlist Sources -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <!-- Tier Distribution -->
+      <div class="bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-3">
+        <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+          <span id="tierIcon"></span>
+          Tier Distribution
+        </h3>
+        <div id="tierBars" class="space-y-3"></div>
+      </div>
+
+      <!-- Conversion Funnel -->
+      <div class="bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-3">
+        <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+          <span id="funnelIcon"></span>
+          Conversion Funnel
+        </h3>
+        <div id="funnel" class="space-y-2"></div>
+      </div>
+
+      <!-- Waitlist Sources -->
+      <div class="bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-3">
+        <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+          <span id="sourceIcon"></span>
+          Waitlist Sources
+        </h3>
+        <div id="sourceBars" class="space-y-3"></div>
+        <div id="noSources" class="hidden text-xs text-text-muted text-center py-4">No source data</div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 fade-in fade-in-delay-3">
+      <a href="/admin/users" class="bg-surface-1 border border-border rounded-xl p-4 hover:border-sage transition-all hover:-translate-y-0.5 group">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="qlUsers"></span>
+          <p class="text-sm font-semibold group-hover:text-sage transition-colors">Manage Users</p>
+        </div>
+        <p class="text-xs text-text-tertiary">View, edit tiers and roles</p>
+      </a>
+      <a href="/admin/waitlist" class="bg-surface-1 border border-border rounded-xl p-4 hover:border-sage transition-all hover:-translate-y-0.5 group">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="qlWaitlist"></span>
+          <p class="text-sm font-semibold group-hover:text-sage transition-colors">Waitlist</p>
+        </div>
+        <p class="text-xs text-text-tertiary">Approve or reject entries</p>
+      </a>
+      <a href="/admin/sessions" class="bg-surface-1 border border-border rounded-xl p-4 hover:border-sage transition-all hover:-translate-y-0.5 group">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="qlSessions"></span>
+          <p class="text-sm font-semibold group-hover:text-sage transition-colors">Sessions</p>
+        </div>
+        <p class="text-xs text-text-tertiary">Active session management</p>
+      </a>
+      <a href="/admin/audit" class="bg-surface-1 border border-border rounded-xl p-4 hover:border-sage transition-all hover:-translate-y-0.5 group">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="qlAudit"></span>
+          <p class="text-sm font-semibold group-hover:text-sage transition-colors">Audit Log</p>
+        </div>
+        <p class="text-xs text-text-tertiary">Track all admin actions</p>
+      </a>
+      <a href="/admin/usage" class="bg-surface-1 border border-border rounded-xl p-4 hover:border-sage transition-all hover:-translate-y-0.5 group">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="qlUsage"></span>
+          <p class="text-sm font-semibold group-hover:text-sage transition-colors">Usage Analytics</p>
+        </div>
+        <p class="text-xs text-text-tertiary">Monitor quotas and usage</p>
+      </a>
+      <a href="/health" target="_blank" class="bg-surface-1 border border-border rounded-xl p-4 hover:border-sage transition-all hover:-translate-y-0.5 group">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="qlHealth"></span>
+          <p class="text-sm font-semibold group-hover:text-sage transition-colors">Health Check</p>
+        </div>
+        <p class="text-xs text-text-tertiary">API server status</p>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+    // ── Render Nav ──
+    document.getElementById('nav').innerHTML = PG.renderNav('dashboard');
+
+    // ── Inject Icons ──
+    document.getElementById('heroIcon').innerHTML = Icons.shieldCheck(24, '#2ED573');
+    document.getElementById('statusDot').innerHTML = Icons.dot(6, '#2ED573');
+    document.getElementById('kpiIconUsers').innerHTML = Icons.users(16, '#8B9A8E');
+    document.getElementById('kpiIconSignups').innerHTML = Icons.trendingUp(16, '#2ED573');
+    document.getElementById('kpiIconWaitlist').innerHTML = Icons.clock(16, '#FBBF24');
+    document.getElementById('kpiIconSessions').innerHTML = Icons.key(16, '#8B9A8E');
+    document.getElementById('chartIcon').innerHTML = Icons.barChart(16, '#8B9A8E');
+    document.getElementById('activityIcon').innerHTML = Icons.activity(16, '#8B9A8E');
+    document.getElementById('tierIcon').innerHTML = Icons.users(16, '#8B9A8E');
+    document.getElementById('funnelIcon').innerHTML = Icons.filter(16, '#8B9A8E');
+    document.getElementById('sourceIcon').innerHTML = Icons.globe(16, '#8B9A8E');
+    document.getElementById('qlUsers').innerHTML = Icons.users(16, '#706860');
+    document.getElementById('qlWaitlist').innerHTML = Icons.list(16, '#706860');
+    document.getElementById('qlSessions').innerHTML = Icons.key(16, '#706860');
+    document.getElementById('qlAudit').innerHTML = Icons.fileText(16, '#706860');
+    document.getElementById('qlUsage').innerHTML = Icons.activity(16, '#706860');
+    document.getElementById('qlHealth').innerHTML = Icons.server(16, '#706860');
+
+    // ── Load Data ──
+    async function loadDashboard() {
+      const [dashData, healthData, activityData] = await Promise.all([
+        PG.apiFetch('/api/admin/dashboard'),
+        PG.apiFetch('/health'),
+        PG.apiFetch('/api/admin/activity?limit=15'),
+      ]);
+
+      if (!dashData || !dashData.ok) return;
+
+      const { users, waitlist, sessions, reportPurchases } = dashData.data;
+
+      // KPI Cards
+      document.getElementById('kpiUsers').textContent = PG.formatNumber(users.total);
+      document.getElementById('kpiUsersChange').textContent =
+        users.verifiedCount != null ? `${users.verifiedCount} verified` : '';
+      document.getElementById('kpiSignups').textContent = PG.formatNumber(users.recentSignups);
+      document.getElementById('kpiWaitlist').textContent = PG.formatNumber(waitlist.pending);
+      document.getElementById('kpiWaitlistInfo').textContent =
+        `${waitlist.total} total, ${waitlist.approved} approved`;
+      document.getElementById('kpiSessions').textContent = PG.formatNumber(sessions.active);
+      document.getElementById('kpiSessionsInfo').textContent =
+        `${sessions.total} total sessions`;
+
+      // Uptime
+      if (healthData && healthData.ok) {
+        const sec = Math.floor(healthData.data.uptime);
+        const h = Math.floor(sec / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        document.getElementById('uptimeValue').textContent =
+          h > 0 ? `${h}h ${m}m` : `${m}m`;
+      }
+
+      // User Growth Chart (30 days)
+      renderGrowthChart(users.signupsByDay || []);
+
+      // Tier Distribution
+      renderTierBars(users.byTier || {}, users.total);
+
+      // Conversion Funnel
+      renderFunnel(waitlist, users);
+
+      // Waitlist Sources
+      renderSourceBars(waitlist.bySource || {}, waitlist.total);
+
+      // Activity Feed
+      if (activityData && activityData.ok) {
+        renderActivity(activityData.data || []);
+      }
+    }
+
+    function renderGrowthChart(data) {
+      const chart = document.getElementById('growthChart');
+      if (!data.length) {
+        chart.innerHTML = '<p class="text-xs text-text-muted m-auto">No data yet</p>';
+        return;
+      }
+
+      // Fill in missing days
+      const dayMap = {};
+      data.forEach(d => { dayMap[d.date] = d.count; });
+
+      const days = [];
+      const now = new Date();
+      for (let i = 29; i >= 0; i--) {
+        const dt = new Date(now);
+        dt.setDate(dt.getDate() - i);
+        const key = dt.toISOString().slice(0, 10);
+        days.push({ date: key, count: dayMap[key] || 0 });
+      }
+
+      const max = Math.max(...days.map(d => d.count), 1);
+      const total = days.reduce((s, d) => s + d.count, 0);
+      document.getElementById('chartTotal').textContent = `${total} signups`;
+      document.getElementById('chartStart').textContent = days[0].date.slice(5);
+      document.getElementById('chartEnd').textContent = days[days.length - 1].date.slice(5);
+
+      chart.innerHTML = days.map(d => {
+        const h = Math.max(2, (d.count / max) * 100);
+        const opacity = d.count > 0 ? '1' : '0.3';
+        return `<div class="flex-1 group relative">
+          <div class="bar-col w-full rounded-t bg-sage" style="height:${h}%;opacity:${opacity}"></div>
+          ${d.count > 0 ? `<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-surface-3 text-text-primary text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">${d.count}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function renderTierBars(byTier, total) {
+      const container = document.getElementById('tierBars');
+      const tiers = Object.entries(byTier);
+
+      if (!tiers.length) {
+        container.innerHTML = '<p class="text-xs text-text-muted text-center py-2">No data</p>';
+        return;
+      }
+
+      const tierColors = {
+        free: '#A09890', solo: '#FBBF24', starter: '#FBBF24',
+        pro: '#8B9A8E', team: '#8B9A8E', business: '#A3B0A6', enterprise: '#EF4444',
+      };
+
+      container.innerHTML = tiers.map(([tier, count]) => {
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const color = tierColors[tier] || '#A09890';
+        return `<div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs capitalize" style="color:${color}">${PG.escapeHtml(tier)}</span>
+            <span class="text-xs text-text-tertiary">${count} (${pct}%)</span>
+          </div>
+          <div class="bg-surface-2 rounded-full h-1.5">
+            <div class="h-1.5 rounded-full transition-all duration-700" style="width:${pct}%;background:${color}"></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderFunnel(waitlist, users) {
+      const container = document.getElementById('funnel');
+      const steps = [
+        { label: 'Waitlist Signups', value: waitlist.total, color: '#A09890' },
+        { label: 'Verified', value: waitlist.verified, color: '#FBBF24' },
+        { label: 'Registered Users', value: users.total, color: '#8B9A8E' },
+        { label: 'Paid Users', value: (users.total - (users.byTier.free || 0)), color: '#2ED573' },
+      ];
+      const max = Math.max(...steps.map(s => s.value), 1);
+
+      container.innerHTML = steps.map((step, i) => {
+        const w = Math.max(8, (step.value / max) * 100);
+        const rate = i > 0 && steps[i - 1].value > 0
+          ? Math.round((step.value / steps[i - 1].value) * 100)
+          : 100;
+        return `<div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs text-text-secondary">${step.label}</span>
+            <span class="text-xs font-semibold" style="color:${step.color}">${PG.formatNumber(step.value)}</span>
+          </div>
+          <div class="bg-surface-2 rounded-full h-2">
+            <div class="h-2 rounded-full transition-all duration-700" style="width:${w}%;background:${step.color}"></div>
+          </div>
+          ${i > 0 ? `<p class="text-[10px] text-text-muted mt-0.5">${rate}% conversion</p>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function renderSourceBars(bySource, total) {
+      const container = document.getElementById('sourceBars');
+      const sources = Object.entries(bySource);
+
+      if (!sources.length) {
+        document.getElementById('noSources').classList.remove('hidden');
+        return;
+      }
+
+      const colors = ['#8B9A8E', '#FBBF24', '#2ED573', '#EF4444', '#A3B0A6'];
+
+      container.innerHTML = sources.map(([source, count], i) => {
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const color = colors[i % colors.length];
+        return `<div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs text-text-secondary capitalize">${PG.escapeHtml(source)}</span>
+            <span class="text-xs text-text-tertiary">${count} (${pct}%)</span>
+          </div>
+          <div class="bg-surface-2 rounded-full h-1.5">
+            <div class="h-1.5 rounded-full transition-all duration-700" style="width:${pct}%;background:${color}"></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderActivity(items) {
+      const feed = document.getElementById('activityFeed');
+      if (!items.length) {
+        feed.innerHTML = '<p class="text-xs text-text-muted text-center py-4">No recent activity</p>';
+        return;
+      }
+
+      const typeConfig = {
+        user_registered: { icon: () => Icons.user(14, '#2ED573'), label: 'User registered', cls: 'text-safe' },
+        waitlist_joined: { icon: () => Icons.mail(14, '#FBBF24'), label: 'Joined waitlist', cls: 'text-caution' },
+      };
+
+      feed.innerHTML = items.map(item => {
+        const cfg = typeConfig[item.type] || { icon: () => Icons.activity(14, '#706860'), label: item.type, cls: 'text-text-tertiary' };
+        return `<div class="flex items-start gap-3 py-1.5">
+          <div class="w-7 h-7 rounded-full bg-surface-2 flex items-center justify-center flex-shrink-0 mt-0.5">${cfg.icon()}</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs"><span class="${cfg.cls} font-medium">${cfg.label}</span></p>
+            <p class="text-xs text-text-secondary truncate">${PG.escapeHtml(item.description)}</p>
+          </div>
+          <span class="text-[10px] text-text-muted flex-shrink-0">${PG.formatRelativeTime(item.timestamp)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    loadDashboard();
+
+    // Auto-refresh every 60 seconds
+    setInterval(loadDashboard, 60_000);
+  </script>
+</body>
+</html>

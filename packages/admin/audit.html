@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Audit Log</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+  <style>
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fade-in 0.4s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-surface-0 text-text-primary min-h-screen">
+  <div id="nav"></div>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6 fade-in">
+      <div class="flex items-center gap-3">
+        <div class="text-sage">${Icons.fileText(24)}</div>
+        <h1 class="text-xl font-semibold">Audit Log</h1>
+        <span id="totalBadge" class="text-xs bg-surface-2 text-text-tertiary px-2 py-0.5 rounded-full">0</span>
+      </div>
+      <button onclick="exportCsv()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors">
+        ${Icons.download(14)}
+        Export CSV
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap items-center gap-3 mb-4 fade-in">
+      <select id="actionFilter" class="bg-surface-1 border border-border rounded-lg px-3 py-2 text-sm focus:border-sage focus:outline-none">
+        <option value="">All actions</option>
+      </select>
+      <div class="flex items-center gap-2">
+        <label class="text-xs text-text-tertiary">From</label>
+        <input type="date" id="dateFrom" class="bg-surface-1 border border-border rounded-lg px-3 py-2 text-sm focus:border-sage focus:outline-none">
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-xs text-text-tertiary">To</label>
+        <input type="date" id="dateTo" class="bg-surface-1 border border-border rounded-lg px-3 py-2 text-sm focus:border-sage focus:outline-none">
+      </div>
+      <button onclick="applyFilters()" class="px-3 py-2 text-xs rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors">
+        Apply
+      </button>
+      <button onclick="clearFilters()" class="px-3 py-2 text-xs rounded-lg text-text-tertiary hover:text-text-secondary transition-colors">
+        Clear
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-6 fade-in">
+      <div class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="text-xs text-text-tertiary mb-1">Total Events</div>
+        <div id="statTotal" class="text-2xl font-bold">-</div>
+      </div>
+      <div class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="text-xs text-text-tertiary mb-1">Today</div>
+        <div id="statToday" class="text-2xl font-bold">-</div>
+      </div>
+      <div class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="text-xs text-text-tertiary mb-1">Most Common</div>
+        <div id="statCommon" class="text-lg font-semibold text-sage truncate">-</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-surface-1 border border-border rounded-xl overflow-hidden fade-in">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-border">
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">ID</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Action</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Actor</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Target</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Details</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="auditTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination"></div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center" onclick="if(event.target===this)closeDetail()">
+      <div class="bg-surface-1 border border-border rounded-xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold">Event Details</h3>
+          <button onclick="closeDetail()" class="text-text-muted hover:text-text-secondary">${Icons.xMark(18)}</button>
+        </div>
+        <pre id="detailContent" class="text-xs text-text-secondary bg-surface-2 rounded-lg p-4 overflow-auto whitespace-pre-wrap break-words"></pre>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    if (!PG.requireAuth()) throw new Error('Not authenticated');
+    document.getElementById('nav').innerHTML = PG.renderNav('audit');
+
+    let currentPage = 1;
+    const PER_PAGE = 50;
+    let allActions = [];
+    let userMap = {};
+
+    // Load user list for actor/target resolution
+    async function loadUsers() {
+      const data = await PG.apiFetch('/api/admin/users');
+      if (data && data.ok) {
+        for (const u of data.data) {
+          userMap[u.id] = u.email;
+        }
+      }
+    }
+
+    // Load distinct actions for filter dropdown
+    async function loadActions() {
+      const data = await PG.apiFetch('/api/admin/audit/actions');
+      if (data && data.ok) {
+        allActions = data.data;
+        const sel = document.getElementById('actionFilter');
+        for (const a of allActions) {
+          const opt = document.createElement('option');
+          opt.value = a;
+          opt.textContent = a;
+          sel.appendChild(opt);
+        }
+      }
+    }
+
+    function getFilters() {
+      return {
+        action: document.getElementById('actionFilter').value || undefined,
+        dateFrom: document.getElementById('dateFrom').value || undefined,
+        dateTo: document.getElementById('dateTo').value || undefined,
+      };
+    }
+
+    async function loadAuditLog(page) {
+      currentPage = page || 1;
+      const filters = getFilters();
+      let qs = `?page=${currentPage}&perPage=${PER_PAGE}`;
+      if (filters.action) qs += `&action=${encodeURIComponent(filters.action)}`;
+      if (filters.dateFrom) qs += `&dateFrom=${filters.dateFrom}`;
+      if (filters.dateTo) qs += `&dateTo=${filters.dateTo}`;
+
+      const data = await PG.apiFetch(`/api/admin/audit${qs}`);
+      if (!data || !data.ok) return;
+
+      const { items, total } = data.data;
+
+      // Stats
+      document.getElementById('totalBadge').textContent = PG.formatNumber(total);
+      document.getElementById('statTotal').textContent = PG.formatNumber(total);
+
+      // Count today's events
+      const today = new Date().toISOString().slice(0, 10);
+      const todayCount = items.filter(i => i.createdAt && i.createdAt.startsWith(today)).length;
+      document.getElementById('statToday').textContent = currentPage === 1 ? String(todayCount) : '-';
+
+      // Most common action
+      if (data.data.actions && data.data.actions.length > 0) {
+        document.getElementById('statCommon').textContent = data.data.actions[0];
+      }
+
+      // Render table
+      const tbody = document.getElementById('auditTable');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-text-tertiary text-sm">No audit events found</td></tr>';
+      } else {
+        tbody.innerHTML = items.map(item => {
+          const actor = item.actorId ? (userMap[item.actorId] || `#${item.actorId}`) : '-';
+          const target = item.targetId ? (userMap[item.targetId] || `#${item.targetId}`) : '-';
+          const detailsPreview = item.details ? item.details.slice(0, 60) + (item.details.length > 60 ? '...' : '') : '-';
+
+          return `<tr class="border-b border-border/50 hover:bg-surface-2/30 transition-colors">
+            <td class="px-4 py-3 text-xs text-text-muted font-mono">${item.id}</td>
+            <td class="px-4 py-3"><span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-sage/10 text-sage">${PG.escapeHtml(item.action)}</span></td>
+            <td class="px-4 py-3 text-sm">${PG.escapeHtml(actor)}</td>
+            <td class="px-4 py-3 text-sm">${PG.escapeHtml(target)}</td>
+            <td class="px-4 py-3 text-xs text-text-tertiary cursor-pointer hover:text-text-secondary" onclick='showDetail(${JSON.stringify(JSON.stringify(item))})'>${PG.escapeHtml(detailsPreview)}</td>
+            <td class="px-4 py-3 text-xs text-text-tertiary">${PG.formatRelativeTime(item.createdAt)}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Server-side pagination
+      document.getElementById('pagination').innerHTML =
+        PG.renderServerPagination(currentPage, PER_PAGE, total, pg => loadAuditLog(pg));
+    }
+
+    function showDetail(jsonStr) {
+      const item = JSON.parse(jsonStr);
+      let content = `ID: ${item.id}\nAction: ${item.action}\nActor: ${item.actorId ? (userMap[item.actorId] || '#' + item.actorId) : 'N/A'}\nTarget: ${item.targetId ? (userMap[item.targetId] || '#' + item.targetId) : 'N/A'}\nTimestamp: ${item.createdAt}\n\nDetails:\n`;
+      if (item.details) {
+        try { content += JSON.stringify(JSON.parse(item.details), null, 2); }
+        catch { content += item.details; }
+      } else {
+        content += 'None';
+      }
+      document.getElementById('detailContent').textContent = content;
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    function applyFilters() {
+      loadAuditLog(1);
+    }
+
+    function clearFilters() {
+      document.getElementById('actionFilter').value = '';
+      document.getElementById('dateFrom').value = '';
+      document.getElementById('dateTo').value = '';
+      loadAuditLog(1);
+    }
+
+    async function exportCsv() {
+      // Fetch all matching items (up to 1000)
+      const filters = getFilters();
+      let qs = '?page=1&perPage=200';
+      if (filters.action) qs += `&action=${encodeURIComponent(filters.action)}`;
+      if (filters.dateFrom) qs += `&dateFrom=${filters.dateFrom}`;
+      if (filters.dateTo) qs += `&dateTo=${filters.dateTo}`;
+
+      const data = await PG.apiFetch(`/api/admin/audit${qs}`);
+      if (!data || !data.ok) { PG.showToast('Failed to export', 'error'); return; }
+
+      const columns = [
+        { key: 'id', label: 'ID' },
+        { key: 'action', label: 'Action' },
+        { key: 'actorId', label: 'Actor ID' },
+        { key: 'actorEmail', label: 'Actor Email' },
+        { key: 'targetId', label: 'Target ID' },
+        { key: 'details', label: 'Details' },
+        { key: 'createdAt', label: 'Timestamp' },
+      ];
+
+      const rows = data.data.items.map(i => ({
+        ...i,
+        actorEmail: i.actorId ? (userMap[i.actorId] || '') : '',
+      }));
+
+      const csv = PG.generateCsv(columns, rows);
+      PG.downloadCsv('panguard-audit-log.csv', csv);
+      PG.showToast('CSV exported', 'success');
+    }
+
+    // Init
+    Promise.all([loadUsers(), loadActions()]).then(() => loadAuditLog(1));
+  </script>
+</body>
+</html>

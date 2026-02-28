@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Sessions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+</head>
+<body class="bg-surface-0 text-text-primary min-h-screen">
+  <div id="nav"></div>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-xl font-bold flex items-center gap-2">
+        <span id="pageIcon"></span>
+        Active Sessions
+        <span id="sessionCount" class="text-xs font-normal text-text-tertiary bg-surface-2 px-2 py-0.5 rounded-full"></span>
+      </h1>
+      <div class="flex items-center gap-3">
+        <span id="refreshIndicator" class="text-[10px] text-text-muted flex items-center gap-1">
+          <span id="refreshIcon"></span>
+          Auto-refresh: 60s
+        </span>
+        <button onclick="loadSessions()" class="flex items-center gap-1 px-3 py-1.5 text-xs rounded-md bg-surface-2 border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors">
+          <span id="manualRefreshIcon"></span>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="bg-surface-1 border border-border rounded-xl p-5 mb-6">
+      <div class="flex items-center gap-6">
+        <div>
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Active Sessions</p>
+          <p id="statActive" class="text-2xl font-bold text-safe mt-1">--</p>
+        </div>
+        <div class="w-px h-10 bg-border"></div>
+        <div>
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Unique Users</p>
+          <p id="statUnique" class="text-2xl font-bold mt-1">--</p>
+        </div>
+        <div class="w-px h-10 bg-border"></div>
+        <div>
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Oldest Session</p>
+          <p id="statOldest" class="text-sm font-medium text-text-secondary mt-1">--</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions Table -->
+    <div class="bg-surface-1 border border-border rounded-xl overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-border">
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">ID</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">User Email</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">User Name</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Created</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Expires</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTable"></tbody>
+      </table>
+    </div>
+
+    <div id="noSessions" class="hidden text-center py-12 text-text-tertiary text-sm">No active sessions</div>
+    <div id="paginationContainer"></div>
+  </main>
+
+  <script>
+    if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+    document.getElementById('nav').innerHTML = PG.renderNav('sessions');
+    document.getElementById('pageIcon').innerHTML = Icons.key(20, '#8B9A8E');
+    document.getElementById('refreshIcon').innerHTML = Icons.refresh(12, '#4A4540');
+    document.getElementById('manualRefreshIcon').innerHTML = Icons.refresh(14);
+
+    const currentUser = PG.getUser();
+    let allSessions = [];
+    let currentPage = 1;
+    const PER_PAGE = 20;
+
+    function renderTable() {
+      const p = PG.paginate(allSessions, currentPage, PER_PAGE);
+
+      document.getElementById('sessionCount').textContent = `${allSessions.length} active`;
+      document.getElementById('noSessions').classList.toggle('hidden', p.items.length > 0);
+
+      // Stats
+      document.getElementById('statActive').textContent = PG.formatNumber(allSessions.length);
+      const uniqueUsers = new Set(allSessions.map(s => s.userId)).size;
+      document.getElementById('statUnique').textContent = PG.formatNumber(uniqueUsers);
+      if (allSessions.length > 0) {
+        const oldest = allSessions[allSessions.length - 1];
+        document.getElementById('statOldest').textContent = PG.formatRelativeTime(oldest.createdAt);
+      }
+
+      const tbody = document.getElementById('sessionsTable');
+      tbody.innerHTML = p.items.map(s => {
+        const isMe = currentUser.email === s.userEmail;
+        const expiresDate = new Date(s.expiresAt + 'Z');
+        const isExpiringSoon = (expiresDate.getTime() - Date.now()) < 3_600_000;
+
+        return `<tr class="border-b border-border/50 hover:bg-surface-2/30 transition-colors ${isMe ? 'bg-sage/5' : ''}">
+          <td class="px-4 py-3 text-xs text-text-muted font-mono">#${s.id}</td>
+          <td class="px-4 py-3 text-sm">
+            ${PG.escapeHtml(s.userEmail)}
+            ${isMe ? '<span class="ml-1 text-[10px] text-sage font-semibold">(You)</span>' : ''}
+          </td>
+          <td class="px-4 py-3 text-sm text-text-secondary">${PG.escapeHtml(s.userName)}</td>
+          <td class="px-4 py-3 text-xs text-text-tertiary">${PG.formatRelativeTime(s.createdAt)}</td>
+          <td class="px-4 py-3 text-xs ${isExpiringSoon ? 'text-caution' : 'text-text-tertiary'}">
+            ${PG.formatRelativeTime(s.expiresAt).replace(' ago', '')}
+            ${isExpiringSoon ? `<span class="ml-1 text-[10px]">(expiring soon)</span>` : ''}
+          </td>
+          <td class="px-4 py-3">
+            <button onclick="revokeSession(${s.id}, ${isMe})"
+              class="flex items-center gap-1 text-xs ${isMe ? 'text-text-muted cursor-not-allowed' : 'text-danger hover:underline'}"
+              ${isMe ? 'disabled title="Cannot revoke your own session"' : ''}>
+              ${Icons.trash(14)} Revoke
+            </button>
+          </td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('paginationContainer').innerHTML =
+        PG.renderPagination(p, pg => { currentPage = pg; renderTable(); });
+    }
+
+    async function revokeSession(sessionId, isMe) {
+      if (isMe) return;
+      if (!confirm('Revoke this session? The user will be logged out.')) return;
+
+      const data = await PG.apiDelete(`/api/admin/sessions/${sessionId}`);
+      if (data && data.ok) {
+        PG.showToast('Session revoked', 'success');
+        loadSessions();
+      } else {
+        PG.showToast('Failed to revoke session', 'error');
+      }
+    }
+
+    async function loadSessions() {
+      const data = await PG.apiFetch('/api/admin/sessions');
+      if (!data || !data.ok) return;
+      allSessions = data.data;
+      renderTable();
+    }
+
+    loadSessions();
+
+    // Auto-refresh every 60 seconds
+    setInterval(loadSessions, 60_000);
+  </script>
+</body>
+</html>

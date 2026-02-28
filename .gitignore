@@ -22,9 +22,6 @@ figma-plugin-mobile/
 figma-plugin-website/
 panguard design/
 
-# Admin dashboard (local only, not published)
-packages/admin/
-
 # Community rules (pulled by scripts/update-*-rules.sh at build time)
 config/sigma-rules/community/
 config/yara-rules/community/

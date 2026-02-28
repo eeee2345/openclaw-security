@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Waitlist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+</head>
+<body class="bg-surface-0 text-text-primary min-h-screen">
+  <div id="nav"></div>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-xl font-bold flex items-center gap-2">
+        <span id="pageIcon"></span>
+        Waitlist
+      </h1>
+      <div id="statsLine" class="text-xs text-text-tertiary"></div>
+    </div>
+
+    <!-- Status Tabs -->
+    <div class="flex items-center gap-2 mb-4">
+      <button data-status="" class="tab-btn px-3 py-1.5 text-xs rounded-md transition-colors bg-sage/10 text-sage">
+        All <span id="tabAll" class="ml-1 text-text-muted"></span>
+      </button>
+      <button data-status="pending" class="tab-btn px-3 py-1.5 text-xs rounded-md transition-colors text-text-tertiary hover:text-text-secondary hover:bg-surface-2/50">
+        Pending <span id="tabPending" class="ml-1 text-text-muted"></span>
+      </button>
+      <button data-status="approved" class="tab-btn px-3 py-1.5 text-xs rounded-md transition-colors text-text-tertiary hover:text-text-secondary hover:bg-surface-2/50">
+        Approved <span id="tabApproved" class="ml-1 text-text-muted"></span>
+      </button>
+      <button data-status="rejected" class="tab-btn px-3 py-1.5 text-xs rounded-md transition-colors text-text-tertiary hover:text-text-secondary hover:bg-surface-2/50">
+        Rejected <span id="tabRejected" class="ml-1 text-text-muted"></span>
+      </button>
+    </div>
+
+    <!-- Source Distribution (mini) -->
+    <div id="sourceSection" class="bg-surface-1 border border-border rounded-xl p-4 mb-4 hidden">
+      <div class="flex items-center gap-2 mb-2">
+        <span id="sourceIcon"></span>
+        <h3 class="text-xs font-semibold text-text-secondary">Sources</h3>
+      </div>
+      <div id="sourceMini" class="flex items-center gap-3 flex-wrap"></div>
+    </div>
+
+    <!-- Waitlist Table -->
+    <div class="bg-surface-1 border border-border rounded-xl overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-border">
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Email</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Name</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Company</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Source</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Status</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Verified</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Date</th>
+            <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="waitlistTable"></tbody>
+      </table>
+    </div>
+
+    <div id="noEntries" class="hidden text-center py-12 text-text-tertiary text-sm">No waitlist entries</div>
+    <div id="paginationContainer"></div>
+  </main>
+
+  <script>
+    if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+    document.getElementById('nav').innerHTML = PG.renderNav('waitlist');
+    document.getElementById('pageIcon').innerHTML = Icons.list(20, '#8B9A8E');
+    document.getElementById('sourceIcon').innerHTML = Icons.globe(14, '#706860');
+
+    let allEntries = [];
+    let activeTab = '';
+    let currentPage = 1;
+    const PER_PAGE = 20;
+
+    // ── Tabs ──
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeTab = btn.dataset.status;
+        currentPage = 1;
+        updateTabStyles();
+        renderTable();
+      });
+    });
+
+    function updateTabStyles() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = btn.dataset.status === activeTab;
+        btn.className = `tab-btn px-3 py-1.5 text-xs rounded-md transition-colors ${
+          isActive ? 'bg-sage/10 text-sage' : 'text-text-tertiary hover:text-text-secondary hover:bg-surface-2/50'
+        }`;
+      });
+    }
+
+    function getFilteredEntries() {
+      if (!activeTab) return allEntries;
+      return allEntries.filter(e => e.status === activeTab);
+    }
+
+    function renderTable() {
+      const filtered = getFilteredEntries();
+      const p = PG.paginate(filtered, currentPage, PER_PAGE);
+
+      document.getElementById('noEntries').classList.toggle('hidden', p.items.length > 0);
+
+      const tbody = document.getElementById('waitlistTable');
+      tbody.innerHTML = p.items.map(e => `
+        <tr class="border-b border-border/50 hover:bg-surface-2/30 transition-colors">
+          <td class="px-4 py-3 text-sm">${PG.escapeHtml(e.email)}</td>
+          <td class="px-4 py-3 text-sm text-text-secondary">${PG.escapeHtml(e.name) || '-'}</td>
+          <td class="px-4 py-3 text-sm text-text-secondary">${PG.escapeHtml(e.company) || '-'}</td>
+          <td class="px-4 py-3 text-xs text-text-tertiary capitalize">${PG.escapeHtml(e.source) || '-'}</td>
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase border ${PG.STATUS_BADGE[e.status] || ''}">
+              ${e.status}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-center">
+            ${e.verified
+              ? `<span class="text-safe">${Icons.check(16, '#2ED573')}</span>`
+              : `<span class="text-text-muted">${Icons.xMark(16, '#4A4540')}</span>`}
+          </td>
+          <td class="px-4 py-3 text-xs text-text-tertiary">${PG.formatDate(e.createdAt)}</td>
+          <td class="px-4 py-3">
+            ${e.status === 'pending' ? `
+              <button onclick="approveEntry(${e.id})" class="text-xs text-safe hover:underline mr-2 inline-flex items-center gap-1">
+                ${Icons.check(12, '#2ED573')} Approve
+              </button>
+              <button onclick="rejectEntry(${e.id})" class="text-xs text-danger hover:underline inline-flex items-center gap-1">
+                ${Icons.xMark(12, '#EF4444')} Reject
+              </button>
+            ` : `<span class="text-xs text-text-muted">-</span>`}
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('paginationContainer').innerHTML =
+        PG.renderPagination(p, pg => { currentPage = pg; renderTable(); });
+    }
+
+    function updateStats(stats) {
+      document.getElementById('tabAll').textContent = `(${stats.total})`;
+      document.getElementById('tabPending').textContent = `(${stats.pending})`;
+      document.getElementById('tabApproved').textContent = `(${stats.approved})`;
+      document.getElementById('tabRejected').textContent = `(${stats.rejected})`;
+
+      document.getElementById('statsLine').textContent =
+        `${stats.verified} verified | Today: ${stats.todaySignups}`;
+
+      // Source mini bars
+      const sources = Object.entries(stats.bySource || {});
+      if (sources.length > 0) {
+        document.getElementById('sourceSection').classList.remove('hidden');
+        const total = stats.total || 1;
+        document.getElementById('sourceMini').innerHTML = sources.map(([src, cnt]) => {
+          const pct = Math.round((cnt / total) * 100);
+          return `<span class="flex items-center gap-1.5 text-xs text-text-secondary">
+            <span class="capitalize">${PG.escapeHtml(src)}</span>
+            <span class="text-text-muted">${cnt} (${pct}%)</span>
+          </span>`;
+        }).join('');
+      }
+    }
+
+    async function approveEntry(id) {
+      const data = await PG.apiPost(`/api/admin/waitlist/${id}/approve`);
+      if (data && data.ok) {
+        PG.showToast('Entry approved', 'success');
+        loadWaitlist();
+      }
+    }
+
+    async function rejectEntry(id) {
+      if (!confirm('Reject this waitlist entry?')) return;
+      const data = await PG.apiPost(`/api/admin/waitlist/${id}/reject`);
+      if (data && data.ok) {
+        PG.showToast('Entry rejected', 'warning');
+        loadWaitlist();
+      }
+    }
+
+    async function loadWaitlist() {
+      const [listData, statsData] = await Promise.all([
+        PG.apiFetch('/api/waitlist/list'),
+        PG.apiFetch('/api/waitlist/stats'),
+      ]);
+
+      if (statsData && statsData.ok) {
+        updateStats(statsData.data);
+      }
+
+      if (!listData || !listData.ok) return;
+      allEntries = listData.data;
+      renderTable();
+    }
+
+    loadWaitlist();
+  </script>
+</body>
+</html>

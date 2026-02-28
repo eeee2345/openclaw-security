@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+  <style>
+    @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
+    .shield-pulse { animation: pulse-ring 2s ease-out infinite; }
+  </style>
+</head>
+<body class="bg-surface-0 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-sm p-8">
+    <!-- Shield Icon -->
+    <div class="flex justify-center mb-6">
+      <div class="relative">
+        <div class="absolute inset-0 rounded-full bg-sage/20 shield-pulse"></div>
+        <div class="relative w-16 h-16 rounded-full bg-sage/10 flex items-center justify-center">
+          ${Icons.shieldCheck(32, '#8B9A8E')}
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-text-primary tracking-wide">PANGUARD</h1>
+      <p class="text-text-tertiary text-sm mt-1">Admin Dashboard</p>
+    </div>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block text-xs text-text-secondary mb-1.5">Email</label>
+        <input type="email" id="email" required
+          class="w-full bg-surface-1 border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-sage transition-colors"
+          placeholder="admin@panguard.ai">
+      </div>
+      <div>
+        <label class="block text-xs text-text-secondary mb-1.5">Password</label>
+        <input type="password" id="password" required
+          class="w-full bg-surface-1 border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-sage transition-colors"
+          placeholder="Enter password">
+      </div>
+      <div id="error" class="text-danger text-xs hidden"></div>
+      <button type="submit" id="submitBtn"
+        class="w-full bg-sage text-surface-0 font-semibold rounded-lg py-2.5 text-sm hover:bg-sage-light transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+        <span id="btnText">Sign In</span>
+        <span id="btnSpinner" class="hidden">
+          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+        </span>
+      </button>
+    </form>
+
+    <p class="text-center text-text-muted text-[10px] mt-8 uppercase tracking-wider">Protected by Panguard</p>
+  </div>
+
+  <script>
+    // Redirect if already logged in
+    if (PG.getToken()) { window.location.href = '/admin'; }
+
+    // Render shield icon into DOM
+    document.querySelector('.relative .relative').innerHTML = Icons.shieldCheck(32, '#8B9A8E');
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('error');
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      errEl.classList.add('hidden');
+      btn.disabled = true;
+      btnText.textContent = 'Signing in...';
+      btnSpinner.classList.remove('hidden');
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch(`${window.location.origin}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+
+        if (!data.ok) {
+          errEl.textContent = data.error || 'Login failed';
+          errEl.classList.remove('hidden');
+          btn.disabled = false;
+          btnText.textContent = 'Sign In';
+          btnSpinner.classList.add('hidden');
+          return;
+        }
+
+        if (data.data.user.role !== 'admin') {
+          errEl.textContent = 'Admin access required';
+          errEl.classList.remove('hidden');
+          btn.disabled = false;
+          btnText.textContent = 'Sign In';
+          btnSpinner.classList.add('hidden');
+          return;
+        }
+
+        localStorage.setItem('panguard_admin_token', data.data.token);
+        localStorage.setItem('panguard_admin_user', JSON.stringify(data.data.user));
+        window.location.href = '/admin';
+      } catch {
+        errEl.textContent = 'Connection error';
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btnText.textContent = 'Sign In';
+        btnSpinner.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

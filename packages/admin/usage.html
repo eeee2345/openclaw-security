@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Usage Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+  <style>
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fade-in 0.4s ease-out forwards; }
+    .fade-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .fade-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+  </style>
+</head>
+<body class="bg-surface-0 text-text-primary min-h-screen">
+  <div id="nav"></div>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6 fade-in">
+      <div class="flex items-center gap-3">
+        <div class="text-sage">${Icons.activity(24)}</div>
+        <h1 class="text-xl font-semibold">Usage Analytics</h1>
+        <span id="periodBadge" class="text-xs bg-surface-2 text-text-tertiary px-2 py-0.5 rounded-full"></span>
+      </div>
+      <button onclick="exportCsv()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors">
+        ${Icons.download(14)}
+        Export CSV
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-3 gap-4 mb-6 fade-in">
+      <div class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="flex items-center gap-2 text-xs text-text-tertiary mb-1">
+          ${Icons.alertTriangle(14, '#FBBF24')}
+          Near Quota
+        </div>
+        <div id="statNearQuota" class="text-2xl font-bold text-caution">-</div>
+        <div class="text-[10px] text-text-muted mt-1">Users >= 80% of limit</div>
+      </div>
+      <div class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="flex items-center gap-2 text-xs text-text-tertiary mb-1">
+          ${Icons.shield(14, '#8B9A8E')}
+          Total Scans
+        </div>
+        <div id="statScans" class="text-2xl font-bold">-</div>
+        <div class="text-[10px] text-text-muted mt-1">This period</div>
+      </div>
+      <div class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="flex items-center gap-2 text-xs text-text-tertiary mb-1">
+          ${Icons.activity(14, '#8B9A8E')}
+          API Calls
+        </div>
+        <div id="statApiCalls" class="text-2xl font-bold">-</div>
+        <div class="text-[10px] text-text-muted mt-1">This period</div>
+      </div>
+    </div>
+
+    <!-- Near Quota Warnings -->
+    <div id="nearQuotaSection" class="mb-6 fade-in fade-in-delay-1" style="display:none">
+      <h2 class="text-sm font-semibold mb-3 flex items-center gap-2">
+        ${Icons.alertTriangle(16, '#FBBF24')}
+        Users Near Quota Limits
+      </h2>
+      <div class="bg-surface-1 border border-border rounded-xl overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">User</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Tier</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Resource</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Usage</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3 w-40">Progress</th>
+            </tr>
+          </thead>
+          <tbody id="nearQuotaTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Per-Tier Breakdown -->
+    <div class="mb-6 fade-in fade-in-delay-1">
+      <h2 class="text-sm font-semibold mb-3 flex items-center gap-2">
+        ${Icons.layers(16, '#8B9A8E')}
+        Usage by Tier
+      </h2>
+      <div id="tierBreakdown" class="bg-surface-1 border border-border rounded-xl p-4">
+        <div class="text-sm text-text-tertiary">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Per-User Table -->
+    <div class="fade-in fade-in-delay-2">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold flex items-center gap-2">
+          ${Icons.users(16, '#8B9A8E')}
+          Per-User Usage
+        </h2>
+        <div class="relative max-w-xs">
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">${Icons.search(14)}</div>
+          <input type="text" id="userSearch" placeholder="Search by email..."
+            class="w-full bg-surface-1 border border-border rounded-lg pl-9 pr-4 py-2 text-sm focus:border-sage focus:outline-none">
+        </div>
+      </div>
+      <div class="bg-surface-1 border border-border rounded-xl overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Email</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Tier</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Scans</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Endpoints</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">API Calls</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Reports</th>
+              <th class="text-left text-xs text-text-tertiary font-normal px-4 py-3">Traps</th>
+            </tr>
+          </thead>
+          <tbody id="userTable"></tbody>
+        </table>
+      </div>
+      <div id="userPagination"></div>
+    </div>
+  </main>
+
+  <script>
+    if (!PG.requireAuth()) throw new Error('Not authenticated');
+    document.getElementById('nav').innerHTML = PG.renderNav('usage');
+
+    let allByUser = [];
+    let currentPage = 1;
+    const PER_PAGE = 20;
+    const RESOURCES = ['scan', 'guard_endpoints', 'api_calls', 'reports', 'trap_instances'];
+    const RESOURCE_LABELS = {
+      scan: 'Scans',
+      guard_endpoints: 'Endpoints',
+      api_calls: 'API Calls',
+      reports: 'Reports',
+      notifications: 'Notifications',
+      trap_instances: 'Traps',
+    };
+
+    function getResourceValue(usage, resource) {
+      const item = usage.find(u => u.resource === resource);
+      return item ? item.current : 0;
+    }
+
+    function getResourceLimit(usage, resource) {
+      const item = usage.find(u => u.resource === resource);
+      return item ? item.limit : -1;
+    }
+
+    async function loadUsage() {
+      const data = await PG.apiFetch('/api/admin/usage');
+      if (!data || !data.ok) return;
+
+      const { byUser, nearQuota, byTier, period } = data.data;
+      allByUser = byUser;
+
+      document.getElementById('periodBadge').textContent = period;
+
+      // Stats
+      document.getElementById('statNearQuota').textContent = String(nearQuota.length);
+
+      let totalScans = 0;
+      let totalApiCalls = 0;
+      for (const tier of Object.values(byTier)) {
+        totalScans += tier.resources.scan || 0;
+        totalApiCalls += tier.resources.api_calls || 0;
+      }
+      document.getElementById('statScans').textContent = PG.formatNumber(totalScans);
+      document.getElementById('statApiCalls').textContent = PG.formatNumber(totalApiCalls);
+
+      // Near quota table
+      if (nearQuota.length > 0) {
+        document.getElementById('nearQuotaSection').style.display = '';
+        const tbody = document.getElementById('nearQuotaTable');
+        tbody.innerHTML = nearQuota.sort((a, b) => b.percentage - a.percentage).map(q => {
+          const barColor = q.percentage >= 95 ? 'bg-danger' : 'bg-caution';
+          return `<tr class="border-b border-border/50 hover:bg-surface-2/30 transition-colors">
+            <td class="px-4 py-3 text-sm">${PG.escapeHtml(q.email)}</td>
+            <td class="px-4 py-3 text-xs ${PG.TIER_COLORS[q.tier] || 'text-text-secondary'}">${q.tier}</td>
+            <td class="px-4 py-3 text-xs">${RESOURCE_LABELS[q.resource] || q.resource}</td>
+            <td class="px-4 py-3 text-xs">${PG.formatNumber(q.current)} / ${PG.formatNumber(q.limit)}</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-2 bg-surface-2 rounded-full overflow-hidden">
+                  <div class="${barColor} h-full rounded-full transition-all" style="width:${Math.min(100, q.percentage)}%"></div>
+                </div>
+                <span class="text-xs font-mono ${q.percentage >= 95 ? 'text-danger' : 'text-caution'}">${q.percentage}%</span>
+              </div>
+            </td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Tier breakdown
+      const tierDiv = document.getElementById('tierBreakdown');
+      const tiers = Object.entries(byTier).sort((a, b) => b[1].userCount - a[1].userCount);
+      if (tiers.length === 0) {
+        tierDiv.innerHTML = '<div class="text-sm text-text-tertiary">No data yet</div>';
+      } else {
+        tierDiv.innerHTML = tiers.map(([tier, data]) => {
+          const resources = Object.entries(data.resources)
+            .filter(([, v]) => v > 0)
+            .map(([r, v]) => `<span class="text-text-tertiary">${RESOURCE_LABELS[r] || r}: ${PG.formatNumber(v)}</span>`)
+            .join(' &middot; ');
+          return `<div class="flex items-center gap-3 py-2 ${tier !== tiers[tiers.length - 1][0] ? 'border-b border-border/30' : ''}">
+            <span class="text-xs font-semibold w-20 ${PG.TIER_COLORS[tier] || 'text-text-secondary'}">${tier}</span>
+            <span class="text-xs text-text-muted w-16">${data.userCount} user${data.userCount !== 1 ? 's' : ''}</span>
+            <div class="flex-1 text-[11px] flex flex-wrap gap-x-3">${resources || '<span class="text-text-muted">No usage</span>'}</div>
+          </div>`;
+        }).join('');
+      }
+
+      // Per-user table
+      renderUserTable();
+    }
+
+    function renderUserTable() {
+      const query = document.getElementById('userSearch').value.toLowerCase();
+      const filtered = allByUser.filter(u => !query || u.email.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
+      const p = PG.paginate(filtered, currentPage, PER_PAGE);
+
+      const tbody = document.getElementById('userTable');
+      if (p.items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-text-tertiary text-sm">No users found</td></tr>';
+      } else {
+        tbody.innerHTML = p.items.map(u => {
+          const suspendedBadge = u.suspended ? `<span class="ml-1 text-danger">${Icons.ban(12)}</span>` : '';
+          return `<tr class="border-b border-border/50 hover:bg-surface-2/30 transition-colors ${u.suspended ? 'bg-danger/5' : ''}">
+            <td class="px-4 py-3 text-sm">${PG.escapeHtml(u.email)}${suspendedBadge}</td>
+            <td class="px-4 py-3 text-xs ${PG.TIER_COLORS[u.tier] || 'text-text-secondary'}">${u.tier}</td>
+            <td class="px-4 py-3 text-xs font-mono">${PG.formatNumber(getResourceValue(u.usage, 'scan'))}</td>
+            <td class="px-4 py-3 text-xs font-mono">${PG.formatNumber(getResourceValue(u.usage, 'guard_endpoints'))}</td>
+            <td class="px-4 py-3 text-xs font-mono">${PG.formatNumber(getResourceValue(u.usage, 'api_calls'))}</td>
+            <td class="px-4 py-3 text-xs font-mono">${PG.formatNumber(getResourceValue(u.usage, 'reports'))}</td>
+            <td class="px-4 py-3 text-xs font-mono">${PG.formatNumber(getResourceValue(u.usage, 'trap_instances'))}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      document.getElementById('userPagination').innerHTML =
+        PG.renderPagination(p, pg => { currentPage = pg; renderUserTable(); });
+    }
+
+    // Search debounce
+    let searchTimeout;
+    document.getElementById('userSearch').addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => { currentPage = 1; renderUserTable(); }, 300);
+    });
+
+    function exportCsv() {
+      const columns = [
+        { key: 'email', label: 'Email' },
+        { key: 'name', label: 'Name' },
+        { key: 'tier', label: 'Tier' },
+        { key: 'scans', label: 'Scans' },
+        { key: 'endpoints', label: 'Endpoints' },
+        { key: 'apiCalls', label: 'API Calls' },
+        { key: 'reports', label: 'Reports' },
+        { key: 'traps', label: 'Traps' },
+      ];
+      const rows = allByUser.map(u => ({
+        email: u.email,
+        name: u.name,
+        tier: u.tier,
+        scans: getResourceValue(u.usage, 'scan'),
+        endpoints: getResourceValue(u.usage, 'guard_endpoints'),
+        apiCalls: getResourceValue(u.usage, 'api_calls'),
+        reports: getResourceValue(u.usage, 'reports'),
+        traps: getResourceValue(u.usage, 'trap_instances'),
+      }));
+      const csv = PG.generateCsv(columns, rows);
+      PG.downloadCsv('panguard-usage.csv', csv);
+      PG.showToast('CSV exported', 'success');
+    }
+
+    loadUsage();
+  </script>
+</body>
+</html>
