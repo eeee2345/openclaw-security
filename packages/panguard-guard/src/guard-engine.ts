@@ -336,6 +336,25 @@ export class GuardEngine {
       }
     }
 
+    // Fetch IP blocklist from Threat Cloud and inject into feed manager
+    // 從 Threat Cloud 取得 IP 封鎖清單並注入威脅情報管理器
+    this.threatCloud
+      .fetchBlocklist()
+      .then((ips) => {
+        if (ips.length > 0) {
+          const added = this.feedManager.addExternalIPs(ips, 'threat_cloud_blocklist', 85);
+          logger.info(
+            `Threat Cloud blocklist loaded: ${added} IPs / ` +
+              `Threat Cloud 封鎖清單已載入: ${added} 個 IP`
+          );
+        }
+      })
+      .catch((err: unknown) => {
+        logger.warn(
+          `Threat Cloud blocklist fetch skipped: ${err instanceof Error ? err.message : String(err)}`
+        );
+      });
+
     // Start monitor engine / 啟動監控引擎
     this.monitorEngine = new MonitorEngine({
       networkPollInterval: this.config.monitors.networkPollInterval,

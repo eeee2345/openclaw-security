@@ -177,6 +177,46 @@ export class ThreatIntelFeedManager {
     };
   }
 
+  /**
+   * Add external IPs to the threat intel index (e.g., from Threat Cloud blocklist).
+   * 將外部 IP 加入威脅情報索引（例如來自 Threat Cloud 封鎖清單）。
+   *
+   * @param ips - Array of IPs to add / 要加入的 IP 陣列
+   * @param threatType - Threat classification / 威脅分類
+   * @param confidence - Confidence score (0-100) / 信心分數
+   * @returns Number of IPs added / 新增的 IP 數量
+   */
+  addExternalIPs(
+    ips: string[],
+    threatType: string = 'blocklisted',
+    confidence: number = 80
+  ): number {
+    let added = 0;
+    const now = new Date().toISOString();
+
+    for (const ip of ips) {
+      const trimmed = ip.trim();
+      if (!trimmed || !/^[\d.]+$/.test(trimmed)) continue;
+
+      const ioc: IoC = {
+        type: 'ip',
+        value: trimmed,
+        threatType,
+        source: 'threatfox', // Use existing FeedSource for compatibility
+        confidence,
+        lastSeen: now,
+        tags: ['threat-cloud-blocklist'],
+      };
+      this.addIoC(ioc);
+      added++;
+    }
+
+    if (added > 0) {
+      logger.info(`Added ${added} external IPs to threat intel / 已加入 ${added} 個外部 IP`);
+    }
+    return added;
+  }
+
   /** Get all IP-based IoCs as ThreatIntelEntry array / 取得所有 IP IoC 為 ThreatIntelEntry 陣列 */
   getAllIPEntries(): ThreatIntelEntry[] {
     const entries: ThreatIntelEntry[] = [];
