@@ -29,10 +29,19 @@ export default function Footer() {
       links: [
         { label: t('guard'), href: '/product/guard' },
         { label: t('scan'), href: '/product/scan' },
-        { label: t('threatCloud'), href: '/product' },
+        { label: t('threatCloud'), href: '/threat-cloud' },
         { label: t('chat'), href: '/product/chat' },
         { label: t('trap'), href: '/product/trap' },
         { label: t('report'), href: '/product/report' },
+      ],
+    },
+    {
+      title: t('company'),
+      links: [
+        { label: t('about'), href: '/about' },
+        { label: t('careers'), href: '/careers' },
+        { label: t('blog'), href: '/blog' },
+        { label: t('contact'), href: '/contact' },
       ],
     },
     {
@@ -40,6 +49,8 @@ export default function Footer() {
       links: [
         { label: t('documentation'), href: '/docs' },
         { label: 'GitHub', href: 'https://github.com/panguard-ai/panguard-ai', external: true },
+        { label: t('openSource'), href: '/open-source' },
+        { label: t('compliance'), href: '/compliance' },
       ],
     },
     {
@@ -54,7 +65,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#050505] border-t border-border py-12 sm:py-16 px-6 lg:px-[120px]">
       <div className="max-w-[1200px] mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12">
           <div className="col-span-2 md:col-span-1">
             <FooterLogo />
             <p className="text-sm text-text-tertiary mt-3 leading-relaxed">{tc('footerTagline')}</p>

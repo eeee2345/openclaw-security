@@ -20,6 +20,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/demo',
     '/security',
     '/technology',
+    '/how-it-works',
+    '/threat-cloud',
+    '/about',
+    '/open-source',
     '/company',
     '/contact',
     '/solutions/developers',
@@ -55,6 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const getPriority = (path: string): number => {
     if (path === '/') return 1.0;
     if (path.startsWith('/product') || path === '/integrations') return 0.8;
+    if (path === '/how-it-works' || path === '/threat-cloud' || path === '/about') return 0.8;
     if (path === '/blog' || path === '/docs' || path === '/pricing') return 0.7;
     return 0.6;
   };

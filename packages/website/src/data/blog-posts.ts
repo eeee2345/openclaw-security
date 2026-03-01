@@ -20,6 +20,36 @@ export const categories = [
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'why-99-percent-businesses-have-zero-security',
+    title: 'Why 99% of Businesses Have Zero Security -- And What We\'re Doing About It',
+    excerpt:
+      'Every cybersecurity company serves the Fortune 500. 400 million SMBs have nothing. We\'re building the security infrastructure they deserve.',
+    category: 'Industry',
+    date: '2026-03-01',
+    author: 'Panguard Team',
+    readingTime: '7 min',
+  },
+  {
+    slug: 'vibe-coding-security-gap',
+    title: 'The Vibe Coding Security Gap: When AI Writes Code, Who Watches the Server?',
+    excerpt:
+      'AI coding tools are exploding. Developers ship faster than ever. But servers are more exposed than ever. The gap between velocity and security is growing.',
+    category: 'Engineering',
+    date: '2026-02-28',
+    author: 'Engineering Team',
+    readingTime: '8 min',
+  },
+  {
+    slug: '90-percent-threats-dont-need-ai',
+    title: '90% of Threats Don\'t Need AI: Why We Built a Rules-First Security Engine',
+    excerpt:
+      'The industry wants you to believe everything needs machine learning. Truth: 90% of attacks match known patterns. A rules engine catches them in under 50ms.',
+    category: 'Engineering',
+    date: '2026-02-25',
+    author: 'Engineering Team',
+    readingTime: '9 min',
+  },
+  {
     slug: 'ai-powered-threat-detection-vs-rules',
     title: 'Why AI-Powered Threat Detection Outperforms Rule-Based Systems',
     excerpt:

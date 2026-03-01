@@ -657,6 +657,312 @@
     "q3": "2026 Q3",
     "q3Label": "正式公開上線"
   },
+  "howItWorks": {
+    "overline": "運作原理",
+    "title": "Panguard 怎麼",
+    "titleHighlight": "保護你",
+    "subtitle": "五層防禦。三層 AI。一行指令部署。",
+    "overview": {
+      "overline": "一目了然",
+      "title": "層層遞進的安全思維",
+      "subtitle": "每一層攔截上一層漏掉的威脅。組合起來，形成一個適應你環境的防禦系統。",
+      "stat1": { "value": "<50ms", "label": "平均偵測時間" },
+      "stat2": { "value": "90%", "label": "僅靠規則引擎攔截的威脅" },
+      "stat3": { "value": "7 天", "label": "學習你的正常狀態" }
+    },
+    "layers": {
+      "overline": "五層偵測",
+      "title": "五層偵測，攔截別人漏掉的",
+      "subtitle": "從靜態分析到上下文記憶，每一層都增加智慧。",
+      "layer1": {
+        "badge": "第一層",
+        "name": "環境探索",
+        "desc": "自動掃描你的基礎設施：作業系統、服務、開放端口、安裝套件、執行中的程序。",
+        "detail": "這是 Panguard 學習你的環境「正常」樣貌的方式。"
+      },
+      "layer2": {
+        "badge": "第二層",
+        "name": "規則引擎",
+        "desc": "3,158 條 Sigma 規則 + 425 條 YARA 規則 + Suricata 網路 IDS + Falco eBPF 監控。",
+        "detail": "50 毫秒內攔截 90% 已知威脅。不需要 AI。"
+      },
+      "layer3": {
+        "badge": "第三層",
+        "name": "行為基線",
+        "desc": "7 天學習期。Panguard 觀察你的系統但不採取行動，建立正常行為模型。",
+        "detail": "第 8 天自動進入保護模式。從第一天起就不會有誤判。"
+      },
+      "layer4": {
+        "badge": "第四層",
+        "name": "AI 分析",
+        "desc": "當規則無法解釋一個行為時，AI 介入。先用本地（Ollama 跑在你的 GPU 上，完全離線）。只在必要時用雲端。",
+        "detail": "三層漏斗：90% 規則 / 7% 本地 AI / 3% 雲端 AI。每次雲端分析約 $0.008。"
+      },
+      "layer5": {
+        "badge": "第五層",
+        "name": "自動回應",
+        "desc": "6 種回應動作：封鎖 IP、終止程序、隔離檔案、警報、快照證據、升級處理。",
+        "detail": "信心度 > 90%：自動執行。70-90%：先問你。< 70%：僅通知。"
+      }
+    },
+    "aiFunnel": {
+      "overline": "AI 漏斗",
+      "title": "三層架構。最低成本。最高準確率。",
+      "subtitle": "90% 的威脅不需要 AI。我們先用規則，再用 AI，最後才用雲端。",
+      "tier1": {
+        "name": "規則引擎",
+        "pct": "90%",
+        "items": "3,158 條 Sigma 偵測規則|425 條 YARA 惡意程式特徵|Suricata 網路 IDS 規則|Falco eBPF 系統呼叫監控|行為基線偏差偵測",
+        "speed": "每事件 <50ms"
+      },
+      "tier2": {
+        "name": "本地 AI",
+        "pct": "7%",
+        "items": "Ollama 在你的機器上運行|運行在 NVIDIA GPU 上加速|完全離線 -- 數據不會外洩|處理規則無法分類的模糊事件",
+        "speed": "每次分析約 2 秒"
+      },
+      "tier3": {
+        "name": "雲端 AI",
+        "pct": "3%",
+        "items": "Claude / OpenAI（可設定）|僅在本地 AI 不確定時才啟動|每次分析約 $0.008|多步推理鏈（最多 8 步）",
+        "speed": "每次分析約 5 秒"
+      }
+    },
+    "agentPipeline": {
+      "overline": "AGENT 管線",
+      "title": "四個 AI Agent。一個調查引擎。",
+      "subtitle": "每個 Agent 有專業分工。組合起來，形成一個自主的資安團隊。",
+      "detect": { "name": "DetectAgent", "desc": "監控 5 個來源：網路、程序、檔案系統、系統日誌、正規化事件。" },
+      "analyze": { "name": "AnalyzeAgent", "desc": "關聯警報、判定嚴重程度、映射到 MITRE ATT&CK 框架。" },
+      "respond": { "name": "RespondAgent", "desc": "根據信心閾值執行回應。自動、詢問或通知。" },
+      "report": { "name": "ReportAgent", "desc": "產生人類可讀的事件報告，透過 LINE/Telegram/Slack/Email 發送。" },
+      "investigate": { "name": "調查引擎", "desc": "對複雜事件進行深入調查，最多 8 步推理鏈。" }
+    },
+    "response": {
+      "overline": "自動回應",
+      "title": "六種動作。三個信心等級。",
+      "subtitle": "Panguard 不只偵測，還會行動。",
+      "actions": [
+        { "name": "封鎖 IP", "desc": "跨平台防火牆規則，自動解封計時器" },
+        { "name": "終止程序", "desc": "SIGTERM 再 SIGKILL，程序樹清理" },
+        { "name": "隔離檔案", "desc": "SHA-256 雜湊隔離，可還原" },
+        { "name": "警報", "desc": "用白話文發送到你的通知管道" },
+        { "name": "快照證據", "desc": "事件上下文的鑑識快照" },
+        { "name": "升級處理", "desc": "通知團隊負責人或外部 SOC" }
+      ],
+      "confidence": {
+        "high": { "threshold": "> 90%", "action": "自動執行" },
+        "medium": { "threshold": "70 - 90%", "action": "透過 Chat 先問你" },
+        "low": { "threshold": "< 70%", "action": "僅通知" }
+      }
+    },
+    "learning": {
+      "overline": "7 天學習期",
+      "title": "先觀察，再行動。",
+      "subtitle": "從第一天起就不會誤判。Panguard 先學習你的環境，再做決策。",
+      "phase1": { "days": "第 1-3 天", "title": "觀察期", "desc": "程序基線、網路模式、檔案變更模式、使用者行為。" },
+      "phase2": { "days": "第 4-7 天", "title": "統計建模", "desc": "建立平均值 + 標準差模型。識別真正的異常。" },
+      "phase3": { "days": "第 8 天起", "title": "保護模式", "desc": "自動進入主動保護。持續學習 -- 基線隨你的環境演進。" }
+    },
+    "degradation": {
+      "overline": "優雅降級",
+      "title": "你的防護永遠不會歸零。",
+      "subtitle": "雲端掛了？本地 AI 接手。本地 AI 掛了？規則引擎永遠在跑。",
+      "level1": { "name": "最佳狀態", "desc": "所有層級啟用。雲端 AI + 本地 AI + 規則引擎。", "color": "green" },
+      "level2": { "name": "雲端不可用", "desc": "本地 AI 處理複雜分析。規則引擎攔截已知威脅。", "color": "yellow" },
+      "level3": { "name": "LLM 離線", "desc": "規則引擎 + 行為基線。仍攔截 90% 的威脅。", "color": "yellow" },
+      "level4": { "name": "緊急模式", "desc": "僅規則引擎。核心防護永遠運行。", "color": "red" }
+    },
+    "cta": {
+      "title": "準備好看看實際效果了嗎？",
+      "desc": "一行指令。免費開始。不需要帳號。",
+      "primary": "立即開始",
+      "secondary": "閱讀技術深度剖析"
+    }
+  },
+  "threatCloud": {
+    "overline": "威脅雲端",
+    "title": "資安是一個網路問題。",
+    "titleHighlight": "我們用網路解決它。",
+    "subtitle": "傳統的威脅情報由研究團隊產出。Threat Cloud 由每一個 Panguard 部署自動產出。",
+    "vision": {
+      "overline": "集體智慧",
+      "title": "用戶越多，防護越強",
+      "desc1": "每一個偵測到新攻擊模式的 Panguard 實例，都會將匿名化的情報貢獻到集體網路。",
+      "desc2": "幾分鐘內，其他所有 Panguard 部署都會收到更新的偵測規則。一次攻擊命中一個用戶後，再也無法用同樣方式命中其他用戶。"
+    },
+    "flow": {
+      "overline": "運作方式",
+      "title": "從偵測到保護，只需幾分鐘",
+      "subtitle": "五個步驟。全自動。隱私保護。",
+      "step1": { "name": "偵測", "desc": "一個 Panguard 實例偵測到新的攻擊模式（例如：來自新 IP 範圍的新型 SSH 暴力破解技術）。" },
+      "step2": { "name": "匿名化", "desc": "原始數據被剝離。只剩行為特徵：攻擊類型、技術 ID（MITRE）、模式雜湊、時間戳。不含 IP、主機名或原始碼。" },
+      "step3": { "name": "加密傳輸", "desc": "TLS 1.3 加密傳輸至 Threat Cloud API。憑證固定。防中間人攻擊。" },
+      "step4": { "name": "關聯分析", "desc": "Threat Cloud 關聯所有部署的模式。將相關攻擊聚類為戰役。識別 IP 信譽和技術趨勢。" },
+      "step5": { "name": "分發", "desc": "自動產生新的 Sigma 偵測規則。幾分鐘內推送到所有 Panguard 實例。每個用戶都受到保護。" }
+    },
+    "privacy": {
+      "overline": "隱私優先",
+      "title": "隱私不是一個功能。它是架構。",
+      "subtitle": "你的數據不會離開。只有匿名化的行為特徵會。",
+      "item1": { "title": "零原始數據", "desc": "沒有日誌內容、檔案內容、原始碼或個人識別資訊會離開你的機器。只有匿名化的行為特徵 -- 雜湊、MITRE ATT&CK ID、模式指紋。" },
+      "item2": { "title": "傳輸全程加密", "desc": "所有通訊使用 TLS 1.3 + 憑證固定。即使被攔截，沒有加密金鑰的數據毫無意義。" },
+      "item3": { "title": "你完全掌控", "desc": "Threat Cloud 可隨時關閉 -- 即使是免費方案。Panguard 可完全離線運作。Threat Cloud 是額外價值，不是必要條件。" }
+    },
+    "dataBoundary": {
+      "overline": "數據邊界",
+      "title": "什麼會送出。什麼會留下。",
+      "subtitle": "完全透明的 Threat Cloud 數據收集範圍。",
+      "shared": {
+        "title": "會被分享的",
+        "items": ["攻擊模式雜湊", "MITRE ATT&CK 技術 ID", "行為特徵指紋", "匿名化時間戳", "攻擊嚴重程度分類"]
+      },
+      "private": {
+        "title": "絕不離開的",
+        "items": ["原始日誌內容", "檔案內容", "原始碼", "IP 位址", "主機名", "使用者資料", "憑證", "任何個人識別資訊"]
+      }
+    },
+    "flywheel": {
+      "overline": "網路效應",
+      "title": "集體免疫系統",
+      "subtitle": "每一次新安裝都強化網路。每一次偵測到的攻擊都產生知識。每一條產生的規則都保護所有人。",
+      "step1": { "name": "安裝", "desc": "新的 Panguard 部署加入網路" },
+      "step2": { "name": "偵測", "desc": "本地引擎攔截一個新威脅" },
+      "step3": { "name": "分享", "desc": "匿名化的模式上傳到 Threat Cloud" },
+      "step4": { "name": "保護", "desc": "新規則推送到所有部署" },
+      "scale": {
+        "users10": "10 個用戶：基本社群規則",
+        "users1k": "1,000 個用戶：跨產業攻擊關聯",
+        "users100k": "100,000 個用戶：預測性威脅偵測"
+      }
+    },
+    "api": {
+      "overline": "API 存取",
+      "title": "給開發者：Threat Cloud API",
+      "subtitle": "將即時威脅情報整合到你自己的工具中。",
+      "endpoints": [
+        { "name": "IoC Feed", "desc": "IP、域名、URL、檔案雜湊指標" },
+        { "name": "IP 封鎖清單", "desc": "每 5 分鐘更新" },
+        { "name": "Sigma 規則 Feed", "desc": "自動產生的偵測規則" },
+        { "name": "戰役時間線", "desc": "活躍攻擊戰役追蹤" },
+        { "name": "地理熱圖", "desc": "威脅地理分布" },
+        { "name": "MITRE ATT&CK 地圖", "desc": "技術覆蓋率視覺化" }
+      ]
+    },
+    "cta": {
+      "title": "加入網路",
+      "desc": "每一次安裝都讓所有人更安全。",
+      "primary": "立即開始",
+      "secondary": "查看 API 文件"
+    }
+  },
+  "about": {
+    "overline": "關於 PANGUARD AI",
+    "title": "我們相信資安是基本權利，",
+    "titleHighlight": "不是奢侈品。",
+    "oneLiner": "我們正在為那被忽略的 99% 建造他們應得的資安基礎設施。",
+    "origin": {
+      "overline": "為什麼有 PANGUARD",
+      "title": "為什麼有 Panguard",
+      "p1": "最初的想法很簡單：做一個開源的主動防禦框架，讓 AI agent 保護 AI agent。但當我們研究市場時，發現了一件事。",
+      "p2": "每一家拿到大額融資的 AI 資安公司 -- Wiz、CrowdStrike、SentinelOne -- 都在服務 Fortune 500。最低合約從五位數到六位數美金起跳。產品需要專業資安團隊來操作。",
+      "p3": "然後我們看了另一邊：全球 4 億家中小企業。數百萬獨立開發者每天在部署程式碼。Vibe coding 世代 -- 用 AI 寫程式、部署到生產環境，速度比以往任何時候都快。他們都沒有資安團隊。大多數連一個資安工具都負擔不起。不是因為他們不在乎。是因為產業從來沒有為他們做過任何東西。那一刻我們決定：我們不是在做另一個企業資安產品。我們是在為所有人建造資安基礎設施。"
+    },
+    "beliefs": {
+      "overline": "我們的信念",
+      "title": "指導一切的四個原則",
+      "subtitle": "這些不是口號。它們是工程決策。",
+      "tenet1": { "title": "資安是基本權利，不是特權", "desc": "一個三人新創應該跟 Fortune 500 擁有同等級的防護。" },
+      "tenet2": { "title": "開源打破壁壘", "desc": "不是靠降價 -- 是靠讓所有人都能參與。每一行程式碼都可以被稽核。每一條規則都可以被驗證。" },
+      "tenet3": { "title": "AI 應該誠實，不是魔法", "desc": "90% 的威脅不需要 AI。我們先用規則，再用 AI。當 AI 行動時，它會告訴你信心度，並展示推理過程。" },
+      "tenet4": { "title": "網路就是護城河", "desc": "一個用戶讓 Panguard 好用。一百萬用戶讓它無可阻擋。每一次部署都在為所有人強化防護。" }
+    },
+    "numbers": {
+      "overline": "數字說話",
+      "title": "嚴謹打造",
+      "stats": [
+        { "value": "1,107", "label": "測試通過" },
+        { "value": "3,158", "label": "Sigma 規則" },
+        { "value": "425", "label": "YARA 規則" },
+        { "value": "6", "label": "產品" },
+        { "value": "18", "label": "CLI 指令" },
+        { "value": "50", "label": "合規控制項" },
+        { "value": "8", "label": "蜜罐協議" },
+        { "value": "MIT", "label": "授權條款" }
+      ]
+    },
+    "taiwan": {
+      "overline": "台灣製造",
+      "title": "來自 AI 生態系的核心",
+      "desc1": "Panguard 在台灣打造。在全球半導體和 AI 生態系的核心，我們正在建造保護全世界的資安基礎設施。",
+      "desc2": "台灣承受的國家級網路攻擊人均次數幾乎是全球最高的。我們了解威脅態勢，因為我們身處其中。"
+    },
+    "cta": {
+      "title": "想加入這個使命嗎？",
+      "desc": "我們正在尋找相信資安應該人人可及的人。",
+      "primary": "查看開放職位",
+      "secondary": "聯繫我們"
+    }
+  },
+  "openSource": {
+    "overline": "開放原始碼",
+    "title": "沒有黑箱的",
+    "titleHighlight": "資安防護。",
+    "subtitle": "每一條偵測規則都可以被稽核。每一個 AI 決策都可以被追蹤。每一個回應動作都可以被驗證。",
+    "why": {
+      "overline": "為什麼開源",
+      "title": "透明是信任的基礎",
+      "subtitle": "我們選擇 MIT 授權是因為我們相信資安基礎設施應該跟它保護的對象一樣透明。",
+      "reason1": { "title": "完全可稽核", "desc": "每一條偵測規則、每一個 AI 提示、每一個回應動作都可以被檢視。不鎖定供應商。不黑箱。" },
+      "reason2": { "title": "社群驅動", "desc": "全球的安全研究員、開發者和組織貢獻規則、改進 AI 提示、分享威脅情報。" },
+      "reason3": { "title": "不需要盲目信任", "desc": "不要信任我們 -- 自己驗證。讀原始碼。跑測試。稽核規則。這就是重點。" }
+    },
+    "repos": {
+      "overline": "程式碼倉庫",
+      "title": "探索原始碼",
+      "subtitle": "所有東西都在 GitHub 上。Clone、Fork、貢獻。",
+      "items": [
+        { "name": "panguard-ai", "desc": "核心平台：Scan、Guard、Chat、Trap、Report、Threat Cloud", "lang": "TypeScript", "stars": "開源" },
+        { "name": "panguard-rules", "desc": "3,158 條 Sigma 偵測規則 + 425 條 YARA 惡意程式特徵", "lang": "YAML / Sigma", "stars": "社群" },
+        { "name": "panguard-docs", "desc": "文件、API 參考、入門指南", "lang": "MDX", "stars": "文件" }
+      ]
+    },
+    "contribute": {
+      "overline": "如何貢獻",
+      "title": "五種方式讓 Panguard 更好",
+      "subtitle": "從回報漏洞到分享威脅情報 -- 每一份貢獻都有意義。",
+      "items": [
+        { "title": "回報漏洞", "desc": "發現安全問題？寄信到 security@panguard.ai 進行負責任的揭露。" },
+        { "title": "提交偵測規則", "desc": "PR 到 /rules 目錄。Sigma 或 YARA 格式。社群審查流程。" },
+        { "title": "改進 AI 提示", "desc": "PR 到 /ai 目錄。幫助我們的 Agent 做出更好的決策。" },
+        { "title": "撰寫文件", "desc": "PR 到 /docs 目錄。指南、教學、API 範例。" },
+        { "title": "分享威脅情報", "desc": "只要安裝 Panguard。你的匿名化數據會自動強化網路。" }
+      ]
+    },
+    "roadmap": {
+      "overline": "產品路線圖",
+      "title": "我們的方向",
+      "subtitle": "公開的路線圖。透明至上。",
+      "completed": {
+        "title": "已完成",
+        "items": ["核心平台（Scan + Guard + Chat + Trap + Report）", "Threat Cloud v1", "3,158 條 Sigma + 425 條 YARA 規則", "1,107 個自動化測試"]
+      },
+      "inProgress": {
+        "title": "進行中",
+        "items": ["Web 儀表板 UI", "Windows 支援", "Kubernetes 整合"]
+      },
+      "planned": {
+        "title": "規劃中",
+        "items": ["行動 App（iOS/Android）", "Threat Cloud API v2", "偵測規則社群市集"]
+      }
+    },
+    "cta": {
+      "title": "今天就開始貢獻",
+      "desc": "Clone 倉庫。跑測試。提交 PR。",
+      "primary": "在 GitHub 上查看",
+      "secondary": "閱讀文件"
+    }
+  },
   "metadata": {
     "home": {
       "title": "Panguard AI -- 你的 AI 資安守衛",
@@ -745,6 +1051,22 @@
     "technology": {
       "title": "技術架構",
       "description": "安全不只掃描，更會思考。三層 AI 防禦漏斗、五個自主代理和學習你環境的情境記憶。"
+    },
+    "howItWorks": {
+      "title": "運作原理 -- Panguard AI",
+      "description": "五層防禦、三層 AI、一行指令部署。了解 Panguard 如何從偵測到自動回應保護你的基礎設施。"
+    },
+    "threatCloud": {
+      "title": "威脅雲端 -- Panguard AI",
+      "description": "由每個 Panguard 部署驅動的集體威脅情報。隱私保護、即時更新、自動分發。"
+    },
+    "about": {
+      "title": "關於我們 -- Panguard AI",
+      "description": "我們正在為那被忽略的 99% 建造他們應得的資安基礎設施。台灣製造、開放原始碼、MIT 授權。"
+    },
+    "openSource": {
+      "title": "開放原始碼 -- Panguard AI",
+      "description": "沒有黑箱的資安防護。每一條偵測規則都可以被稽核。每一個 AI 決策都可以被追蹤。MIT 授權。"
     },
     "blog": {
       "title": "部落格",
