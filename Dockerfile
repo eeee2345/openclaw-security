@@ -112,8 +112,6 @@ ENV PANGUARD_DATA_DIR=/data
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-  CMD curl -f http://127.0.0.1:3000/health || exit 1
-
+# No Dockerfile HEALTHCHECK - let Railway manage it after container starts
 ENTRYPOINT ["tini", "--"]
 CMD ["node", "dist/cli/index.js", "serve", "--port", "3000", "--host", "0.0.0.0", "--db", "/data/auth.db"]
