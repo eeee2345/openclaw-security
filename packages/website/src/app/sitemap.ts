@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { blogPosts } from '@/data/blog-posts';
 
 const locales = ['en', 'zh'] as const;
 
@@ -70,7 +71,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return locale === 'en' ? `${base}${suffix}` : `${base}/${locale}${suffix}`;
   };
 
-  return locales.flatMap((locale) =>
+  const staticEntries = locales.flatMap((locale) =>
     pages.map((path) => ({
       url: localeUrl(locale, path),
       lastModified: now,
@@ -83,4 +84,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     }))
   );
+
+  const blogEntries = locales.flatMap((locale) =>
+    blogPosts.map((post) => ({
+      url: localeUrl(locale, `/blog/${post.slug}`),
+      lastModified: post.date,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+      alternates: {
+        languages: Object.fromEntries(
+          locales.map((l) => [l === 'zh' ? 'zh-TW' : l, localeUrl(l, `/blog/${post.slug}`)])
+        ),
+      },
+    }))
+  );
+
+  return [...staticEntries, ...blogEntries];
 }
