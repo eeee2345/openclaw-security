@@ -150,7 +150,7 @@
       "copied": "Copied!",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,107 Tests Passing",
+        "tests": "1,446 Tests Passing",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -343,7 +343,7 @@
         "subtitle": "Because security shouldn't have walls.",
         "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
         "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
-        "proof": "1,107 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+        "proof": "1,446 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
       }
     },
     "the3amStory": {
@@ -498,7 +498,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "1,107 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "1,446 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -607,7 +607,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "badge1": "MIT Open Source",
-      "badge2": "1,107 Tests Passing",
+      "badge2": "1,446 Tests Passing",
       "badge3": "Built in Taiwan"
     }
   },
@@ -1005,7 +1005,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,158 Sigma and 425 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 926 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "7-Day Context Memory",
@@ -2923,7 +2923,7 @@
       "layer2": {
         "badge": "Layer 2",
         "name": "Rules Engine",
-        "desc": "3,158 Sigma rules + 425 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
+        "desc": "3,155 Sigma rules + 926 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
         "detail": "Catches 90% of known threats in under 50ms. No AI needed."
       },
       "layer3": {
@@ -2952,7 +2952,7 @@
       "tier1": {
         "name": "Rules Engine",
         "pct": "90%",
-        "items": "3,158 Sigma detection rules|425 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
+        "items": "3,155 Sigma detection rules|926 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
         "speed": "<50ms per event"
       },
       "tier2": {
@@ -3273,15 +3273,15 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "1,107",
+          "value": "1,446",
           "label": "Tests passing"
         },
         {
-          "value": "3,158",
+          "value": "3,155",
           "label": "Sigma rules"
         },
         {
-          "value": "425",
+          "value": "926",
           "label": "YARA rules"
         },
         {
@@ -3354,7 +3354,7 @@
         },
         {
           "name": "panguard-rules",
-          "desc": "3,158 Sigma detection rules + 425 YARA malware signatures",
+          "desc": "3,155 Sigma detection rules + 926 YARA malware signatures",
           "lang": "YAML / Sigma",
           "stars": "Community"
         },
@@ -3402,8 +3402,8 @@
         "items": [
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
-          "3,158 Sigma + 425 YARA rules",
-          "1,107 automated tests"
+          "3,155 Sigma + 926 YARA rules",
+          "1,446 automated tests"
         ]
       },
       "inProgress": {

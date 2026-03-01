@@ -77,7 +77,7 @@ Panguard uses a tiered approach that handles 90% of threats locally in under 50m
 
 ```
 Layer 1: Rules Engine (90% of threats)
-  3,149 Sigma rules + 494 YARA rules + Suricata
+  3,155 Sigma rules + 926 YARA rules + Suricata
   Speed: <50ms | Cost: $0
 
 Layer 2: Local AI (7% of threats)
@@ -302,8 +302,8 @@ panguard-ai/
     admin/              # Admin panel: users, sessions, audit, usage
   security-hardening/   # WebSocket security, credential storage, sandbox, RBAC
   config/
-    sigma-rules/        # 3,149 Sigma detection rules
-    yara-rules/         # 494 YARA malware detection rules
+    sigma-rules/        # 3,155 Sigma detection rules
+    yara-rules/         # 926 YARA malware detection rules
     suricata/           # Suricata IDS/IPS rules
     falco-rules/        # Falco runtime security rules
   docs/                 # User documentation (bilingual)
@@ -341,7 +341,7 @@ panguard-ai/
 ```bash
 pnpm install          # Install all dependencies
 pnpm build            # Build all packages
-pnpm test             # Run all 1,107 tests
+pnpm test             # Run all 1,446 tests
 pnpm typecheck        # TypeScript strict checking
 pnpm lint             # ESLint + security plugin
 pnpm dev              # Start all dev servers
@@ -351,9 +351,9 @@ pnpm dev              # Start all dev servers
 
 | Scope | Tests | Files |
 |-------|-------|-------|
-| Unit tests | 906 | 57 |
-| Integration tests | 162 | 6 |
-| **Total** | **1,107** | **64** |
+| Unit tests | 1,178 | 213 |
+| Integration tests | 268 | 19 |
+| **Total** | **1,446** | **232** |
 
 ---
 
