@@ -169,6 +169,48 @@
         "cost": "$4.35M average cost"
       }
     },
+    "notAntivirus": {
+      "overline": "Common misconception",
+      "title": "\"Can't I just install antivirus?\"",
+      "subtitle": "Antivirus scans files for known malware signatures. Panguard is a completely different class of tool — it monitors behavior, deploys decoys, and uses AI to catch what signatures miss.",
+      "columns": {
+        "antivirus": "Traditional Antivirus",
+        "panguard": "Panguard"
+      },
+      "rows": {
+        "detection": {
+          "label": "Detection method",
+          "antivirus": "Signature matching",
+          "panguard": "Sigma/YARA rules + AI analysis"
+        },
+        "scope": {
+          "label": "What it monitors",
+          "antivirus": "File reads/writes",
+          "panguard": "Files, network, logs, system behavior"
+        },
+        "defense": {
+          "label": "Active defense",
+          "antivirus": "None",
+          "panguard": "Honeypots that trap attackers"
+        },
+        "intelligence": {
+          "label": "Threat intelligence",
+          "antivirus": "Vendor pushes updates",
+          "panguard": "Community-shared via Threat Cloud"
+        },
+        "response": {
+          "label": "Incident response",
+          "antivirus": "Quarantine file",
+          "panguard": "AI verdict + auto block/alert/script"
+        },
+        "audience": {
+          "label": "Designed for",
+          "antivirus": "Desktop PCs",
+          "panguard": "Servers & cloud infrastructure"
+        }
+      },
+      "footnote": "Think of it this way: antivirus is a door lock. Panguard is the full building security system — cameras, motion sensors, decoy rooms, and a 24/7 AI guard."
+    },
     "threeRoads": {
       "title": "You've probably thought about this before.",
       "subtitle": "Most teams try one of three approaches. Two of them don't work.",
