@@ -7,7 +7,7 @@ import { useRouter, Link } from '@/navigation';
 import { CreditCard, ExternalLink, Loader2, ArrowLeft, ArrowUpRight, Check } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
 
 interface BillingData {
   tier: string;

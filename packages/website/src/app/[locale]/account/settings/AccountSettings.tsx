@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
 
 export default function AccountSettings() {
   const t = useTranslations('accountSettings');
