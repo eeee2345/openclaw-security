@@ -26,7 +26,7 @@ const statIcons = [
   NetworkIcon,
   LockIcon,
 ];
-const statValues = [3155, 5895, 216, 1327, 3, 6, 8, 'MIT'];
+const statValues = [3155, 5895, 216, 1333, 3, 6, 8, 'MIT'];
 const statKeys = [
   'sigmaRules',
   'yaraRules',

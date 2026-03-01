@@ -164,11 +164,11 @@
       "p4": "Enterprise solutions start at six figures a year. And they still need a dedicated team to operate.",
       "emphasis": "This industry turned security into a luxury. In a world where AI agents are deployed every second, that's unacceptable.",
       "stats": {
-        "attacks": "39s between attacks",
+        "attacks": "39s between attacks (University of Maryland, 2017)",
         "attacksSource": "University of Maryland, 2017",
-        "smb": "60% of SMBs close within 6 months of a breach",
+        "smb": "60% of SMBs close within 6 months of a breach (National Cyber Security Alliance)",
         "smbSource": "National Cyber Security Alliance",
-        "cost": "$4.35M average cost",
+        "cost": "$4.35M average cost (IBM Cost of a Data Breach Report, 2022)",
         "costSource": "IBM Cost of a Data Breach Report, 2022"
       }
     },
@@ -428,7 +428,7 @@
         "time": "9:00 AM",
         "text": "Customer calls: \"I can't log in.\" You discover the breach."
       },
-      "leftOutcome": "6 hours undetected. 50,000 customer records exposed. $4.35M average breach cost.",
+      "leftOutcome": "6 hours undetected. 50,000 customer records exposed. $4.35M average breach cost (IBM, 2022).",
       "right1": {
         "time": "3:00 AM",
         "text": "SSH brute-force detected by Layer 1 (Sigma rule match)"
