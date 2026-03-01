@@ -2,27 +2,28 @@
 # Usage: irm https://get.panguard.ai/windows | iex
 #        or: powershell -ExecutionPolicy Bypass -File install.ps1
 #
-# Installs Panguard AI from GitHub source.
-# Clones the repository, builds the project, and adds it to PATH.
+# Downloads a prebuilt binary from GitHub Releases.
+# Falls back to source build if no prebuilt binary is available.
 
 $ErrorActionPreference = "Stop"
 
-# ── Repository URLs ──────────────────────────────────────────────────
+# ── Repository & Release URLs ────────────────────────────────────
 $RepoUrl = "https://github.com/panguard-ai/panguard-ai.git"
 $FallbackRepo = "https://github.com/eeee2345/Panguard-AI.git"
+$ReleaseBase = "https://github.com/panguard-ai/panguard-ai/releases"
 
-# ── Install paths ────────────────────────────────────────────────────
-$InstallDir = Join-Path $env:USERPROFILE ".panguard\source"
-$BinDir = Join-Path $env:USERPROFILE ".panguard\bin"
+# ── Install paths ────────────────────────────────────────────────
+$InstallDir = Join-Path $env:USERPROFILE ".panguard"
+$BinDir = Join-Path $InstallDir "bin"
 $MinNodeVersion = 20
 
-# ── Logging helpers ──────────────────────────────────────────────────
+# ── Logging helpers ──────────────────────────────────────────────
 function Write-Info  { param($msg) Write-Host "[INFO] $msg" -ForegroundColor Blue }
 function Write-Ok    { param($msg) Write-Host "[ OK ] $msg" -ForegroundColor Green }
 function Write-Warn  { param($msg) Write-Host "[WARN] $msg" -ForegroundColor Yellow }
 function Write-Fail  { param($msg) Write-Host "[FAIL] $msg" -ForegroundColor Red; exit 1 }
 
-# ── Header ───────────────────────────────────────────────────────────
+# ── Header ───────────────────────────────────────────────────────
 Write-Host ""
 Write-Host "  Panguard AI Installer" -ForegroundColor White
 Write-Host "  =====================" -ForegroundColor DarkGray
@@ -30,11 +31,15 @@ Write-Host ""
 Write-Host "  AI-driven adaptive cybersecurity platform" -ForegroundColor DarkGray
 Write-Host ""
 
-# ── Step 1: Check OS ─────────────────────────────────────────────────
+# ── Step 1: Detect Architecture ──────────────────────────────────
 $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
 Write-Info "Detected: Windows $arch"
 
-# ── Step 2: Check Node.js >= 20 ─────────────────────────────────────
+# Windows builds use npm install (no prebuilt tarball yet)
+# For future: win-x64 tarball support
+$Platform = "win-x64"
+
+# ── Step 2: Check Node.js >= 20 ─────────────────────────────────
 try {
     $nodeVersion = (node -v) -replace 'v', ''
     $nodeMajor = [int]($nodeVersion.Split('.')[0])
@@ -43,139 +48,144 @@ try {
     }
     Write-Ok "Node.js v$nodeVersion"
 } catch {
-    Write-Fail "Node.js is required but not installed. Install Node.js v${MinNodeVersion}+ from https://nodejs.org"
+    Write-Fail "Node.js is required but not installed. Install Node.js v${MinNodeVersion}+ from https://nodejs.org or run: winget install OpenJS.NodeJS.LTS"
 }
 
-# ── Step 3: Check git ────────────────────────────────────────────────
+# ── Step 3: Try npm global install (preferred for Windows) ───────
+$NpmInstalled = $false
+
+Write-Info "Installing Panguard AI via npm..."
 try {
-    $gitVersion = (git --version) -replace 'git version ', ''
-    Write-Ok "git $gitVersion"
+    npm install -g @panguard-ai/panguard 2>$null
+    $NpmInstalled = $true
+    Write-Ok "Panguard AI installed via npm"
 } catch {
-    Write-Fail "git is required but not installed. Install git from https://git-scm.com"
+    Write-Warn "npm install failed. Trying source build..."
 }
 
-# ── Step 4: Check pnpm (install if missing) ──────────────────────────
-try {
-    $pnpmVersion = pnpm --version
-    Write-Ok "pnpm $pnpmVersion"
-} catch {
-    Write-Info "pnpm not found. Installing pnpm globally via npm..."
+# ── Step 4 (Fallback): Source build ──────────────────────────────
+if (-not $NpmInstalled) {
+    $SourceDir = Join-Path $InstallDir "source"
+
+    # Check git
     try {
-        npm install -g pnpm
+        $gitVersion = (git --version) -replace 'git version ', ''
+        Write-Ok "git $gitVersion"
+    } catch {
+        Write-Fail "git is required for source build. Install git from https://git-scm.com"
+    }
+
+    # Check pnpm
+    try {
         $pnpmVersion = pnpm --version
-        Write-Ok "pnpm $pnpmVersion installed"
+        Write-Ok "pnpm $pnpmVersion"
     } catch {
-        Write-Fail "Failed to install pnpm. Try running: npm install -g pnpm"
-    }
-}
-
-# ── Step 5: Clone or update repository ───────────────────────────────
-if (Test-Path (Join-Path $InstallDir ".git")) {
-    Write-Info "Existing installation found at $InstallDir. Updating..."
-    Push-Location $InstallDir
-    try {
-        git fetch origin 2>$null
+        Write-Info "pnpm not found. Installing pnpm globally via npm..."
         try {
-            git reset --hard origin/main 2>$null
+            npm install -g pnpm
+            $pnpmVersion = pnpm --version
+            Write-Ok "pnpm $pnpmVersion installed"
         } catch {
-            git reset --hard origin/master 2>$null
+            Write-Fail "Failed to install pnpm. Try running: npm install -g pnpm"
         }
-        Write-Ok "Repository updated"
-    } catch {
-        Write-Warn "git update failed, continuing with existing code"
-    }
-    Pop-Location
-} else {
-    if (Test-Path $InstallDir) {
-        Remove-Item -Recurse -Force $InstallDir
     }
 
-    $parentDir = Split-Path $InstallDir -Parent
-    if (-not (Test-Path $parentDir)) {
-        New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
-    }
-
-    Write-Info "Cloning from $RepoUrl..."
-    $cloned = $false
-    try {
-        git clone --depth 1 $RepoUrl $InstallDir 2>$null
-        $cloned = $true
-    } catch {}
-
-    if (-not $cloned) {
-        Write-Warn "Primary repository not available, trying fallback..."
+    # Clone or update repository
+    if (Test-Path (Join-Path $SourceDir ".git")) {
+        Write-Info "Existing source found. Updating..."
+        Push-Location $SourceDir
         try {
-            git clone --depth 1 $FallbackRepo $InstallDir 2>$null
+            git fetch origin 2>$null
+            git reset --hard origin/main 2>$null
+            Write-Ok "Repository updated"
+        } catch {
+            Write-Warn "git update failed, continuing with existing code"
+        }
+        Pop-Location
+    } else {
+        if (Test-Path $SourceDir) {
+            Remove-Item -Recurse -Force $SourceDir
+        }
+
+        $parentDir = Split-Path $SourceDir -Parent
+        if (-not (Test-Path $parentDir)) {
+            New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+        }
+
+        Write-Info "Cloning from $RepoUrl..."
+        $cloned = $false
+        try {
+            git clone --depth 1 $RepoUrl $SourceDir 2>$null
             $cloned = $true
         } catch {}
+
+        if (-not $cloned) {
+            Write-Warn "Primary repository not available, trying fallback..."
+            try {
+                git clone --depth 1 $FallbackRepo $SourceDir 2>$null
+                $cloned = $true
+            } catch {}
+        }
+
+        if (-not $cloned) {
+            Write-Fail "Could not clone repository. Check your internet connection and try again."
+        }
+        Write-Ok "Repository cloned to $SourceDir"
     }
 
-    if (-not $cloned) {
-        Write-Fail "Could not clone repository. Check your internet connection and try again."
-    }
-    Write-Ok "Repository cloned to $InstallDir"
-}
+    # Build
+    Push-Location $SourceDir
 
-# ── Step 6: Build the project ────────────────────────────────────────
-Push-Location $InstallDir
-
-Write-Info "Installing dependencies (this may take a minute)..."
-try {
-    pnpm install --frozen-lockfile 2>$null
-} catch {
+    Write-Info "Installing dependencies (this may take a minute)..."
     try {
-        pnpm install
+        pnpm install --frozen-lockfile 2>$null
     } catch {
-        Write-Fail "Failed to install dependencies"
+        try { pnpm install } catch { Write-Fail "Failed to install dependencies" }
     }
-}
-Write-Ok "Dependencies installed"
+    Write-Ok "Dependencies installed"
 
-Write-Info "Building project..."
-try {
-    pnpm build
-} catch {
-    Write-Fail "Build failed. Please report this issue at $RepoUrl/issues"
-}
-Write-Ok "Build complete"
+    Write-Info "Building project..."
+    try { pnpm build } catch { Write-Fail "Build failed. Please report this issue at $RepoUrl/issues" }
+    Write-Ok "Build complete"
 
-Pop-Location
+    Pop-Location
 
-# ── Step 7: Create bin wrapper and add to PATH ───────────────────────
-if (-not (Test-Path $BinDir)) {
-    New-Item -ItemType Directory -Path $BinDir -Force | Out-Null
-}
+    # Create bin wrapper
+    if (-not (Test-Path $BinDir)) {
+        New-Item -ItemType Directory -Path $BinDir -Force | Out-Null
+    }
 
-$wrapperPath = Join-Path $BinDir "panguard.cmd"
-$jsEntry = Join-Path $InstallDir "packages\panguard\dist\cli\index.js"
-@"
+    $wrapperPath = Join-Path $BinDir "panguard.cmd"
+    $jsEntry = Join-Path $SourceDir "packages\panguard\dist\cli\index.js"
+    @"
 @echo off
 node "$jsEntry" %*
 "@ | Set-Content -Path $wrapperPath -Encoding ASCII
 
-# Add to user PATH if not already present
-$userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-if ($userPath -notlike "*$BinDir*") {
-    Write-Info "Adding $BinDir to user PATH..."
-    [Environment]::SetEnvironmentVariable("PATH", "$userPath;$BinDir", "User")
-    $env:PATH = "$env:PATH;$BinDir"
-    Write-Ok "Added to PATH (restart your terminal for changes to take effect)"
-} else {
-    Write-Ok "Already in PATH"
+    # Add to user PATH if not already present
+    $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+    if ($userPath -notlike "*$BinDir*") {
+        Write-Info "Adding $BinDir to user PATH..."
+        [Environment]::SetEnvironmentVariable("PATH", "$userPath;$BinDir", "User")
+        $env:PATH = "$env:PATH;$BinDir"
+        Write-Ok "Added to PATH (restart your terminal for changes to take effect)"
+    } else {
+        Write-Ok "Already in PATH"
+    }
 }
 
-# ── Step 8: Verify installation ──────────────────────────────────────
+# ── Step 5: Verify installation ──────────────────────────────────
 Write-Host ""
 Write-Info "Verifying installation..."
 
 try {
-    & $wrapperPath --help 2>$null | Out-Null
+    panguard --help 2>$null | Out-Null
     Write-Ok "panguard CLI is working"
 } catch {
     Write-Warn "panguard exists but --help failed. The build may be incomplete."
 }
 
-# ── Quick Start Guide ────────────────────────────────────────────────
+# ── Quick Start Guide ────────────────────────────────────────────
 Write-Host ""
 Write-Host "  Quick Start" -ForegroundColor White
 Write-Host "  ===========" -ForegroundColor DarkGray
