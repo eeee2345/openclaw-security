@@ -27,8 +27,8 @@ type FilterTab = 'All' | 'Press Releases' | 'Coverage';
 
 /* ─── Type Badge ─── */
 
-function TypeBadge({ type }: { type: PressItem['type'] }) {
-  const label = type === 'press-release' ? 'Press Release' : 'Coverage';
+function TypeBadge({ type, pressReleaseLabel, coverageLabel }: { type: PressItem['type']; pressReleaseLabel: string; coverageLabel: string }) {
+  const label = type === 'press-release' ? pressReleaseLabel : coverageLabel;
   return (
     <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-brand-sage/10 text-brand-sage">
       {label}
@@ -42,16 +42,22 @@ function PressReleaseCard({
   item,
   index,
   locale,
+  readMoreLabel,
+  pressReleaseLabel,
+  coverageLabel,
 }: {
   item: PressItem;
   index: number;
   locale: string;
+  readMoreLabel: string;
+  pressReleaseLabel: string;
+  coverageLabel: string;
 }) {
   return (
     <FadeInUp delay={index * 0.06}>
       <div className="bg-surface-1 border border-border rounded-2xl p-6 hover:border-brand-sage/40 transition-all duration-200 card-glow h-full flex flex-col group">
         <div className="flex items-center gap-3 mb-3">
-          <TypeBadge type={item.type} />
+          <TypeBadge type={item.type} pressReleaseLabel={pressReleaseLabel} coverageLabel={coverageLabel} />
           <span className="text-xs text-text-muted">{formatDate(item.date, locale)}</span>
         </div>
 
@@ -63,7 +69,7 @@ function PressReleaseCard({
 
         <div className="flex items-center mt-5 pt-4 border-t border-border/50">
           <span className="flex items-center gap-1.5 text-brand-sage text-sm font-semibold group-hover:gap-2.5 transition-all duration-200 cursor-pointer">
-            Read More
+            {readMoreLabel}
             <ArrowRight className="w-3.5 h-3.5" />
           </span>
         </div>
@@ -74,12 +80,12 @@ function PressReleaseCard({
 
 /* ─── Coverage Card ─── */
 
-function CoverageCard({ item, index, locale }: { item: PressItem; index: number; locale: string }) {
+function CoverageCard({ item, index, locale, readArticleLabel, pressReleaseLabel, coverageLabel }: { item: PressItem; index: number; locale: string; readArticleLabel: string; pressReleaseLabel: string; coverageLabel: string }) {
   return (
     <FadeInUp delay={index * 0.06}>
       <div className="bg-surface-1 border border-border rounded-2xl p-6 hover:border-brand-sage/40 transition-all duration-200 card-glow h-full flex flex-col group">
         <div className="flex items-center gap-3 mb-3">
-          <TypeBadge type={item.type} />
+          <TypeBadge type={item.type} pressReleaseLabel={pressReleaseLabel} coverageLabel={coverageLabel} />
           <span className="text-xs text-text-muted">{formatDate(item.date, locale)}</span>
         </div>
 
@@ -97,7 +103,7 @@ function CoverageCard({ item, index, locale }: { item: PressItem; index: number;
 
         <div className="flex items-center mt-5 pt-4 border-t border-border/50">
           <span className="flex items-center gap-1.5 text-brand-sage text-sm font-semibold group-hover:gap-2.5 transition-all duration-200 cursor-pointer">
-            Read Article
+            {readArticleLabel}
             <ExternalLink className="w-3.5 h-3.5" />
           </span>
         </div>
@@ -165,7 +171,7 @@ function BrandAssetCard({
         </p>
 
         <p className="text-xs text-text-muted mt-3 mb-4">
-          Formats: {t(`brandAssets.${assetKey}.formats`)}
+          {t('formatsLabel')}: {t(`brandAssets.${assetKey}.formats`)}
         </p>
 
         <a
@@ -242,7 +248,7 @@ export default function PressContent() {
           </FadeInUp>
           <div className="grid md:grid-cols-2 gap-6">
             {pressReleases.map((item, i) => (
-              <PressReleaseCard key={item.slug} item={item} index={i} locale={locale} />
+              <PressReleaseCard key={item.slug} item={item} index={i} locale={locale} readMoreLabel={t('readMore')} pressReleaseLabel={t('pressReleaseLabel')} coverageLabel={t('coverageLabel')} />
             ))}
           </div>
         </SectionWrapper>
@@ -258,7 +264,7 @@ export default function PressContent() {
           </FadeInUp>
           <div className="grid md:grid-cols-2 gap-6">
             {coverage.map((item, i) => (
-              <CoverageCard key={item.slug} item={item} index={i} locale={locale} />
+              <CoverageCard key={item.slug} item={item} index={i} locale={locale} readArticleLabel={t('readArticle')} pressReleaseLabel={t('pressReleaseLabel')} coverageLabel={t('coverageLabel')} />
             ))}
           </div>
         </SectionWrapper>
@@ -270,7 +276,7 @@ export default function PressContent() {
           <FadeInUp>
             <div className="text-center py-16">
               <p className="text-text-tertiary text-lg">
-                No items in this category yet. Check back soon.
+                {t('noItems')}
               </p>
             </div>
           </FadeInUp>

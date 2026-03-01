@@ -1335,6 +1335,30 @@
     "status": {
       "title": "系統狀態",
       "description": "所有 Panguard AI 平台服務的即時運營狀態和正常運行歷史。"
+    },
+    "login": {
+      "title": "登入",
+      "description": "登入你的 Panguard AI 帳號，管理安全儀表板和設定。"
+    },
+    "register": {
+      "title": "建立帳號",
+      "description": "建立你的 Panguard AI 帳號，開始使用 AI 驅動的安全防護保護你的端點。"
+    },
+    "resetPassword": {
+      "title": "重設密碼",
+      "description": "重設你的 Panguard AI 帳號密碼。"
+    },
+    "dashboard": {
+      "title": "儀表板",
+      "description": "你的 Panguard AI 安全儀表板。監控威脅、管理端點、查看報告。"
+    },
+    "accountSettings": {
+      "title": "帳號設定",
+      "description": "管理你的 Panguard AI 帳號設定、個人資料和偏好。"
+    },
+    "billing": {
+      "title": "帳單管理",
+      "description": "管理你的 Panguard AI 訂閱、付款方式和帳單紀錄。"
     }
   },
   "pricingPage": {
@@ -1993,7 +2017,10 @@
         "bilingual": {
           "name": "雙語報告（EN/zh-TW）",
           "coverage": "100%"
-        }
+        },
+        "overline": "報告庫",
+        "title": "每個框架，一鍵生成。",
+        "desc": "選擇你需要的合規框架，Panguard 生成完整報告，對應每個控制項。覆蓋率百分比顯示你確切的狀態。差距以具體修復指南標記。"
       },
       "costComparison": {
         "overline": "成本比較",
@@ -2040,7 +2067,9 @@
         "title": "免顧問費的合規。",
         "desc": "加入搶先體驗計畫，在幾分鐘內生成你的第一份合規報告，而不是幾個月。",
         "cta1": "搶先體驗",
-        "cta2": "我們的安全實踐"
+        "cta2": "我們的安全實踐",
+        "trustLink": "查看我們的信任中心",
+        "trustNote": "想看我們自己的合規狀態？"
       },
       "reportTypes": {
         "overline": "可用報告",
@@ -2401,6 +2430,7 @@
     "positions": {
       "overline": "開放職位",
       "title": "加入團隊。",
+      "subtitle": "跨 {departments} 個部門共 {count} 個開放職位。",
       "noPositions": "此部門目前沒有開放職位。請稍後再查看或將你的履歷發送給我們。"
     },
     "spontaneous": {
@@ -2513,6 +2543,12 @@
       }
     },
     "requestAccess": "申請存取",
+    "formatsLabel": "格式",
+    "readMore": "閱讀更多",
+    "readArticle": "閱讀文章",
+    "pressReleaseLabel": "新聞稿",
+    "coverageLabel": "媒體報導",
+    "noItems": "此分類目前沒有項目。請稍後再查看。",
     "mediaInquiries": {
       "title": "媒體詢問",
       "desc": "媒體詢問、採訪請求或品牌素材取得，請聯繫我們的傳播團隊。",
@@ -2525,7 +2561,12 @@
     "title": "合規自動化，適用於",
     "titleHighlight": "台灣與全球標準。",
     "subtitle": "ISO 27001、SOC 2 和台灣資通安全管理法 -- 自動化、平價且永遠最新。",
+    "hero": {
+      "cta1": "生成你的第一份報告",
+      "cta2": "預約示範"
+    },
     "problem": {
+      "overline": "問題所在",
       "title": "合規昂貴、緩慢、痛苦。",
       "desc": "取得 SOC 2 認證僅顧問費就要 $20,000 到 $60,000。ISO 27001 更貴。在台灣，TCSA 合規顧問費用約 NT$300,000 到 NT$800,000。過程耗時數月、需要專職人員，文件在稽核結束那一刻就過時。",
       "desc2": "Panguard 已 24/7 監控你的系統 -- 它擁有稽核員所需的所有資料。我們的合規引擎將遙測資料自動對應到框架控制，生成每天都保持最新的稽核就緒文件。"
@@ -2534,6 +2575,11 @@
       "overline": "支援框架",
       "title": "三個框架。一個平台。",
       "subtitle": "每個發現自動對應到相關控制。稽核員清楚看到哪些控制已滿足、哪些需要關注。",
+      "coverageLabel": "覆蓋率",
+      "controlsLabel": "控制項",
+      "whoNeedsLabel": "誰需要",
+      "whatItCoversLabel": "涵蓋內容",
+      "panguardDoesLabel": "Panguard 做什麼",
       "iso27001": {
         "name": "ISO 27001",
         "fullName": "資訊安全管理系統",
@@ -2586,7 +2632,8 @@
     "reports": {
       "overline": "報告庫",
       "title": "每個框架。一鍵生成。",
-      "desc": "選擇你需要的合規框架，Panguard 生成對應每個控制的完整報告。覆蓋率百分比顯示你確切的狀態。差距以具體修復指南標記。"
+      "desc": "選擇你需要的合規框架，Panguard 生成對應每個控制的完整報告。覆蓋率百分比顯示你確切的狀態。差距以具體修復指南標記。",
+      "availableReports": "可用報告"
     },
     "costComparison": {
       "overline": "成本比較",
@@ -2600,7 +2647,9 @@
         "label": "報告時效性",
         "consultant": "時間點快照",
         "panguard": "即時更新"
-      }
+      },
+      "consultant": "顧問",
+      "panguard": "Panguard"
     },
     "cta": {
       "title": "免顧問費的合規。",

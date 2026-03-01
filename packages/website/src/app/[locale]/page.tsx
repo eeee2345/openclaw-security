@@ -1,18 +1,4 @@
-import type { Metadata } from 'next';
 import NavBar from '@/components/NavBar';
-
-export const metadata: Metadata = {
-  title: 'Panguard AI — AI-Powered Endpoint Security',
-  description:
-    'Protect your infrastructure with AI-driven threat detection, 24/7 monitoring, honeypots, and compliance reporting. Free tier available.',
-  openGraph: {
-    title: 'Panguard AI — AI-Powered Endpoint Security',
-    description:
-      'Protect your infrastructure with AI-driven threat detection, 24/7 monitoring, honeypots, and compliance reporting.',
-    type: 'website',
-    url: 'https://panguard.ai',
-  },
-};
 import Hero from '@/components/home/Hero';
 import IndustryProblem from '@/components/home/IndustryProblem';
 import ThreeRoads from '@/components/home/ThreeRoads';

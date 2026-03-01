@@ -1706,6 +1706,7 @@
     "positions": {
       "overline": "Open Positions",
       "title": "Join the team.",
+      "subtitle": "{count} open positions across {departments} departments.",
       "noPositions": "No open positions in this department right now. Check back soon or send us your resume below."
     },
     "spontaneous": {
@@ -1818,6 +1819,12 @@
       }
     },
     "requestAccess": "Request Access",
+    "formatsLabel": "Formats",
+    "readMore": "Read More",
+    "readArticle": "Read Article",
+    "pressReleaseLabel": "Press Release",
+    "coverageLabel": "Coverage",
+    "noItems": "No items in this category yet. Check back soon.",
     "mediaInquiries": {
       "title": "Media Inquiries",
       "desc": "For media inquiries, interview requests, or brand asset access, please contact our communications team.",
@@ -1830,7 +1837,12 @@
     "title": "Compliance automation for",
     "titleHighlight": "Taiwan and global standards.",
     "subtitle": "ISO 27001, SOC 2, and Taiwan Cyber Security Act -- automated, affordable, and always current.",
+    "hero": {
+      "cta1": "Generate Your First Report",
+      "cta2": "Schedule Demo"
+    },
     "problem": {
+      "overline": "The Problem",
       "title": "Compliance is expensive, slow, and painful.",
       "desc": "Getting SOC 2 certified costs $20,000 to $60,000 in consultant fees. ISO 27001 is even more. In Taiwan, TCSA compliance engagements run NT$300,000 to NT$800,000. The process takes months, requires dedicated staff, and the documentation is outdated the moment the audit ends.",
       "desc2": "Panguard already monitors your systems 24/7 -- it has all the data an auditor needs. Our compliance engine takes that telemetry and automatically maps it to framework controls, generating audit-ready documentation that stays current every single day."
@@ -1839,6 +1851,11 @@
       "overline": "Supported Frameworks",
       "title": "Three frameworks. One platform.",
       "subtitle": "Every finding is automatically mapped to relevant controls. Auditors see exactly which controls are satisfied and which need attention.",
+      "coverageLabel": "Coverage",
+      "controlsLabel": "Controls",
+      "whoNeedsLabel": "Who needs it",
+      "whatItCoversLabel": "What it covers",
+      "panguardDoesLabel": "What Panguard does",
       "iso27001": {
         "name": "ISO 27001",
         "fullName": "Information Security Management System",
@@ -1891,7 +1908,8 @@
     "reports": {
       "overline": "Report Library",
       "title": "Every framework. One click.",
-      "desc": "Select the compliance framework you need, and Panguard generates a complete report mapped to every control. Coverage percentages show exactly where you stand. Gaps are highlighted with specific remediation guidance."
+      "desc": "Select the compliance framework you need, and Panguard generates a complete report mapped to every control. Coverage percentages show exactly where you stand. Gaps are highlighted with specific remediation guidance.",
+      "availableReports": "Available Reports"
     },
     "costComparison": {
       "overline": "Cost Comparison",
@@ -3566,6 +3584,30 @@
     "status": {
       "title": "System Status",
       "description": "Real-time operational status and uptime history for all Panguard AI platform services."
+    },
+    "login": {
+      "title": "Log In",
+      "description": "Log in to your Panguard AI account to manage your security dashboard and settings."
+    },
+    "register": {
+      "title": "Create Account",
+      "description": "Create your Panguard AI account and start protecting your endpoints with AI-powered security."
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Reset your Panguard AI account password."
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Your Panguard AI security dashboard. Monitor threats, manage endpoints, and view reports."
+    },
+    "accountSettings": {
+      "title": "Account Settings",
+      "description": "Manage your Panguard AI account settings, profile, and preferences."
+    },
+    "billing": {
+      "title": "Billing",
+      "description": "Manage your Panguard AI subscription, payment methods, and billing history."
     }
   },
   "notFound": {

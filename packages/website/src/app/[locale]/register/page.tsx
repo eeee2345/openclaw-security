@@ -1,10 +1,13 @@
-import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import RegisterForm from './RegisterForm';
 
-export const metadata: Metadata = {
-  title: 'Create Account | Panguard AI',
-  description: 'Create your Panguard AI account.',
-};
+export async function generateMetadata({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
+  return {
+    title: t('register.title'),
+    description: t('register.description'),
+  };
+}
 
 export default function RegisterPage() {
   return <RegisterForm />;

@@ -74,13 +74,13 @@ export default function ComplianceContent() {
                 href="/early-access"
                 className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                Generate Your First Report
+                {t('hero.cta1')}
               </Link>
               <Link
                 href="/demo"
                 className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
               >
-                Schedule Demo
+                {t('hero.cta2')}
               </Link>
             </div>
           </FadeInUp>
@@ -92,7 +92,7 @@ export default function ComplianceContent() {
         <div className="max-w-3xl mx-auto">
           <FadeInUp>
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
-              The Problem
+              {t('problem.overline')}
             </p>
             <h2 className="text-[clamp(28px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
               {t('problem.title')}
@@ -138,7 +138,7 @@ export default function ComplianceContent() {
                         {t(`frameworks.${key}.coverage`)}
                       </p>
                       <p className="text-[10px] text-text-muted uppercase tracking-wider">
-                        Coverage
+                        {t('frameworks.coverageLabel')}
                       </p>
                     </div>
                     <div className="text-center flex-1">
@@ -146,7 +146,7 @@ export default function ComplianceContent() {
                         {t(`frameworks.${key}.controls`)}
                       </p>
                       <p className="text-[10px] text-text-muted uppercase tracking-wider">
-                        Controls
+                        {t('frameworks.controlsLabel')}
                       </p>
                     </div>
                   </div>
@@ -154,7 +154,7 @@ export default function ComplianceContent() {
                   <div className="space-y-3 flex-1">
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-brand-sage font-semibold mb-1">
-                        Who needs it
+                        {t('frameworks.whoNeedsLabel')}
                       </p>
                       <p className="text-xs text-text-secondary leading-relaxed">
                         {t(`frameworks.${key}.whoNeeds`)}
@@ -162,7 +162,7 @@ export default function ComplianceContent() {
                     </div>
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-brand-sage font-semibold mb-1">
-                        What it covers
+                        {t('frameworks.whatItCoversLabel')}
                       </p>
                       <p className="text-xs text-text-secondary leading-relaxed">
                         {t(`frameworks.${key}.whatItCovers`)}
@@ -170,7 +170,7 @@ export default function ComplianceContent() {
                     </div>
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-brand-sage font-semibold mb-1">
-                        What Panguard does
+                        {t('frameworks.panguardDoesLabel')}
                       </p>
                       <p className="text-xs text-text-secondary leading-relaxed">
                         {t(`frameworks.${key}.panguardDoes`)}
@@ -230,7 +230,7 @@ export default function ComplianceContent() {
           <FadeInUp delay={0.15}>
             <div className="bg-surface-2 rounded-xl border border-border overflow-hidden">
               <div className="bg-surface-3 px-4 py-3 border-b border-border">
-                <span className="text-sm font-semibold text-text-primary">Available Reports</span>
+                <span className="text-sm font-semibold text-text-primary">{t('reports.availableReports')}</span>
               </div>
               <div className="divide-y divide-border">
                 {reportTypes.map((report) => (
@@ -274,11 +274,12 @@ export default function ComplianceContent() {
             </div>
           </FadeInUp>
           <FadeInUp delay={0.1}>
-            <div className="bg-surface-1 rounded-xl border border-border overflow-hidden">
+            <div className="overflow-x-auto">
+            <div className="bg-surface-1 rounded-xl border border-border overflow-hidden min-w-[480px]">
               <div className="grid grid-cols-3 text-center text-xs font-semibold text-text-muted uppercase tracking-wider border-b border-border">
                 <div className="p-3"></div>
-                <div className="p-3 border-l border-border">Consultant</div>
-                <div className="p-3 border-l border-border text-brand-sage">Panguard</div>
+                <div className="p-3 border-l border-border">{t('costComparison.consultant')}</div>
+                <div className="p-3 border-l border-border text-brand-sage">{t('costComparison.panguard')}</div>
               </div>
               {costRows.map((row, i) => {
                 const label =
@@ -306,6 +307,7 @@ export default function ComplianceContent() {
                   </div>
                 );
               })}
+            </div>
             </div>
           </FadeInUp>
         </div>

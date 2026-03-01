@@ -136,7 +136,7 @@ export default function CareersContent() {
         <SectionTitle
           overline={t('positions.overline')}
           title={t('positions.title')}
-          subtitle={`${jobListings.length} roles open across ${departments.length - 1} departments. All positions are remote-friendly.`}
+          subtitle={t('positions.subtitle', { count: jobListings.length, departments: departments.length - 1 })}
         />
 
         {/* Department filter tabs */}

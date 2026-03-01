@@ -1,10 +1,14 @@
-import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import BillingContent from './BillingContent';
 
-export const metadata: Metadata = {
-  title: 'Billing | Panguard AI',
-  description: 'Manage your Panguard AI subscription and billing.',
-};
+export async function generateMetadata({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
+  return {
+    title: t('billing.title'),
+    description: t('billing.description'),
+    robots: 'noindex',
+  };
+}
 
 export default function BillingPage() {
   return <BillingContent />;
