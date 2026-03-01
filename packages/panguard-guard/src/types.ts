@@ -414,6 +414,10 @@ export interface GuardConfig {
   watchdogInterval: number;
   /** YARA rules directory (custom + community) / YARA 規則目錄 */
   yaraRulesDir?: string;
+  /** Bundled Sigma rules directory (shipped with installation) / 內建 Sigma 規則目錄 */
+  bundledSigmaDir?: string;
+  /** Bundled YARA rules directory (shipped with installation) / 內建 YARA 規則目錄 */
+  bundledYaraDir?: string;
   /** Manager URL for agent mode (distributed architecture) */
   managerUrl?: string;
   /** Agent ID (auto-assigned on registration) */

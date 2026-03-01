@@ -67,7 +67,7 @@ export function generateComplianceReport(
 
   // Build metadata
   const metadata: ReportMetadata = {
-    reportId: `RPT-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}-${reportCounter.toString().padStart(4, '0')}`,
+    reportId: `RPT-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}-${framework === 'iso27001' ? 'ISO' : framework === 'soc2' ? 'SOC2' : 'TCSA'}-${reportCounter.toString().padStart(4, '0')}`,
     type: 'compliance',
     framework,
     language,

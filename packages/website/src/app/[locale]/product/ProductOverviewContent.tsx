@@ -38,9 +38,9 @@ const productConfigs = [
     icon: ShieldIcon,
     badgeColor: 'bg-status-safe/10 text-status-safe border-status-safe/20',
     description:
-      'Panguard Guard is the always-on AI agent that monitors your endpoints 24/7. A 5-agent pipeline (Detect, Analyze, Respond, Report, Chat) processes events through 3,149 Sigma rules and 5,895 YARA signatures, with local LLM and cloud AI fallback. Three response modules auto-block IPs, kill processes, and quarantine files. An investigation engine correlates events across a sliding window for deep threat analysis.',
+      'Panguard Guard is the always-on AI agent that monitors your endpoints 24/7. A 4-agent pipeline (Detect, Analyze, Respond, Report) with Chat notifications processes events through 3,155 Sigma rules and 5,895 YARA signatures, with local LLM and cloud AI fallback. Three response modules auto-block IPs, kill processes, and quarantine files. An investigation engine correlates events across a sliding window for deep threat analysis.',
     features: [
-      '5-agent AI pipeline: Detect, Analyze, Respond, Report, Chat',
+      '4-agent AI pipeline: Detect, Analyze, Respond, Report + Chat notifications',
       '3 auto-response modules: IP Blocker, Process Killer, File Quarantine',
       'Investigation engine with event correlation and dynamic reasoning',
       '4 notification channels: Telegram, Slack, Email, Webhook',

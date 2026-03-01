@@ -85,13 +85,55 @@ async function showStatus(opts: { json?: boolean; lang?: string }): Promise<void
     )
   );
 
-  // ── No config message ──────────────────────────────────
+  // ── No config: show basic system info ──────────────────
   if (!status.configLoaded) {
+    const os = await import('node:os');
+    const guardPidPath = join(homedir(), '.panguard-guard', 'panguard-guard.pid');
+    let guardRunning = false;
+    if (existsSync(guardPidPath)) {
+      try {
+        const pid = parseInt(readFileSync(guardPidPath, 'utf-8').trim(), 10);
+        process.kill(pid, 0);
+        guardRunning = true;
+      } catch {
+        // not running
+      }
+    }
+
+    const basicItems: StatusItem[] = [
+      {
+        label: lang === 'zh-TW' ? '\u4E3B\u6A5F' : 'Hostname',
+        value: c.sage(os.hostname()),
+      },
+      {
+        label: lang === 'zh-TW' ? '\u4F5C\u696D\u7CFB\u7D71' : 'OS',
+        value: c.dim(`${os.type()} ${os.release()}`),
+      },
+      {
+        label: lang === 'zh-TW' ? '\u5B88\u8B77\u5F15\u64CE' : 'Guard Engine',
+        value: guardRunning
+          ? c.safe(lang === 'zh-TW' ? '\u904B\u884C\u4E2D' : 'RUNNING')
+          : c.dim(lang === 'zh-TW' ? '\u672A\u904B\u884C' : 'Not running'),
+        status: guardRunning ? 'safe' : undefined,
+      },
+      {
+        label: lang === 'zh-TW' ? '\u914D\u7F6E\u72C0\u614B' : 'Config',
+        value: c.caution(lang === 'zh-TW' ? '\u672A\u521D\u59CB\u5316' : 'Not initialized'),
+        status: 'caution' as const,
+      },
+    ];
+
     console.log(
-      `  ${symbols.warn} ${
+      statusPanel(
+        lang === 'zh-TW' ? '\u7CFB\u7D71\u72C0\u614B / System Status' : 'System Status',
+        basicItems
+      )
+    );
+    console.log(
+      `  ${symbols.info} ${
         lang === 'zh-TW'
-          ? '\u672A\u627E\u5230\u914D\u7F6E\u3002\u57F7\u884C \u300Cpanguard init\u300D\u958B\u59CB\u8A2D\u5B9A\u3002'
-          : 'No config found. Run "panguard init" to get started.'
+          ? '\u57F7\u884C \u300Cpanguard init\u300D\u958B\u59CB\u8A2D\u5B9A\u3002'
+          : 'Run "panguard init" to get started.'
       }`
     );
     console.log('');

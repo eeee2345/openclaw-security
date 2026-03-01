@@ -5,8 +5,9 @@
  */
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { createLogger } from '@panguard-ai/core';
 import type { GuardConfig } from './types.js';
 import { DEFAULT_ACTION_POLICY } from './types.js';
@@ -15,6 +16,25 @@ const logger = createLogger('panguard-guard:config');
 
 /** Default data directory / 預設資料目錄 */
 export const DEFAULT_DATA_DIR = join(homedir(), '.panguard-guard');
+
+/**
+ * Resolve the bundled rules directory from the installation root.
+ * Walks up from this file's location to find the monorepo config/ directory.
+ * 從安裝根目錄解析內建規則目錄。
+ */
+function findBundledDir(subdir: string): string | undefined {
+  const thisDir = dirname(fileURLToPath(import.meta.url));
+  // Walk up to find the monorepo root (contains config/)
+  let dir = thisDir;
+  for (let i = 0; i < 8; i++) {
+    const candidate = join(dir, 'config', subdir);
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+    dir = dirname(dir);
+  }
+  return undefined;
+}
 
 /** Default configuration / 預設配置 */
 export const DEFAULT_GUARD_CONFIG: GuardConfig = {
@@ -25,6 +45,8 @@ export const DEFAULT_GUARD_CONFIG: GuardConfig = {
   notifications: {},
   dataDir: DEFAULT_DATA_DIR,
   yaraRulesDir: join(DEFAULT_DATA_DIR, 'yara-rules'),
+  bundledSigmaDir: findBundledDir('sigma-rules'),
+  bundledYaraDir: findBundledDir('yara-rules'),
   dashboardPort: 3100,
   dashboardEnabled: true,
   verbose: false,

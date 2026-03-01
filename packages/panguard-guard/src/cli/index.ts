@@ -94,7 +94,7 @@ async function commandStart(dataDir: string, verbose = false): Promise<void> {
   }
 
   const sp = spinner('Starting PanguardGuard...');
-  const config = loadConfig(dataDir);
+  const config = loadConfig(join(dataDir, 'config.json'));
   const engine = new GuardEngine(config);
 
   const shutdown = async () => {
@@ -209,7 +209,7 @@ function commandStatus(dataDir: string): void {
   ];
 
   try {
-    const config = loadConfig(dataDir);
+    const config = loadConfig(join(dataDir, 'config.json'));
     items.push({ label: 'Mode', value: c.sage(config.mode) });
     items.push({
       label: 'Dashboard',
@@ -259,7 +259,7 @@ async function commandUninstall(): Promise<void> {
 function commandConfig(dataDir: string): void {
   console.log(header('Configuration'));
   try {
-    const config = loadConfig(dataDir);
+    const config = loadConfig(join(dataDir, 'config.json'));
     console.log(JSON.stringify(config, null, 2));
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);

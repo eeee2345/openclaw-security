@@ -228,9 +228,11 @@ export class GuardEngine {
         `授權: ${license.tier} 等級 (有效: ${license.isValid})`
     );
 
-    // Initialize rule engine with built-in Sigma rules / 初始化規則引擎（含內建 Sigma 規則）
+    // Initialize rule engine with built-in + bundled Sigma rules
+    // 初始化規則引擎（內建 + 打包的 Sigma 規則）
     this.ruleEngine = new RuleEngine({
       rulesDir: join(config.dataDir, 'rules'),
+      communityRulesDir: config.bundledSigmaDir,
       hotReload: true,
       customRules: BUILTIN_RULES,
     });
@@ -364,12 +366,14 @@ export class GuardEngine {
       });
 
     // Load YARA rules (non-blocking, best-effort) / 載入 YARA 規則
-    if (this.config.yaraRulesDir) {
+    // Custom rules from user's dataDir, bundled rules from installation
+    {
+      const yaraCustomDir = this.config.yaraRulesDir
+        ? join(this.config.yaraRulesDir, 'custom')
+        : join(this.config.dataDir, 'yara-rules', 'custom');
+      const yaraBundledDir = this.config.bundledYaraDir;
       this.yaraScanner
-        .loadAllRules(
-          join(this.config.yaraRulesDir, 'custom'),
-          join(this.config.yaraRulesDir, 'community')
-        )
+        .loadAllRules(yaraCustomDir, yaraBundledDir)
         .then((count) => {
           logger.info(`YARA rules loaded: ${count} rules / YARA 規則已載入: ${count} 條`);
         })

@@ -17,7 +17,7 @@ import {
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const statIcons = [ShieldIcon, ScanIcon, CheckIcon, MonitorIcon, ShieldIcon, BlockIcon, NetworkIcon, LockIcon];
-const statValues = [3149, 5895, 216, 1326, 5, 6, 8, 'MIT'];
+const statValues = [3155, 5895, 216, 1327, 5, 6, 8, 'MIT'];
 const statKeys = ['sigmaRules', 'yaraRules', 'controls', 'tests', 'layers', 'actions', 'protocols', 'mit'] as const;
 
 export default function NumbersWall() {

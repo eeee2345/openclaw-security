@@ -152,7 +152,7 @@
       "prereq": "Requires Node.js 20+ and git",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,326 Tests Passing",
+        "tests": "1,327 Tests Passing",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -389,7 +389,7 @@
         "subtitle": "Because security shouldn't have walls.",
         "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
         "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
-        "proof": "1,326 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+        "proof": "1,327 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
       }
     },
     "the3amStory": {
@@ -544,7 +544,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "1,326 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "1,327 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -653,7 +653,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "badge1": "MIT Open Source",
-      "badge2": "1,326 Tests Passing",
+      "badge2": "1,327 Tests Passing",
       "badge3": "Built in Taiwan"
     }
   },
@@ -1037,8 +1037,8 @@
       },
       "featuresList": {
         "item1": {
-          "title": "5-Agent AI Pipeline",
-          "desc": "Events flow through 5 specialized AI agents: Detect (Sigma/YARA rules + local LLM), Analyze (threat classification), Respond (auto-remediation), Report (compliance documentation), and Chat (human notification). 90% of events handled at zero cost by rules alone."
+          "title": "4-Agent AI Pipeline",
+          "desc": "Events flow through 4 specialized AI agents: Detect (Sigma/YARA rules + local LLM), Analyze (threat classification), Respond (auto-remediation), and Report (compliance documentation). Chat notifications deliver alerts to Telegram, Slack, and email. 90% of events handled at zero cost by rules alone."
         },
         "item2": {
           "title": "3 Auto-Response Types",
@@ -1054,7 +1054,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,149 Sigma and 5,895 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 5,895 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "Integration Adapters",
@@ -2292,7 +2292,7 @@
     "title": "Security that",
     "titleHighlight": "thinks",
     "titleSuffix": ", not just scans.",
-    "subtitle": "A three-layer AI defense funnel, five autonomous agents, and a context memory that learns your environment. Built so the 90 % of events that are noise cost nothing, and the 3 % that matter get the deepest reasoning available.",
+    "subtitle": "A three-layer AI defense funnel, four autonomous agents, and a context memory that learns your environment. Built so the 90 % of events that are noise cost nothing, and the 3 % that matter get the deepest reasoning available.",
     "defenseFunnel": {
       "overline": "Defense Funnel",
       "title": "Three layers. 90 % free.",
@@ -2324,8 +2324,8 @@
     },
     "agents": {
       "overline": "Agent Architecture",
-      "title": "Five agents. One mission.",
-      "subtitle": "Each agent is a specialist. Together they form an autonomous security operations pipeline that detects, analyzes, responds, reports, and communicates -- without human intervention.",
+      "title": "Four agents. One mission.",
+      "subtitle": "Each agent is a specialist. Together they form an autonomous security operations pipeline that detects, analyzes, responds, and reports -- with Chat notifications keeping you informed.",
       "detect": {
         "name": "Detect Agent",
         "role": "First Responder",
@@ -2709,7 +2709,7 @@
       "title": "Advanced Setup",
       "subtitle": "Enhance Panguard's detection capabilities with optional external tools. All tools are optional -- Panguard works fully without them.",
       "degradeNote": "Graceful Degradation Architecture",
-      "degradeDesc": "Panguard's AI analysis follows a three-tier degradation strategy: Cloud AI (Claude/OpenAI) > Local LLM (Ollama) > Rule Engine (Sigma + YARA). Each tier is independent. Even with all external tools offline, 3,149 Sigma rules and 5,895 YARA rules still provide full protection.",
+      "degradeDesc": "Panguard's AI analysis follows a three-tier degradation strategy: Cloud AI (Claude/OpenAI) > Local LLM (Ollama) > Rule Engine (Sigma + YARA). Each tier is independent. Even with all external tools offline, 3,155 Sigma rules and 5,895 YARA rules still provide full protection.",
       "ollamaTitle": "Ollama -- Local AI Analysis",
       "ollamaDesc": "Install Ollama to run AI threat analysis locally without cloud APIs. Ideal for air-gapped environments or data privacy requirements.",
       "ollamaNote": "Panguard auto-detects Ollama (default http://localhost:11434). No additional configuration needed after install.",
@@ -3125,7 +3125,7 @@
       "layer2": {
         "badge": "Layer 2",
         "name": "Rules Engine",
-        "desc": "3,149 Sigma rules + 5,895 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
+        "desc": "3,155 Sigma rules + 5,895 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
         "detail": "Catches 90% of known threats in under 50ms. No AI needed."
       },
       "layer3": {
@@ -3154,7 +3154,7 @@
       "tier1": {
         "name": "Rules Engine",
         "pct": "90%",
-        "items": "3,149 Sigma detection rules|5,895 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
+        "items": "3,155 Sigma detection rules|5,895 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
         "speed": "<50ms per event"
       },
       "tier2": {
@@ -3485,11 +3485,11 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "1,326",
+          "value": "1,327",
           "label": "Tests passing"
         },
         {
-          "value": "3,149",
+          "value": "3,155",
           "label": "Sigma rules"
         },
         {
@@ -3566,7 +3566,7 @@
         },
         {
           "name": "panguard-rules",
-          "desc": "3,149 Sigma detection rules + 5,895 YARA malware signatures",
+          "desc": "3,155 Sigma detection rules + 5,895 YARA malware signatures",
           "lang": "YAML / Sigma",
           "stars": "Community"
         },
@@ -3614,8 +3614,8 @@
         "items": [
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
-          "3,149 Sigma + 5,895 YARA rules",
-          "1,326 automated tests"
+          "3,155 Sigma + 5,895 YARA rules",
+          "1,327 automated tests"
         ]
       },
       "inProgress": {
@@ -3729,7 +3729,7 @@
     },
     "technology": {
       "title": "Technology",
-      "description": "Security that thinks, not just scans. A three-layer AI defense funnel, five autonomous agents, and a context memory that learns your environment."
+      "description": "Security that thinks, not just scans. A three-layer AI defense funnel, four autonomous agents, and a context memory that learns your environment."
     },
     "howItWorks": {
       "title": "How It Works — Panguard AI",
