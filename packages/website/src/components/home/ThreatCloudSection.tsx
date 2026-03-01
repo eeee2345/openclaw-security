@@ -123,12 +123,12 @@ function OpenSourceSpirit() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, ease }}
-      className="mt-16 max-w-3xl mx-auto text-center"
+      className="mt-16 max-w-3xl mx-auto"
     >
-      <h3 className="text-2xl md:text-3xl font-bold text-text-primary">
+      <h3 className="text-2xl md:text-3xl font-bold text-text-primary text-center">
         {t('title')}
       </h3>
-      <p className="text-xl text-panguard-green font-medium mt-2">
+      <p className="text-xl text-panguard-green font-medium mt-2 text-center">
         {t('subtitle')}
       </p>
       <p className="text-gray-400 mt-6 leading-relaxed">
@@ -137,7 +137,7 @@ function OpenSourceSpirit() {
       <p className="text-gray-400 mt-4 leading-relaxed">
         {t('belief')}
       </p>
-      <p className="text-sm text-gray-500 font-medium mt-6">
+      <p className="text-sm text-gray-500 font-medium mt-6 text-center">
         {t('proof')}
       </p>
     </motion.div>
@@ -203,9 +203,10 @@ export default function ThreatCloudSection() {
         >
           <div className="flex items-start gap-3">
             <LockIcon size={16} className="text-panguard-green mt-0.5 shrink-0" />
-            <p className="text-sm text-gray-400 leading-relaxed">
-              {t('privacy')}
-            </p>
+            <div className="text-sm text-gray-400 leading-relaxed space-y-2">
+              <p>{t('privacy1')}</p>
+              <p>{t('privacy2')}</p>
+            </div>
           </div>
         </motion.div>
 

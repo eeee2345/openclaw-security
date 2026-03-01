@@ -205,7 +205,10 @@ export default function SecurityContent() {
                   {t('dataHandling.anonymization.title')}
                 </p>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  {t('dataHandling.anonymization.desc')}
+                  {t('dataHandling.anonymization.desc1')}
+                </p>
+                <p className="text-xs text-text-secondary leading-relaxed mt-2">
+                  {t('dataHandling.anonymization.desc2')}
                 </p>
               </div>
             </div>
@@ -222,7 +225,10 @@ export default function SecurityContent() {
               {t('disclosure.title')}
             </h2>
             <p className="text-text-secondary mt-4 leading-relaxed max-w-xl mx-auto">
-              {t('disclosure.desc')}
+              {t('disclosure.desc1')}
+            </p>
+            <p className="text-text-secondary mt-2 leading-relaxed max-w-xl mx-auto">
+              {t('disclosure.desc2')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>

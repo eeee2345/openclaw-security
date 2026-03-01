@@ -63,7 +63,9 @@ export default function AboutContent() {
             <p className="text-text-secondary mt-8 leading-relaxed text-lg">{t('origin.p2')}</p>
           </FadeInUp>
           <FadeInUp delay={0.2}>
-            <p className="text-text-secondary mt-8 leading-relaxed text-lg">{t('origin.p3')}</p>
+            <p className="text-text-secondary mt-8 leading-relaxed text-lg">{t('origin.p3a')}</p>
+            <p className="text-text-secondary mt-4 leading-relaxed text-lg">{t('origin.p3b')}</p>
+            <p className="text-text-secondary mt-4 leading-relaxed text-lg">{t('origin.p3c')}</p>
           </FadeInUp>
         </div>
       </SectionWrapper>

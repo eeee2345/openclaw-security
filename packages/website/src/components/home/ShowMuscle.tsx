@@ -105,15 +105,16 @@ function FunnelSection() {
         {t('title')}
       </motion.h3>
 
-      <motion.p
+      <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.4, delay: 0.15, ease }}
-        className="text-lg text-gray-400 mt-4 max-w-3xl"
+        className="text-lg text-gray-400 mt-4 max-w-2xl space-y-3"
       >
-        {t('desc')}
-      </motion.p>
+        <p>{t('desc1')}</p>
+        <p>{t('desc2')}</p>
+      </motion.div>
 
       {/* Bars */}
       <div className="mt-10 space-y-6">

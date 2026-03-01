@@ -43,7 +43,7 @@ export default function Redefine() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.6, delay: 0.8, ease }}
-          className="text-3xl md:text-4xl font-bold text-panguard-green leading-snug mt-6"
+          className="text-3xl md:text-4xl font-bold text-panguard-green leading-normal mt-6"
         >
           {t('question')}
         </motion.p>

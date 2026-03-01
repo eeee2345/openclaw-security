@@ -64,6 +64,8 @@ export default function CompanyContent() {
           <FadeInUp delay={0.05}>
             <h1 className="text-[clamp(36px,4.5vw,56px)] font-extrabold leading-[1.1] tracking-tight text-text-primary max-w-4xl">
               {t('title')}
+              <br />
+              {t('titleLine2')}
             </h1>
           </FadeInUp>
           <FadeInUp delay={0.1}>
@@ -89,7 +91,8 @@ export default function CompanyContent() {
             </FadeInUp>
             <FadeInUp delay={0.1}>
               <p className="text-text-secondary mt-6 leading-relaxed">{t('name.desc1')}</p>
-              <p className="text-text-secondary mt-4 leading-relaxed">{t('name.desc2')}</p>
+              <p className="text-text-secondary mt-4 leading-relaxed">{t('name.desc2a')}</p>
+              <p className="text-text-secondary mt-4 leading-relaxed">{t('name.desc2b')}</p>
             </FadeInUp>
           </div>
           <FadeInUp delay={0.15}>
