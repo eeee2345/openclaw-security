@@ -394,13 +394,13 @@
       },
       "right4": {
         "time": "3:01 AM",
-        "text": "LINE notification sent to you with full incident summary"
+        "text": "Telegram notification sent to you with full incident summary"
       },
       "right5": {
         "time": "3:02 AM",
         "text": "Incident documented. Evidence snapshot saved."
       },
-      "lineLabel": "Panguard AI via LINE",
+      "lineLabel": "Panguard AI via Telegram",
       "lineMessage": "Blocked SSH brute-force from 103.xx.xx.xx. IP banned. No data accessed. All clear.",
       "stillSleeping": "You're still sleeping."
     },
@@ -439,7 +439,7 @@
           "type": "E-Commerce",
           "detail": "Solo founder",
           "pain": "No idea how to answer \"Is your site secure?\"",
-          "result": "Guard caught SSH brute-force at 2 AM. Blocked 3 IPs. Notified on LINE. Read it over breakfast.",
+          "result": "Guard caught SSH brute-force at 2 AM. Blocked 3 IPs. Notified on Telegram. Read it over breakfast.",
           "products": "GUARD + CHAT",
           "cost": "$9/mo",
           "saved": "Zero downtime since install"
@@ -460,7 +460,7 @@
         },
         {
           "name": "Chat",
-          "desc": "Security alerts on LINE, Telegram, Slack. Plain language, not log dumps."
+          "desc": "Security alerts on Telegram and Slack. Plain language, not log dumps."
         },
         {
           "name": "Trap",
@@ -532,7 +532,7 @@
           "features": {
             "0": "Everything in Community",
             "1": "Full auto-response",
-            "2": "LINE / Slack / Telegram / Email",
+            "2": "Slack / Telegram / Email",
             "3": "SSH + HTTP honeypots + Ollama AI"
           },
           "cta": "Start Solo"
@@ -712,7 +712,7 @@
           "Everything in Community",
           "3-layer AI defense (Layer 1+2+3)",
           "One-click auto-fix vulnerabilities",
-          "LINE / Telegram alerts",
+          "Telegram / Slack alerts",
           "Chat AI assistant",
           "7-day log retention"
         ],
@@ -997,7 +997,7 @@
         },
         "item3": {
           "title": "4 Notification Channels",
-          "desc": "Get alerts where you already are: LINE, Telegram, Slack, and Email. Each channel supports rich formatting with threat details, severity badges, and one-click remediation links."
+          "desc": "Get alerts where you already are: Telegram, Slack, and Email. Each channel supports rich formatting with threat details, severity badges, and one-click remediation links."
         },
         "item4": {
           "title": "Confidence Scoring",
@@ -1065,8 +1065,8 @@
           "desc": "Every alert includes full context: what happened, where, when, severity level, and what Panguard did about it. Weekly and daily digests summarize your security posture so you never miss the big picture."
         },
         "item3": {
-          "title": "5 Platform Channels",
-          "desc": "LINE, Telegram, Slack, Email, and Webhook. Panguard Chat works where you already are. No separate dashboard to check. Security updates arrive in the channel you already monitor."
+          "title": "4 Platform Channels",
+          "desc": "Telegram, Slack, Email, and Webhook. Panguard Chat works where you already are. No separate dashboard to check. Security updates arrive in the channel you already monitor."
         },
         "item4": {
           "title": "Role-Adaptive Tone",
@@ -1097,7 +1097,7 @@
       },
       "cta": {
         "title": "Security that talks to you.",
-        "desc": "Join the early access program and connect Panguard Chat to your Slack, LINE, or Telegram.",
+        "desc": "Join the early access program and connect Panguard Chat to your Slack or Telegram.",
         "cta1": "Get Early Access",
         "cta2": "Learn About Guard"
       },
@@ -1106,7 +1106,7 @@
         "title": "Who uses Panguard Chat.",
         "item1": {
           "title": "Solo Developer",
-          "desc": "You are in a LINE group with your Panguard Chat bot. At 3 AM, it messages you: 'Unusual outbound traffic from your API server. Blocked a data exfiltration attempt. Details attached.' You go back to sleep."
+          "desc": "You have a Telegram chat with your Panguard Chat bot. At 3 AM, it messages you: 'Unusual outbound traffic from your API server. Blocked a data exfiltration attempt. Details attached.' You go back to sleep."
         },
         "item2": {
           "title": "Engineering Team",
@@ -1387,7 +1387,7 @@
         "title": "Priced for developers, not enterprises",
         "subtitle": "Start free with Panguard Scan. Upgrade to Solo for full protection.",
         "freeScanDesc": "1 endpoint, basic scan + PDF report",
-        "soloDesc": "Guard + Chat + Scan, LINE/Telegram alerts",
+        "soloDesc": "Guard + Chat + Scan, Telegram/Slack alerts",
         "seeAllPlans": "See all plans"
       },
       "workflow": {
@@ -1454,7 +1454,7 @@
         "teamPlanDesc": "5-50 endpoints. All products included.",
         "teamFeatures": [
           "Guard + Chat + Scan + Report + Trap",
-          "Slack / LINE / Telegram / Email alerts",
+          "Slack / Telegram / Email alerts",
           "Team dashboard & 30-day logs"
         ]
       },
@@ -1462,7 +1462,6 @@
         "title": "Integrations your team already uses",
         "tools": [
           "Slack",
-          "LINE",
           "Telegram",
           "Email",
           "Microsoft Teams",
@@ -2238,7 +2237,7 @@
       "chat": {
         "name": "Chat Agent",
         "role": "Security Copilot",
-        "desc": "The human interface. Users ask questions in plain language and receive answers backed by real telemetry. Integrated with LINE, Slack, and Telegram. Sends proactive weekly summaries and real-time breach notifications."
+        "desc": "The human interface. Users ask questions in plain language and receive answers backed by real telemetry. Integrated with Slack and Telegram. Sends proactive weekly summaries and real-time breach notifications."
       }
     },
     "contextMemory": {
@@ -2486,7 +2485,7 @@
       },
       "chat": {
         "title": "Panguard Chat",
-        "desc": "AI copilot setup, Slack/Teams/LINE integration, query examples"
+        "desc": "AI copilot setup, Slack/Teams/Telegram integration, query examples"
       },
       "trap": {
         "title": "Panguard Trap",
@@ -2558,7 +2557,7 @@
       "step9Title": "More CLI Commands",
       "step9Desc": "Panguard has a full CLI toolkit. Here are the most useful commands beyond scan and guard.",
       "step9Whoami": "Check your account and subscription status:",
-      "step9Chat": "Set up notification channels (LINE, Telegram, Slack, email):",
+      "step9Chat": "Set up notification channels (Telegram, Slack, email):",
       "step9Trap": "Deploy honeypot services to profile attackers (Pro plan):",
       "step9Report": "List supported compliance frameworks:",
       "step9Status": "Check Guard engine status:",
@@ -2967,7 +2966,7 @@
       "detect": { "name": "DetectAgent", "desc": "Monitors 5 sources: network, processes, filesystem, system logs, normalized events." },
       "analyze": { "name": "AnalyzeAgent", "desc": "Correlates alerts, determines severity, maps to MITRE ATT&CK framework." },
       "respond": { "name": "RespondAgent", "desc": "Executes response based on confidence threshold. Auto, ask, or notify." },
-      "report": { "name": "ReportAgent", "desc": "Generates human-readable incident report, sends via LINE/Telegram/Slack/Email." },
+      "report": { "name": "ReportAgent", "desc": "Generates human-readable incident report, sends via Telegram/Slack/Email." },
       "investigate": { "name": "InvestigationEngine", "desc": "Deep-dives complex incidents with up to 8-step reasoning chains." }
     },
     "response": {
@@ -3322,7 +3321,7 @@
     },
     "integrations": {
       "title": "Integrations",
-      "description": "Connect everything. Panguard integrates with Slack, Teams, LINE, Jira, SIEM platforms, and more. No custom code required."
+      "description": "Connect everything. Panguard integrates with Slack, Teams, Telegram, Jira, SIEM platforms, and more. No custom code required."
     },
     "partners": {
       "title": "Partner Program",

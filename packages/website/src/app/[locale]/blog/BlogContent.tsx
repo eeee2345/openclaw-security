@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/navigation';
 import { ArrowRight, Clock, User, Mail, Send } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import SectionTitle from '@/components/ui/SectionTitle';
-import { blogPosts, categories } from '@/data/blog-posts';
+import { blogPosts as staticPosts, categories } from '@/data/blog-posts';
+import type { BlogPost } from '@/data/blog-posts';
 
 /* ─── Helpers ─── */
 
@@ -40,9 +41,31 @@ export default function BlogContent() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [nlEmail, setNlEmail] = useState('');
   const [nlStatus, setNlStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [allPosts, setAllPosts] = useState<BlogPost[]>(staticPosts);
 
-  const featuredPost = blogPosts[0];
-  const remainingPosts = blogPosts.slice(1);
+  // Merge dynamic JSON posts with static posts
+  useEffect(() => {
+    async function loadDynamic() {
+      try {
+        const res = await fetch('/api/blog');
+        const data = (await res.json()) as { ok: boolean; data?: BlogPost[] };
+        if (data.ok && data.data && data.data.length > 0) {
+          const jsonSlugs = new Set(data.data.map((p) => p.slug));
+          const merged = [
+            ...data.data,
+            ...staticPosts.filter((p) => !jsonSlugs.has(p.slug)),
+          ].sort((a, b) => b.date.localeCompare(a.date));
+          setAllPosts(merged);
+        }
+      } catch {
+        // Keep static posts on error
+      }
+    }
+    void loadDynamic();
+  }, []);
+
+  const featuredPost = allPosts[0];
+  const remainingPosts = allPosts.slice(1);
 
   const filteredPosts =
     activeCategory === 'All'

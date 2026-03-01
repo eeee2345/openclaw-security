@@ -5,20 +5,25 @@ import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
-import { blogPosts } from '@/data/blog-posts';
+import { blogPosts as staticPosts } from '@/data/blog-posts';
+import { getAllPosts } from '@/lib/blog-store';
 import { notFound } from 'next/navigation';
 
-/* ─── Static Params ─── */
+/* ─── Static Params (only static posts for SSG) ─── */
 
 export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  return staticPosts.map((post) => ({ slug: post.slug }));
 }
+
+/* ─── Allow dynamic JSON posts to render via SSR ─── */
+export const dynamicParams = true;
 
 /* ─── Metadata ─── */
 
 export async function generateMetadata({ params }: { params: { slug: string; locale: string } }) {
   const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
-  const post = blogPosts.find((p) => p.slug === params.slug);
+  const allPosts = await getAllPosts();
+  const post = allPosts.find((p) => p.slug === params.slug);
   if (!post) {
     return { title: t('blog.title'), description: t('blog.description') };
   }
@@ -47,7 +52,8 @@ export default async function BlogPostPage({
   params: { slug: string; locale: string };
 }) {
   const t = await getTranslations({ locale: params.locale, namespace: 'blogPost' });
-  const post = blogPosts.find((p) => p.slug === params.slug);
+  const allPosts = await getAllPosts();
+  const post = allPosts.find((p) => p.slug === params.slug);
 
   if (!post) {
     notFound();

@@ -394,13 +394,13 @@
       },
       "right4": {
         "time": "3:01 AM",
-        "text": "LINE 通知送到你手機，附完整事件摘要"
+        "text": "Telegram 通知送到你手機，附完整事件摘要"
       },
       "right5": {
         "time": "3:02 AM",
         "text": "事件已記錄。證據快照已儲存。"
       },
-      "lineLabel": "Panguard AI via LINE",
+      "lineLabel": "Panguard AI via Telegram",
       "lineMessage": "已封鎖 SSH 暴力破解 103.xx.xx.xx。IP 已禁止。沒碰到任何資料。一切安全。",
       "stillSleeping": "你還在睡。"
     },
@@ -439,7 +439,7 @@
           "type": "電商",
           "detail": "一人創業",
           "pain": "客戶問「你的網站安全嗎？」不知道怎麼回。",
-          "result": "Guard 凌晨兩點抓到 SSH 暴力破解，封鎖 3 個 IP，LINE 通知。吃早餐時才看到。",
+          "result": "Guard 凌晨兩點抓到 SSH 暴力破解，封鎖 3 個 IP，Telegram 通知。吃早餐時才看到。",
           "products": "GUARD + CHAT",
           "cost": "NT$270/月",
           "saved": "裝了到現在零停機"
@@ -460,7 +460,7 @@
         },
         {
           "name": "Chat",
-          "desc": "LINE、Telegram、Slack 收資安警報。白話文，不是一堆 log。"
+          "desc": "Telegram、Slack 收資安警報。白話文，不是一堆 log。"
         },
         {
           "name": "Trap",
@@ -532,7 +532,7 @@
           "features": {
             "0": "Community 全部功能",
             "1": "完整自動回應",
-            "2": "LINE / Slack / Telegram / Email",
+            "2": "Slack / Telegram / Email",
             "3": "SSH + HTTP 蜂罐 + Ollama AI"
           },
           "cta": "開始 Solo"
@@ -735,7 +735,7 @@
       "detect": { "name": "DetectAgent", "desc": "監控 5 個來源：網路、程序、檔案系統、系統日誌、正規化事件。" },
       "analyze": { "name": "AnalyzeAgent", "desc": "關聯警報、判定嚴重程度、映射到 MITRE ATT&CK 框架。" },
       "respond": { "name": "RespondAgent", "desc": "根據信心閾值執行回應。自動、詢問或通知。" },
-      "report": { "name": "ReportAgent", "desc": "產生人類可讀的事件報告，透過 LINE/Telegram/Slack/Email 發送。" },
+      "report": { "name": "ReportAgent", "desc": "產生人類可讀的事件報告，透過 Telegram/Slack/Email 發送。" },
       "investigate": { "name": "調查引擎", "desc": "對複雜事件進行深入調查，最多 8 步推理鏈。" }
     },
     "response": {
@@ -1090,7 +1090,7 @@
     },
     "integrations": {
       "title": "整合串接",
-      "description": "連接一切。Panguard 整合 Slack、Teams、LINE、Jira、SIEM 平台等。無需自訂程式碼。"
+      "description": "連接一切。Panguard 整合 Slack、Teams、Telegram、Jira、SIEM 平台等。無需自訂程式碼。"
     },
     "partners": {
       "title": "合作夥伴計畫",
@@ -1176,7 +1176,7 @@
           "Community 所有功能",
           "三層 AI 防禦（Layer 1+2+3）",
           "一鍵自動修復漏洞",
-          "LINE / Telegram 通知",
+          "Telegram / Slack 通知",
           "Chat AI 助手",
           "7 天日誌保留"
         ],
@@ -1461,7 +1461,7 @@
         },
         "item3": {
           "title": "4 種通知頻道",
-          "desc": "在你已經使用的地方接收通知：LINE、Telegram、Slack 和 Email。每個頻道支援豐富格式，含威脅詳情、嚴重性標籤和一鍵修復連結。"
+          "desc": "在你已經使用的地方接收通知：Telegram、Slack 和 Email。每個頻道支援豐富格式，含威脅詳情、嚴重性標籤和一鍵修復連結。"
         },
         "item4": {
           "title": "信心評分",
@@ -1529,8 +1529,8 @@
           "desc": "每個警報都包含完整脈絡：發生了什麼、在哪裡、何時、嚴重程度、以及 Panguard 做了什麼處理。每週和每日摘要總結你的安全態勢，讓你不會遺漏重要資訊。"
         },
         "item3": {
-          "title": "5 大平台頻道",
-          "desc": "LINE、Telegram、Slack、Email 和 Webhook。Panguard Chat 在你已經使用的地方運作。不需另外檢查儀表板。安全更新直接送到你已在監控的頻道。"
+          "title": "4 大平台頻道",
+          "desc": "Telegram、Slack、Email 和 Webhook。Panguard Chat 在你已經使用的地方運作。不需另外檢查儀表板。安全更新直接送到你已在監控的頻道。"
         },
         "item4": {
           "title": "角色自適應語調",
@@ -1561,7 +1561,7 @@
       },
       "cta": {
         "title": "會跟你說話的資安防護。",
-        "desc": "加入搶先體驗計畫，將 Panguard Chat 連接到你的 Slack、LINE 或 Telegram。",
+        "desc": "加入搶先體驗計畫，將 Panguard Chat 連接到你的 Slack 或 Telegram。",
         "cta1": "搶先體驗",
         "cta2": "了解 Guard"
       },
@@ -1570,7 +1570,7 @@
         "title": "誰在使用 Panguard Chat。",
         "item1": {
           "title": "個人開發者",
-          "desc": "你和你的 Panguard Chat 機器人在同一個 LINE 群組。凌晨 3 點，它傳訊息給你：「你的 API 伺服器偵測到異常外送流量。已阻擋一次資料外洩嘗試。詳情附上。」你繼續睡覺。"
+          "desc": "你的 Telegram 上有 Panguard Chat 機器人。凌晨 3 點，它傳訊息給你：「你的 API 伺服器偵測到異常外送流量。已阻擋一次資料外洩嘗試。詳情附上。」你繼續睡覺。"
         },
         "item2": {
           "title": "工程團隊",
@@ -1846,7 +1846,7 @@
         "title": "為開發者定價，不是企業",
         "subtitle": "從免費的 Panguard Scan 開始。升級至 Solo 獲得完整防護。",
         "freeScanDesc": "1 端點，基礎掃描 + PDF 報告",
-        "soloDesc": "Guard + Chat + Scan，LINE/Telegram 通知",
+        "soloDesc": "Guard + Chat + Scan，Telegram/Slack 通知",
         "seeAllPlans": "查看全部方案"
       },
       "workflow": {
@@ -1913,7 +1913,7 @@
         "teamPlanDesc": "5-50 端點。所有產品包含。",
         "teamFeatures": [
           "Guard + Chat + Scan + Report + Trap",
-          "Slack / LINE / Telegram / Email 通知",
+          "Slack / Telegram / Email 通知",
           "團隊儀表板 & 30 天日誌"
         ]
       },
@@ -1921,7 +1921,6 @@
         "title": "你團隊已在使用的整合",
         "tools": [
           "Slack",
-          "LINE",
           "Telegram",
           "Email",
           "Microsoft Teams",
@@ -2695,7 +2694,7 @@
       "chat": {
         "name": "聊天代理",
         "role": "資安副駕",
-        "desc": "人機介面。用戶用人話提問，獲得以真實遙測為依據的回答。整合 LINE、Slack 和 Telegram。主動發送每週摘要和即時入侵通知。"
+        "desc": "人機介面。用戶用人話提問，獲得以真實遙測為依據的回答。整合 Slack 和 Telegram。主動發送每週摘要和即時入侵通知。"
       }
     },
     "contextMemory": {
@@ -2943,7 +2942,7 @@
       },
       "chat": {
         "title": "Panguard Chat",
-        "desc": "AI 副駕設定、Slack/Teams/LINE 整合、查詢範例"
+        "desc": "AI 副駕設定、Slack/Teams/Telegram 整合、查詢範例"
       },
       "trap": {
         "title": "Panguard Trap",
@@ -3015,7 +3014,7 @@
       "step9Title": "更多 CLI 指令",
       "step9Desc": "Panguard 有完整的 CLI 工具組。以下是 scan 和 guard 以外最常用的指令。",
       "step9Whoami": "查看帳號和訂閱狀態：",
-      "step9Chat": "設定通知管道（LINE、Telegram、Slack、email）：",
+      "step9Chat": "設定通知管道（Telegram、Slack、email）：",
       "step9Trap": "部署蜜罐服務來分析攻擊者（Pro 方案）：",
       "step9Report": "列出支援的合規框架：",
       "step9Status": "查看 Guard 引擎狀態：",
