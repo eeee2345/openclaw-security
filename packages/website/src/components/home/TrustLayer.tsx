@@ -20,7 +20,7 @@ export default function TrustLayer() {
     <SectionWrapper dark>
       <SectionTitle overline={t('overline')} title={t('title')} />
 
-      <div className="grid md:grid-cols-3 gap-6 mt-14">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mt-14">
         {columns.map((col, i) => (
           <FadeInUp key={col.key} delay={i * 0.08}>
             <Card padding="lg" className="h-full">

@@ -77,7 +77,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="text-text-muted hover:text-text-secondary transition-colors"
+                  className="p-2 -m-1 text-text-muted hover:text-text-secondary transition-colors"
                 >
                   <s.icon className="w-4 h-4" />
                 </a>

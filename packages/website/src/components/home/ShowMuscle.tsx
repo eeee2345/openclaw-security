@@ -37,7 +37,7 @@ function TeamSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease }}
-        className="text-4xl md:text-5xl font-bold text-text-primary"
+        className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary"
       >
         {t('title')}
       </motion.h2>
@@ -53,7 +53,7 @@ function TeamSection() {
       </motion.p>
 
       {/* Role cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-10">
         {roles.map((role, i) => {
           const Icon = roleIcons[i];
           return (
@@ -126,7 +126,7 @@ function FunnelSection() {
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.4, delay: i * 0.15, ease }}
           >
-            <div className="flex justify-between mb-2">
+            <div className="flex flex-col sm:flex-row justify-between mb-2">
               <span className="font-medium text-text-primary">
                 {layer.label}{' '}
                 <span className="text-gray-500 text-sm ml-2">{layer.sub}</span>

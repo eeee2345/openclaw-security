@@ -352,7 +352,8 @@ export default function PricingCards() {
           subtitle={t('comparison.subtitle')}
         />
         <FadeInUp>
-          <div className="mt-12 overflow-x-auto">
+          <div className="relative mt-12">
+            <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border">
@@ -398,6 +399,10 @@ export default function PricingCards() {
                 ))}
               </tbody>
             </table>
+            </div>
+            {/* Mobile scroll hint */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-surface-0 to-transparent md:hidden" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-surface-0 to-transparent md:hidden" />
           </div>
         </FadeInUp>
       </div>

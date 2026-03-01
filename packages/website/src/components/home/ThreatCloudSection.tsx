@@ -13,7 +13,7 @@ function FlowSteps() {
   const steps = t.raw('steps') as Array<{ label: string; sub: string }>;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0 mt-10">
+    <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 mt-10">
       {steps.map((step, i) => (
         <motion.div
           key={i}
@@ -23,12 +23,12 @@ function FlowSteps() {
           transition={{ duration: 0.4, delay: i * 0.2, ease }}
           className="flex items-center gap-4"
         >
-          <div className="bg-panguard-green/10 border border-panguard-green/30 rounded-xl px-6 py-4 text-center min-w-[180px]">
+          <div className="bg-panguard-green/10 border border-panguard-green/30 rounded-xl px-6 py-4 text-center">
             <p className="text-sm font-semibold text-panguard-green">{step.label}</p>
             <p className="text-xs text-gray-500 mt-1">{step.sub}</p>
           </div>
           {i < steps.length - 1 && (
-            <div className="hidden sm:block w-12 h-px border-t border-dashed border-panguard-green/40" />
+            <div className="hidden md:block w-12 h-px border-t border-dashed border-panguard-green/40" />
           )}
         </motion.div>
       ))}
@@ -50,7 +50,7 @@ function Flywheel() {
       transition={{ duration: 0.6, ease }}
       className="mt-12 flex justify-center"
     >
-      <div className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px]">
+      <div className="relative w-full max-w-[320px] aspect-square sm:max-w-[400px]">
         {/* Center text */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <p className="text-sm sm:text-base font-bold text-panguard-green text-center max-w-[140px] leading-snug">
@@ -169,7 +169,7 @@ export default function ThreatCloudSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5, ease }}
-          className="text-4xl md:text-5xl font-bold text-text-primary text-center"
+          className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary text-center"
         >
           {t('title')}
         </motion.h2>

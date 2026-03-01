@@ -30,7 +30,7 @@ export default async function PricingPage() {
             <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
               {t('hero.overline')}
             </p>
-            <h1 className="text-[clamp(40px,5vw,64px)] font-bold text-text-primary leading-[1.08] max-w-3xl mx-auto">
+            <h1 className="text-[clamp(30px,5vw,64px)] font-bold text-text-primary leading-[1.08] max-w-3xl mx-auto">
               {t('hero.title')}
             </h1>
             <p className="text-text-secondary mt-4 text-lg max-w-xl mx-auto leading-relaxed">

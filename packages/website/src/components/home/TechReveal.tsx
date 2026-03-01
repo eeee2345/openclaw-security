@@ -15,7 +15,7 @@ export default function TechReveal() {
     <SectionWrapper>
       <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
 
-      <div className="grid md:grid-cols-3 gap-6 mt-14">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mt-14">
         {/* Detection Engine */}
         <FadeInUp delay={0}>
           <Card padding="lg" className="h-full">
