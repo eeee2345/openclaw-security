@@ -143,7 +143,7 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
     });
 
     it('should include notification channel in command', () => {
-      const channels = ['line', 'telegram', 'slack', 'email'];
+      const channels = ['telegram', 'slack', 'email'];
 
       for (const channel of channels) {
         const result = generateGuidanceResult({
@@ -227,7 +227,7 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
 
     it('should have notification setup options matching channels', () => {
       const step = getGuidanceStep('notification_setup')!;
-      expect(step.options!.length).toBe(4); // LINE, Telegram, Slack, Email
+      expect(step.options!.length).toBe(3); // Telegram, Slack, Email
     });
   });
 

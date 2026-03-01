@@ -150,7 +150,7 @@
       "copied": "已複製!",
       "badges": {
         "mit": "MIT 開源授權",
-        "tests": "1,446 測試通過",
+        "tests": "1,326 測試通過",
         "taiwan": "台灣製造"
       }
     },
@@ -345,7 +345,7 @@
         "subtitle": "因為資安不應該有門檻。",
         "desc": "MIT 授權。完整原始碼。零黑箱。每一行 code 都可以被稽核、被驗證、被改進。",
         "belief": "我們相信，打破資安門檻不是靠降價——是靠讓所有人都能參與。",
-        "proof": "1,446 項測試。TypeScript strict mode。MIT 授權。這不是 side project，這是基礎設施。"
+        "proof": "1,326 項測試。TypeScript strict mode。MIT 授權。這不是 side project，這是基礎設施。"
       }
     },
     "the3amStory": {
@@ -500,7 +500,7 @@
         },
         "security": {
           "title": "安全優先",
-          "desc": "1,446 項測試。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
+          "desc": "1,326 項測試。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
         },
         "privacy": {
           "title": "隱私優先設計",
@@ -609,7 +609,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "文件",
       "badge1": "MIT 開源授權",
-      "badge2": "1,446 測試通過",
+      "badge2": "1,326 測試通過",
       "badge3": "台灣製造"
     }
   },
@@ -1046,7 +1046,7 @@
       "title": "嚴謹打造",
       "stats": [
         {
-          "value": "1,446",
+          "value": "1,326",
           "label": "測試通過"
         },
         {
@@ -1176,7 +1176,7 @@
           "核心平台（Scan + Guard + Chat + Trap + Report）",
           "Threat Cloud v1",
           "3,149 條 Sigma + 4,326 條 YARA 規則",
-          "1,446 個自動化測試"
+          "1,326 個自動化測試"
         ]
       },
       "inProgress": {

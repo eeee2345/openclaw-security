@@ -37,25 +37,43 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return merged.sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Save or update a post in JSON storage */
+/**
+ * Save or update a post in JSON storage.
+ * On read-only filesystems (Vercel), this will throw with a descriptive error.
+ */
 export async function savePost(post: BlogPost): Promise<void> {
-  const posts = await readJsonPosts();
-  const idx = posts.findIndex((p) => p.slug === post.slug);
-  if (idx >= 0) {
-    posts[idx] = post;
-  } else {
-    posts.push(post);
+  try {
+    const posts = await readJsonPosts();
+    const idx = posts.findIndex((p) => p.slug === post.slug);
+    if (idx >= 0) {
+      posts[idx] = post;
+    } else {
+      posts.push(post);
+    }
+    await writeJsonPosts(posts);
+  } catch (err) {
+    throw new Error(
+      `Failed to save post: filesystem may be read-only (Vercel). Use a database or CMS for dynamic posts. ${err instanceof Error ? err.message : ''}`
+    );
   }
-  await writeJsonPosts(posts);
 }
 
-/** Delete a post from JSON storage (cannot delete static posts) */
+/**
+ * Delete a post from JSON storage (cannot delete static posts).
+ * On read-only filesystems (Vercel), this will throw with a descriptive error.
+ */
 export async function deletePost(slug: string): Promise<boolean> {
-  const posts = await readJsonPosts();
-  const filtered = posts.filter((p) => p.slug !== slug);
-  if (filtered.length === posts.length) return false;
-  await writeJsonPosts(filtered);
-  return true;
+  try {
+    const posts = await readJsonPosts();
+    const filtered = posts.filter((p) => p.slug !== slug);
+    if (filtered.length === posts.length) return false;
+    await writeJsonPosts(filtered);
+    return true;
+  } catch (err) {
+    throw new Error(
+      `Failed to delete post: filesystem may be read-only (Vercel). ${err instanceof Error ? err.message : ''}`
+    );
+  }
 }
 
 /** Check if a slug belongs to a static (hardcoded) post */

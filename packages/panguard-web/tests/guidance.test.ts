@@ -64,7 +64,7 @@ describe('Guidance Wizard', () => {
       const step = getGuidanceStep('notification_setup');
       expect(step).toBeDefined();
       expect(step!.options).toBeDefined();
-      expect(step!.options!.length).toBe(4);
+      expect(step!.options!.length).toBe(3);
     });
 
     it('should return undefined for unknown type', () => {

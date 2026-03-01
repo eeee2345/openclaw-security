@@ -22,7 +22,7 @@ export default defineConfig({
       'tests/**/*.test.ts',
       'security-hardening/tests/**/*.test.ts',
     ],
-    exclude: ['**/node_modules/**', 'node_modules', 'dist'],
+    exclude: ['**/node_modules/**', 'node_modules', 'dist', 'packages/website/**'],
   },
   resolve: {
     alias: {

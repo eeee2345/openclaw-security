@@ -212,7 +212,13 @@ describe('ManagerServer', () => {
     const res = await fetch(`http://localhost:${TEST_PORT}/api/rules/latest`);
     expect(res.status).toBe(200);
 
-    const data = (await res.json()) as { rules: unknown[] };
-    expect(Array.isArray(data.rules)).toBe(true);
+    const data = (await res.json()) as {
+      sigma: { count: number; rules: unknown[] };
+      yara: { count: number; rules: unknown[] };
+      updatedAt: string;
+    };
+    expect(Array.isArray(data.sigma.rules)).toBe(true);
+    expect(Array.isArray(data.yara.rules)).toBe(true);
+    expect(typeof data.updatedAt).toBe('string');
   });
 });

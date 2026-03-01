@@ -9,6 +9,10 @@ import {
   SSHTrapService,
   HTTPTrapService,
   GenericTrapService,
+  MySQLTrapService,
+  RedisTrapService,
+  SMBTrapService,
+  RDPTrapService,
 } from '../src/services/index.js';
 import type { TrapServiceConfig } from '../src/types.js';
 import { DEFAULT_SERVICE_CONFIGS } from '../src/types.js';
@@ -42,31 +46,31 @@ describe('createTrapService', () => {
     expect(service.serviceType).toBe('telnet');
   });
 
-  it('should create GenericTrapService for mysql type', () => {
+  it('should create MySQLTrapService for mysql type', () => {
     const config: TrapServiceConfig = { ...DEFAULT_SERVICE_CONFIGS.mysql, enabled: true };
     const service = createTrapService(config);
-    expect(service).toBeInstanceOf(GenericTrapService);
+    expect(service).toBeInstanceOf(MySQLTrapService);
     expect(service.serviceType).toBe('mysql');
   });
 
-  it('should create GenericTrapService for redis type', () => {
+  it('should create RedisTrapService for redis type', () => {
     const config: TrapServiceConfig = { ...DEFAULT_SERVICE_CONFIGS.redis, enabled: true };
     const service = createTrapService(config);
-    expect(service).toBeInstanceOf(GenericTrapService);
+    expect(service).toBeInstanceOf(RedisTrapService);
     expect(service.serviceType).toBe('redis');
   });
 
-  it('should create GenericTrapService for smb type', () => {
+  it('should create SMBTrapService for smb type', () => {
     const config: TrapServiceConfig = { ...DEFAULT_SERVICE_CONFIGS.smb, enabled: true };
     const service = createTrapService(config);
-    expect(service).toBeInstanceOf(GenericTrapService);
+    expect(service).toBeInstanceOf(SMBTrapService);
     expect(service.serviceType).toBe('smb');
   });
 
-  it('should create GenericTrapService for rdp type', () => {
+  it('should create RDPTrapService for rdp type', () => {
     const config: TrapServiceConfig = { ...DEFAULT_SERVICE_CONFIGS.rdp, enabled: true };
     const service = createTrapService(config);
-    expect(service).toBeInstanceOf(GenericTrapService);
+    expect(service).toBeInstanceOf(RDPTrapService);
     expect(service.serviceType).toBe('rdp');
   });
 });
@@ -108,7 +112,7 @@ describe('GenericTrapService', () => {
   });
 
   it('should initialize for all generic types', () => {
-    const genericTypes = ['ftp', 'telnet', 'mysql', 'redis', 'smb', 'rdp'] as const;
+    const genericTypes = ['ftp', 'telnet'] as const;
     for (const type of genericTypes) {
       const config: TrapServiceConfig = { ...DEFAULT_SERVICE_CONFIGS[type], enabled: true };
       const service = new GenericTrapService(config);

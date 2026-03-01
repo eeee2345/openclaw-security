@@ -114,7 +114,6 @@ describe('Platform Integrity', () => {
     });
 
     it('panguard-chat should export all channels', () => {
-      expect(panguardChat.LineChannel).toBeDefined();
       expect(panguardChat.TelegramChannel).toBeDefined();
       expect(panguardChat.SlackChannel).toBeDefined();
       expect(panguardChat.EmailChannel).toBeDefined();
