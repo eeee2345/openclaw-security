@@ -174,6 +174,13 @@ export interface DetectionResult {
   ruleMatches: Array<{ ruleId: string; ruleName: string; severity: Severity }>;
   threatIntelMatch?: { ip: string; threat: string };
   timestamp: string;
+  /** Attack chain correlation data (present when multiple events from same source detected) */
+  attackChain?: {
+    sourceIP: string;
+    eventCount: number;
+    ruleIds: string[];
+    windowMs: number;
+  };
 }
 
 // ===== Response =====

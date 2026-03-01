@@ -2607,7 +2607,9 @@
     "subscribe": "Subscribe",
     "emailPlaceholder": "you@company.com",
     "emailAriaLabel": "Email address",
-    "emptyFilter": "No entries match the selected filter."
+    "emptyFilter": "No entries match the selected filter.",
+    "subscribeSuccess": "Subscribed! You'll receive changelog updates in your inbox.",
+    "subscribeError": "Something went wrong. Please try again."
   },
   "resources": {
     "overline": "RESOURCES",
@@ -2624,6 +2626,7 @@
     "featured": "Featured",
     "watch": "Watch",
     "download": "Download",
+    "comingSoon": "Coming Soon",
     "noResources": "No resources in this category yet. Check back soon.",
     "newsletter": {
       "title": "Get Resources Delivered to Your Inbox",
@@ -2631,7 +2634,9 @@
       "subscribe": "Subscribe",
       "emailPlaceholder": "you@company.com",
       "emailAriaLabel": "Email address",
-      "note": "Join 2,000+ security-conscious engineers. Unsubscribe anytime."
+      "note": "Join 2,000+ security-conscious engineers. Unsubscribe anytime.",
+      "success": "Subscribed! You'll receive resources in your inbox.",
+      "error": "Something went wrong. Please try again."
     }
   },
   "integrations": {

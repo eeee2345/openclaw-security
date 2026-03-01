@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+
+type SubscribeStatus = 'idle' | 'loading' | 'success' | 'error';
 import {
   FileText,
   Video,
   Image as ImageIcon,
   Download,
-  ArrowRight,
   Mail,
   Send,
 } from 'lucide-react';
@@ -69,6 +70,8 @@ export default function ResourcesContent() {
   const locale = useLocale();
 
   const [activeType, setActiveType] = useState('All');
+  const [subscribeStatus, setSubscribeStatus] = useState<SubscribeStatus>('idle');
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const featuredResource = resources[0];
   const remainingResources = resources.slice(1);
@@ -77,10 +80,6 @@ export default function ResourcesContent() {
     activeType === 'All'
       ? remainingResources
       : remainingResources.filter((r) => r.type === activeType);
-
-  function ctaLabel(type: Resource['type']): string {
-    return type === 'Webinar' ? t('watch') : t('download');
-  }
 
   return (
     <>
@@ -122,9 +121,12 @@ export default function ResourcesContent() {
 
               {/* Right: CTA */}
               <div className="shrink-0 md:mt-4">
-                <button className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-6 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]">
+                <button
+                  disabled
+                  className="inline-flex items-center gap-2 bg-surface-2 border border-border text-text-muted font-semibold rounded-full px-6 py-3 cursor-not-allowed"
+                >
                   <Download className="w-4 h-4" />
-                  {ctaLabel(featuredResource.type)}
+                  {t('comingSoon')}
                 </button>
               </div>
             </div>
@@ -186,10 +188,9 @@ export default function ResourcesContent() {
                       <TypeIcon type={resource.type} className="w-3.5 h-3.5" />
                       <span>{resource.type}</span>
                     </div>
-                    <button className="flex items-center gap-1 text-brand-sage text-sm font-semibold group-hover:gap-2 transition-all duration-200">
-                      {ctaLabel(resource.type)}
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    <span className="text-text-muted text-sm font-semibold">
+                      {t('comingSoon')}
+                    </span>
                   </div>
                 </div>
               </FadeInUp>
@@ -211,25 +212,53 @@ export default function ResourcesContent() {
         </FadeInUp>
         <FadeInUp delay={0.1}>
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const email = emailRef.current?.value?.trim();
+              if (!email) return;
+              setSubscribeStatus('loading');
+              try {
+                const res = await fetch('/api/waitlist', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email, source: 'resources-newsletter' }),
+                });
+                if (!res.ok) throw new Error('Failed');
+                setSubscribeStatus('success');
+                if (emailRef.current) emailRef.current.value = '';
+              } catch {
+                setSubscribeStatus('error');
+              }
+            }}
             className="flex flex-col sm:flex-row items-center gap-3 mt-8 max-w-md mx-auto"
           >
             <input
+              ref={emailRef}
               type="email"
               placeholder={t('newsletter.emailPlaceholder')}
               aria-label={t('newsletter.emailAriaLabel')}
               className="w-full sm:flex-1 bg-surface-2 border border-border rounded-full px-5 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
               required
+              disabled={subscribeStatus === 'loading'}
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-6 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] shrink-0"
+              disabled={subscribeStatus === 'loading'}
+              className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-6 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] shrink-0 disabled:opacity-60"
             >
-              {t('newsletter.subscribe')}
+              {subscribeStatus === 'loading' ? '...' : t('newsletter.subscribe')}
               <Send className="w-4 h-4" />
             </button>
           </form>
-          <p className="text-xs text-text-muted text-center mt-3">{t('newsletter.note')}</p>
+          {subscribeStatus === 'success' && (
+            <p className="text-brand-sage text-sm text-center mt-3">{t('newsletter.success')}</p>
+          )}
+          {subscribeStatus === 'error' && (
+            <p className="text-status-danger text-sm text-center mt-3">{t('newsletter.error')}</p>
+          )}
+          {subscribeStatus === 'idle' && (
+            <p className="text-xs text-text-muted text-center mt-3">{t('newsletter.note')}</p>
+          )}
         </FadeInUp>
       </SectionWrapper>
     </>

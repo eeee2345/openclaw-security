@@ -40,22 +40,4 @@ export const pressItems: PressItem[] = [
     excerpt:
       'Panguard Trap, the intelligent honeypot system that studies attacker behavior with AI, is now available in public beta.',
   },
-  {
-    slug: 'techcrunch-coverage',
-    title: 'The Startup Making Enterprise Security Accessible to Everyone',
-    type: 'coverage',
-    source: 'TechCrunch',
-    date: '2026-01-20',
-    excerpt:
-      'Panguard AI is betting that the future of cybersecurity is not more complex tools, but simpler ones that speak human.',
-  },
-  {
-    slug: 'wired-ai-security',
-    title: 'How AI Is Reshaping Endpoint Security for Small Teams',
-    type: 'coverage',
-    source: 'Wired',
-    date: '2025-12-15',
-    excerpt:
-      'A new generation of AI security startups, including Panguard AI, is bringing CrowdStrike-level protection to teams of five.',
-  },
 ];

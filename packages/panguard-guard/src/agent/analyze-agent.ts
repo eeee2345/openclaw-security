@@ -1,12 +1,11 @@
 /**
- * Analyze Agent - Threat analysis with Dynamic Reasoning and Context Memory
- * 分析代理 - 使用動態推理和 Context Memory 進行威脅分析
+ * Analyze Agent - Threat analysis with Dynamic Reasoning, Feedback Loop, and Attack Chain Awareness
+ * 分析代理 - 使用動態推理、回饋迴路和攻擊鏈感知進行威脅分析
  *
  * Second stage of the multi-agent pipeline. Receives DetectionResults,
  * performs deep analysis using rule evidence, baseline comparison,
- * and optional AI reasoning, then produces a ThreatVerdict.
- * 多代理管線的第二階段。接收偵測結果，使用規則證據、基線比較和
- * 可選的 AI 推理進行深度分析，然後產生威脅判決。
+ * attack chain correlation, feedback history, and optional AI reasoning,
+ * then produces a ThreatVerdict.
  *
  * @module @panguard-ai/panguard-guard/agent/analyze-agent
  */
@@ -27,7 +26,7 @@ import { checkDeviation } from '../memory/baseline.js';
 
 const logger = createLogger('panguard-guard:analyze-agent');
 
-/** Severity to base confidence mapping / 嚴重度到基礎信心度映射 */
+/** Severity to base confidence mapping */
 const SEVERITY_CONFIDENCE: Record<string, number> = {
   critical: 90,
   high: 75,
@@ -36,90 +35,126 @@ const SEVERITY_CONFIDENCE: Record<string, number> = {
   info: 15,
 };
 
+/** Feedback record for false positive/negative tracking */
+interface FeedbackRecord {
+  ruleId: string;
+  falsePositives: number;
+  truePositives: number;
+  lastUpdated: string;
+}
+
+/** Time-of-day risk multiplier for unusual hours */
+const UNUSUAL_HOUR_MULTIPLIER = 1.15;
+
+/** Attack chain confidence boost per correlated event */
+const ATTACK_CHAIN_BOOST_PER_EVENT = 5;
+
+/** Max attack chain boost */
+const ATTACK_CHAIN_BOOST_MAX = 25;
+
 /**
  * Analyze Agent performs deep analysis on detected threats
- * 分析代理對偵測到的威脅執行深度分析
+ * with feedback-driven confidence adjustment and attack chain awareness.
  */
 export class AnalyzeAgent {
   private readonly llm: AnalyzeLLM | null;
   private analysisCount = 0;
 
-  /**
-   * @param llm - Optional LLM provider for AI analysis / 可選的 LLM 供應商用於 AI 分析
-   */
+  /** Feedback history: ruleId → FeedbackRecord */
+  private readonly feedbackHistory = new Map<string, FeedbackRecord>();
+
   constructor(llm: AnalyzeLLM | null) {
     this.llm = llm;
   }
 
   /**
    * Analyze a detection result and produce a verdict
-   * 分析偵測結果並產生判決
    *
    * Evidence collection pipeline:
-   * 1. Sigma rule match evidence (weighted 0.4)
+   * 1. Sigma rule match evidence (weighted 0.4) with feedback adjustment
    * 2. Threat intelligence evidence
-   * 3. Baseline deviation check (weighted 0.3)
-   * 4. AI analysis if available (weighted 0.3)
-   * 5. Calculate final weighted confidence
-   * 6. Determine conclusion and recommended action
-   *
-   * 證據收集管線：
-   * 1. Sigma 規則比對證據（權重 0.4）
-   * 2. 威脅情報證據
-   * 3. 基線偏離檢查（權重 0.3）
-   * 4. AI 分析（如可用）（權重 0.3）
-   * 5. 計算最終加權信心度
-   * 6. 決定結論和建議動作
-   *
-   * @param detection - The detection result to analyze / 要分析的偵測結果
-   * @param baseline - Current environment baseline / 當前環境基線
-   * @returns ThreatVerdict with conclusion and evidence / 包含結論和證據的威脅判決
+   * 3. Baseline deviation check (weighted 0.3) with time-of-day awareness
+   * 4. Attack chain correlation boost
+   * 5. AI analysis if available (weighted 0.3)
+   * 6. Calculate final weighted confidence
+   * 7. Determine conclusion and recommended action
    */
   async analyze(detection: DetectionResult, baseline: EnvironmentBaseline): Promise<ThreatVerdict> {
-    logger.info(
-      `Analyzing detection for event ${detection.event.id} / ` +
-        `分析事件 ${detection.event.id} 的偵測結果`
-    );
+    logger.info(`Analyzing detection for event ${detection.event.id}`);
     this.analysisCount++;
 
     const evidenceList: Evidence[] = [];
 
-    // Step 1: Collect rule match evidence / 步驟 1: 收集規則比對證據
+    // Step 1: Collect rule match evidence with feedback adjustment
     for (const match of detection.ruleMatches) {
+      const baseConfidence = SEVERITY_CONFIDENCE[match.severity] ?? 50;
+      const adjustedConfidence = this.applyFeedbackAdjustment(match.ruleId, baseConfidence);
+
       evidenceList.push({
         source: 'rule_match',
-        description:
-          `Sigma rule matched: ${match.ruleName} (${match.ruleId}) / ` +
-          `Sigma 規則比對: ${match.ruleName}`,
-        confidence: SEVERITY_CONFIDENCE[match.severity] ?? 50,
+        description: `Sigma rule matched: ${match.ruleName} (${match.ruleId})`,
+        confidence: adjustedConfidence,
         data: { ruleId: match.ruleId, severity: match.severity },
       });
     }
 
-    // Step 2: Collect threat intel evidence / 步驟 2: 收集威脅情報證據
+    // Step 2: Collect threat intel evidence
     if (detection.threatIntelMatch) {
       evidenceList.push({
         source: 'threat_intel',
         description:
           `Known malicious IP: ${detection.threatIntelMatch.ip} - ` +
-          `${detection.threatIntelMatch.threat} / 已知惡意 IP`,
+          detection.threatIntelMatch.threat,
         confidence: 85,
         data: detection.threatIntelMatch,
       });
     }
 
-    // Step 3: Baseline deviation check / 步驟 3: 基線偏離檢查
+    // Step 3: Baseline deviation check with time-of-day awareness
     const deviation: DeviationResult = checkDeviation(baseline, detection.event);
     if (deviation.isDeviation) {
+      let deviationConfidence = deviation.confidence;
+
+      // Boost confidence if event occurs at unusual hour (00:00-05:59)
+      const eventHour = new Date(detection.event.timestamp).getHours();
+      if (eventHour >= 0 && eventHour < 6) {
+        deviationConfidence = Math.min(100, Math.round(deviationConfidence * UNUSUAL_HOUR_MULTIPLIER));
+      }
+
       evidenceList.push({
         source: 'baseline_deviation',
         description: deviation.description,
-        confidence: deviation.confidence,
-        data: { deviationType: deviation.deviationType },
+        confidence: deviationConfidence,
+        data: {
+          deviationType: deviation.deviationType,
+          ...(eventHour >= 0 && eventHour < 6 ? { unusualHour: true, hour: eventHour } : {}),
+        },
       });
     }
 
-    // Step 4: AI analysis (if available) / 步驟 4: AI 分析（如可用）
+    // Step 4: Attack chain correlation boost
+    if (detection.attackChain) {
+      const chainBoost = Math.min(
+        ATTACK_CHAIN_BOOST_MAX,
+        detection.attackChain.eventCount * ATTACK_CHAIN_BOOST_PER_EVENT
+      );
+
+      evidenceList.push({
+        source: 'rule_match', // counts toward rule weight
+        description:
+          `Attack chain detected: ${detection.attackChain.eventCount} correlated events ` +
+          `from ${detection.attackChain.sourceIP} within ${detection.attackChain.windowMs / 1000}s`,
+        confidence: Math.min(95, 70 + chainBoost),
+        data: {
+          attackChain: true,
+          eventCount: detection.attackChain.eventCount,
+          sourceIP: detection.attackChain.sourceIP,
+          uniqueRules: detection.attackChain.ruleIds.length,
+        },
+      });
+    }
+
+    // Step 5: AI analysis (if available)
     let aiAnalysis: LLMAnalysisResult | null = null;
     let aiClassification: LLMClassificationResult | null = null;
 
@@ -141,23 +176,31 @@ export class AnalyzeAgent {
             },
           });
         } else {
-          logger.info(
-            'AI unavailable, using rule-based analysis only / ' + 'AI 不可用，僅使用規則式分析'
-          );
+          logger.info('AI unavailable, using rule-based analysis only');
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
-        logger.error(`AI analysis failed: ${msg} / AI 分析失敗: ${msg}`);
+        logger.error(`AI analysis failed: ${msg}`);
       }
     }
 
-    // Step 5: Calculate final confidence (weighted average)
-    // 步驟 5: 計算最終信心度（加權平均）
+    // Step 6: Calculate final confidence (weighted average)
     const hasAI = this.llm !== null && aiAnalysis !== null;
-    const finalConfidence = calculateFinalConfidence(evidenceList, hasAI);
+    let finalConfidence = calculateFinalConfidence(evidenceList, hasAI);
 
-    // Step 6: Determine conclusion and recommended action
-    // 步驟 6: 決定結論和建議動作
+    // Contradiction detection: if rule says high but baseline says normal, slight reduce
+    const hasHighRule = evidenceList.some(
+      (e) => e.source === 'rule_match' && e.confidence >= 70 && !(e.data as Record<string, unknown>)?.['attackChain']
+    );
+    const noDeviation = !deviation.isDeviation;
+    if (hasHighRule && noDeviation && baseline.learningComplete) {
+      finalConfidence = Math.max(0, finalConfidence - 10);
+      logger.info(
+        `Contradiction: high rule match but no baseline deviation. Confidence reduced by 10.`
+      );
+    }
+
+    // Step 7: Determine conclusion and recommended action
     const conclusion = determineConclusion(finalConfidence);
     const recommendedAction = determineAction(finalConfidence, detection);
 
@@ -171,41 +214,88 @@ export class AnalyzeAgent {
     };
 
     logger.info(
-      `Verdict for event ${detection.event.id}: ${conclusion} ` +
-        `(confidence: ${finalConfidence}%) / ` +
-        `事件 ${detection.event.id} 判決: ${conclusion} ` +
-        `(信心度: ${finalConfidence}%)`
+      `Verdict for event ${detection.event.id}: ${conclusion} (confidence: ${finalConfidence}%)`
     );
 
     return verdict;
   }
 
+  // ---------------------------------------------------------------------------
+  // Feedback Loop
+  // ---------------------------------------------------------------------------
+
   /**
-   * Get total analysis count / 取得分析總數
+   * Record user feedback: mark a verdict as false positive or true positive.
+   * This adjusts future confidence for the same rule.
    */
+  recordFeedback(ruleId: string, isFalsePositive: boolean): void {
+    const existing = this.feedbackHistory.get(ruleId) ?? {
+      ruleId,
+      falsePositives: 0,
+      truePositives: 0,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    if (isFalsePositive) {
+      existing.falsePositives += 1;
+    } else {
+      existing.truePositives += 1;
+    }
+    existing.lastUpdated = new Date().toISOString();
+
+    this.feedbackHistory.set(ruleId, existing);
+    logger.info(
+      `Feedback recorded for rule ${ruleId}: ` +
+        `FP=${existing.falsePositives}, TP=${existing.truePositives}`
+    );
+  }
+
+  /**
+   * Apply feedback adjustment to rule confidence.
+   * Rules with high false positive rate get reduced confidence.
+   * Rules with high true positive rate get boosted confidence.
+   */
+  private applyFeedbackAdjustment(ruleId: string, baseConfidence: number): number {
+    const feedback = this.feedbackHistory.get(ruleId);
+    if (!feedback) return baseConfidence;
+
+    const total = feedback.falsePositives + feedback.truePositives;
+    if (total < 3) return baseConfidence; // Not enough data
+
+    const fpRate = feedback.falsePositives / total;
+
+    // High FP rate → reduce confidence (max -30%)
+    // Low FP rate → boost confidence (max +10%)
+    if (fpRate > 0.5) {
+      const reduction = Math.min(30, Math.round(fpRate * 40));
+      return Math.max(10, baseConfidence - reduction);
+    }
+
+    if (fpRate < 0.1 && total >= 5) {
+      const boost = Math.min(10, Math.round((1 - fpRate) * 10));
+      return Math.min(100, baseConfidence + boost);
+    }
+
+    return baseConfidence;
+  }
+
+  /**
+   * Get feedback statistics
+   */
+  getFeedbackStats(): Map<string, FeedbackRecord> {
+    return new Map(this.feedbackHistory);
+  }
+
+  /** Get total analysis count */
   getAnalysisCount(): number {
     return this.analysisCount;
   }
 }
 
 // ---------------------------------------------------------------------------
-// Internal scoring functions / 內部評分函數
+// Internal scoring functions
 // ---------------------------------------------------------------------------
 
-/**
- * Calculate final confidence from all evidence
- * 從所有證據計算最終信心度
- *
- * Weights:
- * - rule_match / threat_intel: 0.4
- * - baseline_deviation: 0.3
- * - ai_analysis: 0.3 (redistributed to rules+baseline if no AI)
- *
- * 權重：
- * - 規則比對 / 威脅情報: 0.4
- * - 基線偏離: 0.3
- * - AI 分析: 0.3（無 AI 時重新分配至規則+基線）
- */
 function calculateFinalConfidence(evidence: Evidence[], hasAI: boolean): number {
   const bySource = groupBySource(evidence);
 
@@ -218,33 +308,26 @@ function calculateFinalConfidence(evidence: Evidence[], hasAI: boolean): number 
     maxConfidence(bySource['suricata'])
   );
 
-  // Use max of rule match and threat intel for the "rule" weight
-  // 使用規則比對和威脅情報的最大值作為「規則」權重
   const ruleScore = Math.max(ruleConfidence, threatIntelConfidence);
   const hasEbpf = ebpfConfidence > 0;
 
   if (hasEbpf && hasAI) {
-    // eBPF + AI: 20% eBPF, 30% rule, 20% baseline, 30% AI
     return Math.round(
       ebpfConfidence * 0.2 + ruleScore * 0.3 + baselineConfidence * 0.2 + aiConfidence * 0.3
     );
   }
 
   if (hasEbpf) {
-    // eBPF without AI: 25% eBPF, 40% rule, 35% baseline
     return Math.round(ebpfConfidence * 0.25 + ruleScore * 0.4 + baselineConfidence * 0.35);
   }
 
   if (hasAI) {
-    // With AI: 40% rule, 30% baseline, 30% AI
     return Math.round(ruleScore * 0.4 + baselineConfidence * 0.3 + aiConfidence * 0.3);
   }
 
-  // Without AI: 60% rule, 40% baseline
   return Math.round(ruleScore * 0.6 + baselineConfidence * 0.4);
 }
 
-/** Group evidence by source type / 按來源類型分組證據 */
 function groupBySource(evidence: Evidence[]): Record<string, Evidence[]> {
   const result: Record<string, Evidence[]> = {};
   for (const e of evidence) {
@@ -257,34 +340,25 @@ function groupBySource(evidence: Evidence[]): Record<string, Evidence[]> {
   return result;
 }
 
-/** Get maximum confidence from a list of evidence / 從證據列表中取得最大信心度 */
 function maxConfidence(items?: Evidence[]): number {
   if (!items || items.length === 0) return 0;
   return Math.max(...items.map((e) => e.confidence));
 }
 
-/**
- * Determine verdict conclusion based on confidence
- * 根據信心度決定判決結論
- */
 function determineConclusion(confidence: number): 'benign' | 'suspicious' | 'malicious' {
   if (confidence >= 75) return 'malicious';
   if (confidence >= 40) return 'suspicious';
   return 'benign';
 }
 
-/**
- * Determine recommended response action based on confidence and detection context
- * 根據信心度和偵測上下文決定建議的回應動作
- */
 function determineAction(confidence: number, detection: DetectionResult): ResponseAction {
-  // Critical severity rules always recommend stronger actions
-  // 嚴重（critical）級別的規則總是建議更強的動作
   const hasCritical = detection.ruleMatches.some((m) => m.severity === 'critical');
+  const hasAttackChain = !!detection.attackChain;
 
-  if (confidence >= 85 || (hasCritical && confidence >= 70)) {
-    // High confidence: take source-appropriate action
-    // 高信心度：採取與來源適當的動作
+  // Attack chains lower the auto-respond threshold
+  const autoThreshold = hasAttackChain ? 75 : 85;
+
+  if (confidence >= autoThreshold || (hasCritical && confidence >= 70)) {
     if (detection.event.source === 'network' || detection.event.source === 'suricata')
       return 'block_ip';
     if (detection.event.source === 'process' || detection.event.source === 'falco')
@@ -296,12 +370,9 @@ function determineAction(confidence: number, detection: DetectionResult): Respon
   return 'log_only';
 }
 
-/**
- * Build analysis prompt for LLM / 建立 LLM 分析提示
- */
 function buildAnalysisPrompt(detection: DetectionResult, deviation: DeviationResult): string {
   const parts: string[] = [
-    'Security Event Analysis / 安全事件分析',
+    'Security Event Analysis',
     `Event: ${detection.event.description}`,
     `Source: ${detection.event.source}`,
     `Severity: ${detection.event.severity}`,
@@ -322,15 +393,17 @@ function buildAnalysisPrompt(detection: DetectionResult, deviation: DeviationRes
     parts.push(`Baseline Deviation: ${deviation.description}`);
   }
 
+  if (detection.attackChain) {
+    parts.push(
+      `Attack Chain: ${detection.attackChain.eventCount} correlated events from ${detection.attackChain.sourceIP}`
+    );
+  }
+
   parts.push('Analyze the threat level and provide recommendations.');
 
   return parts.join('\n');
 }
 
-/**
- * Build human-readable reasoning from collected evidence
- * 從收集的證據建立人類可讀的推理
- */
 function buildReasoning(
   evidence: Evidence[],
   _deviation: DeviationResult,
