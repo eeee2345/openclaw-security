@@ -2,10 +2,10 @@
  * Generic TCP Honeypot Service
  * 通用 TCP 蜜罐服務
  *
- * Handles FTP, Telnet, MySQL, Redis, SMB, and RDP protocols
- * with protocol-specific banners and basic interaction simulation.
- * 處理 FTP、Telnet、MySQL、Redis、SMB 和 RDP 協定，
- * 提供協定專屬橫幅和基本互動模擬。
+ * Handles text-based protocols (FTP, Telnet) with enhanced command
+ * simulation, MITRE ATT&CK detection, and realistic interaction.
+ *
+ * Binary protocols (MySQL, Redis, SMB, RDP) have dedicated service files.
  *
  * @module @panguard-ai/panguard-trap/services/generic-trap
  */
@@ -18,245 +18,390 @@ const logger = createLogger('panguard-trap:service:generic');
 
 // ---------------------------------------------------------------------------
 // Protocol Handlers
-// 協定處理器
 // ---------------------------------------------------------------------------
 
-/** Protocol handler interface / 協定處理器介面 */
 interface ProtocolHandler {
-  /** Welcome banner / 歡迎橫幅 */
-  getBanner(config: TrapServiceConfig): string;
-  /** Handle input and return response / 處理輸入並回傳回應 */
-  handleInput(input: string, state: ConnectionState): string | null;
-  /** MITRE technique for initial access / 初始存取的 MITRE 技術 */
+  getBanner(config: TrapServiceConfig): Buffer;
+  handleInput(input: string, state: ConnectionState): HandleResult;
   initialTechnique: string;
 }
 
-/** Connection state / 連線狀態 */
+interface HandleResult {
+  response: string | null; // null = disconnect
+  mitre?: string[];        // techniques to add
+  eventType?: 'exploit_attempt' | 'file_upload' | 'file_download';
+}
+
 interface ConnectionState {
   authenticated: boolean;
   authAttempts: number;
   username?: string;
+  cwd: string;
+  pasv: boolean;
 }
 
-/** FTP protocol handler / FTP 協定處理器 */
+// ---------------------------------------------------------------------------
+// Telnet IAC negotiation bytes (sent before banner)
+// ---------------------------------------------------------------------------
+
+const TELNET_IAC = Buffer.from([
+  0xff, 0xfb, 0x01, // IAC WILL ECHO
+  0xff, 0xfb, 0x03, // IAC WILL SUPPRESS-GO-AHEAD
+  0xff, 0xfd, 0x18, // IAC DO TERMINAL-TYPE
+  0xff, 0xfd, 0x1f, // IAC DO NAWS (window size)
+]);
+
+// ---------------------------------------------------------------------------
+// FTP MITRE patterns
+// ---------------------------------------------------------------------------
+
+const FTP_MITRE_PATTERNS: [RegExp, string][] = [
+  [/STOR\s+.*\.(php|jsp|asp|sh|py|pl|cgi)/i, 'T1505.003'], // Web shell upload
+  [/STOR\s+.*\.(exe|dll|bat|ps1|vbs|msi)/i, 'T1105'],       // Ingress tool transfer
+  [/RETR\s+.*(passwd|shadow|\.ssh|\.env|\.htaccess|\.git)/i, 'T1005'], // Data from local system
+  [/SITE\s+EXEC/i, 'T1059'],           // Command execution
+  [/SITE\s+CHMOD\s+777/i, 'T1222'],    // File permission modification
+  [/MKD\s+\.\./i, 'T1083'],            // Directory traversal
+  [/CWD\s+\.\./i, 'T1083'],
+  [/DELE\s+/i, 'T1485'],               // Data destruction
+  [/RMD\s+/i, 'T1485'],
+];
+
+// ---------------------------------------------------------------------------
+// Telnet MITRE patterns (post-auth shell commands)
+// ---------------------------------------------------------------------------
+
+const TELNET_MITRE_PATTERNS: [RegExp, string][] = [
+  [/wget\s|curl\s/i, 'T1105'],                   // Ingress tool transfer
+  [/chmod\s+777/i, 'T1222'],                      // File permission modification
+  [/\/etc\/(shadow|passwd)/i, 'T1003'],            // OS credential dumping
+  [/crontab/i, 'T1053'],                          // Scheduled task
+  [/base64\s+-d|echo.*\|\s*(sh|bash)/i, 'T1140'], // Deobfuscation
+  [/\bnc\b|\bnetcat\b/i, 'T1571'],                // Non-standard port
+  [/iptables\s+-D/i, 'T1562'],                    // Impair defenses
+  [/rm\s+-rf\s+\//i, 'T1485'],                    // Data destruction
+  [/xmrig|minerd|cryptonight/i, 'T1496'],         // Resource hijacking
+  [/ssh-keygen|authorized_keys/i, 'T1098'],        // Account manipulation
+  [/\buname\b|\bwhoami\b|\bid\b/i, 'T1082'],      // System information discovery
+  [/ifconfig|ip\s+addr/i, 'T1016'],               // System network configuration
+  [/\bps\b\s+(aux|ef)/i, 'T1057'],                // Process discovery
+  [/cat\s+\/etc\/passwd/i, 'T1087'],              // Account discovery
+  [/find\s+.*-perm/i, 'T1083'],                   // File & directory discovery
+];
+
+// ---------------------------------------------------------------------------
+// Fake shell responses for Telnet post-auth
+// ---------------------------------------------------------------------------
+
+const FAKE_SHELL_RESPONSES: Record<string, string> = {
+  'id': 'uid=1000(admin) gid=1000(admin) groups=1000(admin),27(sudo)',
+  'whoami': 'admin',
+  'uname -a': 'Linux server 5.15.0-91-generic #101-Ubuntu SMP Tue Nov 14 13:30:08 UTC 2023 x86_64 GNU/Linux',
+  'uname': 'Linux',
+  'hostname': 'prod-web-01',
+  'uptime': ' 14:32:01 up 42 days, 3:17, 1 user, load average: 0.08, 0.03, 0.01',
+  'pwd': '/home/admin',
+  'ls': 'backup.tar.gz  deploy.sh  logs  www',
+  'ls -la': 'total 32\ndrwxr-xr-x 4 admin admin 4096 Jan 15 10:00 .\ndrwxr-xr-x 3 root  root  4096 Jan  1 00:00 ..\n-rw------- 1 admin admin  512 Jan 15 10:30 .bash_history\n-rw-r--r-- 1 admin admin 8192 Jan 14 12:00 backup.tar.gz\n-rwxr-xr-x 1 admin admin  512 Jan 12 08:00 deploy.sh\ndrwxr-xr-x 2 admin admin 4096 Jan 15 10:00 logs\ndrwxr-xr-x 5 www-data www-data 4096 Jan 10 14:00 www',
+  'cat /etc/passwd': 'root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nadmin:x:1000:1000:admin:/home/admin:/bin/bash\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nmysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/false',
+  'ifconfig': 'eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255',
+  'ps aux': 'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1 169024 11264 ?        Ss   Jan01   0:05 /sbin/init\nadmin     1234  0.0  0.0   8072  4096 pts/0    Ss   14:32   0:00 -bash\nwww-data  5678  0.0  0.5 256000 40960 ?        S    Jan10   1:23 nginx: worker',
+  'w': ' 14:32:01 up 42 days,  3:17,  1 user,  load average: 0.08, 0.03, 0.01\nUSER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT\nadmin    pts/0    10.0.2.2         14:32    0.00s  0.01s  0.00s w',
+  'df -h': 'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   12G   35G  26% /\ntmpfs           2.0G     0  2.0G   0% /dev/shm',
+  'free -m': '              total        used        free      shared  buff/cache   available\nMem:           3951        1024         512         128        2415        2600\nSwap:          2048           0        2048',
+  'netstat -tlnp': 'Proto Recv-Q Send-Q Local Address     Foreign Address   State       PID/Program\ntcp        0      0 0.0.0.0:22        0.0.0.0:*         LISTEN      845/sshd\ntcp        0      0 0.0.0.0:80        0.0.0.0:*         LISTEN      5678/nginx\ntcp        0      0 127.0.0.1:3306    0.0.0.0:*         LISTEN      1122/mysqld',
+  'cat /etc/os-release': 'NAME="Ubuntu"\nVERSION="22.04.3 LTS (Jammy Jellyfish)"\nID=ubuntu\nVERSION_ID="22.04"',
+};
+
+// ---------------------------------------------------------------------------
+// FTP Protocol Handler (enhanced)
+// ---------------------------------------------------------------------------
+
 const ftpHandler: ProtocolHandler = {
   initialTechnique: 'T1110',
+
   getBanner(config) {
-    return config.banner ?? '220 ProFTPD 1.3.8 Server (Panguard) [::ffff:0.0.0.0]\r\n';
+    const banner = config.banner ?? '220 ProFTPD 1.3.8 Server (Panguard) [::ffff:0.0.0.0]\r\n';
+    return Buffer.from(banner, 'utf-8');
   },
-  handleInput(input, state) {
-    const cmd = input.trim().toUpperCase();
+
+  handleInput(input, state): HandleResult {
     const parts = input.trim().split(' ');
     const command = parts[0]?.toUpperCase() ?? '';
     const arg = parts.slice(1).join(' ');
 
+    // MITRE detection
+    const mitre: string[] = [];
+    for (const [pattern, technique] of FTP_MITRE_PATTERNS) {
+      if (pattern.test(input)) {
+        mitre.push(technique);
+      }
+    }
+
+    // Pre-auth commands
     if (command === 'USER') {
       state.username = arg;
-      return `331 Password required for ${arg}\r\n`;
+      return { response: `331 Password required for ${arg}\r\n` };
     }
     if (command === 'PASS') {
       state.authAttempts++;
       if (state.authAttempts >= 3) {
         state.authenticated = true;
-        return `230 User ${state.username ?? 'anonymous'} logged in\r\n`;
+        return {
+          response: `230 User ${state.username ?? 'anonymous'} logged in\r\n`,
+          mitre: ['T1078'], // Valid accounts
+        };
       }
-      return '530 Login incorrect.\r\n';
+      return { response: '530 Login incorrect.\r\n' };
     }
     if (command === 'QUIT' || command === 'EXIT') {
-      return null; // signal disconnect
+      return { response: null };
     }
+    if (command === 'FEAT') {
+      return { response: '211-Features:\r\n PASV\r\n UTF8\r\n SIZE\r\n MDTM\r\n211 End\r\n' };
+    }
+    if (command === 'AUTH' && arg.toUpperCase() === 'TLS') {
+      return { response: '534 TLS not available\r\n' };
+    }
+
     if (!state.authenticated) {
-      return '530 Please login with USER and PASS.\r\n';
+      return { response: '530 Please login with USER and PASS.\r\n' };
     }
+
     // Post-auth commands
-    if (command === 'LIST' || command === 'LS') {
-      return '150 Opening data connection\r\n-rw-r--r-- 1 admin admin 8192 Jan 14 backup.tar.gz\r\n-rwxr-xr-x 1 admin admin  512 Jan 12 deploy.sh\r\n226 Transfer complete\r\n';
+    switch (command) {
+      case 'LIST':
+      case 'NLST':
+      case 'LS':
+        return {
+          response: '150 Opening ASCII mode data connection for file list\r\n'
+            + '-rw-r--r-- 1 admin admin   8192 Jan 14 12:00 backup.tar.gz\r\n'
+            + '-rwxr-xr-x 1 admin admin    512 Jan 12 08:00 deploy.sh\r\n'
+            + 'drwxr-xr-x 2 admin admin   4096 Jan 15 10:00 logs\r\n'
+            + 'drwxr-xr-x 5 www-data www-data 4096 Jan 10 14:00 www\r\n'
+            + '-rw-r--r-- 1 admin admin  16384 Jan 13 09:00 database.sql\r\n'
+            + '-rw------- 1 admin admin    256 Jan 11 07:00 .env\r\n'
+            + '226 Transfer complete\r\n',
+        };
+
+      case 'PWD':
+        return { response: `257 "${state.cwd}" is current directory\r\n` };
+
+      case 'CWD':
+        if (arg.includes('..')) {
+          const parent = state.cwd.split('/').slice(0, -1).join('/') || '/';
+          state.cwd = parent;
+        } else if (arg.startsWith('/')) {
+          state.cwd = arg;
+        } else {
+          state.cwd = `${state.cwd}/${arg}`.replace(/\/+/g, '/');
+        }
+        return { response: `250 CWD command successful. "${state.cwd}"\r\n`, mitre };
+
+      case 'TYPE':
+        return { response: `200 Type set to ${arg === 'A' ? 'A' : 'I'}\r\n` };
+
+      case 'PASV':
+        state.pasv = true;
+        // Fake PASV response (address doesn't matter - honeypot)
+        return { response: '227 Entering Passive Mode (10,0,2,15,156,64)\r\n' };
+
+      case 'PORT':
+        return { response: '200 PORT command successful\r\n' };
+
+      case 'SYST':
+        return { response: '215 UNIX Type: L8\r\n' };
+
+      case 'SIZE':
+        return { response: `213 ${Math.floor(Math.random() * 50000)}\r\n` };
+
+      case 'MDTM':
+        return { response: '213 20250115120000\r\n' };
+
+      case 'RETR':
+        return {
+          response: '150 Opening BINARY mode data connection\r\n550 Permission denied\r\n',
+          mitre,
+          eventType: 'file_download',
+        };
+
+      case 'STOR':
+        return {
+          response: '150 Opening BINARY mode data connection\r\n226 Transfer complete\r\n',
+          mitre,
+          eventType: 'file_upload',
+        };
+
+      case 'DELE':
+        return { response: `250 DELE command successful. "${arg}"\r\n`, mitre };
+
+      case 'MKD':
+        return { response: `257 "${arg}" directory created\r\n`, mitre };
+
+      case 'RMD':
+        return { response: `250 RMD command successful. "${arg}"\r\n`, mitre };
+
+      case 'SITE':
+        return { response: '200 SITE command ok\r\n', mitre };
+
+      case 'STAT':
+        return {
+          response: '211-Status of ProFTPD 1.3.8\r\n'
+            + ` Connected to ${state.username ?? 'anonymous'}\r\n`
+            + ` Working directory: ${state.cwd}\r\n`
+            + '211 End of status\r\n',
+        };
+
+      case 'HELP':
+        return {
+          response: '214-The following commands are recognized:\r\n'
+            + ' USER PASS QUIT LIST PWD CWD TYPE PASV PORT SYST SIZE MDTM RETR STOR DELE MKD RMD STAT HELP FEAT NLST SITE\r\n'
+            + '214 Help OK.\r\n',
+        };
+
+      case 'NOOP':
+        return { response: '200 NOOP ok\r\n' };
+
+      default:
+        return { response: `500 '${command}': command not understood\r\n` };
     }
-    if (command === 'PWD') {
-      return '257 "/home/admin" is current directory\r\n';
-    }
-    if (cmd === 'SYST') {
-      return '215 UNIX Type: L8\r\n';
-    }
-    return `500 '${command}': command not understood\r\n`;
   },
 };
 
-/** Telnet protocol handler / Telnet 協定處理器 */
+// ---------------------------------------------------------------------------
+// Telnet Protocol Handler (enhanced with IAC and shell simulation)
+// ---------------------------------------------------------------------------
+
 const telnetHandler: ProtocolHandler = {
   initialTechnique: 'T1110',
+
   getBanner(config) {
     const os = config.banner ?? 'Ubuntu 22.04 LTS';
-    return `\r\n${os}\r\nlogin: `;
+    const textBanner = Buffer.from(`\r\n${os}\r\nlogin: `, 'utf-8');
+    return Buffer.concat([TELNET_IAC, textBanner]);
   },
-  handleInput(input, state) {
-    const trimmed = input.trim();
+
+  handleInput(input, state): HandleResult {
+    // Strip any IAC sequences from client input
+    const trimmed = input.replace(/\xff[\xfb\xfc\xfd\xfe]./g, '').trim();
+    if (!trimmed) return { response: '' };
+
+    // Pre-auth: username
     if (!state.username) {
       state.username = trimmed;
-      return 'Password: ';
+      return { response: 'Password: ' };
     }
+
+    // Pre-auth: password
     if (!state.authenticated) {
       state.authAttempts++;
       if (state.authAttempts >= 3) {
         state.authenticated = true;
-        return `\r\nWelcome to Ubuntu 22.04 LTS\r\nLast login: Mon Jan 15 10:30:00 2025\r\n${state.username}@server:~$ `;
+        return {
+          response: `\r\nWelcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-91-generic x86_64)\r\n\r\n`
+            + ` * Documentation:  https://help.ubuntu.com\r\n`
+            + ` * Management:     https://landscape.canonical.com\r\n`
+            + `\r\nLast login: Mon Jan 15 10:30:00 2025 from 10.0.2.2\r\n`
+            + `${state.username}@prod-web-01:~$ `,
+          mitre: ['T1078'], // Valid accounts
+        };
       }
       state.username = undefined;
-      return '\r\nLogin incorrect\r\nlogin: ';
+      return { response: '\r\nLogin incorrect\r\nlogin: ' };
     }
+
+    // Post-auth: shell simulation
     if (trimmed === 'exit' || trimmed === 'quit' || trimmed === 'logout') {
-      return null;
+      return { response: null };
     }
-    return `bash: ${trimmed.split(' ')[0]}: command not found\r\n${state.username}@server:~$ `;
-  },
-};
 
-/** MySQL protocol handler / MySQL 協定處理器 */
-const mysqlHandler: ProtocolHandler = {
-  initialTechnique: 'T1110',
-  getBanner(config) {
-    const version = config.banner ?? '5.7.42-0ubuntu0.18.04.1';
-    // Simplified MySQL greeting (not actual protocol, text-based simulation)
-    return `Welcome to the MySQL monitor. Server version: ${version}\r\nType 'help;' for help.\r\n\r\nmysql> `;
-  },
-  handleInput(input, _state) {
-    const trimmed = input.trim().replace(/;$/, '');
-    const upper = trimmed.toUpperCase();
-
-    if (upper === 'EXIT' || upper === 'QUIT' || upper === '\\Q') {
-      return null;
-    }
-    if (upper === 'HELP' || upper === '\\H') {
-      return 'For information about MySQL products, visit: https://www.mysql.com\r\nmysql> ';
-    }
-    if (upper.startsWith('SELECT')) {
-      return 'ERROR 1045 (28000): Access denied for user\r\nmysql> ';
-    }
-    if (upper.startsWith('SHOW')) {
-      if (upper.includes('DATABASES')) {
-        return '+--------------------+\r\n| Database           |\r\n+--------------------+\r\n| information_schema |\r\n| mysql              |\r\n| performance_schema |\r\n| webapp             |\r\n+--------------------+\r\n4 rows in set\r\nmysql> ';
-      }
-      if (upper.includes('TABLES')) {
-        return '+-------------------+\r\n| Tables_in_webapp  |\r\n+-------------------+\r\n| users             |\r\n| sessions          |\r\n| orders            |\r\n+-------------------+\r\n3 rows in set\r\nmysql> ';
+    // MITRE detection
+    const mitre: string[] = [];
+    for (const [pattern, technique] of TELNET_MITRE_PATTERNS) {
+      if (pattern.test(trimmed)) {
+        mitre.push(technique);
       }
     }
-    if (
-      upper.startsWith('DROP') ||
-      upper.startsWith('DELETE') ||
-      upper.startsWith('INSERT') ||
-      upper.startsWith('UPDATE')
-    ) {
-      return 'ERROR 1142 (42000): command denied to user\r\nmysql> ';
-    }
-    return `ERROR 1064 (42000): You have an error in your SQL syntax near '${trimmed.slice(0, 20)}'\r\nmysql> `;
-  },
-};
 
-/** Redis protocol handler / Redis 協定處理器 */
-const redisHandler: ProtocolHandler = {
-  initialTechnique: 'T1190',
-  getBanner() {
-    return ''; // Redis has no banner
-  },
-  handleInput(input, _state) {
-    const trimmed = input.trim();
-    const upper = trimmed.toUpperCase();
-    const parts = trimmed.split(' ');
-    const cmd = parts[0]?.toUpperCase() ?? '';
-
-    if (cmd === 'QUIT') return null;
-    if (cmd === 'PING') return '+PONG\r\n';
-    if (cmd === 'INFO') {
-      return '$redis_version:6.2.14\r\nos:Linux 5.15.0-91-generic x86_64\r\nused_memory:1024000\r\nconnected_clients:1\r\n';
+    // Check fake shell responses
+    const exactResponse = FAKE_SHELL_RESPONSES[trimmed];
+    if (exactResponse) {
+      return {
+        response: `${exactResponse}\r\n${state.username}@prod-web-01:${state.cwd}$ `,
+        mitre: mitre.length > 0 ? mitre : undefined,
+      };
     }
-    if (cmd === 'CONFIG') {
-      if (upper.includes('SET')) {
-        return '-ERR CONFIG SET is disabled\r\n';
+
+    // Pattern-based responses
+    const cmd = trimmed.split(' ')[0] ?? '';
+
+    if (cmd === 'cd') {
+      const dir = trimmed.split(' ')[1] ?? '/home/admin';
+      if (dir === '~' || dir === '') {
+        state.cwd = '~';
+      } else if (dir === '..') {
+        state.cwd = state.cwd === '~' ? '/' : '~';
+      } else {
+        state.cwd = dir;
       }
-      return '+OK\r\n';
+      return {
+        response: `${state.username}@prod-web-01:${state.cwd}$ `,
+        mitre: mitre.length > 0 ? mitre : undefined,
+      };
     }
-    if (cmd === 'KEYS') {
-      return '*3\r\n$7\r\nsession\r\n$5\r\ncache\r\n$4\r\nuser\r\n';
-    }
-    if (cmd === 'GET') {
-      return '$-1\r\n'; // nil
-    }
-    if (cmd === 'SET' || cmd === 'DEL') {
-      return "-READONLY You can't write against a read only replica.\r\n";
-    }
-    if (cmd === 'SLAVEOF' || cmd === 'REPLICAOF') {
-      return '-ERR not allowed\r\n';
-    }
-    if (cmd === 'EVAL' || cmd === 'SCRIPT') {
-      return '-ERR scripting is disabled\r\n';
-    }
-    return `-ERR unknown command '${cmd}'\r\n`;
-  },
-};
 
-/** SMB protocol handler (simplified) / SMB 協定處理器（簡化版） */
-const smbHandler: ProtocolHandler = {
-  initialTechnique: 'T1021.002',
-  getBanner() {
-    return 'SMB server ready. Authentication required.\r\nUsername: ';
-  },
-  handleInput(input, state) {
-    const trimmed = input.trim();
-    if (!state.username) {
-      state.username = trimmed;
-      return 'Password: ';
+    if (cmd === 'echo') {
+      const output = trimmed.slice(5);
+      return {
+        response: `${output}\r\n${state.username}@prod-web-01:${state.cwd}$ `,
+        mitre: mitre.length > 0 ? mitre : undefined,
+      };
     }
-    if (!state.authenticated) {
-      state.authAttempts++;
-      if (state.authAttempts >= 3) {
-        state.authenticated = true;
-        return '\r\nAuthenticated. Available shares:\r\n  \\\\SERVER\\Public\r\n  \\\\SERVER\\Admin$\r\n  \\\\SERVER\\IPC$\r\n> ';
+
+    if (cmd === 'cat') {
+      const file = trimmed.split(' ')[1] ?? '';
+      const known = FAKE_SHELL_RESPONSES[`cat ${file}`];
+      if (known) {
+        return {
+          response: `${known}\r\n${state.username}@prod-web-01:${state.cwd}$ `,
+          mitre: mitre.length > 0 ? mitre : undefined,
+        };
       }
-      state.username = undefined;
-      return '\r\nAccess denied.\r\nUsername: ';
+      return {
+        response: `cat: ${file}: No such file or directory\r\n${state.username}@prod-web-01:${state.cwd}$ `,
+        mitre: mitre.length > 0 ? mitre : undefined,
+      };
     }
-    if (trimmed === 'exit' || trimmed === 'quit') return null;
-    return 'Access denied to resource.\r\n> ';
+
+    if (cmd === 'wget' || cmd === 'curl') {
+      return {
+        response: `--2025-01-15 14:32:05--\r\nConnecting... failed: Connection refused.\r\n${state.username}@prod-web-01:${state.cwd}$ `,
+        mitre: ['T1105', ...mitre],
+        eventType: 'exploit_attempt',
+      };
+    }
+
+    // Generic "command not found" for unknown commands
+    return {
+      response: `bash: ${cmd}: command not found\r\n${state.username}@prod-web-01:${state.cwd}$ `,
+      mitre: mitre.length > 0 ? mitre : undefined,
+    };
   },
 };
 
-/** RDP protocol handler (simplified) / RDP 協定處理器（簡化版） */
-const rdpHandler: ProtocolHandler = {
-  initialTechnique: 'T1021.001',
-  getBanner() {
-    return 'Remote Desktop Protocol - Connection Established\r\nCredential prompt sent.\r\n';
-  },
-  handleInput(input, state) {
-    const trimmed = input.trim();
-    if (!state.username) {
-      state.username = trimmed;
-      return 'Password: ';
-    }
-    state.authAttempts++;
-    state.username = undefined;
-    return 'Authentication failed. NLA Error: CredSSP.\r\nUsername: ';
-  },
-};
+// ---------------------------------------------------------------------------
+// Handler Registry (FTP + Telnet only; other protocols have dedicated files)
+// ---------------------------------------------------------------------------
 
-/** Protocol handler registry / 協定處理器註冊表 */
 const PROTOCOL_HANDLERS: Partial<Record<TrapServiceType, ProtocolHandler>> = {
   ftp: ftpHandler,
   telnet: telnetHandler,
-  mysql: mysqlHandler,
-  redis: redisHandler,
-  smb: smbHandler,
-  rdp: rdpHandler,
 };
 
 // ---------------------------------------------------------------------------
 // Generic Trap Service
-// 通用蜜罐服務
 // ---------------------------------------------------------------------------
 
-/**
- * Generic TCP trap service that handles multiple protocols
- * 處理多種協定的通用 TCP 蜜罐服務
- */
 export class GenericTrapService extends BaseTrapService {
   private server: ReturnType<typeof import('node:net').createServer> | null = null;
   private readonly handler: ProtocolHandler;
@@ -272,14 +417,10 @@ export class GenericTrapService extends BaseTrapService {
 
   protected async doStart(): Promise<void> {
     const net = await import('node:net');
-    this.server = net.createServer((socket) => {
-      this.handleConnection(socket);
-    });
+    this.server = net.createServer((socket) => this.handleConnection(socket));
 
     return new Promise((resolve, reject) => {
-      this.server!.listen(this.config.port, () => {
-        resolve();
-      });
+      this.server!.listen(this.config.port, () => resolve());
       this.server!.on('error', reject);
     });
   }
@@ -304,20 +445,21 @@ export class GenericTrapService extends BaseTrapService {
     const state: ConnectionState = {
       authenticated: false,
       authAttempts: 0,
+      cwd: '/home/admin',
+      pasv: false,
     };
 
-    // Send banner
+    // Send banner (may include binary IAC bytes for Telnet)
     const banner = this.handler.getBanner(this.config);
-    if (banner) {
+    if (banner.length > 0) {
       socket.write(banner);
     }
 
-    // Set timeout
     const timeout = this.config.sessionTimeoutMs ?? 30_000;
     socket.setTimeout(timeout);
 
     socket.on('data', (data: Buffer) => {
-      const input = data.toString();
+      const input = data.toString('utf-8');
       const lines = input.split('\n').filter(Boolean);
 
       for (const line of lines) {
@@ -330,7 +472,7 @@ export class GenericTrapService extends BaseTrapService {
             session.sessionId,
             state.username,
             trimmed,
-            state.authAttempts >= 2 // will grant on next attempt
+            state.authAttempts >= 2
           );
         }
 
@@ -339,10 +481,23 @@ export class GenericTrapService extends BaseTrapService {
           this.recordCommand(session.sessionId, trimmed);
         }
 
-        const response = this.handler.handleInput(trimmed, state);
+        const result = this.handler.handleInput(trimmed, state);
 
-        if (response === null) {
-          // Disconnect signal
+        // Add MITRE techniques
+        if (result.mitre) {
+          for (const t of result.mitre) {
+            this.addMitreTechnique(session.sessionId, t);
+          }
+        }
+
+        // Record exploit events
+        if (result.eventType) {
+          this.recordEvent(session.sessionId, result.eventType, trimmed, {
+            mitre: result.mitre,
+          });
+        }
+
+        if (result.response === null) {
           socket.end();
           return;
         }
@@ -350,9 +505,9 @@ export class GenericTrapService extends BaseTrapService {
         const delay = this.config.responseDelayMs ?? 100;
         setTimeout(() => {
           try {
-            socket.write(response);
+            socket.write(result.response!);
           } catch {
-            // socket may be closed
+            // socket closed
           }
         }, delay);
       }
@@ -363,10 +518,7 @@ export class GenericTrapService extends BaseTrapService {
       socket.end();
     });
 
-    socket.on('close', () => {
-      this.endSession(session.sessionId);
-    });
-
+    socket.on('close', () => this.endSession(session.sessionId));
     socket.on('error', (err) => {
       logger.debug(`${this.serviceType} socket error: ${err.message}`);
       this.endSession(session.sessionId);
