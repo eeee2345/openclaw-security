@@ -136,491 +136,388 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "AI 時代的資安防護。",
-      "title": "企業級資安防護，從來不是為你打造的。",
-      "titleLine2": "我們來改變這件事。",
-      "subtitle1": "Panguard 是開源 AI 資安平台。無論你是獨立開發者、成長中的新創，還是百人企業——都能擁有過去只有大型組織才負擔得起的防護能力。",
-      "subtitle2": "一行指令安裝。四個 AI Agent 自主偵測、分析、回應威脅，一秒內完成。",
-      "subtitle3": "不需要資安團隊。不需要六位數合約。安裝即防護。",
-      "getStarted": "免費掃描伺服器",
+      "eyebrow": "資安革命",
+      "title": "資安不再是特權。",
+      "subtitle": "一行指令，每個開發者、每間小公司，都能擁有企業級防護。",
+      "boldLine": "開源。AI 驅動。免費開始。",
+      "getStarted": "開始使用",
       "github": "GitHub",
-      "copied": "已複製！",
+      "copied": "已複製!",
       "badges": {
         "mit": "MIT 開源授權",
-        "tests": "1,107 項測試通過",
+        "tests": "1,107 測試通過",
         "taiwan": "台灣製造"
       }
     },
-    "painPoint": {
-      "line1": "你的 AI 剛把一個 API 部署到 VPS。",
-      "line2": "三分鐘後，全世界的掃描器都找到了它。",
-      "line3": "SSH 暴力破解。開放的 Port。過期的 SSL。",
-      "line4": "你的 AI 不知道。你也不知道。",
-      "line5": "直到你的資料庫出現在暗網上。"
-    },
-    "flip": {
-      "part1": "其他資安工具偵測到威脅\n然後給你一個儀表板。",
-      "part2a": "Panguard 偵測到威脅",
-      "part2b": "然後修復它。",
-      "part2c": "再用你聽得懂的語言告訴你發生了什麼。",
-      "part3a": "沒有儀表板。沒有警報面板。沒有任何需要人類去點擊的東西。",
-      "part3b": "你的 Agent 下指令。我們的 Agent 防禦。",
-      "tagline": "Agent to Agent.",
-      "dashboard": "儀表板",
-      "autoFixed": "已自動修復",
-      "yourAgent": "你的 Agent"
-    },
-    "cliShowcase": {
-      "overline": "實際運作",
-      "title": "你的 Agent 看到的畫面。",
-      "subtitle": "沒有 Dashboard。不需要點擊。你的 Agent 下指令，Panguard 防禦。",
-      "callout": "注意第一行：已自動修復。"
-    },
-    "socialProof": {
-      "overline": "數字會說話",
-      "title": "公開透明。以程式碼驗證。",
-      "subtitle": "以下每個數字都可以在程式碼庫中驗證。沒有虛榮指標——只有工程事實。",
-      "stat1": "3,158",
-      "stat1Label": "Sigma 偵測規則",
-      "stat2": "425",
-      "stat2Label": "YARA 規則",
-      "stat3": "8",
-      "stat3Label": "蜜罐協定",
-      "stat4": "1,107",
-      "stat4Label": "測試通過",
-      "stat5": "4+1",
-      "stat5Label": "AI Agent + 調查引擎",
-      "stat6": "3",
-      "stat6Label": "偵測層",
-      "stat7": "6",
-      "stat7Label": "產品模組",
-      "stat8": "MIT",
-      "stat8Label": "開源授權",
-      "footnote": "每個數字都可以在 GitHub 上驗證。",
-      "githubLink": "查看原始碼 →"
-    },
-    "comparison": {
-      "overline": "為什麼選 Panguard",
-      "title": "你不需要儀表板。你需要結果。",
-      "subtitle": "其他工具偵測威脅後給你一個儀表板。Panguard 偵測、回應、還跟你解釋。",
-      "feature": "功能",
-      "crowdstrike": "CrowdStrike Falcon Go",
-      "defender": "Microsoft Defender",
-      "panguard": "Panguard AI",
-      "price": "價格",
-      "afterDetection": "偵測之後",
-      "reporting": "報告",
-      "developerPlan": "開發者方案",
-      "aiChat": "AI 對話",
-      "csPrice": "$59.99/裝置/年",
-      "csAfter": "顯示警報 → 自行處理",
-      "csReporting": "技術報告",
-      "defPrice": "M365 內含",
-      "defAfter": "顯示警報 → 自行處理",
-      "defReporting": "技術報告",
-      "pgPrice": "每月 $9 起",
-      "pgAfter": "自動回應 + 解釋",
-      "pgReporting": "「本週：阻擋 3,158 次。你很安全。」",
-      "quote": "「Falcon Go 是監視器。Panguard 是保全公司 -- 有監視器、有人在看、有人在處理、還有人在報告。」"
-    },
-    "cta": {
-      "title": "60 秒。免費。不需要帳號。",
-      "subtitle": "立即掃描任何伺服器或網域。",
-      "curlLabel": "在你的伺服器上安裝：",
-      "orScanOnline": "或者現在就掃描一個網域：",
-      "scanPlaceholder": "輸入網域（例如 example.com）",
-      "scanButton": "掃描",
-      "scanning": "掃描中...",
-      "scanError": "無法掃描此目標。請確認網域後重試。",
-      "score": "安全分數",
-      "grade": "等級",
-      "findings": "發現項目",
-      "openPorts": "開放的 Port",
-      "ssl": "SSL 憑證",
-      "sslValid": "有效",
-      "sslInvalid": "無效",
-      "sslExpires": "{days} 天後到期",
-      "noSsl": "未偵測到",
-      "scanAnother": "掃描另一個",
-      "privacyNote": "掃描結果不會被儲存。你的隱私受到保護。",
-      "freeScanButton": "免費掃描",
-      "noIssues": "未發現任何問題",
-      "copied": "已複製！"
-    },
-    "vision": {
-      "line1": "我們相信一件事：",
-      "line2": "資安的未來不會發生在瀏覽器裡。",
-      "line3": "它會發生在你的 Agent 和我們的 Agent 之間。",
-      "line4": "純文字。純邏輯。純防禦。",
-      "line5": "Panguard 是第一個為這個未來打造的資安平台。",
-      "badge1": "MIT 開源",
-      "badge2": "1,107 項測試通過",
-      "badge3": "台灣製造",
-      "btnGithub": "GitHub",
-      "btnDocs": "技術文件",
-      "btnScan": "免費掃描",
-      "btnEarlyAccess": "搶先體驗"
-    },
-    "techReveal": {
-      "overline": "技術揭露",
-      "title": "引擎蓋下面是什麼。",
-      "subtitle": "完全透明。每一行程式碼都可以在 GitHub 上審計。",
-      "detection": {
-        "title": "偵測引擎",
-        "sigma": "3,158 Sigma 規則",
-        "sigmaDesc": "業界標準威脅偵測語言",
-        "yara": "425 YARA 規則",
-        "yaraDesc": "惡意程式指紋比對",
-        "cve": "CVE 資料庫",
-        "cveDesc": "即時同步 NVD 漏洞資訊"
-      },
-      "defense": {
-        "title": "防禦架構",
-        "subtitle": "三層防禦漏斗",
-        "layer1": "Layer 1：規則引擎",
-        "layer1Desc": "即時比對已知威脅模式。< 50ms 回應。",
-        "layer2": "Layer 2：本地 AI",
-        "layer2Desc": "Ollama 離線分析。雲端斷線也能防禦。",
-        "layer3": "Layer 3：雲端 AI",
-        "layer3Desc": "Claude / GPT 深度分析。未知威脅零日分析。"
-      },
-      "pipeline": {
-        "title": "AI 分析管線",
-        "subtitle": "4 個專業 Agent + 調查引擎",
-        "agents": ["偵測 Agent", "分析 Agent", "回應 Agent", "報告 Agent", "對話 Agent"],
-        "desc": "每個 Agent 專注一件事。協同運作，自動決策。"
-      },
-      "githubCta": "不相信我們？查看原始碼"
-    },
-    "threeSteps": {
-      "overline": "快速開始",
-      "title": "三步驟開始防護。",
-      "tabs": {
-        "website": "我有一個網站",
-        "developer": "我是開發者",
-        "business": "我是中小企業"
-      },
-      "website": {
-        "step1Title": "輸入你的網域",
-        "step1Desc": "在上方輸入你的網址，按「掃描」",
-        "step2Title": "收到安全報告",
-        "step2Desc": "60 秒內收到 PDF 報告。用中文告訴你哪裡有問題、嚴重程度、怎麼修。",
-        "step3Title": "一行指令安裝防護",
-        "step3Desc": "把報告裡的安裝指令貼到你的伺服器。Panguard 自動幫你修復問題，持續防護。",
-        "cta": "掃描你的網域"
-      },
-      "developer": {
-        "step1Title": "安裝",
-        "step1Desc": "curl -fsSL https://get.panguard.ai | bash\n30 秒完成，零設定。",
-        "step2Title": "掃描 + 啟動防護",
-        "step2Desc": "panguard scan → 看到所有漏洞\npanguard guard start → 開始即時防護",
-        "step3Title": "接上你的 Agent",
-        "step3Desc": "在你的 AI Agent 中呼叫 Panguard API。你的 Agent 現在有了資安顧問。",
-        "cta": "查看安裝文件"
-      },
-      "business": {
-        "step1Title": "免費安全評估",
-        "step1Desc": "輸入你的公司網域，我們免費掃描。收到完整安全報告 + 風險評分。",
-        "step2Title": "一鍵部署到所有端點",
-        "step2Desc": "一行指令裝到所有伺服器。Guard 自動偵測 + 自動回應 + 自動通知。",
-        "step3Title": "自動合規",
-        "step3Desc": "panguard report --framework iso27001\n自動產出 ISO 27001 / SOC 2 / 資通安全管理法報告。再也不用花 $5,000 請顧問。",
-        "cta": "申請免費安全評估"
+    "industryProblem": {
+      "title": "資安產業有一個骲髒的祕密。",
+      "p1": "全世界每年花 2,000 億美金在資安上。但這些錢保護的是誰？Fortune 500。銀行。政府。",
+      "p2": "而你——一個三人新創、一個 freelance 開發者、一個剛拿到第一批客戶的電商——你什麼都沒有。",
+      "p3": "不是因為你不在乎安全。是因為安全從來不是為你設計的。",
+      "p4": "企業級方案年費六位數美金起跳。而且還需要一整支團隊來操作。",
+      "emphasis": "這個產業把資安變成了奢侈品。在 AI agent 每秒都在被部署的世界裡，這是不可接受的。",
+      "stats": {
+        "attacks": "每 39 秒一次攻擊",
+        "smb": "60% 中小企業在被攻擊後 6 個月內倒閉",
+        "cost": "平均損失 $4.35M"
       }
+    },
+    "threeRoads": {
+      "title": "你可能想過這個問題。",
+      "subtitle": "大多數團隊嘗試三種方法。其中兩種行不通。",
+      "columns": {
+        "diy": "自己來",
+        "consultant": "請顧問",
+        "panguard": "Panguard"
+      },
+      "rows": {
+        "setup": {
+          "label": "建置時間",
+          "diy": "數週",
+          "consultant": "數月",
+          "panguard": "60 秒"
+        },
+        "cost": {
+          "label": "每月費用",
+          "diy": "$0（但你的時間）",
+          "consultant": "$2,000+",
+          "panguard": "免費開始"
+        },
+        "monitoring": {
+          "label": "24/7 監控",
+          "diy": "你需要睡覺",
+          "consultant": "看合約",
+          "panguard": "AI，永遠在線"
+        },
+        "response": {
+          "label": "自動回應",
+          "diy": "no",
+          "consultant": "no",
+          "panguard": "yes"
+        },
+        "learning": {
+          "label": "學習你的環境",
+          "diy": "no",
+          "consultant": "no",
+          "panguard": "7 天學習期"
+        },
+        "compliance": {
+          "label": "合規報告",
+          "diy": "no",
+          "consultant": "$10,000+",
+          "panguard": "從 $299 起"
+        },
+        "scales": {
+          "label": "隨你擴展",
+          "diy": "no",
+          "consultant": "no",
+          "panguard": "yes"
+        }
+      },
+      "cta": "試試 60 秒建置"
+    },
+    "redefine": {
+      "line1": "所有人都在問：",
+      "line2": "「怎麼做出更好的資安產品？」",
+      "line3": "我們問了一個不同的問題：",
+      "question": "「如果資安是基礎設施，而不是產品呢？」"
+    },
+    "showMuscle": {
+      "team": {
+        "overline": "你會得到什麼",
+        "title": "一行指令，部署一支五人 AI 資安團隊。",
+        "subtitle": "一支同等配置的人類團隊年成本超過 NT$600 萬。Panguard 從 $0 開始。",
+        "roles": [
+          {
+            "role": "SOC 分析師",
+            "product": "Guard + Chat",
+            "desc": "全天候偵測、回應、通報"
+          },
+          {
+            "role": "滲透測試工程師",
+            "product": "Scan",
+            "desc": "在攻擊者之前找到漏洞"
+          },
+          {
+            "role": "合規專員",
+            "product": "Report",
+            "desc": "資安法、ISO 27001、SOC 2"
+          },
+          {
+            "role": "威脅情報分析師",
+            "product": "Trap",
+            "desc": "引誘攻擊者，分析攻擊手法"
+          },
+          {
+            "role": "偵測規則工程師",
+            "product": "Threat Cloud",
+            "desc": "從真實攻擊自動產生偵測規則"
+          }
+        ],
+        "footer": "5 個角色、6 個產品、1 行指令。從 $0/月 開始"
+      },
+      "funnel": {
+        "title": "90% 的威脅不需要 AI。",
+        "desc": "資安產業希望你相信一切都需要機器學習。真相是：90% 的攻擊符合已知模式。規則引擎在 50 毫秒內就攞截了。AI 只處理剩下的 10%。雲端掛了？本地 AI 接手。你的防護永遠不會歸零。",
+        "layers": [
+          {
+            "pct": 90,
+            "label": "規則引擎",
+            "sub": "Sigma + YARA + Suricata",
+            "speed": "<50ms"
+          },
+          {
+            "pct": 7,
+            "label": "本地 AI",
+            "sub": "Ollama 在你的 GPU 上。離線。私密。",
+            "speed": "~2s"
+          },
+          {
+            "pct": 3,
+            "label": "雲端 AI",
+            "sub": "只在需要時才用。$0.008/次分析",
+            "speed": "~5s"
+          }
+        ],
+        "fallback": "雲端掛了→本地 AI。本地也掛了→規則引擎永遠在跑。防護永不中斷。"
+      },
+      "confidence": {
+        "title": "夠聯明會行動。夠誠實會先問。",
+        "levels": [
+          {
+            "threshold": ">90%",
+            "color": "green",
+            "action": "自動執行。封鎖 IP、終止程序、隔離檔案。"
+          },
+          {
+            "threshold": "70–90%",
+            "color": "yellow",
+            "action": "先問你。「要封鎖嗎？這是我找到的。」"
+          },
+          {
+            "threshold": "<70%",
+            "color": "gray",
+            "action": "只通知你。「有點不對勁。這是證據。」"
+          }
+        ],
+        "footer": "凌晨三點，你不會希望 AI 做一個它只有 65% 把握的決定。"
+      }
+    },
+    "threatCloud": {
+      "overline": "最後一件事",
+      "title": "越多人用，每個人都越安全。",
+      "desc": "每一個 Panguard 實例都是一個感測器。當它偵測到新的攻擊，會匿名把攻擊模式分享給 Threat Cloud。Threat Cloud 自動產生新的 Sigma 偵測規則，推送給全球每一個 Panguard 用戶。",
+      "descHighlight": "你不只是被保護的人。你是防護的一部分。",
+      "privacy": "只有匿名化的威脅特徵離開你的機器。零原始數據。零遙測。傳輸全程加密（TLS 1.3）。你的日誌、原始碼、資料——永遠不會外洩。你隨時可以關掉 Threat Cloud。Community 版也能完全離線運行。",
+      "steps": [
+        {
+          "label": "偵測到攻擊",
+          "sub": "在你的伺服器上"
+        },
+        {
+          "label": "產生規則",
+          "sub": "由 Threat Cloud 處理"
+        },
+        {
+          "label": "所有用戶受保護",
+          "sub": "全球，幾分鐘內"
+        }
+      ],
+      "flywheel": {
+        "center": "每個用戶都讓所有人更安全。",
+        "nodes": [
+          "開源免費下載",
+          "更多用戶安裝",
+          "更多 Threat Cloud 攻擊數據",
+          "更強的偵測規則",
+          "社群防護更強"
+        ]
+      },
+      "openSource": {
+        "title": "為什麼開源？",
+        "subtitle": "因為資安不應該有圍牆。",
+        "desc": "MIT 授權。完整原始碼。零黑箱。每一行程式碼都可以被稽核、被驗證、被改進。",
+        "belief": "我們相信，打破資安門檻不是靠降價——是靠讓所有人都能參與。",
+        "proof": "1,107 項測試。TypeScript strict mode。MIT 授權。這不是 side project。這是基礎設施。"
+      }
+    },
+    "the3amStory": {
+      "title": "凌晨三點。你的伺服器正在被攻擊。",
+      "subtitle": "你要到早上才會知道。除非已經有東西在看守。",
+      "leftTitle": "沒有 Panguard",
+      "rightTitle": "有 Panguard",
+      "left1": {
+        "time": "3:00 AM",
+        "text": "SSH 暴力破解攻擊從 103.xx.xx.xx 開始"
+      },
+      "left2": {
+        "time": "3:02 AM",
+        "text": "攻擊者用弱密碼取得權限"
+      },
+      "left3": {
+        "time": "3:05 AM",
+        "text": "橫向移動開始。提權成功。"
+      },
+      "left4": {
+        "time": "3:15 AM",
+        "text": "資料外洩開始。客戶資料庫被複製。"
+      },
+      "left5": {
+        "time": "3:30 AM",
+        "text": "勒索軟體部署。檔案被加密。"
+      },
+      "left6": {
+        "time": "7:00 AM",
+        "text": "你醒來了。檢查 Slack。一切正常。"
+      },
+      "left7": {
+        "time": "9:00 AM",
+        "text": "客戶打來：「我登不進去。」你發現被入侵了。"
+      },
+      "leftOutcome": "6 小時未被發現。50,000 筆客戶資料外洩。平均損失 $4.35M。",
+      "right1": {
+        "time": "3:00 AM",
+        "text": "SSH 暴力破解被第一層偵測到（Sigma 規則匹配）"
+      },
+      "right2": {
+        "time": "3:00 AM",
+        "text": "IP 自動封鎖。Threat Cloud 已通知。"
+      },
+      "right3": {
+        "time": "3:01 AM",
+        "text": "攻擊模式分享給全球所有 Panguard 用戶"
+      },
+      "right4": {
+        "time": "3:01 AM",
+        "text": "LINE 通知送到你手機，附完整事件摘要"
+      },
+      "right5": {
+        "time": "3:02 AM",
+        "text": "事件已記錄。證據快照已儲存。"
+      },
+      "lineLabel": "Panguard AI via LINE",
+      "lineMessage": "已封鎖 SSH 暴力破解來源 103.xx.xx.xx。IP 已禁止。未存取任何資料。一切安全。",
+      "stillSleeping": "你還在睡。"
     },
     "useCases": {
       "overline": "使用場景",
-      "title": "他們為什麼用 Panguard。",
-      "cases": {
-        "saas": {
-          "persona": "SaaS 新創，12 人團隊",
-          "quote": "最大的客戶寄來一份 200 題的資安問卷。我們慌了。顧問公司報價兩萬美金、要六個月。我們用 Panguard Scan 跑了 60 秒，產出 ISO 27001 差距分析，寄回一份 40 頁的 PDF 附證據包。客戶當週就簽約了。",
-          "used": "Scan + Report（NT$14,970）",
-          "saved": "拿下價值 $180K ARR 的合約"
+      "title": "真實場景。真實結果。",
+      "scenarios": [
+        {
+          "type": "個人開發者",
+          "detail": "8 台伺服器，一個人管",
+          "pain": "以前每天早上 SSH 進每台伺服器看 log。",
+          "result": "Panguard 看著全部 8 台。4 分鐘抓到挖礦程式。他在睡覺。",
+          "products": "GUARD + TRAP + CHAT",
+          "cost": "NT$870/月",
+          "saved": "每週省下 15 小時"
         },
-        "ecommerce": {
-          "persona": "電商公司，一人創辦",
-          "quote": "凌晨兩點，Panguard Guard 偵測到三個不同 IP 的 SSH 暴力攻擊。它自動封鎖了全部三個 IP、透過 LINE 通知我，AI 代理用白話解釋了發生什麼事。我吃早餐時才看到。以前的話，要等到客戶投訴才會發現。",
-          "used": "Guard + Chat（NT$270/月）",
-          "saved": "安裝後零停機事件"
+        {
+          "type": "SaaS 新創",
+          "detail": "12 人團隊",
+          "pain": "大客戶丟了 200 題資安問卷。團隊嚇壞了。",
+          "result": "跑了 Panguard Scan。寄回 40 頁 ISO 27001 報告。當週簽約。",
+          "products": "SCAN + REPORT",
+          "cost": "NT$14,970",
+          "saved": "簽下 NT$540 萬年約"
         },
-        "taiwan": {
-          "persona": "台灣軟體公司，30 人",
-          "quote": "要投標政府案子，需要符合資通安全管理法。顧問公司報價 30 萬台幣、要 3 個月。我們裝了 Panguard，跑合規掃描，拿到一份對應台灣資安法 50 項控制措施的稽核報告。標案順利通過。總花費：NT$8,970。",
-          "used": "Report（資安法框架）",
+        {
+          "type": "台灣中小企業",
+          "detail": "30 人，政府標案",
+          "pain": "需要資安法合規。顧問報價三十萬加三個月。",
+          "result": "Panguard Report：NT$8,970，60 秒，50 個控制項。",
+          "products": "REPORT (ISMS)",
+          "cost": "NT$8,970",
           "saved": "省了 NT$291,000 和 3 個月"
         },
-        "freelance": {
-          "persona": "Freelance DevOps，管 8 台伺服器",
-          "quote": "以前每天早上要一台一台 SSH 進去看 log。現在 Panguard Guard 監控全部 8 台伺服器，AI 代理每天在 Telegram 上摘要威脅，蜜罐在攻擊者碰到真實服務之前就先攔住。上個月它在部署後 4 分鐘就抓到一個挖礦程式。那時候我在睡覺。",
-          "used": "Guard + Trap + Chat（NT$870/月）",
-          "saved": "每週省回 15 小時"
+        {
+          "type": "電商",
+          "detail": "一人創業",
+          "pain": "不知道怎麼回答客戶「你的網站安全嗎？」",
+          "result": "Guard 凌晨兩點抓到 SSH 暴力破解。封鎖 3 個 IP。LINE 通知。吃早餐時看的。",
+          "products": "GUARD + CHAT",
+          "cost": "NT$270/月",
+          "saved": "安裝至今零停機"
         }
-      }
+      ]
     },
-    "trustLayer": {
-      "overline": "信任",
-      "title": "我們怎麼贏得你的信任。",
-      "subtitle": "",
-      "openSource": {
-        "title": "開源承諾",
-        "desc": "MIT 授權。100% 原始碼公開。任何人可以審計，任何人可以 fork。\n\n我們相信：如果你看得到每一行程式碼，你就能信任它。",
-        "link": "查看原始碼"
-      },
-      "security": {
-        "title": "安全實踐",
-        "desc": "TypeScript strict mode。1,107 項自動化測試。CI/CD 每次提交都自動跑完全部測試。\n\nGitHub Actions 自動化 pipeline。",
-        "link": "查看測試報告"
-      },
-      "privacy": {
-        "title": "隱私保護",
-        "desc": "Threat Cloud 只收集匿名化的威脅數據。不收集你的 IP、不收集你的主機名、不收集任何可識別資訊。\n\n你可以隨時關閉數據上傳：\npanguard config set threat-cloud false",
-        "link": "閱讀隱私政策"
-      }
-    },
-    "eraContext": {
-      "title": "AI 在幫你寫程式、部署 API、管理伺服器。\n但誰在保護這一切？",
-      "desc1": "每天有更多 AI Agent 被部署到生產環境。",
-      "desc2": "它們很聰明，但它們看不到自己被攻擊。",
-      "desc3": "Panguard 是第一個為 AI 時代設計的資安平台——",
-      "desc4": "你的 Agent 部署，我們的 Agent 防禦。"
-    },
-    "productGrid": {
-      "overline": "完整防護",
-      "title": "一個平台，六道防線。",
-      "coreBadge": "核心",
-      "learnMore": "了解更多",
-      "products": {
-        "0": {
+    "productOverview": {
+      "title": "六個工具。一次安裝。",
+      "subtitle": "每個獨立運作。合在一起，就是一個完整的 SOC，裝在一行指令裡。",
+      "products": [
+        {
           "name": "Scan",
-          "desc": "60 秒知道你有多危險。Port 偵測、SSL 檢查、漏洞掃描、PDF 報告。"
+          "desc": "在攻擊者之前找到漏洞。60 秒稽核，附 PDF 報告。"
         },
-        "1": {
+        {
           "name": "Guard",
-          "desc": "24/7 自動監控與回應。4 個 AI Agent + 調查引擎、三層分析、7 天學習期。"
+          "desc": "4 個 AI Agent 自主偵測、分析、回應、報告。全年無休。"
         },
-        "2": {
+        {
           "name": "Chat",
-          "desc": "用人話收到告警通知。LINE、Slack、Telegram、Email 或 Webhook。"
+          "desc": "LINE、Telegram、Slack 收到資安警報。白話文，不是 log。"
         },
-        "3": {
+        {
           "name": "Trap",
-          "desc": "部署蜜罐記錄攻擊者行為。8 種協定：SSH、HTTP、FTP、SMB、MySQL、RDP、Telnet、Redis。"
+          "desc": "8 種假服務引誘攻擊者。不只防守，還做情報。"
         },
-        "4": {
+        {
           "name": "Report",
-          "desc": "60 秒產出合規報告。ISO 27001、SOC 2、台灣資通安全管理法。"
+          "desc": "AI 合規報告。資安法、ISO 27001、SOC 2。60 秒產出。"
         },
-        "5": { "name": "Threat Cloud", "desc": "全球威脅情報共享。匿名、隱私優先、社群驅動。" }
-      }
-    },
-    "timeComparison": {
-      "overline": "差異在哪",
-      "title": "你的時間應該花在做產品，不是查 log。",
-      "subtitle": "",
-      "colWithout": "沒有 Panguard",
-      "colWith": "有 Panguard",
-      "rows": {
-        "0": { "label": "發現入侵", "without": "平均 197 天", "with": "即時通知" },
-        "1": { "label": "翻 log 查問題", "without": "3-4 小時", "with": "打開 LINE" },
-        "2": { "label": "封鎖可疑 IP", "without": "手動查 → 手動封", "with": "自動，< 1 秒" },
-        "3": { "label": "產出合規報告", "without": "2-4 週（或外包 NT$300K）", "with": "60 秒" },
-        "4": { "label": "半夜告警", "without": "你爬起來", "with": "它自己處理" },
-        "5": { "label": "了解攻擊者行為", "without": "不知道誰在打你", "with": "蜜罐幫你側寫" }
-      },
-      "costRow": { "label": "每月成本", "without": "?（你的時間沒算）", "with": "NT$270 起" },
-      "source": "* IBM Cost of a Data Breach Report 2024",
-      "bottomLine": "你的時間應該花在做產品，不是查 log。"
-    },
-    "wakeUpCall": {
-      "title": "這不是假設。正在發生。",
-      "subtitle": "全球每 39 秒就有一家企業遭受網路攻擊。",
-      "ransomware": {
-        "title": "勒索軟體攻擊",
-        "description": "一家小型電商公司在凌晨 3 點發現所有資料庫檔案被加密。沒有備份。攻擊者要求 2 BTC。他們有 72 小時。"
-      },
-      "dataBreach": {
-        "title": "資料外洩",
-        "description": "一名開發者把 API 金鑰推送到公開 repo。幾分鐘內，攻擊者就開了雲端主機，造成 $47,000 美元的運算費用。"
-      },
-      "stat1": { "label": "網路攻擊的平均間隔" },
-      "stat2": { "label": "中小企業在遭受攻擊後 6 個月內倒閉" },
-      "stat3": { "label": "平均發現漏洞的天數" },
-      "stat4": { "label": "資料外洩的平均成本" },
-      "closing": "大多數中小企業請不起資安團隊。但他們也承受不起沒有防護的後果。"
-    },
-    "theOldWay": {
-      "title": "你有三個選擇。其中兩個行不通。",
-      "subtitle": "現有方案為何對中小企業不管用。",
-      "columns": {
-        "diy": "自己來",
-        "outsource": "外包給 MSSP",
-        "panguard": "Panguard AI"
-      },
-      "rows": {
-        "setup": { "label": "設定時間", "diy": "數週", "outsource": "數天", "panguard": "60 秒" },
-        "cost": {
-          "label": "月費",
-          "diy": "$0（你的時間）",
-          "outsource": "$2,000+",
-          "panguard": "從 $0 起"
-        },
-        "detection": {
-          "label": "威脅偵測",
-          "diy": "partial",
-          "outsource": "yes",
-          "panguard": "yes"
-        },
-        "response": { "label": "自動回應", "diy": "no", "outsource": "partial", "panguard": "yes" },
-        "learning": { "label": "學習你的環境", "diy": "no", "outsource": "no", "panguard": "yes" },
-        "reporting": {
-          "label": "合規報告",
-          "diy": "no",
-          "outsource": "partial",
-          "panguard": "yes"
-        },
-        "maintenance": { "label": "持續維護", "diy": "高", "outsource": "低", "panguard": "零" },
-        "scalability": {
-          "label": "跟你一起擴展",
-          "diy": "no",
-          "outsource": "partial",
-          "panguard": "yes"
+        {
+          "name": "Threat Cloud",
+          "desc": "集體防禦。從全網真實攻擊自動產生偵測規則。"
         }
-      },
-      "cta": "試試 60 秒安裝"
+      ],
+      "learnMore": "了解更多"
     },
-    "theShift": {
-      "cursor": "重新思考資安",
-      "title": "資安不應該需要資安團隊。",
-      "philosophy": "我們建立 Panguard 基於一個簡單的信念：企業級防護應該像一行指令一樣簡單。不用盯著儀表板。不用分類警報。不用寫規則。AI 處理無聊的工作，讓你專注在產品開發。",
-      "architectureTitle": "五層防禦架構",
-      "layer1": {
-        "title": "環境探索",
-        "desc": "自動掃描你的基礎設施：作業系統、服務、開放 port、已安裝套件。"
-      },
-      "layer2": {
-        "title": "規則引擎",
-        "desc": "3,158 條 Sigma 規則 + 425 條 YARA 規則，即時偵測已知攻擊模式。"
-      },
-      "layer3": { "title": "行為基線", "desc": "7 天學習期建立你系統正常行為的模型。" },
-      "layer4": {
-        "title": "AI 分析",
-        "desc": "三層 AI 漏斗：本地規則、本地 AI（Ollama）、雲端 AI 處理最困難的威脅。"
-      },
-      "layer5": {
-        "title": "自動回應",
-        "desc": "6 種回應動作：封鎖 IP、終止程序、隔離檔案、發送警報、快照、升級處理。"
-      },
-      "funnelTitle": "這不是 AI 包裝。",
-      "funnel1": { "percent": "90%", "title": "規則引擎", "desc": "即時模式比對", "tooltip": "3,158 Sigma 規則 + 425 YARA 規則 + Suricata + Falco + 行為基線。50ms 內回應。" },
-      "funnel2": { "percent": "7%", "title": "本地 AI", "desc": "裝置端深度分析", "tooltip": "Ollama 本地模型，跑在你的 NVIDIA GPU 上。完全離線，資料不離開你的機器。" },
-      "funnel3": { "percent": "3%", "title": "雲端 AI", "desc": "動態推理", "tooltip": "Claude Haiku，每次分析約 $0.008。只在本地規則和本地 AI 無法判斷時才調用。" },
-      "collectiveTitle": "一個人被攻擊，所有人學會防禦。",
-      "collectiveDesc": "每個 Panguard 實例都會分享匿名化的威脅情報。當一個用戶偵測到新攻擊，所有用戶都受到保護。網路隨著每次部署變得更聰明。",
-      "step1": "偵測威脅",
-      "step2": "產生規則",
-      "step3": "全網分發",
-      "closing": "安裝一次，永遠受保護。"
-    },
-    "the3amStory": {
-      "title": "凌晨 3 點。你的伺服器正在被攻擊。",
-      "subtitle": "同樣的攻擊。兩種截然不同的結果。",
-      "leftTitle": "沒有 Panguard",
-      "rightTitle": "有 Panguard",
-      "left1": { "time": "3:00 AM", "text": "SSH 暴力破解攻擊從 103.xx.xx.xx 開始" },
-      "left2": { "time": "3:02 AM", "text": "攻擊者利用弱密碼成功登入" },
-      "left3": { "time": "3:05 AM", "text": "橫向移動開始。權限提升。" },
-      "left4": { "time": "3:15 AM", "text": "資料外洩開始。客戶資料庫被複製。" },
-      "left5": { "time": "3:30 AM", "text": "勒索軟體部署。檔案加密。" },
-      "left6": { "time": "7:00 AM", "text": "你醒來。查看 Slack。沒有異常。" },
-      "left7": { "time": "9:00 AM", "text": "客戶打來：「我登不進去。」你才發現被入侵了。" },
-      "leftOutcome": "6 小時未被發現。50,000 筆客戶資料外洩。平均損失 $4.35M 美元。",
-      "right1": { "time": "3:00 AM", "text": "Layer 1 偵測到 SSH 暴力破解（Sigma 規則比對）" },
-      "right2": { "time": "3:00 AM", "text": "IP 自動封鎖。Threat Cloud 已通知。" },
-      "right3": { "time": "3:01 AM", "text": "攻擊模式已分享給全球所有 Panguard 用戶" },
-      "right4": { "time": "3:01 AM", "text": "LINE 通知已發送，附完整事件摘要" },
-      "right5": { "time": "3:02 AM", "text": "事件已記錄。證據快照已保存。" },
-      "lineLabel": "Panguard AI 透過 LINE",
-      "lineMessage": "已封鎖來自 103.xx.xx.xx 的 SSH 暴力破解。IP 已封禁。未存取任何資料。一切安全。",
-      "stillSleeping": "你還在睡。"
-    },
-    "sixLayers": {
-      "overline": "產品套件",
-      "title": "一個平台。六層防禦。",
-      "coreLabel": "核心",
-      "scan": {
-        "title": "Panguard Scan",
-        "desc": "60 秒 AI 資安掃描，附 PDF 報告。在攻擊者之前找到漏洞。"
-      },
-      "guard": {
-        "title": "Panguard Guard",
-        "desc": "24/7 AI 端點監控，自動回應。4 個 AI 代理全天候運作。"
-      },
-      "chat": {
-        "title": "Panguard Chat",
-        "desc": "透過 LINE、Telegram、Slack 或 Email 的 AI 資安助手。用白話問問題。"
-      },
-      "trap": {
-        "title": "Panguard Trap",
-        "desc": "8 種協定的智慧蜜罐系統。在攻擊者接觸真實系統前就偵測到。"
-      },
-      "report": {
-        "title": "Panguard Report",
-        "desc": "AI 合規報告產生器，支援 ISO 27001、SOC 2 和台灣資安法。"
-      },
-      "threatCloud": {
-        "title": "Threat Cloud",
-        "desc": "集體智慧。持續進化的防禦。每一個 Panguard 安裝節點都會匿名回報威脅數據。Threat Cloud 關聯攻擊模式、聚類可疑 IP 行為，並從社群的真實攻擊中自動產生新的 Sigma 偵測規則。參與的節點越多，所有人的防護越強。隱私優先，開源架構。一行指令即可退出。"
-      },
-      "learnMore": "了解更多",
-      "subtitle": "所有產品協同運作。安裝你需要的，隨時擴充。"
-    },
-    "theEvidence": {
+    "numbersWall": {
       "title": "不要相信我們說的。去看程式碼。",
-      "subtitle": "以下每個數字都可以在我們的開源 repo 中驗證。",
+      "subtitle": "以下每一個數字都可以在開源儲存庫中驗證。零黑箱。",
       "stats": {
         "sigmaRules": "Sigma 偵測規則",
-        "yaraRules": "YARA 惡意軟體規則",
+        "yaraRules": "YARA 惡意程式規則",
         "controls": "合規控制項",
         "tests": "測試通過",
-        "layers": "偵測層級",
+        "layers": "偵測層",
         "actions": "回應動作",
-        "protocols": "蜜罐協定",
+        "protocols": "蜂罐協定",
         "mit": "開源授權"
       },
-      "githubCta": "在 GitHub 上驗證",
+      "githubCta": "在 GitHub 驗證",
       "trust": {
         "openSource": {
           "title": "100% 開源",
-          "desc": "MIT 授權。完整原始碼在 GitHub 上。審查每一行。沒有黑箱。沒有供應商鎖定。"
+          "desc": "MIT 授權。完整原始碼在 GitHub。審查每一行。零黑箱。零供應商鎖定。"
         },
         "security": {
           "title": "安全優先",
-          "desc": "1,107 項測試。嚴格 TypeScript。ESLint 安全外掛。憑證加密儲存。沙箱執行。"
+          "desc": "1,107 項測試。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
         },
         "privacy": {
-          "title": "隱私設計",
-          "desc": "你的資料留在你的機器上。只有匿名化的威脅特徵透過 Threat Cloud 分享。零遙測。"
+          "title": "隱私優先設計",
+          "desc": "你的資料留在你的機器上。只有匿名化威脅特徵通過 Threat Cloud 分享。零遙測。"
         }
       }
     },
     "homePricing": {
-      "overline": "定價方案",
-      "title": "符合你預算的資安防護。",
-      "subtitle": "免費開始。準備好了再升級。",
-      "recommended": "最多人選",
+      "overline": "定價",
+      "title": "符合你預算的資安。",
+      "subtitle": "免費開始。準備好再升級。",
+      "recommended": "最受歡迎",
       "plans": {
         "0": {
           "name": "Community",
           "price": "免費",
           "period": "",
-          "desc": "1 台機器。適合體驗。",
+          "desc": "1 台機器。適合試用。",
           "features": {
             "0": "完整 Scan + PDF 報告",
-            "1": "Guard 基礎偵測 + 封鎖",
-            "2": "Threat Cloud 威脅情報"
+            "1": "Guard 基本偵測 + 封鎖",
+            "2": "Threat Cloud 情報"
           },
-          "cta": "立即開始"
+          "cta": "開始使用"
         },
         "1": {
           "name": "Solo",
@@ -628,10 +525,10 @@
           "period": "/月",
           "desc": "最多 3 台機器。適合開發者。",
           "features": {
-            "0": "Community 所有功能",
+            "0": "Community 全部功能",
             "1": "完整自動回應",
-            "2": "LINE / Slack / Telegram / Email 通知",
-            "3": "SSH + HTTP 蜜罐 + Ollama AI"
+            "2": "LINE / Slack / Telegram / Email",
+            "3": "SSH + HTTP 蜂罐 + Ollama AI"
           },
           "cta": "開始 Solo"
         },
@@ -641,10 +538,10 @@
           "period": "/月",
           "desc": "最多 10 台機器。適合團隊。",
           "features": {
-            "0": "Solo 所有功能",
+            "0": "Solo 全部功能",
             "1": "雲端 AI 深度分析",
-            "2": "全 8 種蜜罐協定",
-            "3": "Dashboard 儀表板",
+            "2": "全部 8 種蜂罐協定",
+            "3": "儀表板",
             "4": "Webhook 整合"
           },
           "cta": "開始 Pro"
@@ -655,58 +552,57 @@
           "period": "/月",
           "desc": "最多 25 台機器。適合組織。",
           "features": {
-            "0": "Pro 所有功能",
+            "0": "Pro 全部功能",
             "1": "每月含 1 份合規報告",
             "2": "Webhook API 存取",
             "3": "優先支援",
-            "4": "額外報告享 5 折"
+            "4": "額外報告 5 折"
           },
           "cta": "開始 Business"
         }
       },
-      "reportTitle": "合規報告 — 單次購買",
+      "reportTitle": "合規報告 — 一次性購買",
       "reports": {
         "0": {
-          "name": "台灣資通安全管理法",
-          "controls": "50 項控制措施",
+          "name": "資安法",
+          "controls": "50 控制項",
           "price": "NT$8,970",
-          "market": "市場行情：約 NT$90,000+"
+          "market": "市場行情：NT$300,000+"
         },
         "1": {
           "name": "ISO 27001",
-          "controls": "93 項控制措施",
+          "controls": "93 控制項",
           "price": "NT$14,970",
-          "market": "市場行情：約 NT$240,000+"
+          "market": "市場行情：NT$450,000+"
         },
         "2": {
           "name": "SOC 2",
-          "controls": "64 項控制措施",
+          "controls": "64 控制項",
           "price": "NT$20,970",
-          "market": "市場行情：約 NT$450,000+"
+          "market": "市場行情：NT$600,000+"
         },
         "3": {
-          "name": "組合包（全部 3 份）",
-          "controls": "207 項控制措施",
+          "name": "全部組合",
+          "controls": "207 控制項",
           "price": "NT$29,970",
-          "market": "市場行情：約 NT$750,000+"
+          "market": "市場行情：逎百萬",
+          "badge": "省 33%"
         }
       },
-      "reportNote": "單次購買。60 秒產出。PDF + 證據包。",
-      "reportCta": "查看合規方案",
-      "disclaimer": "所有價格為新台幣（TWD）。USD 定價請參閱英文版。"
+      "reportNote": "一次性購買。60 秒產出。PDF + 證據包。",
+      "reportCta": "查看合規選項",
+      "disclaimer": "準備度評估 ≠ 正式認證。報告協助你了解合規差距，為正式稽核做準備。",
+      "priceNote": "以上價格均為新台幣。"
     },
     "finalCta": {
-      "title": "60 秒。免費。不需要帳號。",
-      "subtitle": "立即掃描任何伺服器或網域。",
-      "manifesto0": "資安是權利，不是特權。",
-      "manifesto1": "我們相信：資安的下一步，",
-      "manifesto2": "不是更多儀表板，而是更聰明的 Agent。",
-      "manifesto3": "你部署。我們防禦。",
-      "btnGetStarted": "免費掃描伺服器",
+      "title": "你部署。我們防守。",
+      "subtitle": "60 秒安裝。免費版包含完整掃描。不需要帳號、不需要信用卡、不需要業務電話。",
+      "manifesto": "我們做 Panguard 是因為資安不應該需要六位數預算或一整支團隊。它應該只需要一行指令。",
+      "btnGetStarted": "免費伺服器掃描",
       "btnGithub": "GitHub",
-      "btnDocs": "技術文件",
+      "btnDocs": "文件",
       "badge1": "MIT 開源授權",
-      "badge2": "1,107 項測試通過",
+      "badge2": "1,107 測試通過",
       "badge3": "台灣製造"
     }
   },
@@ -1628,7 +1524,14 @@
       },
       "workflow": {
         "title": "適合你的工作流",
-        "tools": ["CLI", "REST API", "GitHub Actions", "Docker", "SSH", "Webhooks"]
+        "tools": [
+          "CLI",
+          "REST API",
+          "GitHub Actions",
+          "Docker",
+          "SSH",
+          "Webhooks"
+        ]
       },
       "cta": {
         "title": "60 秒保護你的技術棧",
@@ -1689,7 +1592,14 @@
       },
       "integrations": {
         "title": "你團隊已在使用的整合",
-        "tools": ["Slack", "LINE", "Telegram", "Email", "Microsoft Teams", "Webhooks"]
+        "tools": [
+          "Slack",
+          "LINE",
+          "Telegram",
+          "Email",
+          "Microsoft Teams",
+          "Webhooks"
+        ]
       },
       "cta": {
         "title": "今天就保護你的企業",
@@ -1814,7 +1724,14 @@
       "stack": "例如 CrowdStrike、Cloudflare、自訂腳本...",
       "message": "告訴我們你的安全目標或任何具體問題..."
     },
-    "teamSizes": ["只有我", "2-10", "11-50", "51-200", "201-500", "500+"],
+    "teamSizes": [
+      "只有我",
+      "2-10",
+      "11-50",
+      "51-200",
+      "201-500",
+      "500+"
+    ],
     "submit": "預約示範",
     "submitting": "提交中...",
     "error": "提交失敗，請再試一次。",
@@ -1992,7 +1909,12 @@
       "inquiryType": "選擇類型",
       "message": "我們能如何幫助你？"
     },
-    "inquiryTypes": ["業務", "技術支援", "合作夥伴", "其他"],
+    "inquiryTypes": [
+      "業務",
+      "技術支援",
+      "合作夥伴",
+      "其他"
+    ],
     "submit": "發送訊息",
     "submitting": "發送中...",
     "successTitle": "訊息已發送。",
@@ -2869,19 +2791,34 @@
         "title": "MSP 合作夥伴",
         "subtitle": "託管安全服務供應商",
         "desc": "將 Panguard 的 AI 安全防護加入你的託管服務組合。多租戶儀表板、白標選項、量價定價。",
-        "highlights": ["多租戶管理主控台", "白標部署選項", "量價定價層級", "自動化佈建 API"]
+        "highlights": [
+          "多租戶管理主控台",
+          "白標部署選項",
+          "量價定價層級",
+          "自動化佈建 API"
+        ]
       },
       "technology": {
         "title": "技術合作夥伴",
         "subtitle": "整合與技術",
         "desc": "將 Panguard 與你的平台整合。API 存取、共同行銷機會、聯合解決方案開發。",
-        "highlights": ["完整 REST API 存取", "共同行銷計畫", "聯合解決方案開發", "技術整合支援"]
+        "highlights": [
+          "完整 REST API 存取",
+          "共同行銷計畫",
+          "聯合解決方案開發",
+          "技術整合支援"
+        ]
       },
       "reseller": {
         "title": "經銷合作夥伴",
         "subtitle": "增值經銷商",
         "desc": "向你的客戶群經銷 Panguard AI。交易登記、銷售賦能、專屬合作夥伴經理。",
-        "highlights": ["交易登記保護", "銷售賦能資源", "專屬合作夥伴經理", "具競爭力的利潤結構"]
+        "highlights": [
+          "交易登記保護",
+          "銷售賦能資源",
+          "專屬合作夥伴經理",
+          "具競爭力的利潤結構"
+        ]
       }
     },
     "benefits": {

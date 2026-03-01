@@ -21,7 +21,7 @@ export default function The3AMStory() {
   const rightRef = useScrollReveal({ margin: '-60px' });
 
   return (
-    <SectionWrapper>
+    <SectionWrapper bg="bg-[#0a0a0a]" spacing="tight">
       <SectionTitle title={t('title')} subtitle={t('subtitle')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12 max-w-5xl mx-auto">

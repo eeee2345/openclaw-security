@@ -1,51 +1,93 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Rocket, ShoppingCart, Building2, User } from 'lucide-react';
-import SectionWrapper from '../ui/SectionWrapper';
-import SectionTitle from '../ui/SectionTitle';
-import FadeInUp from '../FadeInUp';
-import Card from '../ui/Card';
+import { motion } from 'framer-motion';
+import { Code, Rocket, Building2, ShoppingCart } from 'lucide-react';
 
-const cases = [
-  { key: 'saas', icon: Rocket },
-  { key: 'ecommerce', icon: ShoppingCart },
-  { key: 'taiwan', icon: Building2 },
-  { key: 'freelance', icon: User },
-] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const scenarioIcons = [Code, Rocket, Building2, ShoppingCart];
 
 export default function UseCases() {
   const t = useTranslations('home.useCases');
+  const scenarios = t.raw('scenarios') as Array<{
+    type: string;
+    detail: string;
+    pain: string;
+    result: string;
+    products: string;
+    cost: string;
+    saved: string;
+  }>;
 
   return (
-    <SectionWrapper id="use-cases">
-      <SectionTitle overline={t('overline')} title={t('title')} />
+    <section id="use-cases" className="bg-[#0e0f0e] px-6 py-12 sm:py-16">
+      <div className="max-w-[1200px] mx-auto">
+        {/* Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.5, ease }}
+          className="text-center mb-10"
+        >
+          <p className="text-xs uppercase tracking-[0.15em] text-panguard-green/70 font-semibold mb-3">
+            {t('overline')}
+          </p>
+          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
+            {t('title')}
+          </h2>
+        </motion.div>
 
-      <div className="grid sm:grid-cols-2 gap-6 mt-14 max-w-4xl mx-auto">
-        {cases.map((c, i) => (
-          <FadeInUp key={c.key} delay={i * 0.08}>
-            <Card padding="lg" className="h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <c.icon className="w-5 h-5 text-brand-sage shrink-0" />
-                <span className="text-xs uppercase tracking-wider text-text-muted font-semibold">
-                  {t(`cases.${c.key}.persona`)}
-                </span>
-              </div>
-              <p className="text-text-secondary text-sm leading-relaxed italic">
-                &ldquo;{t(`cases.${c.key}.quote`)}&rdquo;
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="text-[10px] uppercase font-bold text-brand-sage bg-brand-sage/10 rounded-full px-2.5 py-1">
-                  {t(`cases.${c.key}.used`)}
-                </span>
-                <span className="text-[10px] uppercase font-bold text-text-tertiary bg-surface-0 rounded-full px-2.5 py-1 border border-border">
-                  {t(`cases.${c.key}.saved`)}
-                </span>
-              </div>
-            </Card>
-          </FadeInUp>
-        ))}
+        {/* 2x2 grid */}
+        <div className="grid sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
+          {scenarios.map((s, i) => {
+            const Icon = scenarioIcons[i];
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08, ease }}
+                className="bg-surface-1/50 border border-border rounded-2xl p-6 h-full flex flex-col"
+              >
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-4">
+                  <Icon className="w-5 h-5 text-panguard-green shrink-0" />
+                  <span className="text-sm font-semibold text-text-primary">
+                    {s.type}
+                  </span>
+                  <span className="text-xs text-text-muted">&middot; {s.detail}</span>
+                </div>
+
+                {/* Pain point */}
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {s.pain}
+                </p>
+
+                {/* Result */}
+                <p className="text-sm text-text-primary leading-relaxed mt-3 flex-1">
+                  {s.result}
+                </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <span className="text-[10px] uppercase font-bold text-panguard-green bg-panguard-green/10 rounded-full px-2.5 py-1">
+                    {s.products}
+                  </span>
+                  <span className="text-[10px] uppercase font-bold text-text-tertiary bg-surface-0 rounded-full px-2.5 py-1 border border-border">
+                    {s.cost}
+                  </span>
+                  <span className="text-[10px] uppercase font-bold text-panguard-green bg-panguard-green/5 rounded-full px-2.5 py-1 border border-panguard-green/20">
+                    {s.saved}
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
-    </SectionWrapper>
+    </section>
   );
 }

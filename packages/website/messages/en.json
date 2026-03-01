@@ -136,13 +136,11 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Security for the age of AI.",
-      "title": "Enterprise security was never built for you.",
-      "titleLine2": "Until now.",
-      "subtitle1": "Panguard is the open-source AI security platform that brings autonomous protection to every developer, every business, every server — regardless of size, budget, or expertise.",
-      "subtitle2": "One command to install. Four AI agents that detect, analyze, and respond to threats autonomously — in under one second.",
-      "subtitle3": "No security team required. No six-figure contracts. Just protection.",
-      "getStarted": "Free Server Scan",
+      "eyebrow": "THE SECURITY REVOLUTION",
+      "title": "Security is no longer a privilege.",
+      "subtitle": "One command. Enterprise-grade protection for every developer, every small business.",
+      "boldLine": "Open source. AI-powered. Free to start.",
+      "getStarted": "Get Started",
       "github": "GitHub",
       "copied": "Copied!",
       "badges": {
@@ -151,440 +149,227 @@
         "taiwan": "Built in Taiwan"
       }
     },
-    "eraContext": {
-      "title": "AI deploys your code. Manages your servers.\nBut who's protecting all of it?",
-      "desc1": "More AI agents are deployed to production every day.",
-      "desc2": "They're smart — but they can't see they're being attacked.",
-      "desc3": "Panguard is the first security platform designed for the AI era —",
-      "desc4": "your agents deploy, our agents defend."
-    },
-    "painPoint": {
-      "line1": "Your AI just shipped an API to a VPS.",
-      "line2": "Three minutes later, every scanner on Earth found it.",
-      "line3": "SSH brute force. Open ports. Expired SSL.",
-      "line4": "Your AI doesn't know. Neither do you.",
-      "line5": "Until your database shows up on the dark web."
-    },
-    "productGrid": {
-      "overline": "Complete Protection",
-      "title": "One platform. Six layers of defense.",
-      "coreBadge": "Core",
-      "learnMore": "Learn more",
-      "products": {
-        "0": {
-          "name": "Scan",
-          "desc": "Know your risk score in 60 seconds. Port detection, SSL check, vulnerability scan, PDF report."
-        },
-        "1": {
-          "name": "Guard",
-          "desc": "24/7 automated monitoring and response. 4 AI agents + investigation engine, three-layer analysis, 7-day learning period."
-        },
-        "2": {
-          "name": "Chat",
-          "desc": "Receive alerts in plain language via LINE, Slack, Telegram, Email, or Webhook."
-        },
-        "3": {
-          "name": "Trap",
-          "desc": "Deploy honeypots to profile attackers. 8 protocols: SSH, HTTP, FTP, SMB, MySQL, RDP, Telnet, Redis."
-        },
-        "4": {
-          "name": "Report",
-          "desc": "Generate compliance reports in 60 seconds. ISO 27001, SOC 2, Taiwan Cyber Security Act."
-        },
-        "5": {
-          "name": "Threat Cloud",
-          "desc": "Global threat intelligence sharing. Anonymous, privacy-first, community-powered."
-        }
+    "industryProblem": {
+      "title": "The security industry has a dirty secret.",
+      "p1": "$200 billion is spent on cybersecurity every year. But who does it protect? Fortune 500 companies. Banks. Governments.",
+      "p2": "Meanwhile, you — a three-person startup, a freelance developer, an e-commerce store with its first 100 customers — you get nothing.",
+      "p3": "Not because you don't care about security. Because security was never built for you.",
+      "p4": "Enterprise solutions start at six figures a year. And they still need a dedicated team to operate.",
+      "emphasis": "This industry turned security into a luxury. In a world where AI agents are deployed every second, that's unacceptable.",
+      "stats": {
+        "attacks": "39s between attacks",
+        "smb": "60% of SMBs close within 6 months of a breach",
+        "cost": "$4.35M average cost"
       }
     },
-    "flip": {
-      "part1": "Other security tools detect a threat\nand give you a dashboard.",
-      "part2a": "Panguard detects a threat",
-      "part2b": "and fixes it.",
-      "part2c": "Then tells you what happened in plain language.",
-      "part3a": "No dashboard. No alert panel. Nothing that needs a human to click.",
-      "part3b": "Your agent gives commands. Our agent defends.",
-      "tagline": "Agent to Agent.",
-      "dashboard": "Dashboard",
-      "autoFixed": "Auto-fixed",
-      "yourAgent": "Your Agent"
-    },
-    "cliShowcase": {
-      "overline": "See It In Action",
-      "title": "What your agent sees.",
-      "subtitle": "No dashboard. No clicking. Your agent gives commands, Panguard defends.",
-      "callout": "Notice the first line: Auto-fixed."
-    },
-    "socialProof": {
-      "overline": "By the Numbers",
-      "title": "Built in the open. Verified by code.",
-      "subtitle": "Every number below is verifiable in the codebase. No vanity metrics — just engineering facts.",
-      "stat1Label": "Sigma Rules",
-      "stat2Label": "YARA Rules",
-      "stat3Label": "Honeypot Protocols",
-      "stat4Label": "Tests Passing",
-      "stat5Label": "AI Agents + Investigation Engine",
-      "stat6Label": "Detection Layers",
-      "stat7Label": "Product Modules",
-      "stat8Label": "Open Source License",
-      "footnote": "Every number is verifiable on GitHub.",
-      "githubLink": "View source code →"
-    },
-    "timeComparison": {
-      "overline": "The Difference",
-      "title": "Your time should be spent building products, not reading logs.",
-      "subtitle": "",
-      "colWithout": "Without Panguard",
-      "colWith": "With Panguard",
-      "rows": {
-        "0": {
-          "label": "Discover a breach",
-          "without": "Average 197 days",
-          "with": "Instant notification"
-        },
-        "1": { "label": "Investigate logs", "without": "3-4 hours", "with": "Open LINE" },
-        "2": {
-          "label": "Block suspicious IP",
-          "without": "Manual lookup + manual block",
-          "with": "Automatic, < 1 second"
-        },
-        "3": {
-          "label": "Generate compliance report",
-          "without": "2-4 weeks (or outsource NT$300K)",
-          "with": "60 seconds"
-        },
-        "4": { "label": "Late-night alert", "without": "You wake up", "with": "It handles itself" },
-        "5": {
-          "label": "Understand attacker behavior",
-          "without": "No visibility",
-          "with": "Honeypot profiling"
-        }
-      },
-      "costRow": {
-        "label": "Monthly cost",
-        "without": "? (your time isn't free)",
-        "with": "From $9"
-      },
-      "source": "* IBM Cost of a Data Breach Report 2024",
-      "bottomLine": "Your time should be spent building products, not reading logs."
-    },
-    "comparison": {
-      "overline": "Why Panguard",
-      "title": "You don't need a dashboard. You need results.",
-      "subtitle": "Other tools detect threats and show you a dashboard. Panguard detects, responds, and explains.",
-      "feature": "Feature",
-      "crowdstrike": "CrowdStrike Falcon Go",
-      "defender": "Microsoft Defender",
-      "panguard": "Panguard AI",
-      "price": "Price",
-      "afterDetection": "After detection",
-      "reporting": "Reporting",
-      "developerPlan": "Developer plan",
-      "aiChat": "AI Chat",
-      "csPrice": "$59.99/device/yr",
-      "csAfter": "Shows alert → you handle",
-      "csReporting": "Technical reports",
-      "defPrice": "Included in M365",
-      "defAfter": "Shows alert → you handle",
-      "defReporting": "Technical reports",
-      "pgPrice": "From $9/mo",
-      "pgAfter": "Auto-responds + explains",
-      "pgReporting": "\"This week: blocked 3,158. You're safe.\"",
-      "quote": "\"Falcon Go is a security camera. Panguard is a security company -- cameras, plus someone watching, responding, and reporting.\""
-    },
-    "cta": {
-      "title": "60 seconds. Free. No account needed.",
-      "subtitle": "Scan any server or domain right now.",
-      "curlLabel": "Install on your server:",
-      "orScanOnline": "Or scan a domain right now:",
-      "scanPlaceholder": "Enter a domain (e.g. example.com)",
-      "scanButton": "Scan",
-      "scanning": "Scanning...",
-      "scanError": "Could not scan this target. Please check the domain and try again.",
-      "score": "Security Score",
-      "grade": "Grade",
-      "findings": "Findings",
-      "openPorts": "Open Ports",
-      "ssl": "SSL Certificate",
-      "sslValid": "Valid",
-      "sslInvalid": "Invalid",
-      "sslExpires": "Expires in {days} days",
-      "noSsl": "Not detected",
-      "scanAnother": "Scan another",
-      "privacyNote": "Scan results are not stored. Your privacy is protected.",
-      "freeScanButton": "Free Scan",
-      "noIssues": "No issues found",
-      "copied": "Copied!"
-    },
-    "vision": {
-      "line1": "We believe in one thing:",
-      "line2": "The future of security won't happen in a browser.",
-      "line3": "It will happen between your agent and ours.",
-      "line4": "Plain text. Pure logic. Pure defense.",
-      "line5": "Panguard is the first security platform built for that future.",
-      "badge1": "MIT Open Source",
-      "badge2": "1,107 Tests Passing",
-      "badge3": "Made in Taiwan",
-      "btnGithub": "GitHub",
-      "btnDocs": "Documentation",
-      "btnScan": "Free Scan",
-      "btnEarlyAccess": "Get Early Access"
-    },
-    "finalCta": {
-      "title": "60 seconds. Free. No account needed.",
-      "subtitle": "Scan any server or domain right now.",
-      "manifesto0": "Security is a right, not a privilege.",
-      "manifesto1": "We believe: the next step in security",
-      "manifesto2": "isn't more dashboards — it's smarter agents.",
-      "manifesto3": "You deploy. We defend.",
-      "btnGetStarted": "Free Server Scan",
-      "btnGithub": "GitHub",
-      "btnDocs": "Documentation",
-      "badge1": "MIT Open Source",
-      "badge2": "1,107 Tests Passing",
-      "badge3": "Built in Taiwan"
-    },
-    "techReveal": {
-      "overline": "Under the Hood",
-      "title": "What's under the hood.",
-      "subtitle": "Fully transparent. Every line of code is auditable on GitHub.",
-      "detection": {
-        "title": "Detection Engine",
-        "sigma": "3,158 Sigma Rules",
-        "sigmaDesc": "Industry-standard threat detection language",
-        "yara": "425 YARA Rules",
-        "yaraDesc": "Malware fingerprint matching",
-        "cve": "CVE Database",
-        "cveDesc": "Real-time sync with NVD vulnerability data"
-      },
-      "defense": {
-        "title": "Defense Architecture",
-        "subtitle": "Three-Layer Defense Funnel",
-        "layer1": "Layer 1: Rule Engine",
-        "layer1Desc": "Real-time pattern matching against known threats. < 50ms response.",
-        "layer2": "Layer 2: Local AI",
-        "layer2Desc": "Ollama offline analysis. Defends even when cloud is down.",
-        "layer3": "Layer 3: Cloud AI",
-        "layer3Desc": "Claude / GPT deep analysis. Zero-day threat detection."
-      },
-      "pipeline": {
-        "title": "AI Analysis Pipeline",
-        "subtitle": "4 Specialized Agents + Investigation Engine",
-        "agents": ["Detect Agent", "Analyze Agent", "Respond Agent", "Report Agent", "Chat Agent"],
-        "desc": "Each agent focuses on one task. They collaborate and make decisions autonomously."
-      },
-      "githubCta": "Don't trust us? Read the source"
-    },
-    "threeSteps": {
-      "overline": "Getting Started",
-      "title": "Three steps to protection.",
-      "tabs": {
-        "website": "I have a website",
-        "developer": "I'm a developer",
-        "business": "I run a business"
-      },
-      "website": {
-        "step1Title": "Enter your domain",
-        "step1Desc": "Type your URL above and hit \"Scan\"",
-        "step2Title": "Get your security report",
-        "step2Desc": "Receive a PDF report in 60 seconds. It tells you what's wrong, how severe it is, and how to fix it.",
-        "step3Title": "Install protection with one command",
-        "step3Desc": "Paste the install command on your server. Panguard fixes issues and keeps protecting you.",
-        "cta": "Scan your domain"
-      },
-      "developer": {
-        "step1Title": "Install",
-        "step1Desc": "curl -fsSL https://get.panguard.ai | bash\n30 seconds. Zero config.",
-        "step2Title": "Scan + start protection",
-        "step2Desc": "panguard scan → see all vulnerabilities\npanguard guard start → real-time protection",
-        "step3Title": "Connect your agent",
-        "step3Desc": "Call the Panguard API from your AI agent. Your agent now has a security advisor.",
-        "cta": "Read the docs"
-      },
-      "business": {
-        "step1Title": "Free security assessment",
-        "step1Desc": "Enter your company domain. We scan it for free. Get a full security report + risk score.",
-        "step2Title": "Deploy to all endpoints",
-        "step2Desc": "One command installs on all servers. Guard auto-detects, auto-responds, and auto-notifies.",
-        "step3Title": "Automatic compliance",
-        "step3Desc": "panguard report --framework iso27001\nGenerate ISO 27001 / SOC 2 / ISMS reports automatically. No more $5,000 consultants.",
-        "cta": "Get a free assessment"
-      }
-    },
-    "useCases": {
-      "overline": "Use Cases",
-      "title": "Why they use Panguard.",
-      "cases": {
-        "saas": {
-          "persona": "SaaS Startup, 12 employees",
-          "quote": "Our biggest client sent us a security questionnaire with 200 questions. We panicked. The consultant we called wanted $20,000 and six months. We ran Panguard Scan in 60 seconds, generated an ISO 27001 gap analysis, and sent back a 40-page PDF with evidence. The client signed the contract that week.",
-          "used": "Scan + Report ($499)",
-          "saved": "Closed deal worth $180K ARR"
-        },
-        "ecommerce": {
-          "persona": "E-commerce, solo founder",
-          "quote": "At 2 AM, Panguard Guard detected an SSH brute-force attack from three different IPs. It auto-blocked all three, notified me on LINE, and the AI agent explained exactly what happened in plain language. I read it over breakfast. Before Panguard, I wouldn't have known until my customers complained.",
-          "used": "Guard + Chat ($9/mo)",
-          "saved": "Zero downtime incidents since install"
-        },
-        "taiwan": {
-          "persona": "Taiwan Software Co, 30 employees",
-          "quote": "We needed ISMS compliance for a government contract bid. Consulting firms quoted NT$300,000 and 3 months. We installed Panguard, ran a compliance scan, and got an audit-ready report covering 50 controls mapped to Taiwan's Cyber Security Act. Our bid was accepted. Total cost: NT$8,970.",
-          "used": "Report (ISMS framework)",
-          "saved": "Saved NT$291,000 and 3 months"
-        },
-        "freelance": {
-          "persona": "Freelance DevOps, 8 client servers",
-          "quote": "I used to SSH into each server every morning just to check logs. Now Panguard Guard monitors all 8 servers, the AI agent summarizes threats daily on Telegram, and honeypots catch scanners before they reach real services. Last month it caught a cryptominer within 4 minutes of deployment. I was asleep.",
-          "used": "Guard + Trap + Chat ($29/mo)",
-          "saved": "Recovered 15 hours/week"
-        }
-      }
-    },
-    "trustLayer": {
-      "overline": "Trust",
-      "title": "How we earn your trust.",
-      "subtitle": "",
-      "openSource": {
-        "title": "Open Source",
-        "desc": "MIT licensed. 100% source code is public. Anyone can audit it. Anyone can fork it.\n\nWe believe: if you can see every line of code, you can trust it.",
-        "link": "View source code"
-      },
-      "security": {
-        "title": "Security Practices",
-        "desc": "TypeScript strict mode. 1,107 automated tests. CI/CD runs all tests on every commit.\n\nGitHub Actions automated pipeline.",
-        "link": "View test reports"
-      },
-      "privacy": {
-        "title": "Privacy Protection",
-        "desc": "Threat Cloud only collects anonymized threat data. No IP addresses. No hostnames. No personally identifiable information.\n\nYou can disable data uploads anytime:\npanguard config set threat-cloud false",
-        "link": "Read privacy policy"
-      }
-    },
-    "wakeUpCall": {
-      "title": "This isn't hypothetical. It's happening right now.",
-      "subtitle": "Every 39 seconds, a cyberattack targets a business somewhere in the world.",
-      "ransomware": {
-        "title": "Ransomware Attack",
-        "description": "A small e-commerce company discovers all their database files encrypted at 3 AM. No backups. The attacker demands 2 BTC. They have 72 hours."
-      },
-      "dataBreach": {
-        "title": "Data Breach",
-        "description": "A developer pushes API keys to a public repo. Within minutes, attackers spin up cloud instances costing $47,000 in compute charges."
-      },
-      "stat1": { "label": "Average time between cyberattacks" },
-      "stat2": { "label": "SMBs close within 6 months of an attack" },
-      "stat3": { "label": "Average days to detect a breach" },
-      "stat4": { "label": "Average cost of a data breach" },
-      "closing": "Most small businesses can't afford a security team. But they also can't afford to be unprotected."
-    },
-    "theOldWay": {
-      "title": "You have three options. Two of them don't work.",
-      "subtitle": "Here's why existing approaches fail for small and medium businesses.",
+    "threeRoads": {
+      "title": "You've probably thought about this before.",
+      "subtitle": "Most teams try one of three approaches. Two of them don't work.",
       "columns": {
         "diy": "Do It Yourself",
-        "outsource": "Outsource to MSSP",
-        "panguard": "Panguard AI"
+        "consultant": "Hire a Consultant",
+        "panguard": "Panguard"
       },
       "rows": {
         "setup": {
           "label": "Setup time",
           "diy": "Weeks",
-          "outsource": "Days",
+          "consultant": "Months",
           "panguard": "60 seconds"
         },
         "cost": {
           "label": "Monthly cost",
           "diy": "$0 (your time)",
-          "outsource": "$2,000+",
-          "panguard": "From $0"
+          "consultant": "$2,000+",
+          "panguard": "Free to start"
         },
-        "detection": {
-          "label": "Threat detection",
-          "diy": "partial",
-          "outsource": "yes",
-          "panguard": "yes"
+        "monitoring": {
+          "label": "24/7 monitoring",
+          "diy": "You need sleep",
+          "consultant": "Depends on contract",
+          "panguard": "AI, always on"
         },
         "response": {
           "label": "Auto response",
           "diy": "no",
-          "outsource": "partial",
+          "consultant": "no",
           "panguard": "yes"
         },
         "learning": {
           "label": "Learns your env",
           "diy": "no",
-          "outsource": "no",
-          "panguard": "yes"
+          "consultant": "no",
+          "panguard": "7-day learning"
         },
-        "reporting": {
+        "compliance": {
           "label": "Compliance reports",
           "diy": "no",
-          "outsource": "partial",
-          "panguard": "yes"
+          "consultant": "$10,000+",
+          "panguard": "From $299"
         },
-        "maintenance": {
-          "label": "Ongoing maintenance",
-          "diy": "High",
-          "outsource": "Low",
-          "panguard": "Zero"
-        },
-        "scalability": {
+        "scales": {
           "label": "Scales with you",
           "diy": "no",
-          "outsource": "partial",
+          "consultant": "no",
           "panguard": "yes"
         }
       },
       "cta": "Try the 60-second setup"
     },
-    "theShift": {
-      "cursor": "rethinking security",
-      "title": "Security shouldn't require a security team.",
-      "philosophy": "We built Panguard on a simple belief: enterprise-grade protection should be as easy to deploy as a single command. No dashboards to watch. No alerts to triage. No rules to write. AI handles the boring work so you can focus on building.",
-      "architectureTitle": "Five layers of defense",
-      "layer1": {
-        "title": "Environment Discovery",
-        "desc": "Automatically maps your infrastructure: OS, services, open ports, installed packages."
+    "redefine": {
+      "line1": "Everyone asks:",
+      "line2": "\"How do we build a better security product?\"",
+      "line3": "We asked a different question:",
+      "question": "\"What if security was infrastructure, not a product?\""
+    },
+    "showMuscle": {
+      "team": {
+        "overline": "WHAT YOU GET",
+        "title": "One command. A 5-person AI security team.",
+        "subtitle": "A human team with the same coverage costs over $600K/year. Panguard starts at $0.",
+        "roles": [
+          {
+            "role": "SOC Analyst",
+            "product": "Guard + Chat",
+            "desc": "Detects, responds, and reports 24/7"
+          },
+          {
+            "role": "Penetration Tester",
+            "product": "Scan",
+            "desc": "Finds vulnerabilities before attackers"
+          },
+          {
+            "role": "Compliance Officer",
+            "product": "Report",
+            "desc": "ISO 27001, SOC 2, Taiwan ISMS Act"
+          },
+          {
+            "role": "Threat Intel Analyst",
+            "product": "Trap",
+            "desc": "Lures attackers and profiles techniques"
+          },
+          {
+            "role": "Detection Engineer",
+            "product": "Threat Cloud",
+            "desc": "Auto-generates rules from real attacks"
+          }
+        ],
+        "footer": "5 roles. 6 products. 1 command. From $0/mo"
       },
-      "layer2": {
-        "title": "Rules Engine",
-        "desc": "3,158 Sigma rules + 425 YARA rules detect known attack patterns instantly."
+      "funnel": {
+        "title": "90% of threats don't need AI.",
+        "desc": "The industry wants you to believe everything needs machine learning. Truth: 90% of attacks match known patterns. A rules engine catches them in under 50ms. AI only steps in for the rest. And if the cloud goes down? Local AI takes over. Your protection never drops to zero.",
+        "layers": [
+          {
+            "pct": 90,
+            "label": "Rules Engine",
+            "sub": "Sigma + YARA + Suricata",
+            "speed": "<50ms"
+          },
+          {
+            "pct": 7,
+            "label": "Local AI",
+            "sub": "Ollama on your GPU. Offline. Private.",
+            "speed": "~2s"
+          },
+          {
+            "pct": 3,
+            "label": "Cloud AI",
+            "sub": "Only when needed. $0.008/analysis",
+            "speed": "~5s"
+          }
+        ],
+        "fallback": "Cloud fails → local AI. Local fails → rules engine. Protection never stops."
       },
-      "layer3": {
-        "title": "Behavioral Baseline",
-        "desc": "7-day learning period builds a model of your normal system behavior."
+      "confidence": {
+        "title": "Smart enough to act. Honest enough to ask.",
+        "levels": [
+          {
+            "threshold": ">90%",
+            "color": "green",
+            "action": "Acts automatically. Block IP, kill process, quarantine file."
+          },
+          {
+            "threshold": "70–90%",
+            "color": "yellow",
+            "action": "Asks you first. \"Should I block this? Here's what I found.\""
+          },
+          {
+            "threshold": "<70%",
+            "color": "gray",
+            "action": "Just tells you. \"Something looks off. Here's the evidence.\""
+          }
+        ],
+        "footer": "At 3 AM, you don't want AI making a decision it's only 65% sure about."
+      }
+    },
+    "threatCloud": {
+      "overline": "ONE MORE THING",
+      "title": "The more people use it, the safer everyone gets.",
+      "desc": "Every Panguard instance is a sensor. When it detects a new attack, it anonymously shares the pattern with Threat Cloud. Threat Cloud auto-generates new Sigma detection rules and pushes them to every Panguard user — worldwide.",
+      "descHighlight": "You're not just protected. You're part of the shield.",
+      "privacy": "Only anonymized threat signatures leave your machine. Zero raw data. Zero telemetry. Encrypted in transit (TLS 1.3). Your logs, your code, your data — never leaves. You can turn off Threat Cloud anytime. Even Community tier works fully offline.",
+      "steps": [
+        {
+          "label": "Attack detected",
+          "sub": "on your server"
+        },
+        {
+          "label": "Rule generated",
+          "sub": "by Threat Cloud"
+        },
+        {
+          "label": "All users protected",
+          "sub": "worldwide, in minutes"
+        }
+      ],
+      "flywheel": {
+        "center": "Every user makes everyone safer.",
+        "nodes": [
+          "Open source, free download",
+          "More users install",
+          "More Threat Cloud attack data",
+          "Stronger detection rules",
+          "Better community protection"
+        ]
       },
-      "layer4": {
-        "title": "AI Analysis",
-        "desc": "Three-layer AI funnel: local rules, local AI (Ollama), cloud AI for the hardest threats."
-      },
-      "layer5": {
-        "title": "Automated Response",
-        "desc": "6 response actions: block IP, kill process, quarantine file, alert, snapshot, escalate."
-      },
-      "funnelTitle": "This is not AI-washing.",
-      "funnel1": { "percent": "90%", "title": "Rules Engine", "desc": "Instant pattern matching", "tooltip": "3,158 Sigma rules + 425 YARA rules + Suricata + Falco + behavioral baseline. Sub-50ms response." },
-      "funnel2": { "percent": "7%", "title": "Local AI", "desc": "On-device deep analysis", "tooltip": "Ollama local model running on your NVIDIA GPU. Fully offline. Data never leaves your machine." },
-      "funnel3": { "percent": "3%", "title": "Cloud AI", "desc": "Dynamic reasoning", "tooltip": "Claude Haiku, ~$0.008 per analysis. Only called when local rules and local AI can't determine the threat." },
-      "collectiveTitle": "One gets attacked. Everyone learns to defend.",
-      "collectiveDesc": "Every Panguard instance shares anonymized threat intelligence. When one user detects a new attack, all users are protected. The network gets smarter with every deployment.",
-      "step1": "Detect Threat",
-      "step2": "Generate Rule",
-      "step3": "Distribute Network-wide",
-      "closing": "Install once. Protected forever."
+      "openSource": {
+        "title": "Why open source?",
+        "subtitle": "Because security shouldn't have walls.",
+        "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
+        "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
+        "proof": "1,107 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+      }
     },
     "the3amStory": {
       "title": "3 AM. Your server is under attack.",
-      "subtitle": "Same attack. Two very different outcomes.",
+      "subtitle": "You won't know until morning. Unless something is already watching.",
       "leftTitle": "Without Panguard",
       "rightTitle": "With Panguard",
-      "left1": { "time": "3:00 AM", "text": "SSH brute-force attack begins from 103.xx.xx.xx" },
-      "left2": { "time": "3:02 AM", "text": "Attacker gains access using a weak password" },
-      "left3": { "time": "3:05 AM", "text": "Lateral movement begins. Privileges escalated." },
-      "left4": { "time": "3:15 AM", "text": "Data exfiltration starts. Customer database copied." },
-      "left5": { "time": "3:30 AM", "text": "Ransomware deployed. Files encrypted." },
-      "left6": { "time": "7:00 AM", "text": "You wake up. Check Slack. Nothing unusual." },
+      "left1": {
+        "time": "3:00 AM",
+        "text": "SSH brute-force attack begins from 103.xx.xx.xx"
+      },
+      "left2": {
+        "time": "3:02 AM",
+        "text": "Attacker gains access using a weak password"
+      },
+      "left3": {
+        "time": "3:05 AM",
+        "text": "Lateral movement begins. Privileges escalated."
+      },
+      "left4": {
+        "time": "3:15 AM",
+        "text": "Data exfiltration starts. Customer database copied."
+      },
+      "left5": {
+        "time": "3:30 AM",
+        "text": "Ransomware deployed. Files encrypted."
+      },
+      "left6": {
+        "time": "7:00 AM",
+        "text": "You wake up. Check Slack. Nothing unusual."
+      },
       "left7": {
         "time": "9:00 AM",
         "text": "Customer calls: \"I can't log in.\" You discover the breach."
@@ -594,7 +379,10 @@
         "time": "3:00 AM",
         "text": "SSH brute-force detected by Layer 1 (Sigma rule match)"
       },
-      "right2": { "time": "3:00 AM", "text": "IP blocked automatically. Threat Cloud notified." },
+      "right2": {
+        "time": "3:00 AM",
+        "text": "IP blocked automatically. Threat Cloud notified."
+      },
       "right3": {
         "time": "3:01 AM",
         "text": "Attack pattern shared across all Panguard users globally"
@@ -603,45 +391,90 @@
         "time": "3:01 AM",
         "text": "LINE notification sent to you with full incident summary"
       },
-      "right5": { "time": "3:02 AM", "text": "Incident documented. Evidence snapshot saved." },
+      "right5": {
+        "time": "3:02 AM",
+        "text": "Incident documented. Evidence snapshot saved."
+      },
       "lineLabel": "Panguard AI via LINE",
       "lineMessage": "Blocked SSH brute-force from 103.xx.xx.xx. IP banned. No data accessed. All clear.",
       "stillSleeping": "You're still sleeping."
     },
-    "sixLayers": {
-      "overline": "Product Suite",
-      "title": "One platform. Six layers of defense.",
-      "coreLabel": "Core",
-      "scan": {
-        "title": "Panguard Scan",
-        "desc": "60-second AI security audit with PDF report. Find vulnerabilities before attackers do."
-      },
-      "guard": {
-        "title": "Panguard Guard",
-        "desc": "24/7 AI endpoint monitoring with automated response. 4 AI agents working around the clock."
-      },
-      "chat": {
-        "title": "Panguard Chat",
-        "desc": "AI security copilot via LINE, Telegram, Slack, or Email. Ask questions in plain language."
-      },
-      "trap": {
-        "title": "Panguard Trap",
-        "desc": "Smart honeypot system with 8 protocols. Detect attackers before they reach real systems."
-      },
-      "report": {
-        "title": "Panguard Report",
-        "desc": "AI compliance report generator for ISO 27001, SOC 2, and Taiwan Cyber Security Act."
-      },
-      "threatCloud": {
-        "title": "Threat Cloud",
-        "desc": "Collective intelligence. Evolving defense. Every Panguard installation feeds anonymous threat data into a shared network. Threat Cloud correlates attack patterns, clusters IP behavior, and automatically generates new Sigma detection rules from real community attacks. More users = smarter defense for all. Privacy-first. Open source. One command to opt out."
-      },
-      "learnMore": "Learn more",
-      "subtitle": "All products work together. Install what you need, add more as you grow."
+    "useCases": {
+      "overline": "Use Cases",
+      "title": "Real scenarios. Real results.",
+      "scenarios": [
+        {
+          "type": "Vibe Coder",
+          "detail": "8 servers, one person",
+          "pain": "Used to SSH into each server every morning to check logs.",
+          "result": "Panguard monitors all 8. Caught a cryptominer in 4 minutes. He was asleep.",
+          "products": "GUARD + TRAP + CHAT",
+          "cost": "$29/mo",
+          "saved": "15 hours/week recovered"
+        },
+        {
+          "type": "SaaS Startup",
+          "detail": "12 employees",
+          "pain": "Enterprise client sent a 200-question security questionnaire. Team panicked.",
+          "result": "Ran Panguard Scan. Sent back a 40-page ISO 27001 report. Signed the deal that week.",
+          "products": "SCAN + REPORT",
+          "cost": "$499",
+          "saved": "Closed $180K ARR deal"
+        },
+        {
+          "type": "Taiwan SMB",
+          "detail": "30 employees, government bid",
+          "pain": "Needed ISMS compliance. Consultants quoted $10,000 and 3 months.",
+          "result": "Panguard Report: $299, 60 seconds, 50 controls mapped.",
+          "products": "REPORT (ISMS)",
+          "cost": "$299",
+          "saved": "Saved $9,700 and 3 months"
+        },
+        {
+          "type": "E-Commerce",
+          "detail": "Solo founder",
+          "pain": "No idea how to answer \"Is your site secure?\"",
+          "result": "Guard caught SSH brute-force at 2 AM. Blocked 3 IPs. Notified on LINE. Read it over breakfast.",
+          "products": "GUARD + CHAT",
+          "cost": "$9/mo",
+          "saved": "Zero downtime since install"
+        }
+      ]
     },
-    "theEvidence": {
+    "productOverview": {
+      "title": "Six tools. One install.",
+      "subtitle": "Each works standalone. Together, they're a full security operations center in one curl command.",
+      "products": [
+        {
+          "name": "Scan",
+          "desc": "Find vulnerabilities before attackers do. 60-second audit with PDF report."
+        },
+        {
+          "name": "Guard",
+          "desc": "4 AI agents that detect, analyze, respond, and report — 24/7."
+        },
+        {
+          "name": "Chat",
+          "desc": "Security alerts on LINE, Telegram, Slack. Plain language, not log dumps."
+        },
+        {
+          "name": "Trap",
+          "desc": "8 fake services that lure attackers and profile their techniques. Defense + intel."
+        },
+        {
+          "name": "Report",
+          "desc": "AI compliance reports for Taiwan ISMS, ISO 27001, SOC 2. 60 seconds."
+        },
+        {
+          "name": "Threat Cloud",
+          "desc": "Collective defense. Auto-generates detection rules from real attacks across all users."
+        }
+      ],
+      "learnMore": "Learn more"
+    },
+    "numbersWall": {
       "title": "Don't take our word for it. Read the code.",
-      "subtitle": "Every number below is verifiable in our open-source repository.",
+      "subtitle": "Every number below is verifiable in our open-source repository. No black boxes.",
       "stats": {
         "sigmaRules": "Sigma detection rules",
         "yaraRules": "YARA malware rules",
@@ -734,30 +567,43 @@
           "name": "Taiwan Cyber Security Act",
           "controls": "50 controls",
           "price": "$299",
-          "market": "Market rate: ~$3,000+"
+          "market": "Market rate: $10,000+"
         },
         "1": {
           "name": "ISO 27001",
           "controls": "93 controls",
           "price": "$499",
-          "market": "Market rate: ~$8,000+"
+          "market": "Market rate: $15,000+"
         },
         "2": {
           "name": "SOC 2",
           "controls": "64 controls",
           "price": "$699",
-          "market": "Market rate: ~$15,000+"
+          "market": "Market rate: $20,000+"
         },
         "3": {
           "name": "Bundle (All 3)",
           "controls": "207 controls",
           "price": "$999",
-          "market": "Market rate: ~$25,000+"
+          "market": "Market rate: $30,000+",
+          "badge": "SAVE 33%"
         }
       },
       "reportNote": "One-time purchase. Generated in 60 seconds. PDF + evidence package.",
       "reportCta": "View compliance options",
-      "disclaimer": "All prices in USD. TWD pricing available on the Chinese version."
+      "disclaimer": "Readiness assessment, not official certification. Reports identify compliance gaps before formal audits.",
+      "priceNote": "All prices in USD. TWD pricing available on the Chinese version."
+    },
+    "finalCta": {
+      "title": "You deploy. We defend.",
+      "subtitle": "Install in 60 seconds. Free tier with full scanning. No account. No credit card. No sales call.",
+      "manifesto": "We built Panguard because security shouldn't need a six-figure budget or a dedicated team. It should be one command away.",
+      "btnGetStarted": "Free Server Scan",
+      "btnGithub": "GitHub",
+      "btnDocs": "Documentation",
+      "badge1": "MIT Open Source",
+      "badge2": "1,107 Tests Passing",
+      "badge3": "Built in Taiwan"
     }
   },
   "pricing": {
@@ -1541,7 +1387,14 @@
       },
       "workflow": {
         "title": "Fits your workflow",
-        "tools": ["CLI", "REST API", "GitHub Actions", "Docker", "SSH", "Webhooks"]
+        "tools": [
+          "CLI",
+          "REST API",
+          "GitHub Actions",
+          "Docker",
+          "SSH",
+          "Webhooks"
+        ]
       },
       "cta": {
         "title": "Secure your stack in 60 seconds",
@@ -1602,7 +1455,14 @@
       },
       "integrations": {
         "title": "Integrations your team already uses",
-        "tools": ["Slack", "LINE", "Telegram", "Email", "Microsoft Teams", "Webhooks"]
+        "tools": [
+          "Slack",
+          "LINE",
+          "Telegram",
+          "Email",
+          "Microsoft Teams",
+          "Webhooks"
+        ]
       },
       "cta": {
         "title": "Protect your business today",
@@ -1727,7 +1587,14 @@
       "stack": "e.g. CrowdStrike, Cloudflare, custom scripts...",
       "message": "Tell us about your security goals or any specific questions..."
     },
-    "teamSizes": ["Just me", "2-10", "11-50", "51-200", "201-500", "500+"],
+    "teamSizes": [
+      "Just me",
+      "2-10",
+      "11-50",
+      "51-200",
+      "201-500",
+      "500+"
+    ],
     "submit": "Request Demo",
     "submitting": "Submitting...",
     "error": "Failed to submit request. Please try again.",
@@ -1905,7 +1772,12 @@
       "inquiryType": "Select type",
       "message": "How can we help?"
     },
-    "inquiryTypes": ["Sales", "Support", "Partnership", "Other"],
+    "inquiryTypes": [
+      "Sales",
+      "Support",
+      "Partnership",
+      "Other"
+    ],
     "submit": "Send Message",
     "submitting": "Sending...",
     "successTitle": "Message sent.",

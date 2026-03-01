@@ -14,13 +14,15 @@ export const metadata: Metadata = {
   },
 };
 import Hero from '@/components/home/Hero';
-import WakeUpCall from '@/components/home/WakeUpCall';
-import TheOldWay from '@/components/home/TheOldWay';
-import TheShift from '@/components/home/TheShift';
+import IndustryProblem from '@/components/home/IndustryProblem';
+import ThreeRoads from '@/components/home/ThreeRoads';
+import Redefine from '@/components/home/Redefine';
+import ShowMuscle from '@/components/home/ShowMuscle';
+import ThreatCloudSection from '@/components/home/ThreatCloudSection';
 import The3AMStory from '@/components/home/The3AMStory';
-import SixLayers from '@/components/home/SixLayers';
 import UseCases from '@/components/home/UseCases';
-import TheEvidence from '@/components/home/TheEvidence';
+import ProductOverview from '@/components/home/ProductOverview';
+import NumbersWall from '@/components/home/NumbersWall';
 import HomePricing from '@/components/home/HomePricing';
 import FinalCTA from '@/components/home/FinalCTA';
 import Footer from '@/components/Footer';
@@ -30,25 +32,29 @@ export default function Home() {
     <>
       <NavBar />
       <main>
-        {/* 1. Hero */}
+        {/* S1: Hero */}
         <Hero />
-        {/* 2. WakeUpCall — The reality of cyber threats */}
-        <WakeUpCall />
-        {/* 3. TheOldWay — DIY vs Outsource vs Panguard */}
-        <TheOldWay />
-        {/* 4. TheShift — Philosophy + Architecture */}
-        <TheShift />
-        {/* 5. The3AMStory — Without vs With Panguard */}
+        {/* S2: Industry Problem */}
+        <IndustryProblem />
+        {/* S3: Three Roads */}
+        <ThreeRoads />
+        {/* S4: Redefine (transition) */}
+        <Redefine />
+        {/* S5: Show Muscle (5-person team + funnel + confidence) */}
+        <ShowMuscle />
+        {/* S6: Threat Cloud */}
+        <ThreatCloudSection />
+        {/* S7: 3AM Timeline */}
         <The3AMStory />
-        {/* 6. SixLayers — 6 product cards */}
-        <SixLayers />
-        {/* 7. UseCases — 4 persona scenarios */}
+        {/* S8: Use Cases */}
         <UseCases />
-        {/* 8. TheEvidence — Stats + Trust */}
-        <TheEvidence />
-        {/* 9. Pricing */}
+        {/* S9: Product Overview */}
+        <ProductOverview />
+        {/* S10: Numbers Wall + Trust */}
+        <NumbersWall />
+        {/* S11: Pricing + Compliance */}
         <HomePricing />
-        {/* 10. FinalCTA */}
+        {/* S12: Final CTA */}
         <FinalCTA />
       </main>
       <Footer />

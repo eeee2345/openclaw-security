@@ -1,6 +1,8 @@
 'use client';
+
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
 import { Copy, Check, ArrowRight, CheckCircle } from 'lucide-react';
 import { Link } from '@/navigation';
 import { useOS } from '@/hooks/useOS';
@@ -15,10 +17,11 @@ function InstallBar() {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
   return (
     <div className="max-w-md mx-auto">
       <div className="relative flex items-center gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-5 py-3.5 font-mono text-sm">
-        <span className="text-brand-sage select-none">{prompt}</span>
+        <span className="text-panguard-green select-none">{prompt}</span>
         <code className="text-text-secondary flex-1 select-all truncate">
           {installCmd}
         </code>
@@ -39,76 +42,86 @@ function InstallBar() {
   );
 }
 
-/* ===========================  Hero Component  =========================== */
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Hero() {
   const t = useTranslations('home.hero');
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* -- Background: pure CSS, no JS animation overhead -- */}
-
-      {/* Grid */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]">
+      {/* Grid background */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(139,154,142,1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,154,142,1) 1px, transparent 1px)',
+            'linear-gradient(rgba(107,143,113,1) 1px, transparent 1px), linear-gradient(90deg, rgba(107,143,113,1) 1px, transparent 1px)',
           backgroundSize: '80px 80px',
         }}
       />
 
-      {/* Central glow orb -- CSS animation */}
+      {/* Central glow orb */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none hero-orb" />
 
-      {/* Scan line -- CSS animation */}
+      {/* Scan line */}
       <div className="absolute left-0 right-0 pointer-events-none hero-scanline" />
 
-      {/* -- Content -- */}
-      <div className="relative z-10 text-center px-6 py-24 max-w-4xl mx-auto">
-        {/* Eyebrow */}
-        <div className="hero-entrance" style={{ animationDelay: '0s' }}>
-          <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-6">
-            {t('eyebrow')}
-          </p>
-        </div>
+      {/* Content */}
+      <div className="relative z-10 text-center px-6 pt-20 pb-12 max-w-4xl mx-auto">
+        {/* Tag */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, ease }}
+          className="text-[11px] uppercase tracking-[0.2em] text-panguard-green font-semibold mb-6"
+        >
+          {t('eyebrow')}
+        </motion.p>
 
         {/* Title */}
-        <div className="hero-entrance" style={{ animationDelay: '0.1s' }}>
-          <h1 className="text-[clamp(36px,6vw,72px)] font-extrabold leading-[1.1] tracking-tight text-text-primary">
-            {t('title')}
-          </h1>
-          <p className="text-[clamp(36px,6vw,72px)] font-extrabold leading-[1.1] tracking-tight text-brand-sage mt-2">
-            {t('titleLine2')}
-          </p>
-        </div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease }}
+          className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tight text-text-primary"
+        >
+          {t('title')}
+        </motion.h1>
 
         {/* Subtitle */}
-        <div className="mt-8 max-w-2xl mx-auto hero-entrance" style={{ animationDelay: '0.25s' }}>
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed">
-            {t('subtitle1')}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease }}
+          className="mt-8 max-w-2xl mx-auto"
+        >
+          <p className="text-xl text-gray-400 leading-relaxed">
+            {t('subtitle')}
           </p>
-          <p className="text-lg lg:text-xl text-text-secondary leading-relaxed mt-4">
-            {t('subtitle2')}
+          <p className="text-lg font-semibold text-text-primary mt-4">
+            {t('boldLine')}
           </p>
-          <p className="text-base lg:text-lg text-text-primary leading-relaxed mt-4 font-semibold">
-            {t('subtitle3')}
-          </p>
-        </div>
+        </motion.div>
 
         {/* Install command */}
-        <div className="mt-10 hero-entrance" style={{ animationDelay: '0.4s' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8, ease }}
+          className="mt-10"
+        >
           <InstallBar />
-        </div>
+        </motion.div>
 
-        {/* Buttons */}
-        <div
-          className="flex flex-wrap gap-3 justify-center mt-8 hero-entrance-fade"
-          style={{ animationDelay: '0.55s' }}
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.0, ease }}
+          className="flex flex-wrap gap-3 justify-center mt-8"
         >
           <Link
             href="/early-access"
-            className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
+            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-8 py-3.5 hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
           >
             {t('getStarted')} <ArrowRight className="w-4 h-4" />
           </Link>
@@ -116,31 +129,33 @@ export default function Hero() {
             href="https://github.com/panguard-ai/panguard-ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-border text-text-secondary hover:text-text-primary hover:border-brand-sage font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
+            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
           >
             {t('github')}
           </a>
-        </div>
+        </motion.div>
 
-        {/* Social proof badges */}
-        <div
-          className="flex flex-wrap gap-3 justify-center mt-6 hero-entrance-fade"
-          style={{ animationDelay: '0.7s' }}
+        {/* Trust badges */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.1, ease }}
+          className="flex flex-wrap gap-3 justify-center mt-6"
         >
           {(['mit', 'tests', 'taiwan'] as const).map((key) => (
             <span
               key={key}
               className="inline-flex items-center gap-1.5 text-xs text-text-tertiary bg-surface-1/50 border border-border/50 rounded-full px-3 py-1.5"
             >
-              <CheckCircle className="w-3 h-3 text-brand-sage" />
+              <CheckCircle className="w-3 h-3 text-panguard-green" />
               {t(`badges.${key}`)}
             </span>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-surface-0 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0a] to-transparent pointer-events-none" />
     </section>
   );
 }

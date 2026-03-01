@@ -16,6 +16,12 @@ const config: Config = {
           'sage-glow': 'rgba(139, 154, 142, 0.15)',
           'sage-wash': 'rgba(139, 154, 142, 0.04)',
         },
+        panguard: {
+          green: '#6B8F71',
+          'green-light': '#8FB996',
+          'green-dark': '#3D5A42',
+          red: '#C75050',
+        },
         surface: {
           0: '#1A1614',
           1: '#1F1C19',

@@ -3,9 +3,9 @@ import { ReactNode } from 'react';
 type Spacing = 'tight' | 'default' | 'spacious';
 
 const spacingClasses: Record<Spacing, string> = {
-  tight: 'py-12 sm:py-16',
-  default: 'py-16 sm:py-24',
-  spacious: 'py-20 sm:py-32',
+  tight: 'py-8 sm:py-12',
+  default: 'py-12 sm:py-16',
+  spacious: 'py-16 sm:py-20',
 };
 
 export default function SectionWrapper({
@@ -13,6 +13,7 @@ export default function SectionWrapper({
   className = '',
   id,
   dark = false,
+  bg,
   spacing = 'default',
   fadeBorder = true,
 }: {
@@ -20,15 +21,18 @@ export default function SectionWrapper({
   className?: string;
   id?: string;
   dark?: boolean;
+  bg?: string;
   spacing?: Spacing;
   fadeBorder?: boolean;
 }) {
+  const bgClass = bg ?? (dark ? 'bg-surface-1' : 'bg-surface-0');
+
   return (
     <section
       id={id}
       className={`${spacingClasses[spacing]} px-6 ${
-        fadeBorder ? 'section-fade' : 'border-b border-border'
-      } ${dark ? 'bg-surface-1' : 'bg-surface-0'} ${className}`}
+        fadeBorder ? 'section-fade' : ''
+      } ${bgClass} ${className}`}
     >
       <div className="max-w-[1200px] mx-auto">{children}</div>
     </section>

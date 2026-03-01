@@ -52,7 +52,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-surface-1 border-t border-border py-12 sm:py-16 px-6 lg:px-[120px]">
+    <footer className="bg-[#050505] border-t border-border py-12 sm:py-16 px-6 lg:px-[120px]">
       <div className="max-w-[1200px] mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           <div className="col-span-2 md:col-span-1">
