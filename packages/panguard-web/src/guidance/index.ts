@@ -115,6 +115,13 @@ export const GUIDANCE_STEPS: GuidanceStep[] = [
     descriptionZh: '選擇你要如何接收資安通知。',
     options: [
       {
+        id: 'line',
+        labelEn: 'LINE',
+        labelZh: 'LINE',
+        descriptionEn: 'Most popular messaging app in Taiwan.',
+        descriptionZh: '台灣最多人用的通訊軟體。',
+      },
+      {
         id: 'telegram',
         labelEn: 'Telegram',
         labelZh: 'Telegram',

@@ -80,6 +80,14 @@ export const SETUP_STEPS: readonly SetupStep[] = [
     inputType: 'select',
     options: [
       {
+        value: 'line',
+        label: { 'zh-TW': 'LINE', en: 'LINE' },
+        description: {
+          'zh-TW': '台灣最多人用的通訊軟體，適合個人和企業',
+          en: 'Most popular messaging app in Taiwan, great for individuals and businesses',
+        },
+      },
+      {
         value: 'telegram',
         label: { 'zh-TW': 'Telegram', en: 'Telegram' },
         description: {
@@ -185,6 +193,27 @@ export const SETUP_STEPS: readonly SetupStep[] = [
 /** Get channel-specific configuration prompts / 取得管道專屬配置提示 */
 export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[] {
   switch (channel) {
+    case 'line':
+      return [
+        {
+          id: 'lineChannelAccessToken',
+          title: { 'zh-TW': 'LINE Channel Access Token', en: 'LINE Channel Access Token' },
+          description: {
+            'zh-TW': '在 LINE Developers Console 建立 Messaging API channel 後取得',
+            en: 'Get from LINE Developers Console after creating a Messaging API channel',
+          },
+          inputType: 'text',
+        },
+        {
+          id: 'lineUserId',
+          title: { 'zh-TW': 'LINE User ID', en: 'LINE User ID' },
+          description: {
+            'zh-TW': '接收通知的 LINE User ID（在 LINE Developers Console 查看）',
+            en: 'LINE User ID to receive notifications (find in LINE Developers Console)',
+          },
+          inputType: 'text',
+        },
+      ];
     case 'telegram':
       return [
         {

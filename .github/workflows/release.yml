@@ -1,0 +1,111 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-14
+            platform: darwin-arm64
+          - os: macos-13
+            platform: darwin-x64
+          - os: ubuntu-latest
+            platform: linux-x64
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm run build
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Deploy standalone package
+        run: pnpm deploy --filter=@panguard-ai/panguard --prod /tmp/panguard-release
+
+      - name: Copy config (detection rules)
+        run: |
+          cp -r config/ /tmp/panguard-release/config/
+
+      - name: Create launcher script
+        run: |
+          mkdir -p /tmp/panguard-release/bin
+          cat > /tmp/panguard-release/bin/panguard << 'LAUNCHER'
+          #!/usr/bin/env bash
+          SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+          exec node "$SCRIPT_DIR/dist/cli/index.js" "$@"
+          LAUNCHER
+          chmod +x /tmp/panguard-release/bin/panguard
+
+      - name: Create tarball
+        run: |
+          cd /tmp
+          tar -czf panguard-${{ matrix.platform }}.tar.gz -C panguard-release .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: panguard-${{ matrix.platform }}
+          path: /tmp/panguard-${{ matrix.platform }}.tar.gz
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect tarballs
+        run: |
+          mkdir -p release
+          find artifacts -name '*.tar.gz' -exec cp {} release/ \;
+          ls -la release/
+
+      - name: Generate checksums
+        working-directory: release
+        run: |
+          sha256sum *.tar.gz > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            release/*.tar.gz
+            release/SHA256SUMS.txt
