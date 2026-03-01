@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Lock } from 'lucide-react';
+import { LockIcon } from '@/components/ui/BrandIcons';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -202,7 +202,7 @@ export default function ThreatCloudSection() {
           className="max-w-2xl mx-auto mt-10 bg-[#0a0a0a]/50 border border-panguard-green/20 rounded-xl p-5"
         >
           <div className="flex items-start gap-3">
-            <Lock className="w-4 h-4 text-panguard-green mt-0.5 shrink-0" />
+            <LockIcon size={16} className="text-panguard-green mt-0.5 shrink-0" />
             <p className="text-sm text-gray-400 leading-relaxed">
               {t('privacy')}
             </p>

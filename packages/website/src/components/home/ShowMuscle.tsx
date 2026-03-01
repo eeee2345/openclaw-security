@@ -2,11 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Shield, Search, ClipboardCheck, Crosshair, Globe } from 'lucide-react';
+import { ShieldIcon, ScanIcon, ComplianceIcon, TrapIcon, GlobalIcon } from '@/components/ui/BrandIcons';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const roleIcons = [Shield, Search, ClipboardCheck, Crosshair, Globe];
+const roleIcons = [ShieldIcon, ScanIcon, ComplianceIcon, TrapIcon, GlobalIcon];
 const barColors = ['#6B8F71', '#8FB996', '#A8D5B0'];
 const confidenceColors = {
   green: { bg: 'bg-panguard-green/10', border: 'border-panguard-green/40', dot: 'bg-panguard-green' },

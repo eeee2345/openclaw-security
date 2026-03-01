@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Copy, Check, ArrowRight, CheckCircle } from 'lucide-react';
+import { Copy, Check, ArrowRight } from 'lucide-react';
+import { CheckIcon } from '@/components/ui/BrandIcons';
 import { Link } from '@/navigation';
 import { useOS } from '@/hooks/useOS';
 
@@ -126,7 +127,7 @@ export default function FinalCTA() {
               key={key}
               className="flex items-center gap-2 text-xs text-text-tertiary bg-surface-2/50 border border-border rounded-full px-3 py-1.5"
             >
-              <CheckCircle className="w-3 h-3 text-panguard-green" />
+              <CheckIcon size={12} className="text-panguard-green" />
               {t(key)}
             </span>
           ))}
