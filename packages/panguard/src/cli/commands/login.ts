@@ -11,7 +11,7 @@
 import { Command } from 'commander';
 import { createServer } from 'node:http';
 import { randomBytes } from 'node:crypto';
-import { exec } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { c, symbols, box, statusPanel, spinner } from '@panguard-ai/core';
 import type { StatusItem } from '@panguard-ai/core';
 import {
@@ -269,15 +269,19 @@ function startCallbackServer(expectedState: string): Promise<CallbackServer> {
 function openBrowser(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const platform = process.platform;
-    let cmd: string;
+    let bin: string;
+    let args: string[];
     if (platform === 'darwin') {
-      cmd = `open "${url}"`;
+      bin = 'open';
+      args = [url];
     } else if (platform === 'win32') {
-      cmd = `start "" "${url}"`;
+      bin = 'cmd';
+      args = ['/c', 'start', '', url];
     } else {
-      cmd = `xdg-open "${url}"`;
+      bin = 'xdg-open';
+      args = [url];
     }
-    exec(cmd, (err) => {
+    execFile(bin, args, (err) => {
       if (err) reject(err);
       else resolve();
     });

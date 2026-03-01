@@ -11,7 +11,11 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /** Registered agent info */
 export interface AgentInfo {
@@ -60,6 +64,7 @@ interface ScanCommand {
 export class ManagerServer {
   private server: ReturnType<typeof createServer> | null = null;
   private readonly port: number;
+  private readonly apiKey: string;
   private readonly agents = new Map<string, AgentInfo>();
   private readonly events: AgentEvent[] = [];
   private readonly scanQueue: ScanCommand[] = [];
@@ -68,8 +73,9 @@ export class ManagerServer {
   /** Maximum events to keep in memory */
   private readonly maxEvents = 10000;
 
-  constructor(port = 8443) {
+  constructor(port = 8443, apiKey?: string) {
     this.port = port;
+    this.apiKey = apiKey ?? process.env['PANGUARD_MANAGER_KEY'] ?? '';
   }
 
   /**
@@ -123,8 +129,9 @@ export class ManagerServer {
     const path = url.pathname;
     const method = req.method ?? 'GET';
 
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // CORS headers - restrict to same-origin when API key is configured
+    const allowedOrigin = this.apiKey ? (req.headers.origin ?? '') : '*';
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -136,6 +143,7 @@ export class ManagerServer {
 
     // Route matching
     if (method === 'POST' && path === '/api/agents/register') {
+      if (this.requireApiKey(req, res)) return;
       return this.handleRegister(req, res);
     }
 
@@ -159,18 +167,22 @@ export class ManagerServer {
     }
 
     if (method === 'GET' && path === '/api/agents') {
+      if (this.requireApiKey(req, res)) return;
       return this.handleListAgents(res);
     }
 
     if (method === 'GET' && path === '/api/rules/latest') {
+      if (this.requireApiKey(req, res)) return;
       return this.handleGetRules(res);
     }
 
     if (method === 'GET' && path === '/api/events') {
+      if (this.requireApiKey(req, res)) return;
       return this.handleListEvents(url, res);
     }
 
     if (method === 'GET' && (path === '/api/dashboard' || path === '/' || path === '/dashboard')) {
+      if (this.requireApiKey(req, res)) return;
       return this.handleDashboard(res);
     }
 
@@ -211,6 +223,29 @@ export class ManagerServer {
     if (agent.token !== token) return 'Invalid token';
 
     return null;
+  }
+
+  /**
+   * Require API key for management endpoints. Returns true if blocked.
+   */
+  private requireApiKey(req: IncomingMessage, res: ServerResponse): boolean {
+    if (!this.apiKey) return false; // no key configured = open access (dev mode)
+
+    const auth = req.headers.authorization;
+    if (!auth?.startsWith('Bearer ')) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Missing authorization header' }));
+      return true;
+    }
+
+    const token = auth.slice(7);
+    if (token !== this.apiKey) {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid API key' }));
+      return true;
+    }
+
+    return false;
   }
 
   // ─── API Handlers ──────────────────────────────────────────

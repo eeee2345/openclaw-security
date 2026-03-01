@@ -66,7 +66,7 @@ RUN cp -r packages/panguard/dist /standalone/dist
 
 # Step 2: Install external deps with npm FIRST (before workspace packages)
 # NOTE: Update these versions if workspace package.json deps change
-RUN printf '{"name":"panguard-api","version":"0.1.0","private":true,"type":"module","dependencies":{"commander":"^12.0.0","better-sqlite3":"^11.0.0","i18next":"^24.2.2","js-yaml":"^4.1.0","zod":"^3.24.0","pdfkit":"^0.15.0"},"optionalDependencies":{"ssh2":"^1.16.0"}}' > /standalone/package.json && \
+RUN printf '{"name":"panguard-api","version":"0.1.0","private":true,"type":"module","dependencies":{"commander":"12.1.0","better-sqlite3":"11.10.0","i18next":"24.2.3","js-yaml":"4.1.1","zod":"3.25.76","pdfkit":"0.15.2"},"optionalDependencies":{"ssh2":"1.17.0"}}' > /standalone/package.json && \
     cd /standalone && npm install --production
 
 # Step 3: Copy workspace packages into node_modules AFTER npm install
@@ -106,6 +106,12 @@ COPY --from=builder /build/config ./config
 
 # Persistent data directory
 RUN mkdir -p /data
+
+# Run as non-root user
+RUN groupadd --system --gid 1001 panguard && \
+    useradd --system --uid 1001 --gid 1001 panguard && \
+    chown -R panguard:panguard /app /data
+USER panguard
 
 ENV NODE_ENV=production
 ENV PANGUARD_DATA_DIR=/data

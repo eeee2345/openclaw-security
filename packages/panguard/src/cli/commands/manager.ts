@@ -14,10 +14,11 @@ export function managerCommand(): Command {
     .command('start')
     .description('Start the Manager server / 啟動 Manager 伺服器')
     .option('--port <port>', 'Port number / 埠號', '8443')
-    .action(async (opts: { port: string }) => {
+    .option('--api-key <key>', 'API key for management endpoints / 管理端點 API 金鑰')
+    .action(async (opts: { port: string; apiKey?: string }) => {
       const port = parseInt(opts.port, 10);
       const { ManagerServer } = await import('../../manager/manager-server.js');
-      const server = new ManagerServer(port);
+      const server = new ManagerServer(port, opts.apiKey);
 
       // Handle graceful shutdown
       const shutdown = async () => {
@@ -38,9 +39,12 @@ export function managerCommand(): Command {
     .command('agents')
     .description('List registered agents / 列出已註冊的 Agent')
     .option('--url <url>', 'Manager URL / Manager 網址', 'http://localhost:8443')
-    .action(async (opts: { url: string }) => {
+    .option('--api-key <key>', 'API key / API 金鑰')
+    .action(async (opts: { url: string; apiKey?: string }) => {
       try {
-        const res = await fetch(`${opts.url}/api/agents`);
+        const headers: Record<string, string> = {};
+        if (opts.apiKey) headers['Authorization'] = `Bearer ${opts.apiKey}`;
+        const res = await fetch(`${opts.url}/api/agents`, { headers });
         if (!res.ok) {
           console.error(`Error: HTTP ${res.status}`);
           process.exit(1);

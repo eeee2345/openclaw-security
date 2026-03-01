@@ -177,11 +177,59 @@ async function runDeploy(opts: {
     const notifSp = spinner(
       `[${step}/${totalSteps}] ${lang === 'zh-TW' ? '\u6E2C\u8A66\u901A\u77E5\u7BA1\u9053...' : 'Testing notification channel...'}`
     );
-    // Simulated test - real implementation would call ChatAgent.sendTest()
-    await sleep(500);
-    notifSp.succeed(
-      `[${step}/${totalSteps}] ${lang === 'zh-TW' ? '\u901A\u77E5\u7BA1\u9053\u5DF2\u914D\u7F6E' : 'Notification channel configured'}`
-    );
+    try {
+      const { ChatAgent, WebhookChannel, TelegramChannel, SlackChannel, EmailChannel } =
+        await import('@panguard-ai/panguard-chat');
+      const ch = config.notifications.channel;
+      const cfg = config.notifications.config;
+      const agent = new ChatAgent({
+        userProfile: {
+          type: 'it_admin',
+          language: lang === 'zh-TW' ? 'zh-TW' : 'en',
+          notificationChannel: ch as 'webhook' | 'telegram' | 'slack' | 'email',
+          preferences: { criticalAlerts: true, dailySummary: true, weeklySummary: true, peacefulReport: true },
+        },
+        channels: {},
+        maxFollowUpTokens: 2000,
+      });
+
+      if (ch === 'webhook' && cfg['url']) {
+        agent.registerChannel(new WebhookChannel({ endpoint: cfg['url'], secret: cfg['secret'] ?? '', authMethod: 'bearer_token' }));
+      } else if (ch === 'telegram' && cfg['botToken'] && cfg['chatId']) {
+        agent.registerChannel(new TelegramChannel({ botToken: cfg['botToken'], chatId: cfg['chatId'] }));
+      } else if (ch === 'slack' && cfg['botToken']) {
+        agent.registerChannel(new SlackChannel({ botToken: cfg['botToken'], signingSecret: cfg['signingSecret'] ?? '', defaultChannel: cfg['channel'] ?? '#security' }));
+      } else if (ch === 'email' && cfg['host']) {
+        agent.registerChannel(new EmailChannel({ host: cfg['host'], port: Number(cfg['port'] ?? 587), secure: cfg['secure'] === 'true', auth: { user: cfg['user'] ?? '', pass: cfg['pass'] ?? '' }, from: cfg['from'] ?? '', to: [cfg['to'] ?? ''] }));
+      }
+
+      const result = await agent.sendAlert('deploy-test', {
+        severity: 'low',
+        conclusion: 'benign',
+        confidence: 1.0,
+        humanSummary: lang === 'zh-TW' ? 'Panguard AI 部署測試通知' : 'Panguard AI deployment test notification',
+        reasoning: 'Deploy command notification channel verification',
+        recommendedAction: lang === 'zh-TW' ? '無需動作 - 這是部署測試' : 'No action required - deployment test',
+        eventDescription: 'Deployment notification test',
+        actionsTaken: [],
+        timestamp: new Date().toISOString(),
+      });
+
+      if (result.success) {
+        notifSp.succeed(
+          `[${step}/${totalSteps}] ${lang === 'zh-TW' ? '\u901A\u77E5\u7BA1\u9053\u6E2C\u8A66\u6210\u529F' : 'Notification channel test passed'}`
+        );
+      } else {
+        notifSp.warn(
+          `[${step}/${totalSteps}] ${lang === 'zh-TW' ? `\u901A\u77E5\u6E2C\u8A66\u5931\u6557: ${result.error}` : `Notification test failed: ${result.error}`}`
+        );
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      notifSp.warn(
+        `[${step}/${totalSteps}] ${lang === 'zh-TW' ? `\u901A\u77E5\u6E2C\u8A66\u5931\u6557: ${msg}` : `Notification test failed: ${msg}`}`
+      );
+    }
     step++;
   }
 
