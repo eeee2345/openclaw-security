@@ -135,6 +135,31 @@ export class AnalyzeAgent {
       });
     }
 
+    // Step 3b: Source-specific evidence for Falco/Suricata events
+    // These feed into the ebpfConfidence path in calculateFinalConfidence
+    if (detection.event.source === 'falco') {
+      evidenceList.push({
+        source: 'falco',
+        description: `Falco kernel-level detection: ${detection.event.description}`,
+        confidence: SEVERITY_CONFIDENCE[detection.event.severity] ?? 50,
+        data: { eventSource: 'falco', category: detection.event.category },
+      });
+    }
+
+    if (detection.event.source === 'suricata') {
+      evidenceList.push({
+        source: 'suricata',
+        description: `Suricata network IDS detection: ${detection.event.description}`,
+        confidence: SEVERITY_CONFIDENCE[detection.event.severity] ?? 50,
+        data: {
+          eventSource: 'suricata',
+          category: detection.event.category,
+          sourceIP: detection.event.metadata?.['sourceIP'],
+          destIP: detection.event.metadata?.['destIP'],
+        },
+      });
+    }
+
     // Step 4: Attack chain correlation boost
     if (detection.attackChain) {
       const chainBoost = Math.min(

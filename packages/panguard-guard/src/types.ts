@@ -49,7 +49,9 @@ export type EvidenceSource =
   | 'ai_analysis'
   | 'baseline_deviation'
   | 'threat_intel'
-  | 'investigation';
+  | 'investigation'
+  | 'falco'
+  | 'suricata';
 
 /** Evidence item / 證據項目 */
 export interface Evidence {
