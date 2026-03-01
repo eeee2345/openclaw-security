@@ -8,10 +8,10 @@ import FadeInUp from '../FadeInUp';
 import CountUp from '../animations/CountUp';
 
 const statsGrid = [
-  { target: 3158, suffix: '', key: 'sigmaRules' as const },
-  { target: 425, suffix: '', key: 'yaraRules' as const },
+  { target: 3155, suffix: '', key: 'sigmaRules' as const },
+  { target: 926, suffix: '', key: 'yaraRules' as const },
   { target: 50, suffix: '', key: 'controls' as const },
-  { target: 1107, suffix: '', key: 'tests' as const },
+  { target: 1446, suffix: '', key: 'tests' as const },
   { target: 5, suffix: '', key: 'layers' as const },
   { target: 6, suffix: '', key: 'actions' as const },
   { target: 8, suffix: '', key: 'protocols' as const },

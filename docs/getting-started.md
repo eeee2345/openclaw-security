@@ -164,7 +164,7 @@ panguard guard start
 
   Mode:       Learning (Day 1/7)
   Monitoring: processes, network, files
-  Rules:      3,149 Sigma rules loaded
+  Rules:      3,155 Sigma rules loaded
   Score:      --/100 (building baseline)
 
   Guard is now protecting your system.

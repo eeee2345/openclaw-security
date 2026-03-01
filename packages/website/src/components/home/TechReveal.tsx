@@ -24,14 +24,14 @@ export default function TechReveal() {
             <div className="space-y-4">
               <div>
                 <p className="text-xl font-extrabold text-text-primary">
-                  <CountUp target={3158} />
+                  <CountUp target={3155} />
                 </p>
                 <p className="text-sm text-brand-sage font-medium">{t('detection.sigma')}</p>
                 <p className="text-xs text-text-tertiary mt-1">{t('detection.sigmaDesc')}</p>
               </div>
               <div>
                 <p className="text-xl font-extrabold text-text-primary">
-                  <CountUp target={425} />
+                  <CountUp target={926} />
                 </p>
                 <p className="text-sm text-brand-sage font-medium">{t('detection.yara')}</p>
                 <p className="text-xs text-text-tertiary mt-1">{t('detection.yaraDesc')}</p>

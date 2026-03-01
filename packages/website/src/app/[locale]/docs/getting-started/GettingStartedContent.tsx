@@ -152,7 +152,7 @@ export default function GettingStartedContent() {
             <TerminalOutput
               lines={[
                 '[OK] Panguard v1.0.0 installed',
-                '[OK] Rule engine loaded (3,158 Sigma + 425 YARA rules)',
+                '[OK] Rule engine loaded (3,155 Sigma + 926 YARA rules)',
                 '[OK] Local LLM ready (Ollama)',
                 '[OK] Monitoring started. Learning period: 7 days.',
               ]}
@@ -185,8 +185,8 @@ export default function GettingStartedContent() {
               lines={[
                 '[OK] Guard daemon started',
                 '[OK] Watching 12 network interfaces',
-                '[OK] Sigma rules: 3,158 loaded',
-                '[OK] YARA rules: 425 loaded',
+                '[OK] Sigma rules: 3,155 loaded',
+                '[OK] YARA rules: 926 loaded',
                 '[OK] Baseline learning: active (7 days)',
               ]}
             />
