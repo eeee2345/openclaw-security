@@ -43,7 +43,22 @@ export function serveCommand(): Command {
       console.log('');
 
       // Startup environment validation
+      const isProd = process.env['NODE_ENV'] === 'production';
+      const errors: string[] = [];
       const warnings: string[] = [];
+
+      // Critical in production
+      if (isProd && !process.env['JWT_SECRET']) {
+        errors.push('JWT_SECRET not set in production — refusing to start with fallback key');
+      }
+      if (isProd && !process.env['PANGUARD_BASE_URL']) {
+        errors.push('PANGUARD_BASE_URL not set in production — OAuth and email links will break');
+      }
+      if (isProd && !process.env['CORS_ALLOWED_ORIGINS']) {
+        errors.push('CORS_ALLOWED_ORIGINS not set in production — API will reject cross-origin requests');
+      }
+
+      // Warnings (non-fatal)
       if (!process.env['PANGUARD_BASE_URL']) {
         warnings.push('PANGUARD_BASE_URL not set — OAuth callbacks will use localhost');
       }
@@ -55,9 +70,23 @@ export function serveCommand(): Command {
           'No email config (RESEND_API_KEY or SMTP_HOST) — password reset and waitlist emails disabled'
         );
       }
-      if (!process.env['JWT_SECRET'] && process.env['NODE_ENV'] === 'production') {
-        warnings.push('JWT_SECRET not set in production — using fallback key (INSECURE)');
+      if (!isProd && !process.env['JWT_SECRET']) {
+        warnings.push('JWT_SECRET not set — using fallback key (OK for dev, NOT for production)');
       }
+      if (!process.env['SENTRY_DSN']) {
+        warnings.push('SENTRY_DSN not set — error tracking disabled');
+      }
+
+      if (errors.length > 0) {
+        console.error(`  ${c.critical('FATAL — Missing required environment variables:')}`);
+        for (const e of errors) {
+          console.error(`    ${c.critical('x')} ${e}`);
+        }
+        console.error('');
+        console.error(`  Set the variables above and restart. Aborting.`);
+        process.exit(1);
+      }
+
       if (warnings.length > 0) {
         console.log(`  ${c.caution('Environment warnings:')}`);
         for (const w of warnings) {
