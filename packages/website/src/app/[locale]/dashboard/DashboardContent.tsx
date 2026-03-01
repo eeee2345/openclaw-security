@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
 const REQUEST_TIMEOUT = 15_000;
 
 interface UsageItem {
