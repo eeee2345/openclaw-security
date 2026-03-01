@@ -8,42 +8,54 @@
 
 ## 數據
 
-| 項目 | 數據 |
-|------|------|
-| 套件名 | `@panguard-ai/core` |
-| 程式碼 | 14849 行 / 58 檔 |
-| 測試 | 12 個測試檔 |
-| 匯出 | 19 個公開 API |
-| 位置 | `packages/core/src/` |
+| 項目   | 數據                 |
+| ------ | -------------------- |
+| 套件名 | `@panguard-ai/core`  |
+| 程式碼 | 14849 行 / 58 檔     |
+| 測試   | 12 個測試檔          |
+| 匯出   | 19 個公開 API        |
+| 位置   | `packages/core/src/` |
 
 ## 主要模組
 
-| 模組 | 路徑 | 功能 |
-|------|------|------|
-| AI 適配器 | `src/ai/` | OpenAI, Anthropic, Ollama 統一介面 |
-| 規則引擎 | `src/rules/` | Sigma 解析 + YARA 匹配 |
-| 評分系統 | `src/scoring/` | 風險評分 0-100, A-F 分級 |
-| 發現引擎 | `src/discovery/` | 系統環境偵測 (OS, 服務, 埠號) |
-| 國際化 | `src/i18n/` | i18next 雙語支援 |
-| CLI 工具 | `src/cli/` | 色彩、spinner、table、box、banner |
-| 監控 | `src/monitor/` | 事件監控基礎類別 |
-| 威脅情報 | `src/threat-intel/` | 威脅來源整合 |
+| 模組      | 路徑                | 功能                               |
+| --------- | ------------------- | ---------------------------------- |
+| AI 適配器 | `src/ai/`           | OpenAI, Anthropic, Ollama 統一介面 |
+| 規則引擎  | `src/rules/`        | Sigma 解析 + YARA 匹配             |
+| 評分系統  | `src/scoring/`      | 風險評分 0-100, A-F 分級           |
+| 發現引擎  | `src/discovery/`    | 系統環境偵測 (OS, 服務, 埠號)      |
+| 國際化    | `src/i18n/`         | i18next 雙語支援                   |
+| CLI 工具  | `src/cli/`          | 色彩、spinner、table、box、banner  |
+| 監控      | `src/monitor/`      | 事件監控基礎類別                   |
+| 威脅情報  | `src/threat-intel/` | 威脅來源整合                       |
 
 ## 關鍵匯出
 
 ```typescript
 // CLI 工具
-c, symbols, box, spinner, table, header, divider, scoreDisplay, statusPanel,
-colorSeverity, formatDuration, timeAgo, stripAnsi, visLen
+(c,
+  symbols,
+  box,
+  spinner,
+  table,
+  header,
+  divider,
+  scoreDisplay,
+  statusPanel,
+  colorSeverity,
+  formatDuration,
+  timeAgo,
+  stripAnsi,
+  visLen);
 
 // 評分
-scoreToGrade  // A>=90, B>=75, C>=60, D>=40, F<40
+scoreToGrade; // A>=90, B>=75, C>=60, D>=40, F<40
 
 // AI
-createAIAdapter, AIAdapter
+(createAIAdapter, AIAdapter);
 
 // 規則
-SigmaEngine, YaraScanner
+(SigmaEngine, YaraScanner);
 ```
 
 ## 測試檔案

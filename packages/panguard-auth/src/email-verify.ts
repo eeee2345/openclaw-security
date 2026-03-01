@@ -195,7 +195,10 @@ export type EmailLocale = 'en' | 'zh';
  * Returns 'zh' for any Chinese variant (zh, zh-TW, zh-CN, zh-Hant, etc.),
  * 'en' for everything else.
  */
-export function detectLocale(acceptLanguage?: string | null, explicit?: string | null): EmailLocale {
+export function detectLocale(
+  acceptLanguage?: string | null,
+  explicit?: string | null
+): EmailLocale {
   if (explicit) {
     return explicit.startsWith('zh') ? 'zh' : 'en';
   }
@@ -263,18 +266,22 @@ const i18n: Record<EmailLocale, EmailStrings> = {
     verifySubject: 'Verify your email | Panguard AI',
     verifyHeading: 'Verify your email',
     verifyOverline: 'PANGUARD AI WAITLIST',
-    verifyBody: 'Thank you for joining the Panguard AI early access waitlist. To confirm your spot, please verify your email address.',
+    verifyBody:
+      'Thank you for joining the Panguard AI early access waitlist. To confirm your spot, please verify your email address.',
     verifyButton: 'Verify Email Address',
-    verifyIgnore: 'If you did not sign up for Panguard AI, you can safely ignore this email. This link expires in 24 hours.',
+    verifyIgnore:
+      'If you did not sign up for Panguard AI, you can safely ignore this email. This link expires in 24 hours.',
     verifyCantClick: "Can't click the button? Copy this link:",
     welcomeSubject: "You're in | Panguard AI",
-    welcomeGreeting: (name) => name ? `${name}, you're in` : "You're in",
+    welcomeGreeting: (name) => (name ? `${name}, you're in` : "You're in"),
     welcomeOverline: 'EARLY ACCESS APPROVED',
-    welcomeBody: 'Your spot on the Panguard AI waitlist has been approved. Welcome to the next generation of endpoint security.',
+    welcomeBody:
+      'Your spot on the Panguard AI waitlist has been approved. Welcome to the next generation of endpoint security.',
     welcomeIncluded: "WHAT'S INCLUDED",
     welcomeButton: 'Create Your Account',
     welcomeDocs: 'Read the Getting Started guide',
-    welcomeHelp: 'Questions? Reply to this email or reach us at support@panguard.ai. We typically respond within 24 hours.',
+    welcomeHelp:
+      'Questions? Reply to this email or reach us at support@panguard.ai. We typically respond within 24 hours.',
     featureScan: 'Panguard Scan',
     featureScanDesc: 'Deep vulnerability scanning for your servers',
     featureGuard: 'Panguard Guard',
@@ -286,9 +293,11 @@ const i18n: Record<EmailLocale, EmailStrings> = {
     resetSubject: 'Reset your password | Panguard AI',
     resetHeading: 'Reset your password',
     resetOverline: 'SECURITY REQUEST',
-    resetBody: 'We received a request to reset the password for your Panguard AI account. Click the button below to choose a new password.',
+    resetBody:
+      'We received a request to reset the password for your Panguard AI account. Click the button below to choose a new password.',
     resetButton: 'Reset Password',
-    resetNotice: 'This link expires in <strong style="color:#A09890;">1 hour</strong>. If you did not request a password reset, no action is needed &mdash; your password will remain unchanged. If you\'re concerned about your account security, please contact support@panguard.ai.',
+    resetNotice:
+      'This link expires in <strong style="color:#A09890;">1 hour</strong>. If you did not request a password reset, no action is needed &mdash; your password will remain unchanged. If you\'re concerned about your account security, please contact support@panguard.ai.',
     resetCantClick: "Can't click the button? Copy this link:",
     expirationSubject: (tier, days) => `Your ${tier} plan expires in ${days} day(s) | Panguard AI`,
     expirationHeading: 'Plan expiring soon',
@@ -298,7 +307,8 @@ const i18n: Record<EmailLocale, EmailStrings> = {
       `Your <strong style="color:#F5F1E8;">${tier}</strong> plan will expire on <strong style="color:#F5F1E8;">${date}</strong>. That's <span style="color:#FBBF24;font-weight:600;">${days} day(s)</span> from now.`,
     expirationPlanLabel: 'CURRENT PLAN',
     expirationExpiresLabel: 'EXPIRES',
-    expirationDowngrade: 'After expiration, your account will be automatically downgraded to the Community (free) tier. You will lose access to paid features including AI analysis, advanced alerts, and reports.',
+    expirationDowngrade:
+      'After expiration, your account will be automatically downgraded to the Community (free) tier. You will lose access to paid features including AI analysis, advanced alerts, and reports.',
     expirationButton: 'Renew Subscription',
     expirationHelp: 'Questions? Reply to this email or contact support@panguard.ai.',
   },
@@ -308,18 +318,20 @@ const i18n: Record<EmailLocale, EmailStrings> = {
     verifySubject: '驗證您的信箱 | Panguard AI',
     verifyHeading: '驗證您的電子信箱',
     verifyOverline: 'PANGUARD AI 候補名單',
-    verifyBody: '感謝您加入 Panguard AI 搶先體驗候補名單。請點擊下方按鈕驗證您的電子信箱，以確認您的名額。',
+    verifyBody:
+      '感謝您加入 Panguard AI 搶先體驗候補名單。請點擊下方按鈕驗證您的電子信箱，以確認您的名額。',
     verifyButton: '驗證電子信箱',
     verifyIgnore: '如果您並未註冊 Panguard AI，請忽略此信。此連結將於 24 小時後失效。',
     verifyCantClick: '無法點擊按鈕？請複製以下連結：',
     welcomeSubject: '您已通過審核 | Panguard AI',
-    welcomeGreeting: (name) => name ? `${name}，歡迎加入` : '歡迎加入',
+    welcomeGreeting: (name) => (name ? `${name}，歡迎加入` : '歡迎加入'),
     welcomeOverline: '搶先體驗資格已通過',
     welcomeBody: '您在 Panguard AI 候補名單上的名額已獲核准。歡迎體驗新一代的端點安全防護。',
     welcomeIncluded: '包含功能',
     welcomeButton: '建立您的帳號',
     welcomeDocs: '閱讀快速入門指南',
-    welcomeHelp: '有任何問題？請直接回覆此信或聯繫 support@panguard.ai，我們通常會在 24 小時內回覆。',
+    welcomeHelp:
+      '有任何問題？請直接回覆此信或聯繫 support@panguard.ai，我們通常會在 24 小時內回覆。',
     featureScan: 'Panguard Scan',
     featureScanDesc: '深度弱點掃描，全面檢測伺服器漏洞',
     featureGuard: 'Panguard Guard',
@@ -333,7 +345,8 @@ const i18n: Record<EmailLocale, EmailStrings> = {
     resetOverline: '安全性請求',
     resetBody: '我們收到了重設您 Panguard AI 帳號密碼的請求。請點擊下方按鈕設定新密碼。',
     resetButton: '重設密碼',
-    resetNotice: '此連結將於 <strong style="color:#A09890;">1 小時</strong>後失效。如果您並未要求重設密碼，無需採取任何行動，您的密碼不會被更改。如果您擔心帳號安全，請聯繫 support@panguard.ai。',
+    resetNotice:
+      '此連結將於 <strong style="color:#A09890;">1 小時</strong>後失效。如果您並未要求重設密碼，無需採取任何行動，您的密碼不會被更改。如果您擔心帳號安全，請聯繫 support@panguard.ai。',
     resetCantClick: '無法點擊按鈕？請複製以下連結：',
     expirationSubject: (tier, days) => `您的 ${tier} 方案將在 ${days} 天後到期 | Panguard AI`,
     expirationHeading: '方案即將到期',
@@ -343,7 +356,8 @@ const i18n: Record<EmailLocale, EmailStrings> = {
       `您的 <strong style="color:#F5F1E8;">${tier}</strong> 方案將於 <strong style="color:#F5F1E8;">${date}</strong> 到期，距今僅剩 <span style="color:#FBBF24;font-weight:600;">${days} 天</span>。`,
     expirationPlanLabel: '目前方案',
     expirationExpiresLabel: '到期日',
-    expirationDowngrade: '到期後，您的帳號將自動降級為 Community（免費）方案。您將失去 AI 分析、進階警報及報告等付費功能的使用權限。',
+    expirationDowngrade:
+      '到期後，您的帳號將自動降級為 Community（免費）方案。您將失去 AI 分析、進階警報及報告等付費功能的使用權限。',
     expirationButton: '續訂方案',
     expirationHelp: '有任何問題？請回覆此信或聯繫 support@panguard.ai。',
   },
@@ -491,7 +505,9 @@ export async function sendVerificationEmail(
 ): Promise<void> {
   const s = t(locale);
   const verifyLink = `${baseUrl}/api/waitlist/verify/${verifyToken}`;
-  const html = emailShell(locale, `
+  const html = emailShell(
+    locale,
+    `
     ${heading(locale, s.verifyHeading)}
     ${subheading(locale, s.verifyOverline)}
     ${paragraph(locale, s.verifyBody)}
@@ -502,7 +518,8 @@ export async function sendVerificationEmail(
     ${sageDivider()}
     ${muted(locale, s.verifyIgnore)}
     ${muted(locale, `<span style="color:#706860;word-break:break-all;">${s.verifyCantClick}<br><a href="${verifyLink}" style="color:#8B9A8E;text-decoration:underline;">${verifyLink}</a></span>`)}
-  `);
+  `
+  );
   await sendEmail(config, to, s.verifySubject, html);
 }
 
@@ -518,11 +535,20 @@ export async function sendExpirationWarningEmail(
   const s = t(locale);
   const f = fontFor(locale);
   const renewLink = `${baseUrl}/pricing`;
-  const daysLeft = Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000)));
+  const daysLeft = Math.max(
+    0,
+    Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000))
+  );
   const dateLocale = locale === 'zh' ? 'zh-TW' : 'en-US';
-  const expiryDate = new Date(expiresAt).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' });
+  const expiryDate = new Date(expiresAt).toLocaleDateString(dateLocale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
   const tierUpper = tier.charAt(0).toUpperCase() + tier.slice(1);
-  const html = emailShell(locale, `
+  const html = emailShell(
+    locale,
+    `
     ${heading(locale, s.expirationHeading)}
     ${subheading(locale, s.expirationOverline)}
     ${paragraph(locale, s.expirationHi(name))}
@@ -551,7 +577,8 @@ export async function sendExpirationWarningEmail(
     </div>
     ${sageDivider()}
     ${muted(locale, s.expirationHelp)}
-  `);
+  `
+  );
   await sendEmail(config, to, s.expirationSubject(tierUpper, daysLeft), html);
 }
 
@@ -565,7 +592,9 @@ export async function sendResetEmail(
   const s = t(locale);
   const f = fontFor(locale);
   const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
-  const html = emailShell(locale, `
+  const html = emailShell(
+    locale,
+    `
     ${heading(locale, s.resetHeading)}
     ${subheading(locale, s.resetOverline)}
     ${paragraph(locale, s.resetBody)}
@@ -585,7 +614,8 @@ export async function sendResetEmail(
     </table>
 
     ${muted(locale, `<span style="color:#706860;word-break:break-all;">${s.resetCantClick}<br><a href="${resetLink}" style="color:#8B9A8E;text-decoration:underline;">${resetLink}</a></span>`)}
-  `);
+  `
+  );
   await sendEmail(config, to, s.resetSubject, html);
 }
 
@@ -600,7 +630,9 @@ export async function sendWelcomeEmail(
   const f = fontFor(locale);
   const registerLink = `${baseUrl}/register`;
   const docsLink = 'https://panguard.ai/docs/getting-started';
-  const html = emailShell(locale, `
+  const html = emailShell(
+    locale,
+    `
     ${heading(locale, s.welcomeGreeting(name))}
     ${subheading(locale, s.welcomeOverline)}
     ${paragraph(locale, s.welcomeBody)}
@@ -629,6 +661,7 @@ export async function sendWelcomeEmail(
 
     ${sageDivider()}
     ${muted(locale, s.welcomeHelp)}
-  `);
+  `
+  );
   await sendEmail(config, to, s.welcomeSubject, html);
 }

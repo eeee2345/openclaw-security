@@ -92,9 +92,9 @@ export class ThreatCloudDB {
   /** Run idempotent schema migrations / 執行冪等 schema 遷移 */
   private runMigrations(): void {
     const applied = new Set(
-      (this.db.prepare('SELECT version FROM schema_migrations').all() as Array<{ version: number }>).map(
-        (r) => r.version
-      )
+      (
+        this.db.prepare('SELECT version FROM schema_migrations').all() as Array<{ version: number }>
+      ).map((r) => r.version)
     );
 
     const migrations: Array<{ version: number; name: string; sql: string }> = [

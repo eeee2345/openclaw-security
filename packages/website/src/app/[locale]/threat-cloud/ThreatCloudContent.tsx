@@ -82,9 +82,11 @@ export default function ThreatCloudContent() {
               <div className="space-y-4">
                 {(['users10', 'users1k', 'users100k'] as const).map((key, i) => (
                   <div key={key} className="flex items-start gap-3">
-                    <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
-                      i === 0 ? 'bg-text-tertiary' : i === 1 ? 'bg-[#60a5fa]' : 'bg-brand-sage'
-                    }`} />
+                    <div
+                      className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
+                        i === 0 ? 'bg-text-tertiary' : i === 1 ? 'bg-[#60a5fa]' : 'bg-brand-sage'
+                      }`}
+                    />
                     <p className="text-sm text-text-secondary">{t(`flywheel.scale.${key}`)}</p>
                   </div>
                 ))}
@@ -144,8 +146,12 @@ export default function ThreatCloudContent() {
               <FadeInUp key={key} delay={i * 0.08}>
                 <div className="bg-surface-1 rounded-xl border border-border p-6 h-full card-glow">
                   <Icon className="w-6 h-6 text-brand-sage mb-4" />
-                  <p className="text-sm font-bold text-text-primary mb-2">{t(`privacy.${key}.title`)}</p>
-                  <p className="text-sm text-text-secondary leading-relaxed">{t(`privacy.${key}.desc`)}</p>
+                  <p className="text-sm font-bold text-text-primary mb-2">
+                    {t(`privacy.${key}.title`)}
+                  </p>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {t(`privacy.${key}.desc`)}
+                  </p>
                 </div>
               </FadeInUp>
             );
@@ -164,7 +170,9 @@ export default function ThreatCloudContent() {
           {/* Shared */}
           <FadeInUp>
             <div className="bg-surface-2 rounded-xl border border-border p-6">
-              <p className="text-sm font-bold text-text-primary mb-4">{t('dataBoundary.shared.title')}</p>
+              <p className="text-sm font-bold text-text-primary mb-4">
+                {t('dataBoundary.shared.title')}
+              </p>
               <ul className="space-y-2.5">
                 {(t.raw('dataBoundary.shared.items') as string[]).map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-text-secondary">
@@ -179,7 +187,9 @@ export default function ThreatCloudContent() {
           {/* Private */}
           <FadeInUp delay={0.1}>
             <div className="bg-surface-2 rounded-xl border border-border p-6">
-              <p className="text-sm font-bold text-text-primary mb-4">{t('dataBoundary.private.title')}</p>
+              <p className="text-sm font-bold text-text-primary mb-4">
+                {t('dataBoundary.private.title')}
+              </p>
               <ul className="space-y-2.5">
                 {(t.raw('dataBoundary.private.items') as string[]).map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-text-secondary">
@@ -209,7 +219,9 @@ export default function ThreatCloudContent() {
                   <div className="w-10 h-10 rounded-full bg-brand-sage/10 mx-auto mb-3 flex items-center justify-center">
                     <Icon className="w-5 h-5 text-brand-sage" />
                   </div>
-                  <p className="text-sm font-semibold text-text-primary">{t(`flywheel.${key}.name`)}</p>
+                  <p className="text-sm font-semibold text-text-primary">
+                    {t(`flywheel.${key}.name`)}
+                  </p>
                   <p className="text-xs text-text-secondary mt-1">{t(`flywheel.${key}.desc`)}</p>
                 </div>
               </FadeInUp>
@@ -254,11 +266,15 @@ export default function ThreatCloudContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <div className="bg-surface-2/50 rounded-lg p-3">
                   <p className="text-xs text-text-muted">{t('tierNote.freeLabel')}</p>
-                  <p className="text-sm font-semibold text-text-primary mt-1">{t('tierNote.freeDesc')}</p>
+                  <p className="text-sm font-semibold text-text-primary mt-1">
+                    {t('tierNote.freeDesc')}
+                  </p>
                 </div>
                 <div className="bg-surface-2/50 rounded-lg p-3">
                   <p className="text-xs text-text-muted">{t('tierNote.paidLabel')}</p>
-                  <p className="text-sm font-semibold text-brand-sage mt-1">{t('tierNote.paidDesc')}</p>
+                  <p className="text-sm font-semibold text-brand-sage mt-1">
+                    {t('tierNote.paidDesc')}
+                  </p>
                 </div>
               </div>
             </div>

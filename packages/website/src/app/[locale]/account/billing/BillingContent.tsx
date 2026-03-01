@@ -81,7 +81,9 @@ export default function BillingContent() {
 
   const tier = billing?.tier ?? user.tier;
   const tierDisplay = tier.charAt(0).toUpperCase() + tier.slice(1);
-  const features = (t.raw(`tierFeatures.${tier}`) as string[] | undefined) ?? (t.raw('tierFeatures.free') as string[]);
+  const features =
+    (t.raw(`tierFeatures.${tier}`) as string[] | undefined) ??
+    (t.raw('tierFeatures.free') as string[]);
   const sub = billing?.subscription;
   const statusColor =
     sub?.status === 'active'
@@ -177,9 +179,7 @@ export default function BillingContent() {
         {tier === 'free' && (
           <div className="bg-brand-sage-wash border border-brand-sage/20 rounded-xl p-6">
             <h3 className="font-semibold text-text-primary mb-2">{t('upgradeHeading')}</h3>
-            <p className="text-sm text-text-secondary mb-4">
-              {t('upgradeDescription')}
-            </p>
+            <p className="text-sm text-text-secondary mb-4">{t('upgradeDescription')}</p>
             <Link
               href="/pricing"
               className="inline-flex items-center gap-1.5 bg-brand-sage text-surface-0 font-semibold text-sm rounded-lg px-5 py-2.5 hover:bg-brand-sage-light transition-all"

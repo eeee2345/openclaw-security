@@ -118,7 +118,10 @@ export class AnalyzeAgent {
       // Boost confidence if event occurs at unusual hour (00:00-05:59)
       const eventHour = new Date(detection.event.timestamp).getHours();
       if (eventHour >= 0 && eventHour < 6) {
-        deviationConfidence = Math.min(100, Math.round(deviationConfidence * UNUSUAL_HOUR_MULTIPLIER));
+        deviationConfidence = Math.min(
+          100,
+          Math.round(deviationConfidence * UNUSUAL_HOUR_MULTIPLIER)
+        );
       }
 
       evidenceList.push({
@@ -190,7 +193,10 @@ export class AnalyzeAgent {
 
     // Contradiction detection: if rule says high but baseline says normal, slight reduce
     const hasHighRule = evidenceList.some(
-      (e) => e.source === 'rule_match' && e.confidence >= 70 && !(e.data as Record<string, unknown>)?.['attackChain']
+      (e) =>
+        e.source === 'rule_match' &&
+        e.confidence >= 70 &&
+        !(e.data as Record<string, unknown>)?.['attackChain']
     );
     const noDeviation = !deviation.isDeviation;
     if (hasHighRule && noDeviation && baseline.learningComplete) {

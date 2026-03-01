@@ -150,7 +150,12 @@ export default async function LocaleLayout({
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         <link rel="dns-prefetch" href="https://plausible.io" />
         {/* RSS feed */}
-        <link rel="alternate" type="application/rss+xml" title="Panguard AI Blog" href="/feed.xml" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Panguard AI Blog"
+          href="/feed.xml"
+        />
         {/* Enable scroll-reveal animations only after JS is ready (prevents FOIC) */}
         <script
           dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("js-ready")' }}

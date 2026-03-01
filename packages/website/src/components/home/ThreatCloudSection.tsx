@@ -74,16 +74,7 @@ function Flywheel() {
             const rad = (angle * Math.PI) / 180;
             const x = 200 + 160 * Math.cos(rad);
             const y = 200 + 160 * Math.sin(rad);
-            return (
-              <circle
-                key={angle}
-                cx={x}
-                cy={y}
-                r="4"
-                fill="#6B8F71"
-                opacity="0.5"
-              />
-            );
+            return <circle key={angle} cx={x} cy={y} r="4" fill="#6B8F71" opacity="0.5" />;
           })}
         </svg>
 
@@ -125,21 +116,11 @@ function OpenSourceSpirit() {
       transition={{ duration: 0.5, ease }}
       className="mt-16 max-w-3xl mx-auto"
     >
-      <h3 className="text-2xl md:text-3xl font-bold text-text-primary text-center">
-        {t('title')}
-      </h3>
-      <p className="text-xl text-panguard-green font-medium mt-2 text-center">
-        {t('subtitle')}
-      </p>
-      <p className="text-gray-400 mt-6 leading-relaxed">
-        {t('desc')}
-      </p>
-      <p className="text-gray-400 mt-4 leading-relaxed">
-        {t('belief')}
-      </p>
-      <p className="text-sm text-gray-500 font-medium mt-6 text-center">
-        {t('proof')}
-      </p>
+      <h3 className="text-2xl md:text-3xl font-bold text-text-primary text-center">{t('title')}</h3>
+      <p className="text-xl text-panguard-green font-medium mt-2 text-center">{t('subtitle')}</p>
+      <p className="text-gray-400 mt-6 leading-relaxed">{t('desc')}</p>
+      <p className="text-gray-400 mt-4 leading-relaxed">{t('belief')}</p>
+      <p className="text-sm text-gray-500 font-medium mt-6 text-center">{t('proof')}</p>
     </motion.div>
   );
 }
@@ -182,12 +163,8 @@ export default function ThreatCloudSection() {
           transition={{ duration: 0.5, delay: 0.15, ease }}
           className="max-w-3xl mx-auto mt-6 text-center"
         >
-          <p className="text-lg text-gray-400 leading-relaxed">
-            {t('desc')}
-          </p>
-          <p className="text-lg text-text-primary font-semibold mt-4">
-            {t('descHighlight')}
-          </p>
+          <p className="text-lg text-gray-400 leading-relaxed">{t('desc')}</p>
+          <p className="text-lg text-text-primary font-semibold mt-4">{t('descHighlight')}</p>
         </motion.div>
 
         {/* 3-step flow */}

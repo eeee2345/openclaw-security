@@ -11,9 +11,7 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith(`${COOKIE_NAME}=`));
+    const consent = document.cookie.split('; ').find((row) => row.startsWith(`${COOKIE_NAME}=`));
     if (!consent) {
       setVisible(true);
     }

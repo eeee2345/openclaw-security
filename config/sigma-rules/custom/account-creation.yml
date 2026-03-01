@@ -23,7 +23,6 @@ detection:
       - 'passwd '
       - 'chpasswd'
       - 'echo *:* | chpasswd'
-    metadata_command_line|contains:
       - 'useradd'
       - 'adduser'
       - 'usermod'

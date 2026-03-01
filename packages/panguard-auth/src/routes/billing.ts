@@ -41,12 +41,18 @@ export function createBillingRoutes(ctx: RouteContext) {
 
     // Verify HMAC signature
     const signature = req.headers['x-signature'] as string | undefined;
-    if (!signature || !verifyWebhookSignature(rawResult.raw, signature, config.lemonsqueezy.webhookSecret)) {
+    if (
+      !signature ||
+      !verifyWebhookSignature(rawResult.raw, signature, config.lemonsqueezy.webhookSecret)
+    ) {
       json(res, 401, { ok: false, error: 'Invalid webhook signature' });
       return;
     }
 
-    let payload: { meta: { event_name: string; custom_data?: Record<string, string> }; data: { type: string; id: string; attributes: Record<string, unknown> } };
+    let payload: {
+      meta: { event_name: string; custom_data?: Record<string, string> };
+      data: { type: string; id: string; attributes: Record<string, unknown> };
+    };
     try {
       payload = JSON.parse(rawResult.raw);
     } catch {
@@ -92,7 +98,10 @@ export function createBillingRoutes(ctx: RouteContext) {
     let resolvedVariantId: string | undefined;
 
     // Accept variantId directly
-    if (typeof body.data['variantId'] === 'string' && (body.data['variantId'] as string).length > 0) {
+    if (
+      typeof body.data['variantId'] === 'string' &&
+      (body.data['variantId'] as string).length > 0
+    ) {
       resolvedVariantId = body.data['variantId'] as string;
     }
     // Or resolve from tier name
@@ -101,7 +110,10 @@ export function createBillingRoutes(ctx: RouteContext) {
       // Reverse lookup: find variant ID for this tier
       const entry = Object.entries(tierMap).find(([, t]) => t === body.data['tier']);
       if (!entry) {
-        json(res, 400, { ok: false, error: `No variant configured for tier: ${body.data['tier']}` });
+        json(res, 400, {
+          ok: false,
+          error: `No variant configured for tier: ${body.data['tier']}`,
+        });
         return;
       }
       resolvedVariantId = entry[0];
@@ -153,7 +165,10 @@ export function createBillingRoutes(ctx: RouteContext) {
       return;
     }
 
-    const portalUrl = await getCustomerPortalUrl(config.lemonsqueezy, subscription.lsSubscriptionId);
+    const portalUrl = await getCustomerPortalUrl(
+      config.lemonsqueezy,
+      subscription.lsSubscriptionId
+    );
     if (!portalUrl) {
       json(res, 502, { ok: false, error: 'Failed to get portal URL' });
       return;

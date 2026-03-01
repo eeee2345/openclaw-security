@@ -8,34 +8,34 @@ AI 即時端點防護系統。5 個 AI Agent 協作，三層漏斗架構，7 天
 
 ## 數據
 
-| 項目 | 數據 |
-|------|------|
-| 套件名 | `@panguard-ai/panguard-guard` |
-| 程式碼 | 7814 行 / 32 檔 |
-| 測試 | 7 個測試檔 |
-| 匯出 | 17 個公開 API |
-| 位置 | `packages/panguard-guard/src/` |
+| 項目     | 數據                                  |
+| -------- | ------------------------------------- |
+| 套件名   | `@panguard-ai/panguard-guard`         |
+| 程式碼   | 7814 行 / 32 檔                       |
+| 測試     | 7 個測試檔                            |
+| 匯出     | 17 個公開 API                         |
+| 位置     | `packages/panguard-guard/src/`        |
 | 方案門檻 | Community (基礎封鎖), Solo+ (AI 分析) |
 
 ## 五大 Agent
 
-| Agent | 功能 | 觸發條件 |
-|-------|------|----------|
-| Detect | 事件監控 + 規則匹配 + 三層分流 | 所有事件 |
-| Analyze | 9 種調查工具深度推理 | Layer 3 事件 (~3%) |
-| Respond | 封鎖 IP / 隔離檔案 / 終止程序 | 確認威脅 |
-| Report | 基線更新 + 學習回饋 | 所有結果 |
-| Chat | 技術翻譯成人話 | 需通知用戶 |
+| Agent   | 功能                           | 觸發條件           |
+| ------- | ------------------------------ | ------------------ |
+| Detect  | 事件監控 + 規則匹配 + 三層分流 | 所有事件           |
+| Analyze | 9 種調查工具深度推理           | Layer 3 事件 (~3%) |
+| Respond | 封鎖 IP / 隔離檔案 / 終止程序  | 確認威脅           |
+| Report  | 基線更新 + 學習回饋            | 所有結果           |
+| Chat    | 技術翻譯成人話                 | 需通知用戶         |
 
 ## 監控來源
 
-| 平台 | 來源 |
-|------|------|
-| Linux | auditd, syslog, /proc/net, inotify |
-| macOS | FSEvents, syslog |
-| Windows | ETW, Sysmon, Event Log |
-| 網路 | Suricata IDS |
-| Kernel | Falco eBPF |
+| 平台    | 來源                               |
+| ------- | ---------------------------------- |
+| Linux   | auditd, syslog, /proc/net, inotify |
+| macOS   | FSEvents, syslog                   |
+| Windows | ETW, Sysmon, Event Log             |
+| 網路    | Suricata IDS                       |
+| Kernel  | Falco eBPF                         |
 
 ## CLI 指令
 

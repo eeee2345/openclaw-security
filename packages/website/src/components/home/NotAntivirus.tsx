@@ -41,9 +41,7 @@ export default function NotAntivirus() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
             {t('title')}
           </h2>
-          <p className="text-base sm:text-lg text-gray-400 mt-4 leading-relaxed">
-            {t('subtitle')}
-          </p>
+          <p className="text-base sm:text-lg text-gray-400 mt-4 leading-relaxed">{t('subtitle')}</p>
         </motion.div>
 
         {/* Comparison table - desktop */}
@@ -68,7 +66,10 @@ export default function NotAntivirus() {
             </thead>
             <tbody>
               {rows.map(({ key, icon: Icon }) => (
-                <tr key={key} className="border-b border-gray-800/50 hover:bg-white/[0.02] transition-colors">
+                <tr
+                  key={key}
+                  className="border-b border-gray-800/50 hover:bg-white/[0.02] transition-colors"
+                >
                   <td className="py-3.5 px-4 text-gray-400 font-medium">
                     <span className="inline-flex items-center gap-2">
                       <Icon className="w-4 h-4 text-gray-600 shrink-0" />
@@ -104,11 +105,15 @@ export default function NotAntivirus() {
               </p>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">{t('columns.antivirus')}</p>
+                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">
+                    {t('columns.antivirus')}
+                  </p>
                   <p className="text-gray-500">{t(`rows.${key}.antivirus`)}</p>
                 </div>
                 <div className="bg-[#6B8F71]/10 rounded-lg px-2 py-1">
-                  <p className="text-[11px] sm:text-xs text-panguard-green mb-1">{t('columns.panguard')}</p>
+                  <p className="text-[11px] sm:text-xs text-panguard-green mb-1">
+                    {t('columns.panguard')}
+                  </p>
                   <p className="text-text-primary font-medium">{t(`rows.${key}.panguard`)}</p>
                 </div>
               </div>

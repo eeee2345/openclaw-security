@@ -39,14 +39,13 @@ interface FeedConfig {
   license: 'public_domain' | 'cc0' | 'fair_use' | 'commercial_restricted' | 'unknown';
   /** Can be included in public/commercial feeds? */
   redistributable: boolean;
-  parser: (text: string) => Array<{ value: string; tags?: string[]; metadata?: Record<string, string> }>;
+  parser: (
+    text: string
+  ) => Array<{ value: string; tags?: string[]; metadata?: Record<string, string> }>;
 }
 
 /** Plain text IP list parser (skip comments starting with # or ;) */
-function plainIPParser(
-  tagName: string,
-  commentChar = '#'
-): FeedConfig['parser'] {
+function plainIPParser(tagName: string, commentChar = '#'): FeedConfig['parser'] {
   return (text) => {
     const results: Array<{ value: string; tags: string[] }> = [];
     for (const line of text.split('\n')) {
@@ -134,7 +133,8 @@ const FEEDS: Record<string, FeedConfig> = {
     license: 'commercial_restricted',
     redistributable: false,
     parser: (text) => {
-      const results: Array<{ value: string; tags: string[]; metadata: Record<string, string> }> = [];
+      const results: Array<{ value: string; tags: string[]; metadata: Record<string, string> }> =
+        [];
       for (const line of text.split('\n')) {
         if (line.startsWith(';') || !line.trim()) continue;
         const parts = line.split(';');
@@ -293,12 +293,9 @@ async function main(): Promise<void> {
   const dbWrapper = new ThreatCloudDB(dbPath);
   const store = new IoCStore(dbWrapper.getDB());
 
-  const selectedFeeds =
-    feedNames.includes('all')
-      ? Object.values(FEEDS)
-      : feedNames
-          .map((n) => FEEDS[n.trim()])
-          .filter((f): f is FeedConfig => f !== undefined);
+  const selectedFeeds = feedNames.includes('all')
+    ? Object.values(FEEDS)
+    : feedNames.map((n) => FEEDS[n.trim()]).filter((f): f is FeedConfig => f !== undefined);
 
   if (selectedFeeds.length === 0) {
     console.error('No valid feeds selected. Available:', Object.keys(FEEDS).join(', '));
@@ -324,9 +321,7 @@ async function main(): Promise<void> {
       totalDuplicates += result.duplicates;
       totalErrors += result.errors;
 
-      console.log(
-        `${result.imported} new, ${result.duplicates} merged, ${result.errors} errors`
-      );
+      console.log(`${result.imported} new, ${result.duplicates} merged, ${result.errors} errors`);
 
       // Special: also fetch EDROP for spamhaus feed
       if (feed.name.includes('Spamhaus')) {
@@ -336,7 +331,7 @@ async function main(): Promise<void> {
           const edropEntries = feed.parser(edropText);
           // Re-tag as edrop
           for (const e of edropEntries) {
-            if (e.tags) e.tags = e.tags.map((t) => t === 'spamhaus-drop' ? 'spamhaus-edrop' : t);
+            if (e.tags) e.tags = e.tags.map((t) => (t === 'spamhaus-drop' ? 'spamhaus-edrop' : t));
           }
           process.stdout.write(`${edropEntries.length} entries, `);
           const edropResult = importEntries(store, feed, edropEntries);

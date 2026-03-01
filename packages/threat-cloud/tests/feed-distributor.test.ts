@@ -34,11 +34,26 @@ describe('FeedDistributor', () => {
   // -------------------------------------------------------------------------
 
   it('should return IP blocklist with high reputation IPs', () => {
-    store.upsertIoC({ type: 'ip', value: '10.0.0.0', threatType: 'scanner', source: 'guard', confidence: 90 });
-    store.upsertIoC({ type: 'ip', value: '10.0.1.0', threatType: 'c2', source: 'trap', confidence: 50 });
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.0.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 90,
+    });
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.1.0',
+      threatType: 'c2',
+      source: 'trap',
+      confidence: 50,
+    });
 
     // Set high reputation for first IP
-    dbWrapper.getDB().prepare('UPDATE iocs SET reputation_score = 85 WHERE normalized_value = ?').run('10.0.0.0');
+    dbWrapper
+      .getDB()
+      .prepare('UPDATE iocs SET reputation_score = 85 WHERE normalized_value = ?')
+      .run('10.0.0.0');
 
     const blocklist = distributor.getIPBlocklist(70);
     expect(blocklist).toContain('10.0.0.0');
@@ -55,8 +70,17 @@ describe('FeedDistributor', () => {
   // -------------------------------------------------------------------------
 
   it('should return domain blocklist', () => {
-    store.upsertIoC({ type: 'domain', value: 'evil.com', threatType: 'malware', source: 'guard', confidence: 90 });
-    dbWrapper.getDB().prepare("UPDATE iocs SET reputation_score = 80 WHERE normalized_value = ?").run('evil.com');
+    store.upsertIoC({
+      type: 'domain',
+      value: 'evil.com',
+      threatType: 'malware',
+      source: 'guard',
+      confidence: 90,
+    });
+    dbWrapper
+      .getDB()
+      .prepare('UPDATE iocs SET reputation_score = 80 WHERE normalized_value = ?')
+      .run('evil.com');
 
     const blocklist = distributor.getDomainBlocklist(70);
     expect(blocklist).toContain('evil.com');
@@ -67,8 +91,20 @@ describe('FeedDistributor', () => {
   // -------------------------------------------------------------------------
 
   it('should return IoC feed as JSON', () => {
-    store.upsertIoC({ type: 'ip', value: '10.0.0.0', threatType: 'scanner', source: 'guard', confidence: 70 });
-    store.upsertIoC({ type: 'domain', value: 'bad.com', threatType: 'c2', source: 'trap', confidence: 80 });
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.0.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 70,
+    });
+    store.upsertIoC({
+      type: 'domain',
+      value: 'bad.com',
+      threatType: 'c2',
+      source: 'trap',
+      confidence: 80,
+    });
 
     const feed = distributor.getIoCFeed(40);
     expect(feed.totalEntries).toBe(2);
@@ -80,10 +116,28 @@ describe('FeedDistributor', () => {
   });
 
   it('should filter IoC feed by minimum reputation', () => {
-    store.upsertIoC({ type: 'ip', value: '10.0.0.0', threatType: 'scanner', source: 'guard', confidence: 90 });
-    dbWrapper.getDB().prepare('UPDATE iocs SET reputation_score = 90 WHERE normalized_value = ?').run('10.0.0.0');
-    store.upsertIoC({ type: 'ip', value: '10.0.1.0', threatType: 'scanner', source: 'guard', confidence: 30 });
-    dbWrapper.getDB().prepare('UPDATE iocs SET reputation_score = 20 WHERE normalized_value = ?').run('10.0.1.0');
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.0.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 90,
+    });
+    dbWrapper
+      .getDB()
+      .prepare('UPDATE iocs SET reputation_score = 90 WHERE normalized_value = ?')
+      .run('10.0.0.0');
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.1.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 30,
+    });
+    dbWrapper
+      .getDB()
+      .prepare('UPDATE iocs SET reputation_score = 20 WHERE normalized_value = ?')
+      .run('10.0.1.0');
 
     const feed = distributor.getIoCFeed(80);
     expect(feed.totalEntries).toBe(1);
@@ -92,7 +146,13 @@ describe('FeedDistributor', () => {
 
   it('should limit IoC feed entries', () => {
     for (let i = 0; i < 5; i++) {
-      store.upsertIoC({ type: 'ip', value: `10.0.${i}.0`, threatType: 'scanner', source: 'guard', confidence: 70 });
+      store.upsertIoC({
+        type: 'ip',
+        value: `10.0.${i}.0`,
+        threatType: 'scanner',
+        source: 'guard',
+        confidence: 70,
+      });
     }
 
     const feed = distributor.getIoCFeed(40, 3);
@@ -113,8 +173,17 @@ describe('FeedDistributor', () => {
     });
 
     // Add an IoC
-    store.upsertIoC({ type: 'ip', value: '10.0.0.0', threatType: 'scanner', source: 'guard', confidence: 70 });
-    dbWrapper.getDB().prepare('UPDATE iocs SET reputation_score = 70 WHERE normalized_value = ?').run('10.0.0.0');
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.0.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 70,
+    });
+    dbWrapper
+      .getDB()
+      .prepare('UPDATE iocs SET reputation_score = 70 WHERE normalized_value = ?')
+      .run('10.0.0.0');
 
     const update = distributor.getAgentUpdate();
     expect(update).toHaveProperty('generatedAt');

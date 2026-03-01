@@ -82,7 +82,14 @@ function NavDropdown({ label, items }: { label: string; items: DropdownItem[] })
   };
 
   return (
-    <div className="relative" ref={containerRef} onMouseEnter={handleEnter} onMouseLeave={handleLeave} onBlur={handleBlur} onKeyDown={handleKeyDown}>
+    <div
+      className="relative"
+      ref={containerRef}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+    >
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
@@ -90,7 +97,9 @@ function NavDropdown({ label, items }: { label: string; items: DropdownItem[] })
         className="flex items-center gap-1 px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
       >
         {label}
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
       </button>
       {open && (
         <div className="absolute top-full left-0 pt-2 z-50">
@@ -135,7 +144,11 @@ export default function NavBar() {
     { label: t('productLinks.guard'), desc: t('productLinks.guardDesc'), href: '/product/guard' },
     { label: t('productLinks.chat'), desc: t('productLinks.chatDesc'), href: '/product/chat' },
     { label: t('productLinks.trap'), desc: t('productLinks.trapDesc'), href: '/product/trap' },
-    { label: t('productLinks.report'), desc: t('productLinks.reportDesc'), href: '/product/report' },
+    {
+      label: t('productLinks.report'),
+      desc: t('productLinks.reportDesc'),
+      href: '/product/report',
+    },
   ];
 
   const topLinks = [
@@ -229,7 +242,12 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div role="dialog" aria-modal="true" aria-label="Navigation menu" className="fixed inset-0 top-[66px] bg-surface-0/98 backdrop-blur-xl z-40 overflow-y-auto lg:hidden">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          className="fixed inset-0 top-[66px] bg-surface-0/98 backdrop-blur-xl z-40 overflow-y-auto lg:hidden"
+        >
           <div className="p-6 space-y-1">
             <div className="flex justify-center mb-4">
               <LocaleSwitcher />
@@ -242,7 +260,9 @@ export default function NavBar() {
               aria-expanded={mobileProductsOpen}
             >
               {t('product')}
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileProductsOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-200 ${mobileProductsOpen ? 'rotate-180' : ''}`}
+              />
             </button>
             {mobileProductsOpen && (
               <div className="pl-4 pb-2 space-y-1">

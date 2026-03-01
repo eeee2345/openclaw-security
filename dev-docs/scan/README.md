@@ -8,22 +8,22 @@
 
 ## 數據
 
-| 項目 | 數據 |
-|------|------|
-| 套件名 | `@panguard-ai/panguard-scan` |
-| 程式碼 | 5306 行 / 26 檔 |
-| 測試 | 3 個測試檔 |
-| 匯出 | 8 個公開 API |
-| 位置 | `packages/panguard-scan/src/` |
-| 方案門檻 | Community (免費) |
+| 項目     | 數據                          |
+| -------- | ----------------------------- |
+| 套件名   | `@panguard-ai/panguard-scan`  |
+| 程式碼   | 5306 行 / 26 檔               |
+| 測試     | 3 個測試檔                    |
+| 匯出     | 8 個公開 API                  |
+| 位置     | `packages/panguard-scan/src/` |
+| 方案門檻 | Community (免費)              |
 
 ## 主要模組
 
-| 模組 | 路徑 | 功能 |
-|------|------|------|
+| 模組   | 路徑            | 功能                     |
+| ------ | --------------- | ------------------------ |
 | 掃描器 | `src/scanners/` | 系統、網路、檔案掃描引擎 |
-| 報告 | `src/report/` | PDF 報告產生 (pdfkit) |
-| CLI | `src/cli/` | 命令列介面 |
+| 報告   | `src/report/`   | PDF 報告產生 (pdfkit)    |
+| CLI    | `src/cli/`      | 命令列介面               |
 
 ## CLI 指令
 
@@ -40,10 +40,10 @@ panguard scan --fix          # 自動修復 (Solo+)
 
 ```typescript
 interface ScanResult {
-  riskScore: number;       // 0-100
-  findings: Finding[];     // 發現清單
-  scanDuration: number;    // 毫秒
-  scannedAt: string;       // ISO timestamp
+  riskScore: number; // 0-100
+  findings: Finding[]; // 發現清單
+  scanDuration: number; // 毫秒
+  scannedAt: string; // ISO timestamp
 }
 ```
 

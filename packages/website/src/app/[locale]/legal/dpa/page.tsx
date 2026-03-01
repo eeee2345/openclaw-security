@@ -197,10 +197,10 @@ export default function DPAPage() {
               logging of all access to systems containing Personal Data
             </li>
             <li>
-              <strong className="text-text-primary">Infrastructure Security:</strong> Enterprise-grade
-              cloud infrastructure (hosted on SOC 2 Type II certified providers) with physical
-              security controls, redundancy, and disaster recovery. Panguard&apos;s own SOC 2 Type
-              II certification is in progress
+              <strong className="text-text-primary">Infrastructure Security:</strong>{' '}
+              Enterprise-grade cloud infrastructure (hosted on SOC 2 Type II certified providers)
+              with physical security controls, redundancy, and disaster recovery. Panguard&apos;s
+              own SOC 2 Type II certification is in progress
             </li>
             <li>
               <strong className="text-text-primary">Employee Training:</strong> Regular data

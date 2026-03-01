@@ -2,15 +2,29 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ShieldIcon, ScanIcon, ComplianceIcon, TrapIcon, GlobalIcon } from '@/components/ui/BrandIcons';
+import {
+  ShieldIcon,
+  ScanIcon,
+  ComplianceIcon,
+  TrapIcon,
+  GlobalIcon,
+} from '@/components/ui/BrandIcons';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const roleIcons = [ShieldIcon, ScanIcon, ComplianceIcon, TrapIcon, GlobalIcon];
 const barColors = ['#6B8F71', '#8FB996', '#A8D5B0'];
 const confidenceColors = {
-  green: { bg: 'bg-panguard-green/10', border: 'border-panguard-green/40', dot: 'bg-panguard-green' },
-  yellow: { bg: 'bg-status-caution/10', border: 'border-status-caution/40', dot: 'bg-status-caution' },
+  green: {
+    bg: 'bg-panguard-green/10',
+    border: 'border-panguard-green/40',
+    dot: 'bg-panguard-green',
+  },
+  yellow: {
+    bg: 'bg-status-caution/10',
+    border: 'border-status-caution/40',
+    dot: 'bg-status-caution',
+  },
   gray: { bg: 'bg-gray-500/10', border: 'border-gray-500/40', dot: 'bg-gray-500' },
 };
 
@@ -91,7 +105,12 @@ function TeamSection() {
 
 function FunnelSection() {
   const t = useTranslations('home.showMuscle.funnel');
-  const layers = t.raw('layers') as Array<{ pct: number; label: string; sub: string; speed: string }>;
+  const layers = t.raw('layers') as Array<{
+    pct: number;
+    label: string;
+    sub: string;
+    speed: string;
+  }>;
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -128,8 +147,7 @@ function FunnelSection() {
           >
             <div className="flex flex-col sm:flex-row justify-between mb-2">
               <span className="font-medium text-text-primary">
-                {layer.label}{' '}
-                <span className="text-gray-500 text-sm ml-2">{layer.sub}</span>
+                {layer.label} <span className="text-gray-500 text-sm ml-2">{layer.sub}</span>
               </span>
               <span className="font-bold text-xl text-text-primary">{layer.pct}%</span>
             </div>

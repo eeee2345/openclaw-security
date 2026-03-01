@@ -252,7 +252,9 @@ function UptimeChart({
         <div className="flex items-center justify-between mt-3">
           <span className="text-text-tertiary text-xs">{t('uptimeHistory.daysAgo')}</span>
           <span className="text-text-secondary text-xs font-medium">
-            {service.uptime > 0 ? `${t('uptimeHistory.uptimeLabel')} ${service.uptime.toFixed(2)}%` : t('betaLabel')}
+            {service.uptime > 0
+              ? `${t('uptimeHistory.uptimeLabel')} ${service.uptime.toFixed(2)}%`
+              : t('betaLabel')}
           </span>
           <span className="text-text-tertiary text-xs">{t('uptimeHistory.today')}</span>
         </div>
@@ -325,8 +327,8 @@ export default function StatusContent() {
       {/* ───────────── Disclaimer ───────────── */}
       <SectionWrapper spacing="tight">
         <p className="text-center text-sm text-text-secondary bg-surface-1 border border-border rounded-lg px-4 py-3 max-w-xl mx-auto">
-          Status data is manually verified and may not reflect real-time conditions.
-          For live monitoring or incident updates, contact{' '}
+          Status data is manually verified and may not reflect real-time conditions. For live
+          monitoring or incident updates, contact{' '}
           <a href="mailto:support@panguard.ai" className="text-brand-sage hover:underline">
             support@panguard.ai
           </a>

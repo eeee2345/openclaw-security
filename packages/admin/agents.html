@@ -1,161 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panguard Admin - Agents</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/admin/icons.js"></script>
-  <script src="/admin/shared.js"></script>
-  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
-  <style>
-    [x-cloak] { display: none !important; }
-    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fade-in 0.4s ease-out forwards; }
-  </style>
-</head>
-<body class="bg-surface-0 text-text-primary min-h-screen">
-  <div id="nav"></div>
-
-  <main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-6 fade-in">
-      <div>
-        <h1 class="text-xl font-bold flex items-center gap-2">
-          <span id="pageIcon"></span>
-          Guard Agents
-        </h1>
-        <p class="text-sm text-text-tertiary mt-1">Registered Panguard Guard agent instances</p>
-      </div>
-      <button onclick="loadAgents()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors">
-        <span id="refreshIcon"></span>
-        Refresh
-      </button>
-    </div>
-
-    <!-- KPI Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 fade-in">
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Total Agents</p>
-          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconTotal"></div>
-        </div>
-        <p id="kpiTotal" class="text-2xl font-bold">--</p>
-      </div>
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Online</p>
-          <div class="w-8 h-8 rounded-lg bg-safe/10 flex items-center justify-center" id="kpiIconOnline"></div>
-        </div>
-        <p id="kpiOnline" class="text-2xl font-bold text-safe">--</p>
-      </div>
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Events Processed</p>
-          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconEvents"></div>
-        </div>
-        <p id="kpiEvents" class="text-2xl font-bold">--</p>
-      </div>
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Threats Detected</p>
-          <div class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center" id="kpiIconThreats"></div>
-        </div>
-        <p id="kpiThreats" class="text-2xl font-bold text-danger">--</p>
-      </div>
-    </div>
-
-    <!-- Agent Table -->
-    <div class="bg-surface-1 border border-border rounded-xl fade-in">
-      <div class="p-5 border-b border-border">
-        <h3 class="text-sm font-semibold">Registered Agents</h3>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-border text-text-tertiary text-xs uppercase">
-              <th class="px-5 py-3 text-left">Status</th>
-              <th class="px-5 py-3 text-left">Hostname</th>
-              <th class="px-5 py-3 text-left">ID</th>
-              <th class="px-5 py-3 text-left">IP</th>
-              <th class="px-5 py-3 text-left">OS</th>
-              <th class="px-5 py-3 text-left">Mode</th>
-              <th class="px-5 py-3 text-right">Events</th>
-              <th class="px-5 py-3 text-right">Threats</th>
-              <th class="px-5 py-3 text-right">Memory</th>
-              <th class="px-5 py-3 text-left">Last Seen</th>
-            </tr>
-          </thead>
-          <tbody id="agentTableBody">
-            <tr><td colspan="10" class="px-5 py-8 text-center text-text-muted">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Offline notice -->
-    <div id="offlineNotice" class="hidden mt-4 bg-caution/10 border border-caution/20 rounded-xl p-4 text-sm text-caution flex items-center gap-2">
-      <span id="offlineIcon"></span>
-      <span>Manager Server is not reachable. Start it with <code class="bg-surface-2 px-1.5 py-0.5 rounded text-xs">panguard manager start</code></span>
-    </div>
-  </main>
-
-  <script>
-    if (!PG.requireAuth()) throw new Error('Not authenticated');
-
-    // Render nav
-    document.getElementById('nav').innerHTML = PG.renderNav('agents');
-
-    // Icons
-    document.getElementById('pageIcon').innerHTML = Icons.cpu(20, '#8B9A8E');
-    document.getElementById('refreshIcon').innerHTML = Icons.refresh(14);
-    document.getElementById('kpiIconTotal').innerHTML = Icons.cpu(16, '#8B9A8E');
-    document.getElementById('kpiIconOnline').innerHTML = Icons.wifi(16, '#2ED573');
-    document.getElementById('kpiIconEvents').innerHTML = Icons.zap(16, '#8B9A8E');
-    document.getElementById('kpiIconThreats').innerHTML = Icons.alertTriangle(16, '#EF4444');
-    document.getElementById('offlineIcon').innerHTML = Icons.alertTriangle(16);
-
-    async function loadAgents() {
-      const data = await PG.managerFetch('/api/agents');
-
-      if (!data) {
-        document.getElementById('agentTableBody').innerHTML =
-          '<tr><td colspan="10" class="px-5 py-8 text-center text-text-muted">No agents registered or Manager Server offline</td></tr>';
-        document.getElementById('offlineNotice').classList.remove('hidden');
-        document.getElementById('kpiTotal').textContent = '0';
-        document.getElementById('kpiOnline').textContent = '0';
-        document.getElementById('kpiEvents').textContent = '0';
-        document.getElementById('kpiThreats').textContent = '0';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panguard Admin - Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/admin/icons.js"></script>
+    <script src="/admin/shared.js"></script>
+    <script>
+      tailwind.config = PG.TAILWIND_CONFIG;
+    </script>
+    <style>
+      [x-cloak] {
+        display: none !important;
       }
-
-      document.getElementById('offlineNotice').classList.add('hidden');
-
-      const agents = data.agents || [];
-      const online = agents.filter(a => a.status === 'online').length;
-      const totalEvents = agents.reduce((s, a) => s + (a.eventsProcessed || 0), 0);
-      const totalThreats = agents.reduce((s, a) => s + (a.threatsDetected || 0), 0);
-
-      document.getElementById('kpiTotal').textContent = PG.formatNumber(agents.length);
-      document.getElementById('kpiOnline').textContent = PG.formatNumber(online);
-      document.getElementById('kpiEvents').textContent = PG.formatNumber(totalEvents);
-      document.getElementById('kpiThreats').textContent = PG.formatNumber(totalThreats);
-
-      if (!agents.length) {
-        document.getElementById('agentTableBody').innerHTML =
-          '<tr><td colspan="10" class="px-5 py-8 text-center text-text-muted">No agents registered yet</td></tr>';
-        return;
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
+      .fade-in {
+        animation: fade-in 0.4s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body class="bg-surface-0 text-text-primary min-h-screen">
+    <div id="nav"></div>
 
-      const statusConfig = {
-        online: { color: '#2ED573', cls: 'bg-safe/10 text-safe border-safe/20' },
-        stale: { color: '#FBBF24', cls: 'bg-caution/10 text-caution border-caution/20' },
-        offline: { color: '#EF4444', cls: 'bg-danger/10 text-danger border-danger/20' },
-      };
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6 fade-in">
+        <div>
+          <h1 class="text-xl font-bold flex items-center gap-2">
+            <span id="pageIcon"></span>
+            Guard Agents
+          </h1>
+          <p class="text-sm text-text-tertiary mt-1">Registered Panguard Guard agent instances</p>
+        </div>
+        <button
+          onclick="loadAgents()"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors"
+        >
+          <span id="refreshIcon"></span>
+          Refresh
+        </button>
+      </div>
 
-      document.getElementById('agentTableBody').innerHTML = agents.map(a => {
-        const sc = statusConfig[a.status] || statusConfig.offline;
-        return `<tr class="border-b border-border hover:bg-surface-2/30 transition-colors">
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 fade-in">
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Total Agents</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center"
+              id="kpiIconTotal"
+            ></div>
+          </div>
+          <p id="kpiTotal" class="text-2xl font-bold">--</p>
+        </div>
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Online</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-safe/10 flex items-center justify-center"
+              id="kpiIconOnline"
+            ></div>
+          </div>
+          <p id="kpiOnline" class="text-2xl font-bold text-safe">--</p>
+        </div>
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Events Processed</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center"
+              id="kpiIconEvents"
+            ></div>
+          </div>
+          <p id="kpiEvents" class="text-2xl font-bold">--</p>
+        </div>
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Threats Detected</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center"
+              id="kpiIconThreats"
+            ></div>
+          </div>
+          <p id="kpiThreats" class="text-2xl font-bold text-danger">--</p>
+        </div>
+      </div>
+
+      <!-- Agent Table -->
+      <div class="bg-surface-1 border border-border rounded-xl fade-in">
+        <div class="p-5 border-b border-border">
+          <h3 class="text-sm font-semibold">Registered Agents</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-text-tertiary text-xs uppercase">
+                <th class="px-5 py-3 text-left">Status</th>
+                <th class="px-5 py-3 text-left">Hostname</th>
+                <th class="px-5 py-3 text-left">ID</th>
+                <th class="px-5 py-3 text-left">IP</th>
+                <th class="px-5 py-3 text-left">OS</th>
+                <th class="px-5 py-3 text-left">Mode</th>
+                <th class="px-5 py-3 text-right">Events</th>
+                <th class="px-5 py-3 text-right">Threats</th>
+                <th class="px-5 py-3 text-right">Memory</th>
+                <th class="px-5 py-3 text-left">Last Seen</th>
+              </tr>
+            </thead>
+            <tbody id="agentTableBody">
+              <tr>
+                <td colspan="10" class="px-5 py-8 text-center text-text-muted">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Offline notice -->
+      <div
+        id="offlineNotice"
+        class="hidden mt-4 bg-caution/10 border border-caution/20 rounded-xl p-4 text-sm text-caution flex items-center gap-2"
+      >
+        <span id="offlineIcon"></span>
+        <span
+          >Manager Server is not reachable. Start it with
+          <code class="bg-surface-2 px-1.5 py-0.5 rounded text-xs"
+            >panguard manager start</code
+          ></span
+        >
+      </div>
+    </main>
+
+    <script>
+      if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+      // Render nav
+      document.getElementById('nav').innerHTML = PG.renderNav('agents');
+
+      // Icons
+      document.getElementById('pageIcon').innerHTML = Icons.cpu(20, '#8B9A8E');
+      document.getElementById('refreshIcon').innerHTML = Icons.refresh(14);
+      document.getElementById('kpiIconTotal').innerHTML = Icons.cpu(16, '#8B9A8E');
+      document.getElementById('kpiIconOnline').innerHTML = Icons.wifi(16, '#2ED573');
+      document.getElementById('kpiIconEvents').innerHTML = Icons.zap(16, '#8B9A8E');
+      document.getElementById('kpiIconThreats').innerHTML = Icons.alertTriangle(16, '#EF4444');
+      document.getElementById('offlineIcon').innerHTML = Icons.alertTriangle(16);
+
+      async function loadAgents() {
+        const data = await PG.managerFetch('/api/agents');
+
+        if (!data) {
+          document.getElementById('agentTableBody').innerHTML =
+            '<tr><td colspan="10" class="px-5 py-8 text-center text-text-muted">No agents registered or Manager Server offline</td></tr>';
+          document.getElementById('offlineNotice').classList.remove('hidden');
+          document.getElementById('kpiTotal').textContent = '0';
+          document.getElementById('kpiOnline').textContent = '0';
+          document.getElementById('kpiEvents').textContent = '0';
+          document.getElementById('kpiThreats').textContent = '0';
+          return;
+        }
+
+        document.getElementById('offlineNotice').classList.add('hidden');
+
+        const agents = data.agents || [];
+        const online = agents.filter((a) => a.status === 'online').length;
+        const totalEvents = agents.reduce((s, a) => s + (a.eventsProcessed || 0), 0);
+        const totalThreats = agents.reduce((s, a) => s + (a.threatsDetected || 0), 0);
+
+        document.getElementById('kpiTotal').textContent = PG.formatNumber(agents.length);
+        document.getElementById('kpiOnline').textContent = PG.formatNumber(online);
+        document.getElementById('kpiEvents').textContent = PG.formatNumber(totalEvents);
+        document.getElementById('kpiThreats').textContent = PG.formatNumber(totalThreats);
+
+        if (!agents.length) {
+          document.getElementById('agentTableBody').innerHTML =
+            '<tr><td colspan="10" class="px-5 py-8 text-center text-text-muted">No agents registered yet</td></tr>';
+          return;
+        }
+
+        const statusConfig = {
+          online: { color: '#2ED573', cls: 'bg-safe/10 text-safe border-safe/20' },
+          stale: { color: '#FBBF24', cls: 'bg-caution/10 text-caution border-caution/20' },
+          offline: { color: '#EF4444', cls: 'bg-danger/10 text-danger border-danger/20' },
+        };
+
+        document.getElementById('agentTableBody').innerHTML = agents
+          .map((a) => {
+            const sc = statusConfig[a.status] || statusConfig.offline;
+            return `<tr class="border-b border-border hover:bg-surface-2/30 transition-colors">
           <td class="px-5 py-3">
             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase border ${sc.cls}">
               ${Icons.dot(6, sc.color)}
@@ -174,11 +215,12 @@
           <td class="px-5 py-3 text-right text-text-secondary">${a.memoryUsageMB || 0} MB</td>
           <td class="px-5 py-3 text-text-tertiary text-xs">${PG.formatRelativeTime(a.lastSeen)}</td>
         </tr>`;
-      }).join('');
-    }
+          })
+          .join('');
+      }
 
-    loadAgents();
-    setInterval(loadAgents, 30000);
-  </script>
-</body>
+      loadAgents();
+      setInterval(loadAgents, 30000);
+    </script>
+  </body>
 </html>

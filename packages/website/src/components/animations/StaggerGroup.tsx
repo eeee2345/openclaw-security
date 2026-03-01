@@ -26,9 +26,5 @@ export function StaggerItem({
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <div className={`animate-on-scroll ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`animate-on-scroll ${className}`}>{children}</div>;
 }

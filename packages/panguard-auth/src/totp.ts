@@ -117,11 +117,7 @@ export function generateTotp(secret: string, timeStep?: number): string {
  *
  * Returns the matched time step on success (for replay tracking), or -1 on failure.
  */
-export function verifyTotp(
-  secret: string,
-  code: string,
-  lastUsedStep?: number
-): number {
+export function verifyTotp(secret: string, code: string, lastUsedStep?: number): number {
   if (typeof code !== 'string' || code.length !== TOTP_DIGITS) return -1;
 
   const currentStep = Math.floor(Date.now() / 1000 / TOTP_PERIOD);
@@ -148,11 +144,7 @@ export function verifyTotp(
  * Build an otpauth:// URI for QR code generation.
  * Compatible with Google Authenticator, Authy, 1Password, etc.
  */
-export function buildOtpauthUri(
-  secret: string,
-  email: string,
-  issuer = 'Panguard AI'
-): string {
+export function buildOtpauthUri(secret: string, email: string, issuer = 'Panguard AI'): string {
   const encodedIssuer = encodeURIComponent(issuer);
   const encodedEmail = encodeURIComponent(email);
   return (

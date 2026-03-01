@@ -55,21 +55,15 @@ export default function UseCases() {
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
                   <Icon className="w-5 h-5 text-panguard-green shrink-0" />
-                  <span className="text-sm font-semibold text-text-primary">
-                    {s.type}
-                  </span>
+                  <span className="text-sm font-semibold text-text-primary">{s.type}</span>
                   <span className="text-xs text-text-muted">&middot; {s.detail}</span>
                 </div>
 
                 {/* Pain point */}
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  {s.pain}
-                </p>
+                <p className="text-sm text-gray-500 leading-relaxed">{s.pain}</p>
 
                 {/* Result */}
-                <p className="text-sm text-text-primary leading-relaxed mt-3 flex-1">
-                  {s.result}
-                </p>
+                <p className="text-sm text-text-primary leading-relaxed mt-3 flex-1">{s.result}</p>
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mt-4">

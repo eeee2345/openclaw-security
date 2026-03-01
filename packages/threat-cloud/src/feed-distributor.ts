@@ -63,11 +63,7 @@ export class FeedDistributor {
    * Generate JSON IoC feed.
    * 產生 JSON IoC feed
    */
-  getIoCFeed(
-    minReputation: number = 50,
-    limit: number = 1000,
-    since?: string
-  ): IoCFeedResponse {
+  getIoCFeed(minReputation: number = 50, limit: number = 1000, since?: string): IoCFeedResponse {
     const conditions = ["status = 'active'", 'reputation_score >= ?'];
     const params: unknown[] = [minReputation];
 

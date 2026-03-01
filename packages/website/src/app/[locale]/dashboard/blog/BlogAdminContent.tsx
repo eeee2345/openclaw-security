@@ -4,17 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from '@/navigation';
 import { Link } from '@/navigation';
-import {
-  Plus,
-  ArrowLeft,
-  Loader2,
-  LogOut,
-  Pencil,
-  Trash2,
-  Save,
-  X,
-  FileText,
-} from 'lucide-react';
+import { Plus, ArrowLeft, Loader2, LogOut, Pencil, Trash2, Save, X, FileText } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 import { blogPosts as staticPosts, categories } from '@/data/blog-posts';
 import type { BlogPost } from '@/data/blog-posts';
@@ -210,7 +200,9 @@ export default function BlogAdminContent() {
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-1.5">
               <BrandLogo size={20} className="text-brand-sage" />
-              <span className="font-semibold tracking-wider text-text-primary text-sm">PANGUARD</span>
+              <span className="font-semibold tracking-wider text-text-primary text-sm">
+                PANGUARD
+              </span>
             </Link>
             <span className="text-text-muted">/</span>
             <Link
@@ -225,7 +217,10 @@ export default function BlogAdminContent() {
           <div className="flex items-center gap-4">
             <span className="text-sm text-text-secondary">{user.email}</span>
             <button
-              onClick={() => { void logout(); router.push('/'); }}
+              onClick={() => {
+                void logout();
+                router.push('/');
+              }}
               className="text-text-tertiary hover:text-text-secondary transition-colors"
               aria-label="Log out"
             >
@@ -264,21 +259,36 @@ export default function BlogAdminContent() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-6 py-3">Title</th>
-                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-4 py-3 hidden md:table-cell">Category</th>
-                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-4 py-3 hidden md:table-cell">Date</th>
-                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-4 py-3 hidden sm:table-cell">Source</th>
-                      <th className="text-right text-xs uppercase tracking-wider text-text-muted font-semibold px-6 py-3">Actions</th>
+                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-6 py-3">
+                        Title
+                      </th>
+                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-4 py-3 hidden md:table-cell">
+                        Category
+                      </th>
+                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-4 py-3 hidden md:table-cell">
+                        Date
+                      </th>
+                      <th className="text-left text-xs uppercase tracking-wider text-text-muted font-semibold px-4 py-3 hidden sm:table-cell">
+                        Source
+                      </th>
+                      <th className="text-right text-xs uppercase tracking-wider text-text-muted font-semibold px-6 py-3">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {allPosts.map((post) => (
-                      <tr key={post.slug} className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors">
+                      <tr
+                        key={post.slug}
+                        className="border-b border-border/50 last:border-0 hover:bg-surface-2/50 transition-colors"
+                      >
                         <td className="px-6 py-4">
                           <div className="flex items-start gap-3">
                             <FileText className="w-4 h-4 text-text-tertiary mt-0.5 shrink-0" />
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-text-primary truncate max-w-[400px]">{post.title}</p>
+                              <p className="text-sm font-medium text-text-primary truncate max-w-[400px]">
+                                {post.title}
+                              </p>
                               <p className="text-xs text-text-muted mt-0.5">{post.author}</p>
                             </div>
                           </div>
@@ -292,11 +302,13 @@ export default function BlogAdminContent() {
                           <span className="text-sm text-text-secondary">{post.date}</span>
                         </td>
                         <td className="px-4 py-4 hidden sm:table-cell">
-                          <span className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full ${
-                            post.source === 'static'
-                              ? 'bg-surface-3 text-text-tertiary'
-                              : 'bg-[#60a5fa]/10 text-[#60a5fa]'
-                          }`}>
+                          <span
+                            className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full ${
+                              post.source === 'static'
+                                ? 'bg-surface-3 text-text-tertiary'
+                                : 'bg-[#60a5fa]/10 text-[#60a5fa]'
+                            }`}
+                          >
                             {post.source}
                           </span>
                         </td>
@@ -355,7 +367,9 @@ export default function BlogAdminContent() {
               <div className="lg:col-span-2 space-y-5">
                 {/* Title */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Title</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Title
+                  </label>
                   <input
                     type="text"
                     value={editingPost.title}
@@ -367,7 +381,9 @@ export default function BlogAdminContent() {
 
                 {/* Slug */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Slug</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Slug
+                  </label>
                   <input
                     type="text"
                     value={editingPost.slug}
@@ -379,10 +395,14 @@ export default function BlogAdminContent() {
 
                 {/* Excerpt */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Excerpt</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Excerpt
+                  </label>
                   <textarea
                     value={editingPost.excerpt}
-                    onChange={(e) => setEditingPost((prev) => ({ ...prev, excerpt: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingPost((prev) => ({ ...prev, excerpt: e.target.value }))
+                    }
                     placeholder="Brief summary shown on the blog listing page..."
                     rows={2}
                     className="w-full bg-surface-2 border border-border rounded-lg px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors resize-none"
@@ -391,14 +411,19 @@ export default function BlogAdminContent() {
 
                 {/* Content */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Content</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Content
+                  </label>
                   <p className="text-xs text-text-muted mb-2">
-                    Use ## for headings. Use ``` for code blocks. Use ** for bold. Separate paragraphs with blank lines.
+                    Use ## for headings. Use ``` for code blocks. Use ** for bold. Separate
+                    paragraphs with blank lines.
                   </p>
                   <textarea
                     value={contentText}
                     onChange={(e) => setContentText(e.target.value)}
-                    placeholder={"## Introduction\n\nYour first paragraph here.\n\n## Next Section\n\nMore content..."}
+                    placeholder={
+                      '## Introduction\n\nYour first paragraph here.\n\n## Next Section\n\nMore content...'
+                    }
                     rows={20}
                     className="w-full bg-surface-2 border border-border rounded-lg px-4 py-3 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors resize-y leading-relaxed"
                   />
@@ -409,21 +434,31 @@ export default function BlogAdminContent() {
               <div className="space-y-5">
                 {/* Category */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Category</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Category
+                  </label>
                   <select
                     value={editingPost.category}
-                    onChange={(e) => setEditingPost((prev) => ({ ...prev, category: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingPost((prev) => ({ ...prev, category: e.target.value }))
+                    }
                     className="w-full bg-surface-2 border border-border rounded-lg px-4 py-3 text-sm text-text-primary focus:outline-none focus:border-brand-sage transition-colors"
                   >
-                    {categories.filter((c) => c !== 'All').map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
+                    {categories
+                      .filter((c) => c !== 'All')
+                      .map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
                 {/* Date */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Date</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Date
+                  </label>
                   <input
                     type="date"
                     value={editingPost.date}
@@ -434,11 +469,15 @@ export default function BlogAdminContent() {
 
                 {/* Author */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Author</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Author
+                  </label>
                   <input
                     type="text"
                     value={editingPost.author}
-                    onChange={(e) => setEditingPost((prev) => ({ ...prev, author: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingPost((prev) => ({ ...prev, author: e.target.value }))
+                    }
                     placeholder="Author name"
                     className="w-full bg-surface-2 border border-border rounded-lg px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
                   />
@@ -446,11 +485,15 @@ export default function BlogAdminContent() {
 
                 {/* Reading Time */}
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">Reading Time</label>
+                  <label className="block text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
+                    Reading Time
+                  </label>
                   <input
                     type="text"
                     value={editingPost.readingTime}
-                    onChange={(e) => setEditingPost((prev) => ({ ...prev, readingTime: e.target.value }))}
+                    onChange={(e) =>
+                      setEditingPost((prev) => ({ ...prev, readingTime: e.target.value }))
+                    }
                     placeholder="5 min"
                     className="w-full bg-surface-2 border border-border rounded-lg px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
                   />

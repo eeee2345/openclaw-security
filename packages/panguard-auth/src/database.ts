@@ -774,7 +774,9 @@ export class AuthDB {
    * Get users whose plans expire within the given number of days.
    * Used for sending expiration warning emails.
    */
-  getExpiringPlans(withinDays: number): Array<{ id: number; email: string; name: string; tier: string; planExpiresAt: string }> {
+  getExpiringPlans(
+    withinDays: number
+  ): Array<{ id: number; email: string; name: string; tier: string; planExpiresAt: string }> {
     return this.db
       .prepare(
         `SELECT id, email, name, tier, plan_expires_at as planExpiresAt FROM users
@@ -783,7 +785,13 @@ export class AuthDB {
            AND plan_expires_at <= datetime('now', '+' || ? || ' days')
            AND tier != 'free'`
       )
-      .all(withinDays) as Array<{ id: number; email: string; name: string; tier: string; planExpiresAt: string }>;
+      .all(withinDays) as Array<{
+      id: number;
+      email: string;
+      name: string;
+      tier: string;
+      planExpiresAt: string;
+    }>;
   }
 
   // ── Password Reset ──────────────────────────────────────────
@@ -798,7 +806,10 @@ export class AuthDB {
       .prepare('UPDATE password_reset_tokens SET used = 1 WHERE user_id = ? AND used = 0')
       .run(userId);
 
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19); // 1 hour
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
+      .toISOString()
+      .replace('T', ' ')
+      .slice(0, 19); // 1 hour
     this.db
       .prepare(
         `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)`
@@ -830,9 +841,7 @@ export class AuthDB {
    * Update a user's password hash.
    */
   updateUserPassword(userId: number, passwordHash: string): void {
-    this.db
-      .prepare('UPDATE users SET password_hash = ? WHERE id = ?')
-      .run(passwordHash, userId);
+    this.db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(passwordHash, userId);
   }
 
   // ── Session Management ────────────────────────────────────────
@@ -859,13 +868,17 @@ export class AuthDB {
       const sessions = this.db.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
       if (sessions.changes > 0) tablesAffected.push('sessions');
 
-      const resets = this.db.prepare('DELETE FROM password_reset_tokens WHERE user_id = ?').run(userId);
+      const resets = this.db
+        .prepare('DELETE FROM password_reset_tokens WHERE user_id = ?')
+        .run(userId);
       if (resets.changes > 0) tablesAffected.push('password_reset_tokens');
 
       const subs = this.db.prepare('DELETE FROM subscriptions WHERE user_id = ?').run(userId);
       if (subs.changes > 0) tablesAffected.push('subscriptions');
 
-      const purchases = this.db.prepare('DELETE FROM report_purchases WHERE user_id = ?').run(userId);
+      const purchases = this.db
+        .prepare('DELETE FROM report_purchases WHERE user_id = ?')
+        .run(userId);
       if (purchases.changes > 0) tablesAffected.push('report_purchases');
 
       // Anonymize audit log entries (keep for compliance, remove PII)
@@ -974,7 +987,9 @@ export class AuthDB {
    */
   enableTotp(userId: number): void {
     this.db
-      .prepare("UPDATE totp_secrets SET enabled = 1, updated_at = datetime('now') WHERE user_id = ?")
+      .prepare(
+        "UPDATE totp_secrets SET enabled = 1, updated_at = datetime('now') WHERE user_id = ?"
+      )
       .run(userId);
   }
 
@@ -983,7 +998,9 @@ export class AuthDB {
    */
   updateLastUsedStep(userId: number, step: number): void {
     this.db
-      .prepare("UPDATE totp_secrets SET last_used_step = ?, updated_at = datetime('now') WHERE user_id = ?")
+      .prepare(
+        "UPDATE totp_secrets SET last_used_step = ?, updated_at = datetime('now') WHERE user_id = ?"
+      )
       .run(step, userId);
   }
 
@@ -1036,7 +1053,9 @@ export class AuthDB {
 
     const remaining = [...codes.slice(0, index), ...codes.slice(index + 1)];
     this.db
-      .prepare("UPDATE totp_secrets SET backup_codes = ?, updated_at = datetime('now') WHERE user_id = ?")
+      .prepare(
+        "UPDATE totp_secrets SET backup_codes = ?, updated_at = datetime('now') WHERE user_id = ?"
+      )
       .run(JSON.stringify(remaining), userId);
     return true;
   }
@@ -1088,7 +1107,9 @@ export class AuthDB {
    */
   getUserUsage(userId: number): Array<{ resource: string; period: string; count: number }> {
     return this.db
-      .prepare('SELECT resource, period, count FROM usage_meters WHERE user_id = ? ORDER BY resource, period')
+      .prepare(
+        'SELECT resource, period, count FROM usage_meters WHERE user_id = ? ORDER BY resource, period'
+      )
       .all(userId) as Array<{ resource: string; period: string; count: number }>;
   }
 
@@ -1169,7 +1190,12 @@ export class AuthDB {
 
   getUserDetailById(userId: number): {
     user: UserAdmin;
-    subscription: { status: string; tier: string; renewsAt: string | null; endsAt: string | null } | null;
+    subscription: {
+      status: string;
+      tier: string;
+      renewsAt: string | null;
+      endsAt: string | null;
+    } | null;
     usage: Array<{ resource: string; period: string; count: number }>;
     sessions: Array<{ id: number; expiresAt: string; createdAt: string }>;
     recentAudit: AuditLogEntry[];
@@ -1186,7 +1212,12 @@ export class AuthDB {
 
     const subscription = this.getActiveSubscription(userId);
     const subData = subscription
-      ? { status: subscription.status, tier: subscription.tier, renewsAt: subscription.renewsAt, endsAt: subscription.endsAt }
+      ? {
+          status: subscription.status,
+          tier: subscription.tier,
+          renewsAt: subscription.renewsAt,
+          endsAt: subscription.endsAt,
+        }
       : null;
 
     const usage = this.getUserUsage(userId);

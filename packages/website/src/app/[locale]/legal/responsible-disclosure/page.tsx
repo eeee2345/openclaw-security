@@ -98,9 +98,7 @@ export default function ResponsibleDisclosurePage() {
                 security@panguard.ai
               </a>
             </li>
-            <li>
-              Encrypt sensitive reports using our PGP key (see Section 6 below)
-            </li>
+            <li>Encrypt sensitive reports using our PGP key (see Section 6 below)</li>
             <li>
               Include a detailed description of the vulnerability, including steps to reproduce,
               affected systems, and potential impact

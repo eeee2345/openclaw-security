@@ -50,9 +50,12 @@ describe('IoCStore', () => {
     });
 
     it('should normalize hash by lowercasing', () => {
-      expect(store.normalizeValue('hash_sha256', 'ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890')).toBe(
-        'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
-      );
+      expect(
+        store.normalizeValue(
+          'hash_sha256',
+          'ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890'
+        )
+      ).toBe('abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890');
     });
   });
 
@@ -70,7 +73,9 @@ describe('IoCStore', () => {
     });
 
     it('should detect SHA-256', () => {
-      expect(store.detectType('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')).toBe('hash_sha256');
+      expect(
+        store.detectType('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
+      ).toBe('hash_sha256');
     });
 
     it('should detect MD5', () => {
@@ -225,9 +230,27 @@ describe('IoCStore', () => {
 
   describe('searchIoCs', () => {
     beforeEach(() => {
-      store.upsertIoC({ type: 'ip', value: '1.2.3.0', threatType: 'scanner', source: 'guard', confidence: 90 });
-      store.upsertIoC({ type: 'ip', value: '4.5.6.0', threatType: 'c2', source: 'trap', confidence: 80 });
-      store.upsertIoC({ type: 'domain', value: 'bad.com', threatType: 'malware', source: 'guard', confidence: 70 });
+      store.upsertIoC({
+        type: 'ip',
+        value: '1.2.3.0',
+        threatType: 'scanner',
+        source: 'guard',
+        confidence: 90,
+      });
+      store.upsertIoC({
+        type: 'ip',
+        value: '4.5.6.0',
+        threatType: 'c2',
+        source: 'trap',
+        confidence: 80,
+      });
+      store.upsertIoC({
+        type: 'domain',
+        value: 'bad.com',
+        threatType: 'malware',
+        source: 'guard',
+        confidence: 70,
+      });
     });
 
     it('should return all IoCs with default pagination', () => {
@@ -249,7 +272,10 @@ describe('IoCStore', () => {
 
     it('should filter by minimum reputation', () => {
       // Update one IoC's reputation
-      dbWrapper.getDB().prepare('UPDATE iocs SET reputation_score = 90 WHERE normalized_value = ?').run('1.2.3.0');
+      dbWrapper
+        .getDB()
+        .prepare('UPDATE iocs SET reputation_score = 90 WHERE normalized_value = ?')
+        .run('1.2.3.0');
 
       const result = store.searchIoCs({ minReputation: 80 }, { page: 1, limit: 50 });
       expect(result.total).toBe(1);
@@ -283,7 +309,13 @@ describe('IoCStore', () => {
 
   describe('lifecycle', () => {
     it('should expire stale IoCs', () => {
-      store.upsertIoC({ type: 'ip', value: '1.2.3.0', threatType: 'scanner', source: 'guard', confidence: 50 });
+      store.upsertIoC({
+        type: 'ip',
+        value: '1.2.3.0',
+        threatType: 'scanner',
+        source: 'guard',
+        confidence: 50,
+      });
       // Set last_seen to old date
       dbWrapper.getDB().prepare("UPDATE iocs SET last_seen = '2020-01-01T00:00:00Z'").run();
 
@@ -295,8 +327,17 @@ describe('IoCStore', () => {
     });
 
     it('should purge expired IoCs', () => {
-      store.upsertIoC({ type: 'ip', value: '1.2.3.0', threatType: 'scanner', source: 'guard', confidence: 50 });
-      dbWrapper.getDB().prepare("UPDATE iocs SET status = 'expired', updated_at = '2020-01-01T00:00:00Z'").run();
+      store.upsertIoC({
+        type: 'ip',
+        value: '1.2.3.0',
+        threatType: 'scanner',
+        source: 'guard',
+        confidence: 50,
+      });
+      dbWrapper
+        .getDB()
+        .prepare("UPDATE iocs SET status = 'expired', updated_at = '2020-01-01T00:00:00Z'")
+        .run();
 
       const purged = store.purgeExpiredIoCs('2025-01-01T00:00:00Z');
       expect(purged).toBe(1);
@@ -390,7 +431,8 @@ describe('IoCStore', () => {
       dbWrapper.insertTrapCredentials(id, trapData.topCredentials);
 
       // Verify credentials stored
-      const creds = dbWrapper.getDB()
+      const creds = dbWrapper
+        .getDB()
         .prepare('SELECT * FROM trap_credentials WHERE enriched_threat_id = ?')
         .all(id) as Array<{ username: string; attempt_count: number }>;
 

@@ -279,9 +279,7 @@ export function getSkillsByCategory(category: Skill['category']): readonly Skill
  * Match a user message to the most likely skill.
  * Returns null if no skill matches above the confidence threshold.
  */
-export function matchSkill(
-  message: string
-): { skill: Skill; confidence: number } | null {
+export function matchSkill(message: string): { skill: Skill; confidence: number } | null {
   const lower = message.toLowerCase().trim();
   let bestMatch: { skill: Skill; confidence: number } | null = null;
 

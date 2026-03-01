@@ -9,13 +9,9 @@ import FadeInUp from '../FadeInUp';
 export default function The3AMStory() {
   const t = useTranslations('home.the3amStory');
 
-  const leftSteps = [
-    'left1', 'left2', 'left3', 'left4', 'left5', 'left6', 'left7',
-  ] as const;
+  const leftSteps = ['left1', 'left2', 'left3', 'left4', 'left5', 'left6', 'left7'] as const;
 
-  const rightSteps = [
-    'right1', 'right2', 'right3', 'right4', 'right5',
-  ] as const;
+  const rightSteps = ['right1', 'right2', 'right3', 'right4', 'right5'] as const;
 
   const leftRef = useScrollReveal({ margin: '-60px' });
   const rightRef = useScrollReveal({ margin: '-60px' });
@@ -61,7 +57,9 @@ export default function The3AMStory() {
         <div ref={rightRef} className="stagger-group">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-3 h-3 rounded-full bg-status-safe" />
-            <h3 className="text-base sm:text-lg font-bold text-panguard-green">{t('rightTitle')}</h3>
+            <h3 className="text-base sm:text-lg font-bold text-panguard-green">
+              {t('rightTitle')}
+            </h3>
           </div>
 
           <div className="space-y-4">
@@ -100,7 +98,10 @@ export default function The3AMStory() {
 
           {/* Still sleeping */}
           <FadeInUp delay={1.0}>
-            <p className="text-center text-lg font-bold text-panguard-green mt-6 animate-bounce" style={{ animationDuration: '3s' }}>
+            <p
+              className="text-center text-lg font-bold text-panguard-green mt-6 animate-bounce"
+              style={{ animationDuration: '3s' }}
+            >
               {t('stillSleeping')}
             </p>
           </FadeInUp>

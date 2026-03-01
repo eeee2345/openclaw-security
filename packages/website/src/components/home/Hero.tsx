@@ -24,9 +24,7 @@ function InstallBar() {
     <div className="max-w-md mx-auto">
       <div className="relative flex items-center gap-2 sm:gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-xs sm:text-sm">
         <span className="text-panguard-green select-none shrink-0">{prompt}</span>
-        <code className="text-text-secondary flex-1 select-all truncate min-w-0">
-          {installCmd}
-        </code>
+        <code className="text-text-secondary flex-1 select-all truncate min-w-0">{installCmd}</code>
         <button
           onClick={handleCopy}
           className="text-text-muted hover:text-text-secondary transition-colors p-1 shrink-0"

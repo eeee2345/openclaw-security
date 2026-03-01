@@ -84,8 +84,12 @@ export default function AboutContent() {
               <FadeInUp key={key} delay={i * 0.08}>
                 <div className="bg-surface-2 rounded-xl border border-border p-6 h-full card-glow">
                   <Icon className="w-6 h-6 text-brand-sage mb-4" />
-                  <p className="text-base font-bold text-text-primary mb-2">{t(`beliefs.${key}.title`)}</p>
-                  <p className="text-sm text-text-secondary leading-relaxed">{t(`beliefs.${key}.desc`)}</p>
+                  <p className="text-base font-bold text-text-primary mb-2">
+                    {t(`beliefs.${key}.title`)}
+                  </p>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {t(`beliefs.${key}.desc`)}
+                  </p>
                 </div>
               </FadeInUp>
             );
@@ -95,10 +99,7 @@ export default function AboutContent() {
 
       {/* ── By the Numbers ── */}
       <SectionWrapper>
-        <SectionTitle
-          overline={t('numbers.overline')}
-          title={t('numbers.title')}
-        />
+        <SectionTitle overline={t('numbers.overline')} title={t('numbers.title')} />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-14">
           {(t.raw('numbers.stats') as Array<{ value: string; label: string }>).map((stat, i) => (
             <FadeInUp key={stat.label} delay={i * 0.05}>
@@ -134,7 +135,9 @@ export default function AboutContent() {
             <div className="bg-surface-2 rounded-xl border border-border p-8 text-center">
               <GlobalIcon className="w-12 h-12 text-brand-sage mx-auto mb-4" />
               <p className="text-4xl font-bold text-text-primary">Taiwan</p>
-              <p className="text-sm text-text-tertiary mt-2">Open Source / MIT License / Global Impact</p>
+              <p className="text-sm text-text-tertiary mt-2">
+                Open Source / MIT License / Global Impact
+              </p>
             </div>
           </FadeInUp>
         </div>

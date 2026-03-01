@@ -56,10 +56,7 @@ export function verifyWebhookSignature(
   if (!signature || !rawBody || !secret) return false;
 
   try {
-    const expected = Buffer.from(
-      createHmac('sha256', secret).update(rawBody).digest('hex'),
-      'hex'
-    );
+    const expected = Buffer.from(createHmac('sha256', secret).update(rawBody).digest('hex'), 'hex');
     const received = Buffer.from(signature, 'hex');
 
     if (expected.length !== received.length) return false;
@@ -125,11 +122,16 @@ export function handleWebhookEvent(
       // Invalidate sessions so next login picks up new tier
       db.deleteSessionsByUserId(userId);
 
-      db.addAuditLog('subscription_created', null, userId, JSON.stringify({
-        tier,
-        lsSubscriptionId,
-        variantId,
-      }));
+      db.addAuditLog(
+        'subscription_created',
+        null,
+        userId,
+        JSON.stringify({
+          tier,
+          lsSubscriptionId,
+          variantId,
+        })
+      );
 
       logAuditEvent({
         level: 'info',
@@ -162,11 +164,16 @@ export function handleWebhookEvent(
         db.updateUserTier(userId, tier, renewsAt ?? undefined);
       }
 
-      db.addAuditLog('subscription_updated', null, userId, JSON.stringify({
-        tier,
-        status,
-        lsSubscriptionId,
-      }));
+      db.addAuditLog(
+        'subscription_updated',
+        null,
+        userId,
+        JSON.stringify({
+          tier,
+          status,
+          lsSubscriptionId,
+        })
+      );
 
       return { handled: true, event: eventName, userId, tier };
     }
@@ -175,11 +182,16 @@ export function handleWebhookEvent(
       // Cancelled but still active until period end
       db.updateSubscriptionStatus(lsSubscriptionId, 'cancelled', endsAt);
 
-      db.addAuditLog('subscription_cancelled', null, userId, JSON.stringify({
-        tier,
-        endsAt,
-        lsSubscriptionId,
-      }));
+      db.addAuditLog(
+        'subscription_cancelled',
+        null,
+        userId,
+        JSON.stringify({
+          tier,
+          endsAt,
+          lsSubscriptionId,
+        })
+      );
 
       logAuditEvent({
         level: 'info',
@@ -200,10 +212,15 @@ export function handleWebhookEvent(
       // Invalidate sessions
       db.deleteSessionsByUserId(userId);
 
-      db.addAuditLog('subscription_expired', null, userId, JSON.stringify({
-        previousTier: tier,
-        lsSubscriptionId,
-      }));
+      db.addAuditLog(
+        'subscription_expired',
+        null,
+        userId,
+        JSON.stringify({
+          previousTier: tier,
+          lsSubscriptionId,
+        })
+      );
 
       logAuditEvent({
         level: 'info',

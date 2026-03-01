@@ -5,12 +5,7 @@
  */
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import {
-  hashPassword,
-  generateSessionToken,
-  generateVerifyToken,
-  sessionExpiry,
-} from '../auth.js';
+import { hashPassword, generateSessionToken, generateVerifyToken, sessionExpiry } from '../auth.js';
 import { authenticateRequest } from '../middleware.js';
 import {
   getGoogleAuthUrl,

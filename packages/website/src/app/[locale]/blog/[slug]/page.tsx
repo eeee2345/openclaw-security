@@ -143,11 +143,14 @@ export default async function BlogPostPage({
                       );
                     }
                     if (block.startsWith('- ')) {
-                      const items = block.split('\n').filter(line => line.startsWith('- '));
+                      const items = block.split('\n').filter((line) => line.startsWith('- '));
                       return (
                         <ul key={i} className="space-y-2 pl-1">
                           {items.map((item, j) => (
-                            <li key={j} className="flex items-start gap-2.5 text-text-secondary leading-relaxed">
+                            <li
+                              key={j}
+                              className="flex items-start gap-2.5 text-text-secondary leading-relaxed"
+                            >
                               <span className="text-brand-sage mt-1.5 shrink-0">--</span>
                               <span>{item.replace(/^- /, '')}</span>
                             </li>

@@ -6,22 +6,22 @@
 
 ## System Requirements
 
-| Item | Minimum |
-|------|---------|
-| OS | macOS 12+, Ubuntu 20.04+, Windows 10+ |
-| Node.js | >= 20.0.0 |
-| Disk | 200 MB |
-| Memory | 512 MB (1 GB recommended for Guard) |
+| Item    | Minimum                               |
+| ------- | ------------------------------------- |
+| OS      | macOS 12+, Ubuntu 20.04+, Windows 10+ |
+| Node.js | >= 20.0.0                             |
+| Disk    | 200 MB                                |
+| Memory  | 512 MB (1 GB recommended for Guard)   |
 
 ### Platform Support
 
-| Feature | macOS | Linux | Windows |
-|---------|-------|-------|---------|
-| **Scan** | Full (lsof, socketfilterfw) | Full (ss, ufw/iptables) | Partial (netstat, no firewall) |
-| **Guard** | Poll monitoring (5s) | Poll monitoring (5s) | Poll monitoring (5s) |
-| **Trap** | TCP honeypots | TCP honeypots | TCP honeypots |
-| **Chat** | Telegram / Slack / Email | Telegram / Slack / Email | Telegram / Slack / Email |
-| **Report** | Full (3 frameworks) | Full (3 frameworks) | Full (3 frameworks) |
+| Feature    | macOS                       | Linux                    | Windows                        |
+| ---------- | --------------------------- | ------------------------ | ------------------------------ |
+| **Scan**   | Full (lsof, socketfilterfw) | Full (ss, ufw/iptables)  | Partial (netstat, no firewall) |
+| **Guard**  | Poll monitoring (5s)        | Poll monitoring (5s)     | Poll monitoring (5s)           |
+| **Trap**   | TCP honeypots               | TCP honeypots            | TCP honeypots                  |
+| **Chat**   | Telegram / Slack / Email    | Telegram / Slack / Email | Telegram / Slack / Email       |
+| **Report** | Full (3 frameworks)         | Full (3 frameworks)      | Full (3 frameworks)            |
 
 > macOS and Linux are primary platforms. Windows supports core features; some OS-level detection is limited.
 
@@ -34,12 +34,12 @@ Go to [panguard.ai](https://panguard.ai) and sign up:
 1. Click "Sign Up" - use Google or Email + Password
 2. Browse plans at [Pricing](https://panguard.ai/pricing)
 
-| Plan | Price | Includes |
-|------|-------|----------|
-| **Community** | Free | Scan (unlimited) + Guard (Layer 1) + Threat Cloud |
-| **Solo** | $9/mo | + Full Guard (3 layers) + Chat + Local AI, up to 3 machines |
-| **Pro** | $29/mo | + Trap + Cloud AI + Compliance reports, up to 10 machines |
-| **Business** | $79/mo | + SIEM + SSO + Dedicated support, up to 25 machines |
+| Plan          | Price  | Includes                                                    |
+| ------------- | ------ | ----------------------------------------------------------- |
+| **Community** | Free   | Scan (unlimited) + Guard (Layer 1) + Threat Cloud           |
+| **Solo**      | $9/mo  | + Full Guard (3 layers) + Chat + Local AI, up to 3 machines |
+| **Pro**       | $29/mo | + Trap + Cloud AI + Compliance reports, up to 10 machines   |
+| **Business**  | $79/mo | + SIEM + SSO + Dedicated support, up to 25 machines         |
 
 Community plan is enough to get started. Compliance reports available as add-on purchases on Pro+ plans.
 
@@ -242,23 +242,23 @@ panguard report --framework iso27001 --output iso-report.pdf
 
 Available frameworks:
 
-| Framework | Controls | Command |
-|-----------|----------|---------|
-| Taiwan TCSA | 50 | `--framework tcsa` |
-| ISO 27001 | 93 | `--framework iso27001` |
-| SOC 2 | 64 | `--framework soc2` |
+| Framework   | Controls | Command                |
+| ----------- | -------- | ---------------------- |
+| Taiwan TCSA | 50       | `--framework tcsa`     |
+| ISO 27001   | 93       | `--framework iso27001` |
+| SOC 2       | 64       | `--framework soc2`     |
 
 ---
 
 ## Next Steps
 
-| Want to... | Plan | Read |
-|-----------|------|------|
-| Understand the 3-layer AI architecture | - | [Concept: Three-Layer AI](concepts/three-layer-ai.md) |
-| Deep dive into Guard's 4 AI agents | Solo | [Guide: Guard](guides/guard.md) |
-| Set up honeypots to catch attackers | Pro | [Guide: Trap](guides/trap.md) |
-| Generate compliance reports | Pro | [Guide: Report](guides/report.md) |
-| Deploy collective threat intelligence | All | [Guide: Threat Cloud](guides/threat-cloud.md) |
-| View all CLI commands | - | [Reference: CLI](reference/cli.md) |
-| Write custom Sigma rules | - | [Reference: Sigma Rules](reference/sigma-rules.md) |
-| Troubleshoot issues | - | [Troubleshooting](troubleshooting.md) |
+| Want to...                             | Plan | Read                                                  |
+| -------------------------------------- | ---- | ----------------------------------------------------- |
+| Understand the 3-layer AI architecture | -    | [Concept: Three-Layer AI](concepts/three-layer-ai.md) |
+| Deep dive into Guard's 4 AI agents     | Solo | [Guide: Guard](guides/guard.md)                       |
+| Set up honeypots to catch attackers    | Pro  | [Guide: Trap](guides/trap.md)                         |
+| Generate compliance reports            | Pro  | [Guide: Report](guides/report.md)                     |
+| Deploy collective threat intelligence  | All  | [Guide: Threat Cloud](guides/threat-cloud.md)         |
+| View all CLI commands                  | -    | [Reference: CLI](reference/cli.md)                    |
+| Write custom Sigma rules               | -    | [Reference: Sigma Rules](reference/sigma-rules.md)    |
+| Troubleshoot issues                    | -    | [Troubleshooting](troubleshooting.md)                 |

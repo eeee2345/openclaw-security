@@ -242,9 +242,7 @@ export default function ProductReportContent() {
           <FadeInUp>
             <div className="bg-brand-sage/5 border border-brand-sage/20 rounded-xl p-6">
               <p className="text-sm font-bold text-brand-sage mb-2">{t('disclaimer.title')}</p>
-              <p className="text-sm text-text-secondary leading-relaxed">
-                {t('disclaimer.desc')}
-              </p>
+              <p className="text-sm text-text-secondary leading-relaxed">{t('disclaimer.desc')}</p>
               <p className="text-sm text-text-secondary leading-relaxed mt-3">
                 {t('disclaimer.workflow')}
               </p>

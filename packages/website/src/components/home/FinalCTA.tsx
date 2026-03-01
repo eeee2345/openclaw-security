@@ -63,7 +63,11 @@ export default function FinalCTA() {
               className="text-text-muted hover:text-text-secondary transition-colors p-1 shrink-0"
               aria-label="Copy install command"
             >
-              {copied ? <Check className="w-4 h-4 text-status-safe" /> : <Copy className="w-4 h-4" />}
+              {copied ? (
+                <Check className="w-4 h-4 text-status-safe" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
             </button>
             {copied && (
               <span className="toast-copied absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-status-safe bg-surface-1 border border-border rounded px-2 py-1">

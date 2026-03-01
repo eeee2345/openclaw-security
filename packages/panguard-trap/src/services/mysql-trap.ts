@@ -70,17 +70,19 @@ function buildServerGreeting(connectionId: number): Buffer {
   const versionBuf = Buffer.from(SERVER_VERSION + '\0', 'ascii');
 
   const payloadLen =
-    1 +                // protocol version
+    1 + // protocol version
     versionBuf.length +
-    4 +                // connection id
-    8 + 1 +            // scramble1 + filler
-    2 +                // capabilities lower
-    1 +                // charset
-    2 +                // status flags
-    2 +                // capabilities upper
-    1 +                // auth plugin data length
-    10 +               // reserved
-    12 + 1 +           // scramble2 + filler
+    4 + // connection id
+    8 +
+    1 + // scramble1 + filler
+    2 + // capabilities lower
+    1 + // charset
+    2 + // status flags
+    2 + // capabilities upper
+    1 + // auth plugin data length
+    10 + // reserved
+    12 +
+    1 + // scramble2 + filler
     pluginName.length;
 
   const payload = Buffer.alloc(payloadLen);
@@ -134,11 +136,7 @@ function buildERRPacket(sequenceId: number, code: number, message: string): Buff
 }
 
 /** Build a simple text result set (for SHOW DATABASES etc.) */
-function buildResultSet(
-  sequenceId: number,
-  columnName: string,
-  rows: string[]
-): Buffer[] {
+function buildResultSet(sequenceId: number, columnName: string, rows: string[]): Buffer[] {
   const packets: Buffer[] = [];
   let seq = sequenceId;
 
@@ -160,15 +158,23 @@ function buildResultSet(
     const len = Buffer.from([b.length]);
     colBufs.push(len, b);
   }
-  colBufs.push(Buffer.from([
-    0x0c,       // filler
-    CHARSET_UTF8, 0x00, // charset
-    0x40, 0x00, 0x00, 0x00, // column length
-    0xfd,       // type: VARCHAR
-    0x01, 0x00, // flags
-    0x00,       // decimals
-    0x00, 0x00, // filler
-  ]));
+  colBufs.push(
+    Buffer.from([
+      0x0c, // filler
+      CHARSET_UTF8,
+      0x00, // charset
+      0x40,
+      0x00,
+      0x00,
+      0x00, // column length
+      0xfd, // type: VARCHAR
+      0x01,
+      0x00, // flags
+      0x00, // decimals
+      0x00,
+      0x00, // filler
+    ])
+  );
   packets.push(buildPacket(seq++, Buffer.concat(colBufs)));
 
   // EOF
@@ -297,13 +303,21 @@ export class MySQLTrapService extends BaseTrapService {
           this.addMitreTechnique(session.sessionId, 'T1078'); // Valid accounts
           try {
             socket.write(buildOKPacket(sequenceId + 1));
-          } catch { /* socket closed */ }
+          } catch {
+            /* socket closed */
+          }
         } else {
           try {
             socket.write(
-              buildERRPacket(sequenceId + 1, 1045, `Access denied for user '${currentUser}'@'${remoteIP}'`)
+              buildERRPacket(
+                sequenceId + 1,
+                1045,
+                `Access denied for user '${currentUser}'@'${remoteIP}'`
+              )
             );
-          } catch { /* socket closed */ }
+          } catch {
+            /* socket closed */
+          }
         }
         return;
       }
@@ -317,12 +331,20 @@ export class MySQLTrapService extends BaseTrapService {
       }
 
       if (comType === COM_PING) {
-        try { socket.write(buildOKPacket(1)); } catch { /* */ }
+        try {
+          socket.write(buildOKPacket(1));
+        } catch {
+          /* */
+        }
         return;
       }
 
       if (comType === COM_INIT_DB) {
-        try { socket.write(buildOKPacket(1)); } catch { /* */ }
+        try {
+          socket.write(buildOKPacket(1));
+        } catch {
+          /* */
+        }
         return;
       }
 
@@ -345,28 +367,44 @@ export class MySQLTrapService extends BaseTrapService {
           try {
             if (upper.startsWith('SHOW DATABASES')) {
               const packets = buildResultSet(1, 'Database', [
-                'information_schema', 'mysql', 'performance_schema', 'webapp',
+                'information_schema',
+                'mysql',
+                'performance_schema',
+                'webapp',
               ]);
               for (const p of packets) socket.write(p);
             } else if (upper.startsWith('SHOW TABLES')) {
               const packets = buildResultSet(1, 'Tables_in_webapp', [
-                'users', 'sessions', 'orders', 'payments',
+                'users',
+                'sessions',
+                'orders',
+                'payments',
               ]);
               for (const p of packets) socket.write(p);
             } else if (upper.startsWith('SELECT')) {
               socket.write(
-                buildERRPacket(1, 1142, `SELECT command denied to user '${currentUser}'@'${remoteIP}'`)
+                buildERRPacket(
+                  1,
+                  1142,
+                  `SELECT command denied to user '${currentUser}'@'${remoteIP}'`
+                )
               );
             } else if (
-              upper.startsWith('DROP') || upper.startsWith('DELETE') ||
-              upper.startsWith('INSERT') || upper.startsWith('UPDATE')
+              upper.startsWith('DROP') ||
+              upper.startsWith('DELETE') ||
+              upper.startsWith('INSERT') ||
+              upper.startsWith('UPDATE')
             ) {
               socket.write(
                 buildERRPacket(1, 1142, `command denied to user '${currentUser}'@'${remoteIP}'`)
               );
             } else {
               socket.write(
-                buildERRPacket(1, 1064, `You have an error in your SQL syntax near '${query.slice(0, 30)}'`)
+                buildERRPacket(
+                  1,
+                  1064,
+                  `You have an error in your SQL syntax near '${query.slice(0, 30)}'`
+                )
               );
             }
           } catch {
@@ -379,7 +417,9 @@ export class MySQLTrapService extends BaseTrapService {
       // Unknown COM type
       try {
         socket.write(buildERRPacket(1, 1047, 'Unknown command'));
-      } catch { /* */ }
+      } catch {
+        /* */
+      }
     });
 
     socket.on('timeout', () => {

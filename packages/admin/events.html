@@ -1,183 +1,239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panguard Admin - Security Events</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/admin/icons.js"></script>
-  <script src="/admin/shared.js"></script>
-  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
-  <style>
-    [x-cloak] { display: none !important; }
-    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fade-in 0.4s ease-out forwards; }
-    .event-row { cursor: pointer; }
-    .event-detail { display: none; }
-    .event-detail.open { display: table-row; }
-  </style>
-</head>
-<body class="bg-surface-0 text-text-primary min-h-screen">
-  <div id="nav"></div>
-
-  <main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-6 fade-in">
-      <div>
-        <h1 class="text-xl font-bold flex items-center gap-2">
-          <span id="pageIcon"></span>
-          Security Events
-        </h1>
-        <p class="text-sm text-text-tertiary mt-1">Honeypot captures and threat detections from Guard agents</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <select id="severityFilter" onchange="loadEvents()" class="bg-surface-1 border border-border rounded-md px-3 py-1.5 text-xs text-text-secondary focus:border-sage focus:outline-none">
-          <option value="">All Severities</option>
-          <option value="critical">Critical</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-          <option value="info">Info</option>
-        </select>
-        <button onclick="loadEvents()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors">
-          <span id="refreshIcon"></span>
-          Refresh
-        </button>
-      </div>
-    </div>
-
-    <!-- KPI Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 fade-in">
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Total Events</p>
-          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconTotal"></div>
-        </div>
-        <p id="kpiTotal" class="text-2xl font-bold">--</p>
-      </div>
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Malicious</p>
-          <div class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center" id="kpiIconMalicious"></div>
-        </div>
-        <p id="kpiMalicious" class="text-2xl font-bold text-danger">--</p>
-      </div>
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Suspicious</p>
-          <div class="w-8 h-8 rounded-lg bg-caution/10 flex items-center justify-center" id="kpiIconSuspicious"></div>
-        </div>
-        <p id="kpiSuspicious" class="text-2xl font-bold text-caution">--</p>
-      </div>
-      <div class="bg-surface-1 border border-border rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs text-text-tertiary uppercase tracking-wider">Agents Reporting</p>
-          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconAgents"></div>
-        </div>
-        <p id="kpiAgents" class="text-2xl font-bold">--</p>
-      </div>
-    </div>
-
-    <!-- Events Table -->
-    <div class="bg-surface-1 border border-border rounded-xl fade-in">
-      <div class="p-5 border-b border-border flex items-center justify-between">
-        <h3 class="text-sm font-semibold">Event Log</h3>
-        <span id="eventCount" class="text-xs text-text-tertiary"></span>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-border text-text-tertiary text-xs uppercase">
-              <th class="px-5 py-3 text-left">Time</th>
-              <th class="px-5 py-3 text-left">Agent</th>
-              <th class="px-5 py-3 text-left">Conclusion</th>
-              <th class="px-5 py-3 text-right">Confidence</th>
-              <th class="px-5 py-3 text-left">Action</th>
-              <th class="px-5 py-3 text-left w-8"></th>
-            </tr>
-          </thead>
-          <tbody id="eventTableBody">
-            <tr><td colspan="6" class="px-5 py-8 text-center text-text-muted">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div id="paginationContainer" class="px-5 pb-4"></div>
-    </div>
-
-    <!-- Offline notice -->
-    <div id="offlineNotice" class="hidden mt-4 bg-caution/10 border border-caution/20 rounded-xl p-4 text-sm text-caution flex items-center gap-2">
-      <span id="offlineIcon"></span>
-      <span>Manager Server is not reachable. Start it with <code class="bg-surface-2 px-1.5 py-0.5 rounded text-xs">panguard manager start</code></span>
-    </div>
-  </main>
-
-  <script>
-    if (!PG.requireAuth()) throw new Error('Not authenticated');
-
-    document.getElementById('nav').innerHTML = PG.renderNav('events');
-
-    // Icons
-    document.getElementById('pageIcon').innerHTML = Icons.zap(20, '#8B9A8E');
-    document.getElementById('refreshIcon').innerHTML = Icons.refresh(14);
-    document.getElementById('kpiIconTotal').innerHTML = Icons.zap(16, '#8B9A8E');
-    document.getElementById('kpiIconMalicious').innerHTML = Icons.alertTriangle(16, '#EF4444');
-    document.getElementById('kpiIconSuspicious').innerHTML = Icons.eye(16, '#FBBF24');
-    document.getElementById('kpiIconAgents').innerHTML = Icons.cpu(16, '#8B9A8E');
-    document.getElementById('offlineIcon').innerHTML = Icons.alertTriangle(16);
-
-    let currentPage = 1;
-    const perPage = 50;
-
-    async function loadEvents() {
-      const offset = (currentPage - 1) * perPage;
-      const data = await PG.managerFetch(`/api/events?limit=${perPage}&offset=${offset}`);
-
-      if (!data) {
-        document.getElementById('eventTableBody').innerHTML =
-          '<tr><td colspan="6" class="px-5 py-8 text-center text-text-muted">No events or Manager Server offline</td></tr>';
-        document.getElementById('offlineNotice').classList.remove('hidden');
-        document.getElementById('kpiTotal').textContent = '0';
-        document.getElementById('kpiMalicious').textContent = '0';
-        document.getElementById('kpiSuspicious').textContent = '0';
-        document.getElementById('kpiAgents').textContent = '0';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panguard Admin - Security Events</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/admin/icons.js"></script>
+    <script src="/admin/shared.js"></script>
+    <script>
+      tailwind.config = PG.TAILWIND_CONFIG;
+    </script>
+    <style>
+      [x-cloak] {
+        display: none !important;
       }
-
-      document.getElementById('offlineNotice').classList.add('hidden');
-
-      const events = data.events || [];
-      const total = data.total || 0;
-
-      // KPIs from visible events
-      const malicious = events.filter(e => e.verdict?.conclusion === 'malicious').length;
-      const suspicious = events.filter(e => e.verdict?.conclusion === 'suspicious').length;
-      const uniqueAgents = new Set(events.map(e => e.agentId)).size;
-
-      document.getElementById('kpiTotal').textContent = PG.formatNumber(total);
-      document.getElementById('kpiMalicious').textContent = PG.formatNumber(malicious);
-      document.getElementById('kpiSuspicious').textContent = PG.formatNumber(suspicious);
-      document.getElementById('kpiAgents').textContent = PG.formatNumber(uniqueAgents);
-      document.getElementById('eventCount').textContent = `${PG.formatNumber(total)} total events`;
-
-      if (!events.length) {
-        document.getElementById('eventTableBody').innerHTML =
-          '<tr><td colspan="6" class="px-5 py-8 text-center text-text-muted">No events captured yet</td></tr>';
-        return;
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
+      .fade-in {
+        animation: fade-in 0.4s ease-out forwards;
+      }
+      .event-row {
+        cursor: pointer;
+      }
+      .event-detail {
+        display: none;
+      }
+      .event-detail.open {
+        display: table-row;
+      }
+    </style>
+  </head>
+  <body class="bg-surface-0 text-text-primary min-h-screen">
+    <div id="nav"></div>
 
-      const conclusionConfig = {
-        malicious: { color: '#EF4444', cls: 'bg-danger/10 text-danger border-danger/20' },
-        suspicious: { color: '#FBBF24', cls: 'bg-caution/10 text-caution border-caution/20' },
-        benign: { color: '#2ED573', cls: 'bg-safe/10 text-safe border-safe/20' },
-      };
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6 fade-in">
+        <div>
+          <h1 class="text-xl font-bold flex items-center gap-2">
+            <span id="pageIcon"></span>
+            Security Events
+          </h1>
+          <p class="text-sm text-text-tertiary mt-1">
+            Honeypot captures and threat detections from Guard agents
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <select
+            id="severityFilter"
+            onchange="loadEvents()"
+            class="bg-surface-1 border border-border rounded-md px-3 py-1.5 text-xs text-text-secondary focus:border-sage focus:outline-none"
+          >
+            <option value="">All Severities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="info">Info</option>
+          </select>
+          <button
+            onclick="loadEvents()"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors"
+          >
+            <span id="refreshIcon"></span>
+            Refresh
+          </button>
+        </div>
+      </div>
 
-      let rows = '';
-      events.forEach((e, i) => {
-        const verdict = e.verdict || {};
-        const cc = conclusionConfig[verdict.conclusion] || { color: '#706860', cls: 'bg-surface-2 text-text-tertiary border-border' };
-        const eventId = `evt-${i}`;
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 fade-in">
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Total Events</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center"
+              id="kpiIconTotal"
+            ></div>
+          </div>
+          <p id="kpiTotal" class="text-2xl font-bold">--</p>
+        </div>
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Malicious</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center"
+              id="kpiIconMalicious"
+            ></div>
+          </div>
+          <p id="kpiMalicious" class="text-2xl font-bold text-danger">--</p>
+        </div>
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Suspicious</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-caution/10 flex items-center justify-center"
+              id="kpiIconSuspicious"
+            ></div>
+          </div>
+          <p id="kpiSuspicious" class="text-2xl font-bold text-caution">--</p>
+        </div>
+        <div class="bg-surface-1 border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Agents Reporting</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center"
+              id="kpiIconAgents"
+            ></div>
+          </div>
+          <p id="kpiAgents" class="text-2xl font-bold">--</p>
+        </div>
+      </div>
 
-        rows += `<tr class="event-row border-b border-border hover:bg-surface-2/30 transition-colors" onclick="toggleDetail('${eventId}')">
+      <!-- Events Table -->
+      <div class="bg-surface-1 border border-border rounded-xl fade-in">
+        <div class="p-5 border-b border-border flex items-center justify-between">
+          <h3 class="text-sm font-semibold">Event Log</h3>
+          <span id="eventCount" class="text-xs text-text-tertiary"></span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-text-tertiary text-xs uppercase">
+                <th class="px-5 py-3 text-left">Time</th>
+                <th class="px-5 py-3 text-left">Agent</th>
+                <th class="px-5 py-3 text-left">Conclusion</th>
+                <th class="px-5 py-3 text-right">Confidence</th>
+                <th class="px-5 py-3 text-left">Action</th>
+                <th class="px-5 py-3 text-left w-8"></th>
+              </tr>
+            </thead>
+            <tbody id="eventTableBody">
+              <tr>
+                <td colspan="6" class="px-5 py-8 text-center text-text-muted">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="paginationContainer" class="px-5 pb-4"></div>
+      </div>
+
+      <!-- Offline notice -->
+      <div
+        id="offlineNotice"
+        class="hidden mt-4 bg-caution/10 border border-caution/20 rounded-xl p-4 text-sm text-caution flex items-center gap-2"
+      >
+        <span id="offlineIcon"></span>
+        <span
+          >Manager Server is not reachable. Start it with
+          <code class="bg-surface-2 px-1.5 py-0.5 rounded text-xs"
+            >panguard manager start</code
+          ></span
+        >
+      </div>
+    </main>
+
+    <script>
+      if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+      document.getElementById('nav').innerHTML = PG.renderNav('events');
+
+      // Icons
+      document.getElementById('pageIcon').innerHTML = Icons.zap(20, '#8B9A8E');
+      document.getElementById('refreshIcon').innerHTML = Icons.refresh(14);
+      document.getElementById('kpiIconTotal').innerHTML = Icons.zap(16, '#8B9A8E');
+      document.getElementById('kpiIconMalicious').innerHTML = Icons.alertTriangle(16, '#EF4444');
+      document.getElementById('kpiIconSuspicious').innerHTML = Icons.eye(16, '#FBBF24');
+      document.getElementById('kpiIconAgents').innerHTML = Icons.cpu(16, '#8B9A8E');
+      document.getElementById('offlineIcon').innerHTML = Icons.alertTriangle(16);
+
+      let currentPage = 1;
+      const perPage = 50;
+
+      async function loadEvents() {
+        const offset = (currentPage - 1) * perPage;
+        const data = await PG.managerFetch(`/api/events?limit=${perPage}&offset=${offset}`);
+
+        if (!data) {
+          document.getElementById('eventTableBody').innerHTML =
+            '<tr><td colspan="6" class="px-5 py-8 text-center text-text-muted">No events or Manager Server offline</td></tr>';
+          document.getElementById('offlineNotice').classList.remove('hidden');
+          document.getElementById('kpiTotal').textContent = '0';
+          document.getElementById('kpiMalicious').textContent = '0';
+          document.getElementById('kpiSuspicious').textContent = '0';
+          document.getElementById('kpiAgents').textContent = '0';
+          return;
+        }
+
+        document.getElementById('offlineNotice').classList.add('hidden');
+
+        const events = data.events || [];
+        const total = data.total || 0;
+
+        // KPIs from visible events
+        const malicious = events.filter((e) => e.verdict?.conclusion === 'malicious').length;
+        const suspicious = events.filter((e) => e.verdict?.conclusion === 'suspicious').length;
+        const uniqueAgents = new Set(events.map((e) => e.agentId)).size;
+
+        document.getElementById('kpiTotal').textContent = PG.formatNumber(total);
+        document.getElementById('kpiMalicious').textContent = PG.formatNumber(malicious);
+        document.getElementById('kpiSuspicious').textContent = PG.formatNumber(suspicious);
+        document.getElementById('kpiAgents').textContent = PG.formatNumber(uniqueAgents);
+        document.getElementById('eventCount').textContent =
+          `${PG.formatNumber(total)} total events`;
+
+        if (!events.length) {
+          document.getElementById('eventTableBody').innerHTML =
+            '<tr><td colspan="6" class="px-5 py-8 text-center text-text-muted">No events captured yet</td></tr>';
+          return;
+        }
+
+        const conclusionConfig = {
+          malicious: { color: '#EF4444', cls: 'bg-danger/10 text-danger border-danger/20' },
+          suspicious: { color: '#FBBF24', cls: 'bg-caution/10 text-caution border-caution/20' },
+          benign: { color: '#2ED573', cls: 'bg-safe/10 text-safe border-safe/20' },
+        };
+
+        let rows = '';
+        events.forEach((e, i) => {
+          const verdict = e.verdict || {};
+          const cc = conclusionConfig[verdict.conclusion] || {
+            color: '#706860',
+            cls: 'bg-surface-2 text-text-tertiary border-border',
+          };
+          const eventId = `evt-${i}`;
+
+          rows += `<tr class="event-row border-b border-border hover:bg-surface-2/30 transition-colors" onclick="toggleDetail('${eventId}')">
           <td class="px-5 py-3 text-text-tertiary text-xs whitespace-nowrap">${PG.formatRelativeTime(e.receivedAt)}</td>
           <td class="px-5 py-3 font-medium">${PG.escapeHtml(e.agentHostname)}</td>
           <td class="px-5 py-3">
@@ -191,7 +247,7 @@
           <td class="px-5 py-3 text-text-muted">${Icons.chevronDown(14)}</td>
         </tr>`;
 
-        rows += `<tr id="${eventId}" class="event-detail">
+          rows += `<tr id="${eventId}" class="event-detail">
           <td colspan="6" class="px-5 py-4 bg-surface-2/30">
             <div class="text-xs">
               <p class="text-text-tertiary mb-2">Event Details</p>
@@ -199,25 +255,29 @@
             </div>
           </td>
         </tr>`;
-      });
-
-      document.getElementById('eventTableBody').innerHTML = rows;
-
-      // Pagination
-      document.getElementById('paginationContainer').innerHTML =
-        PG.renderServerPagination(currentPage, perPage, total, (pg) => {
-          currentPage = pg;
-          loadEvents();
         });
-    }
 
-    function toggleDetail(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('open');
-    }
+        document.getElementById('eventTableBody').innerHTML = rows;
 
-    loadEvents();
-    setInterval(loadEvents, 30000);
-  </script>
-</body>
+        // Pagination
+        document.getElementById('paginationContainer').innerHTML = PG.renderServerPagination(
+          currentPage,
+          perPage,
+          total,
+          (pg) => {
+            currentPage = pg;
+            loadEvents();
+          }
+        );
+      }
+
+      function toggleDetail(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('open');
+      }
+
+      loadEvents();
+      setInterval(loadEvents, 30000);
+    </script>
+  </body>
 </html>

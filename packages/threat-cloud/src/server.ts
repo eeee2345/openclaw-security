@@ -73,9 +73,7 @@ export class ThreatCloudServer {
     this.auditLogger = new AuditLogger(rawDb);
     this.scheduler = new Scheduler(rawDb);
     // Pre-hash API keys for constant-time comparison
-    this.hashedApiKeys = config.apiKeys.map(
-      (k) => createHash('sha256').update(k).digest()
-    );
+    this.hashedApiKeys = config.apiKeys.map((k) => createHash('sha256').update(k).digest());
   }
 
   /** Start the server / 啟動伺服器 */
@@ -142,10 +140,7 @@ export class ThreatCloudServer {
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader(
-      'Content-Security-Policy',
-      "default-src 'none'; frame-ancestors 'none'"
-    );
+    res.setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
     if (process.env['NODE_ENV'] === 'production') {
       res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
     }
@@ -167,14 +162,14 @@ export class ThreatCloudServer {
     // Determine if this endpoint requires authentication
     const isHealthCheck = pathname === '/health';
     const allowAnonymousUpload = process.env['ALLOW_ANONYMOUS_UPLOAD'] === 'true';
-    const isAnonymousThreatUpload = allowAnonymousUpload &&
-      req.method === 'POST' && pathname === '/api/threats';
+    const isAnonymousThreatUpload =
+      allowAnonymousUpload && req.method === 'POST' && pathname === '/api/threats';
     const isWriteOrSensitive =
-      req.method === 'POST' ||
-      pathname === '/api/audit-log' ||
-      pathname === '/api/sightings';
+      req.method === 'POST' || pathname === '/api/audit-log' || pathname === '/api/sightings';
     // Write and sensitive endpoints ALWAYS require auth, except anonymous threat uploads
-    const requiresAuth = !isHealthCheck && !isAnonymousThreatUpload &&
+    const requiresAuth =
+      !isHealthCheck &&
+      !isAnonymousThreatUpload &&
       (this.config.apiKeyRequired || isWriteOrSensitive);
 
     if (requiresAuth) {
@@ -187,9 +182,7 @@ export class ThreatCloudServer {
       }
 
       const authHeader = req.headers.authorization ?? '';
-      const token = authHeader.startsWith('Bearer ')
-        ? authHeader.slice(7)
-        : '';
+      const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
       if (!token || !this.verifyApiKey(token)) {
         this.sendJson(res, 401, { ok: false, error: 'Unauthorized' });
         return;
@@ -560,7 +553,9 @@ export class ThreatCloudServer {
       {
         type: (params.get('type') as IoCType) || undefined,
         source: params.get('source') || undefined,
-        minReputation: params.get('minReputation') ? Number(params.get('minReputation')) : undefined,
+        minReputation: params.get('minReputation')
+          ? Number(params.get('minReputation'))
+          : undefined,
         status: (params.get('status') as IoCStatus) || undefined,
         since: params.get('since') || undefined,
         search: params.get('search') || undefined,
@@ -582,10 +577,8 @@ export class ThreatCloudServer {
     const typeParam = params.get('type') as IoCType | null;
     const type = typeParam ?? this.iocStore.detectType(value);
 
-    const result = this.iocStore.lookupIoCWithContext(
-      type,
-      value,
-      (ip) => this.db.countRelatedThreats(ip)
+    const result = this.iocStore.lookupIoCWithContext(type, value, (ip) =>
+      this.db.countRelatedThreats(ip)
     );
 
     this.sendJson(res, 200, { ok: true, data: result });
@@ -700,7 +693,7 @@ export class ThreatCloudServer {
     const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
     const rawGranularity = params.get('granularity') ?? 'day';
     const ALLOWED_GRANULARITIES = ['hour', 'day', 'week'] as const;
-    if (!ALLOWED_GRANULARITIES.includes(rawGranularity as typeof ALLOWED_GRANULARITIES[number])) {
+    if (!ALLOWED_GRANULARITIES.includes(rawGranularity as (typeof ALLOWED_GRANULARITIES)[number])) {
       this.sendJson(res, 400, { ok: false, error: 'granularity must be one of: hour, day, week' });
       return;
     }

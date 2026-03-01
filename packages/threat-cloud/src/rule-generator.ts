@@ -10,11 +10,7 @@
 
 import { createHash } from 'node:crypto';
 import type Database from 'better-sqlite3';
-import type {
-  DetectedPattern,
-  RuleGenerationResult,
-  RuleGeneratorConfig,
-} from './types.js';
+import type { DetectedPattern, RuleGenerationResult, RuleGeneratorConfig } from './types.js';
 
 /** MITRE technique → tactic mapping (simplified) */
 const TECHNIQUE_TACTIC_MAP: Record<string, string> = {
@@ -280,12 +276,7 @@ export class RuleGenerator {
            updated_at = datetime('now')
          WHERE pattern_hash = ?`
       )
-      .run(
-        pattern.occurrences,
-        pattern.distinctIPs,
-        pattern.lastSeen,
-        pattern.patternHash
-      );
+      .run(pattern.occurrences, pattern.distinctIPs, pattern.lastSeen, pattern.patternHash);
 
     // Also update the rule content
     const ruleId = `tc-auto-${pattern.patternHash}`;
@@ -301,11 +292,7 @@ export class RuleGenerator {
   }
 
   /** Generate Sigma YAML rule content */
-  private generateSigmaYaml(
-    pattern: DetectedPattern,
-    ruleId: string,
-    severity: string
-  ): string {
+  private generateSigmaYaml(pattern: DetectedPattern, ruleId: string, severity: string): string {
     const tags = pattern.mitreTechniques.map((t) => {
       const tactic = TECHNIQUE_TACTIC_MAP[t] ?? 'unknown';
       return `  - attack.${tactic}\n  - attack.${t.toLowerCase()}`;

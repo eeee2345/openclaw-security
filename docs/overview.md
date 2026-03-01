@@ -128,11 +128,11 @@ Auto-generate audit-ready compliance reports in 60 seconds.
 panguard report --framework iso27001
 ```
 
-| Framework | Controls | Languages |
-|-----------|----------|-----------|
+| Framework                        | Controls    | Languages  |
+| -------------------------------- | ----------- | ---------- |
 | Taiwan Cyber Security Act (TCSA) | 10 controls | EN + zh-TW |
-| ISO/IEC 27001:2022 | 30 controls | EN + zh-TW |
-| SOC 2 Trust Services | 10 controls | EN |
+| ISO/IEC 27001:2022               | 30 controls | EN + zh-TW |
+| SOC 2 Trust Services             | 10 controls | EN         |
 
 - Executive summary with security score
 - Control-by-control assessment
@@ -197,11 +197,11 @@ Best for: private enterprise deployment, community threat intelligence sharing.
 
 ### Three-Layer AI Funnel
 
-| Layer | Technology | Handles | Latency | Cost |
-|-------|-----------|---------|---------|------|
-| Layer 1 | Sigma/YARA rules engine | 90% | < 50ms | $0 |
-| Layer 2 | Local AI (Ollama) | 7% | ~2s | $0 |
-| Layer 3 | Cloud AI | 3% | ~5s | $0.008/call |
+| Layer   | Technology              | Handles | Latency | Cost        |
+| ------- | ----------------------- | ------- | ------- | ----------- |
+| Layer 1 | Sigma/YARA rules engine | 90%     | < 50ms  | $0          |
+| Layer 2 | Local AI (Ollama)       | 7%      | ~2s     | $0          |
+| Layer 3 | Cloud AI                | 3%      | ~5s     | $0.008/call |
 
 Cloud down? Local AI takes over. Local AI down? Rules engine keeps running. Protection never stops.
 
@@ -211,46 +211,46 @@ Cloud down? Local AI takes over. Local AI down? Rules engine keeps running. Prot
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| Language | TypeScript 5.7 (strict mode) |
-| Runtime | Node.js 20+ |
-| Monorepo | pnpm 10 workspaces |
-| Testing | Vitest 3 (1,326 tests) |
-| Rules | Sigma (3,149) + YARA (4,326) + Suricata + Falco |
-| AI | Ollama (local) + Claude / OpenAI (cloud) |
-| Auth | Google OAuth (PKCE) + scrypt hashing |
-| i18n | English + Traditional Chinese |
-| Encryption | AES-256-GCM |
+| Category   | Technology                                      |
+| ---------- | ----------------------------------------------- |
+| Language   | TypeScript 5.7 (strict mode)                    |
+| Runtime    | Node.js 20+                                     |
+| Monorepo   | pnpm 10 workspaces                              |
+| Testing    | Vitest 3 (1,326 tests)                          |
+| Rules      | Sigma (3,149) + YARA (4,326) + Suricata + Falco |
+| AI         | Ollama (local) + Claude / OpenAI (cloud)        |
+| Auth       | Google OAuth (PKCE) + scrypt hashing            |
+| i18n       | English + Traditional Chinese                   |
+| Encryption | AES-256-GCM                                     |
 
 ---
 
 ## Subscription Tiers
 
-| Feature | Community | Solo | Pro | Business |
-|---------|-----------|------|-----|----------|
-| Price | Free | $9/mo | $29/mo | $79/mo |
-| Machines | 1 | 3 | 10 | 25 |
-| Scan (unlimited) | v | v | v | v |
-| Guard (Layer 1) | v | v | v | v |
-| Guard (Full 3-layer) | - | v | v | v |
-| Chat notifications | - | v | v | v |
-| Local AI (Ollama) | - | v | v | v |
-| Cloud AI analysis | - | - | v | v |
-| Trap (8 honeypots) | - | - | v | v |
-| Compliance reports | - | - | v | v |
-| SIEM integration | - | - | - | v |
-| SSO & RBAC | - | - | - | v |
-| Dedicated support | - | - | - | v |
+| Feature              | Community | Solo  | Pro    | Business |
+| -------------------- | --------- | ----- | ------ | -------- |
+| Price                | Free      | $9/mo | $29/mo | $79/mo   |
+| Machines             | 1         | 3     | 10     | 25       |
+| Scan (unlimited)     | v         | v     | v      | v        |
+| Guard (Layer 1)      | v         | v     | v      | v        |
+| Guard (Full 3-layer) | -         | v     | v      | v        |
+| Chat notifications   | -         | v     | v      | v        |
+| Local AI (Ollama)    | -         | v     | v      | v        |
+| Cloud AI analysis    | -         | -     | v      | v        |
+| Trap (8 honeypots)   | -         | -     | v      | v        |
+| Compliance reports   | -         | -     | v      | v        |
+| SIEM integration     | -         | -     | -      | v        |
+| SSO & RBAC           | -         | -     | -      | v        |
+| Dedicated support    | -         | -     | -      | v        |
 
 **Compliance reports** available as one-time purchase on Pro+ plans:
 
-| Report | Price | Controls |
-|--------|-------|----------|
-| Taiwan TCSA | $299 | 50 |
-| ISO 27001 | $499 | 93 |
-| SOC 2 | $699 | 64 |
-| Bundle (all 3) | $999 | 207 |
+| Report         | Price | Controls |
+| -------------- | ----- | -------- |
+| Taiwan TCSA    | $299  | 50       |
+| ISO 27001      | $499  | 93       |
+| SOC 2          | $699  | 64       |
+| Bundle (all 3) | $999  | 207      |
 
 Annual billing: 20% discount on all plans.
 

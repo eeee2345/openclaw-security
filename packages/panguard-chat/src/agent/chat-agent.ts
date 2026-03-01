@@ -329,9 +329,7 @@ export class ChatAgent {
       }
       return null;
     } catch (err) {
-      logger.warn(
-        `LLM follow-up failed: ${err instanceof Error ? err.message : String(err)}`
-      );
+      logger.warn(`LLM follow-up failed: ${err instanceof Error ? err.message : String(err)}`);
       return null;
     }
   }
@@ -347,7 +345,8 @@ export class ChatAgent {
     // "What did you do?" / "Actions taken?"
     if (q.includes('做了') || q.includes('動作') || q.includes('did you') || q.includes('action')) {
       if (alert.actionsTaken && alert.actionsTaken.length > 0) {
-        const prefix = lang === 'zh-TW' ? '我已執行以下動作:' : 'I have taken the following actions:';
+        const prefix =
+          lang === 'zh-TW' ? '我已執行以下動作:' : 'I have taken the following actions:';
         return `${prefix}\n${alert.actionsTaken.map((a) => `- ${a}`).join('\n')}`;
       }
       return lang === 'zh-TW'
@@ -356,8 +355,15 @@ export class ChatAgent {
     }
 
     // "What should I do?" / "Recommendation?"
-    if (q.includes('建議') || q.includes('怎麼辦') || q.includes('should') || q.includes('recommend')) {
-      return lang === 'zh-TW' ? `建議: ${alert.recommendedAction}` : `Recommendation: ${alert.recommendedAction}`;
+    if (
+      q.includes('建議') ||
+      q.includes('怎麼辦') ||
+      q.includes('should') ||
+      q.includes('recommend')
+    ) {
+      return lang === 'zh-TW'
+        ? `建議: ${alert.recommendedAction}`
+        : `Recommendation: ${alert.recommendedAction}`;
     }
 
     // "Is it dangerous?" / "How serious?"
@@ -447,7 +453,10 @@ export class ChatAgent {
    * Send message with automatic retry on failure.
    * Failed messages are queued and retried with exponential backoff.
    */
-  private async sendMessageWithRetry(userId: string, message: FormattedMessage): Promise<ChannelResult> {
+  private async sendMessageWithRetry(
+    userId: string,
+    message: FormattedMessage
+  ): Promise<ChannelResult> {
     const result = await this.sendMessage(userId, message);
 
     if (!result.success) {

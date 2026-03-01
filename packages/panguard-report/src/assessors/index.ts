@@ -559,9 +559,7 @@ const CATEGORY_ASSESSORS: Record<string, () => Promise<ComplianceFinding[]>> = {
  * Run all assessments for a given framework's control categories.
  * Returns deduplicated findings.
  */
-export async function runAssessment(
-  controlCategories: string[]
-): Promise<ComplianceFinding[]> {
+export async function runAssessment(controlCategories: string[]): Promise<ComplianceFinding[]> {
   const allFindings: ComplianceFinding[] = [];
   const ranAssessors = new Set<string>();
 

@@ -128,7 +128,10 @@ describe('Integration Tests', () => {
     expect(autoRule!.ruleContent).toContain('brute_force');
 
     // Step 9: Update IoC reputation to make it appear in blocklist
-    dbWrapper.getDB().prepare('UPDATE iocs SET reputation_score = 85 WHERE normalized_value = ?').run('10.0.0.1');
+    dbWrapper
+      .getDB()
+      .prepare('UPDATE iocs SET reputation_score = 85 WHERE normalized_value = ?')
+      .run('10.0.0.1');
 
     // Step 10: Verify IP appears in blocklist
     const blocklist = feedDistributor.getIPBlocklist(70);
@@ -186,7 +189,8 @@ describe('Integration Tests', () => {
     expect(feed.entries.some((e) => e.value === '172.16.0.1')).toBe(true);
 
     // Step 5: Verify credentials stored
-    const creds = dbWrapper.getDB()
+    const creds = dbWrapper
+      .getDB()
       .prepare('SELECT * FROM trap_credentials WHERE enriched_threat_id = ?')
       .all(enrichedId!) as Array<{ username: string; attempt_count: number }>;
     expect(creds.length).toBe(2);
@@ -255,7 +259,9 @@ describe('Integration Tests', () => {
     expect(id2).toBeNull(); // duplicate
 
     const count = (
-      dbWrapper.getDB().prepare('SELECT COUNT(*) as count FROM enriched_threats').get() as { count: number }
+      dbWrapper.getDB().prepare('SELECT COUNT(*) as count FROM enriched_threats').get() as {
+        count: number;
+      }
     ).count;
     expect(count).toBe(1);
   });
@@ -274,7 +280,12 @@ describe('Integration Tests', () => {
     });
 
     // Make it old
-    dbWrapper.getDB().prepare("UPDATE iocs SET last_seen = '2020-01-01T00:00:00Z', updated_at = '2020-01-01T00:00:00Z'").run();
+    dbWrapper
+      .getDB()
+      .prepare(
+        "UPDATE iocs SET last_seen = '2020-01-01T00:00:00Z', updated_at = '2020-01-01T00:00:00Z'"
+      )
+      .run();
 
     const scheduler = new Scheduler(dbWrapper.getDB(), {
       reputationIntervalMs: 100_000,

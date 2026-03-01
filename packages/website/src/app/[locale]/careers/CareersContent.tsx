@@ -136,7 +136,10 @@ export default function CareersContent() {
         <SectionTitle
           overline={t('positions.overline')}
           title={t('positions.title')}
-          subtitle={t('positions.subtitle', { count: jobListings.length, departments: departments.length - 1 })}
+          subtitle={t('positions.subtitle', {
+            count: jobListings.length,
+            departments: departments.length - 1,
+          })}
         />
 
         {/* Department filter tabs */}

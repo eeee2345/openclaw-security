@@ -169,7 +169,13 @@ export function createWaitlistRoutes(ctx: RouteContext) {
     // Send welcome email with registration link
     if (config.smtp && config.baseUrl) {
       const locale = detectLocale(req.headers['accept-language']);
-      sendWelcomeEmail(config.smtp, entry.email, entry.name || 'there', config.baseUrl, locale).catch(() => {
+      sendWelcomeEmail(
+        config.smtp,
+        entry.email,
+        entry.name || 'there',
+        config.baseUrl,
+        locale
+      ).catch(() => {
         // Best-effort delivery
       });
     }

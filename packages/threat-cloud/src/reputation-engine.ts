@@ -94,9 +94,18 @@ export class ReputationEngine {
    */
   calculateForIoC(iocId: number): number {
     const ioc = this.db
-      .prepare('SELECT id, sightings, confidence, last_seen, type, normalized_value FROM iocs WHERE id = ?')
+      .prepare(
+        'SELECT id, sightings, confidence, last_seen, type, normalized_value FROM iocs WHERE id = ?'
+      )
       .get(iocId) as
-      | { id: number; sightings: number; confidence: number; last_seen: string; type: string; normalized_value: string }
+      | {
+          id: number;
+          sightings: number;
+          confidence: number;
+          last_seen: string;
+          type: string;
+          normalized_value: string;
+        }
       | undefined;
 
     if (!ioc) return 0;
@@ -175,7 +184,13 @@ export class ReputationEngine {
       .get(iocId) as { type: string; normalized_value: string } | undefined;
 
     if (!ioc) {
-      return { totalThreats: 0, severityCounts: {}, uniqueSources: 0, maxConfidence: 0, latestTimestamp: '' };
+      return {
+        totalThreats: 0,
+        severityCounts: {},
+        uniqueSources: 0,
+        maxConfidence: 0,
+        latestTimestamp: '',
+      };
     }
 
     // For IP-type IoCs, match against enriched_threats.attack_source_ip
@@ -215,6 +230,12 @@ export class ReputationEngine {
     }
 
     // For non-IP types, no associated threats (future: match by metadata)
-    return { totalThreats: 0, severityCounts: {}, uniqueSources: 0, maxConfidence: 0, latestTimestamp: '' };
+    return {
+      totalThreats: 0,
+      severityCounts: {},
+      uniqueSources: 0,
+      maxConfidence: 0,
+      latestTimestamp: '',
+    };
   }
 }

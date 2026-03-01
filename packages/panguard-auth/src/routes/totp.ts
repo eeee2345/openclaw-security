@@ -8,12 +8,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { verifyPassword } from '../auth.js';
 import { authenticateRequest } from '../middleware.js';
 import { logAuditEvent } from '@panguard-ai/security-hardening';
-import {
-  generateTotpSecret,
-  generateBackupCodes,
-  buildOtpauthUri,
-  verifyTotp,
-} from '../totp.js';
+import { generateTotpSecret, generateBackupCodes, buildOtpauthUri, verifyTotp } from '../totp.js';
 import type { RouteContext } from './shared.js';
 import { readBody, json } from './shared.js';
 
@@ -56,7 +51,8 @@ export function createTotpRoutes(ctx: RouteContext) {
         secret,
         otpauthUri,
         backupCodes,
-        message: 'Scan the QR code with your authenticator app, then verify with /api/auth/totp/verify.',
+        message:
+          'Scan the QR code with your authenticator app, then verify with /api/auth/totp/verify.',
       },
     });
   }

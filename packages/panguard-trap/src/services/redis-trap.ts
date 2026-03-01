@@ -20,11 +20,21 @@ const logger = createLogger('panguard-trap:service:redis');
 // RESP builder helpers
 // ---------------------------------------------------------------------------
 
-function respSimple(msg: string): string { return `+${msg}\r\n`; }
-function respError(msg: string): string { return `-${msg}\r\n`; }
-function respInt(n: number): string { return `:${n}\r\n`; }
-function respBulk(s: string): string { return `$${Buffer.byteLength(s)}\r\n${s}\r\n`; }
-function respNullBulk(): string { return '$-1\r\n'; }
+function respSimple(msg: string): string {
+  return `+${msg}\r\n`;
+}
+function respError(msg: string): string {
+  return `-${msg}\r\n`;
+}
+function respInt(n: number): string {
+  return `:${n}\r\n`;
+}
+function respBulk(s: string): string {
+  return `$${Buffer.byteLength(s)}\r\n${s}\r\n`;
+}
+function respNullBulk(): string {
+  return '$-1\r\n';
+}
 
 function respArray(items: string[]): string {
   let out = `*${items.length}\r\n`;
@@ -45,12 +55,18 @@ function parseRESP(buf: string): string[][] {
 
   while (i < lines.length) {
     const line = lines[i]!;
-    if (line.length === 0) { i++; continue; }
+    if (line.length === 0) {
+      i++;
+      continue;
+    }
 
     if (line.startsWith('*')) {
       // Multibulk
       const count = parseInt(line.slice(1), 10);
-      if (isNaN(count) || count < 0) { i++; continue; }
+      if (isNaN(count) || count < 0) {
+        i++;
+        continue;
+      }
 
       const args: string[] = [];
       i++;
@@ -86,16 +102,16 @@ function parseRESP(buf: string): string[][] {
 // ---------------------------------------------------------------------------
 
 const REDIS_MITRE_PATTERNS: [RegExp, string][] = [
-  [/CONFIG\s+SET\s+dir/i, 'T1059'],         // Arbitrary file write
+  [/CONFIG\s+SET\s+dir/i, 'T1059'], // Arbitrary file write
   [/CONFIG\s+SET\s+dbfilename/i, 'T1059'],
-  [/SLAVEOF|REPLICAOF/i, 'T1219'],           // Rogue server / C2
-  [/MODULE\s+LOAD/i, 'T1129'],               // Shared modules
-  [/EVAL.*os\.execute/i, 'T1059'],            // Lua RCE (CVE-2022-0543)
+  [/SLAVEOF|REPLICAOF/i, 'T1219'], // Rogue server / C2
+  [/MODULE\s+LOAD/i, 'T1129'], // Shared modules
+  [/EVAL.*os\.execute/i, 'T1059'], // Lua RCE (CVE-2022-0543)
   [/EVAL.*io\.popen/i, 'T1059'],
   [/EVAL.*loadlib/i, 'T1059'],
-  [/DEBUG\s+SET-ACTIVE-EXPIRE/i, 'T1499'],    // DoS
-  [/FLUSHALL|FLUSHDB/i, 'T1485'],             // Data destruction
-  [/BGSAVE|SAVE/i, 'T1005'],                  // Data access
+  [/DEBUG\s+SET-ACTIVE-EXPIRE/i, 'T1499'], // DoS
+  [/FLUSHALL|FLUSHDB/i, 'T1485'], // Data destruction
+  [/BGSAVE|SAVE/i, 'T1005'], // Data access
 ];
 
 // ---------------------------------------------------------------------------
@@ -193,7 +209,11 @@ export class RedisTrapService extends BaseTrapService {
         const delay = this.config.responseDelayMs ?? 30;
         const respond = (resp: string) => {
           setTimeout(() => {
-            try { socket.write(resp); } catch { /* closed */ }
+            try {
+              socket.write(resp);
+            } catch {
+              /* closed */
+            }
           }, delay);
         };
 
@@ -213,7 +233,11 @@ export class RedisTrapService extends BaseTrapService {
         }
 
         if (cmd === 'QUIT') {
-          try { socket.write(respSimple('OK')); } catch { /* */ }
+          try {
+            socket.write(respSimple('OK'));
+          } catch {
+            /* */
+          }
           socket.end();
           return;
         }
@@ -293,7 +317,11 @@ export class RedisTrapService extends BaseTrapService {
           } else if (sub === 'GETNAME') {
             respond(respNullBulk());
           } else if (sub === 'LIST') {
-            respond(respBulk(`id=1 addr=${remoteIP}:${remotePort} fd=8 name= age=0 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=client`));
+            respond(
+              respBulk(
+                `id=1 addr=${remoteIP}:${remotePort} fd=8 name= age=0 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=client`
+              )
+            );
           } else {
             respond(respSimple('OK'));
           }
@@ -316,7 +344,9 @@ export class RedisTrapService extends BaseTrapService {
         }
 
         if (cmd === 'SCAN') {
-          respond(`*2\r\n$1\r\n0\r\n${respArray(['session:abc123', 'cache:homepage', 'user:1001'])}`);
+          respond(
+            `*2\r\n$1\r\n0\r\n${respArray(['session:abc123', 'cache:homepage', 'user:1001'])}`
+          );
           continue;
         }
 

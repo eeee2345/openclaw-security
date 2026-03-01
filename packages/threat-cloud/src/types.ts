@@ -396,7 +396,12 @@ export interface AuditLogQuery {
 }
 
 /** Feed license info for compliance / Feed 授權資訊 */
-export type FeedLicense = 'public_domain' | 'cc0' | 'fair_use' | 'commercial_restricted' | 'unknown';
+export type FeedLicense =
+  | 'public_domain'
+  | 'cc0'
+  | 'fair_use'
+  | 'commercial_restricted'
+  | 'unknown';
 
 /** Source reliability mapping for known feeds / 已知 feed 的來源可靠度對映 */
 export interface FeedSourceConfig {

@@ -439,11 +439,9 @@ export class InvestigationEngine {
 
     // Extract correlation keys from the current event
     const eventIP =
-      (event.metadata?.['sourceIP'] as string) ??
-      (event.metadata?.['remoteAddress'] as string);
+      (event.metadata?.['sourceIP'] as string) ?? (event.metadata?.['remoteAddress'] as string);
     const eventUser =
-      (event.metadata?.['user'] as string) ??
-      (event.metadata?.['username'] as string);
+      (event.metadata?.['user'] as string) ?? (event.metadata?.['username'] as string);
     const eventProcess = event.metadata?.['processName'] as string;
 
     // Find related events in the time window (excluding the event itself)

@@ -135,7 +135,13 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
       { feature: 'Telegram', community: false, solo: true, pro: true, business: true },
       { feature: 'Slack', community: false, solo: false, pro: true, business: true },
       { feature: 'Webhook / API', community: false, solo: false, pro: false, business: true },
-      { feature: 'SIEM integration', community: false, solo: false, pro: false, business: 'Roadmap' },
+      {
+        feature: 'SIEM integration',
+        community: false,
+        solo: false,
+        pro: false,
+        business: 'Roadmap',
+      },
     ],
   },
   {
@@ -143,7 +149,13 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
     rows: [
       { feature: 'Community support', community: true, solo: true, pro: true, business: true },
       { feature: 'Priority support', community: false, solo: false, pro: true, business: true },
-      { feature: 'Dedicated manager', community: false, solo: false, pro: false, business: 'Roadmap' },
+      {
+        feature: 'Dedicated manager',
+        community: false,
+        solo: false,
+        pro: false,
+        business: 'Roadmap',
+      },
       {
         feature: 'Log retention',
         community: 'Session only',
@@ -152,7 +164,13 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
         business: '90 days+',
       },
       { feature: 'SSO & RBAC', community: false, solo: false, pro: false, business: 'Roadmap' },
-      { feature: 'On-premise option', community: false, solo: false, pro: false, business: 'Roadmap' },
+      {
+        feature: 'On-premise option',
+        community: false,
+        solo: false,
+        pro: false,
+        business: 'Roadmap',
+      },
       {
         feature: 'Machines',
         community: '1',
@@ -188,44 +206,53 @@ export default function PricingCards() {
     return `$${effective % 1 === 0 ? effective : effective.toFixed(2)}`;
   };
 
-  const handleCheckout = useCallback(async (tier: string) => {
-    setLoading(tier);
-    setCheckoutError(null);
-    try {
-      if (!authToken) {
-        window.location.href = `/login?redirect=/pricing`;
-        return;
-      }
+  const handleCheckout = useCallback(
+    async (tier: string) => {
+      setLoading(tier);
+      setCheckoutError(null);
+      try {
+        if (!authToken) {
+          window.location.href = `/login?redirect=/pricing`;
+          return;
+        }
 
-      const res = await fetch('/api/billing/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({ tier }),
-      });
-      const data = await res.json();
-      if (data.ok && data.data?.url) {
-        window.location.href = data.data.url;
-      } else if (res.status === 401) {
-        window.location.href = `/login?redirect=/pricing`;
-      } else {
-        setCheckoutError(data.error ?? t('checkoutUnavailable'));
+        const res = await fetch('/api/billing/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ tier }),
+        });
+        const data = await res.json();
+        if (data.ok && data.data?.url) {
+          window.location.href = data.data.url;
+        } else if (res.status === 401) {
+          window.location.href = `/login?redirect=/pricing`;
+        } else {
+          setCheckoutError(data.error ?? t('checkoutUnavailable'));
+        }
+      } catch {
+        setCheckoutError(t('connectionError'));
+      } finally {
+        setLoading(null);
       }
-    } catch {
-      setCheckoutError(t('connectionError'));
-    } finally {
-      setLoading(null);
-    }
-  }, [authToken]);
+    },
+    [authToken]
+  );
 
   return (
     <>
       {/* Checkout error */}
       {checkoutError && (
-        <div role="alert" className="max-w-xl mx-auto mb-6 bg-status-danger/10 border border-status-danger/20 rounded-xl px-5 py-3 flex items-center gap-3">
-          <X className="w-4 h-4 text-status-danger shrink-0 cursor-pointer" onClick={() => setCheckoutError(null)} />
+        <div
+          role="alert"
+          className="max-w-xl mx-auto mb-6 bg-status-danger/10 border border-status-danger/20 rounded-xl px-5 py-3 flex items-center gap-3"
+        >
+          <X
+            className="w-4 h-4 text-status-danger shrink-0 cursor-pointer"
+            onClick={() => setCheckoutError(null)}
+          />
           <p className="text-sm text-status-danger">{checkoutError}</p>
         </div>
       )}
@@ -355,51 +382,51 @@ export default function PricingCards() {
         <FadeInUp>
           <div className="relative mt-12">
             <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <table className="w-full min-w-[600px]">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left text-sm text-text-tertiary font-normal py-4 pr-4 w-[30%]" />
-                  {tierKeys.map((key) => (
-                    <th
-                      key={key}
-                      className={`text-center text-xs font-semibold uppercase tracking-wider py-4 ${
-                        key === 'pro' ? 'text-brand-sage' : 'text-text-muted'
-                      }`}
-                      style={{ width: `${70 / 4}%` }}
-                    >
-                      {t(`tierLabels.${key}`)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonCategories.map((cat) => (
-                  <Fragment key={cat.categoryKey}>
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="pt-8 pb-3 text-xs uppercase tracking-wider text-brand-sage font-semibold"
+              <table className="w-full min-w-[600px]">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left text-sm text-text-tertiary font-normal py-4 pr-4 w-[30%]" />
+                    {tierKeys.map((key) => (
+                      <th
+                        key={key}
+                        className={`text-center text-xs font-semibold uppercase tracking-wider py-4 ${
+                          key === 'pro' ? 'text-brand-sage' : 'text-text-muted'
+                        }`}
+                        style={{ width: `${70 / 4}%` }}
                       >
-                        {t(`comparisonCategories.${cat.categoryKey}`)}
-                      </td>
-                    </tr>
-                    {cat.rows.map((row) => (
-                      <tr key={row.feature} className="border-b border-border/50">
-                        <td className="py-3 pr-4 text-sm text-text-secondary">{row.feature}</td>
-                        {tierKeys.map((key) => (
-                          <td
-                            key={key}
-                            className={`py-3 text-center ${key === 'pro' ? 'bg-brand-sage/[0.03]' : ''}`}
-                          >
-                            <ComparisonCell value={row[key]} />
-                          </td>
-                        ))}
-                      </tr>
+                        {t(`tierLabels.${key}`)}
+                      </th>
                     ))}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonCategories.map((cat) => (
+                    <Fragment key={cat.categoryKey}>
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="pt-8 pb-3 text-xs uppercase tracking-wider text-brand-sage font-semibold"
+                        >
+                          {t(`comparisonCategories.${cat.categoryKey}`)}
+                        </td>
+                      </tr>
+                      {cat.rows.map((row) => (
+                        <tr key={row.feature} className="border-b border-border/50">
+                          <td className="py-3 pr-4 text-sm text-text-secondary">{row.feature}</td>
+                          {tierKeys.map((key) => (
+                            <td
+                              key={key}
+                              className={`py-3 text-center ${key === 'pro' ? 'bg-brand-sage/[0.03]' : ''}`}
+                            >
+                              <ComparisonCell value={row[key]} />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
             </div>
             {/* Mobile scroll hint */}
             <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-surface-0 to-transparent md:hidden" />

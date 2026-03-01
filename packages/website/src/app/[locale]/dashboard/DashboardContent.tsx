@@ -98,7 +98,9 @@ export default function DashboardContent() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Welcome */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-text-primary">{t('welcome', { name: user.name })}</h1>
+          <h1 className="text-2xl font-bold text-text-primary">
+            {t('welcome', { name: user.name })}
+          </h1>
           <p className="text-sm text-text-secondary mt-1">
             {t('planLabel')} <span className="text-brand-sage font-medium">{tierDisplay}</span>
             {user.planExpiresAt && (
@@ -156,7 +158,12 @@ export default function DashboardContent() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {usage.map((item) => (
-                <UsageMeter key={item.resource} item={item} unlimitedLabel={t('unlimited')} resourceLabel={t(`resources.${item.resource}` as 'resources.scan')} />
+                <UsageMeter
+                  key={item.resource}
+                  item={item}
+                  unlimitedLabel={t('unlimited')}
+                  resourceLabel={t(`resources.${item.resource}` as 'resources.scan')}
+                />
               ))}
             </div>
           )}
@@ -168,9 +175,7 @@ export default function DashboardContent() {
             <Shield className="w-8 h-8 text-brand-sage shrink-0 mt-0.5" />
             <div>
               <h3 className="font-semibold text-text-primary">{t('quickStartHeading')}</h3>
-              <p className="text-sm text-text-secondary mt-1">
-                {t('quickStartDescription')}
-              </p>
+              <p className="text-sm text-text-secondary mt-1">{t('quickStartDescription')}</p>
               <code className="inline-block mt-3 bg-surface-0 border border-border rounded-lg px-4 py-2 font-mono text-sm text-brand-sage">
                 curl -fsSL https://panguard.ai/install | bash
               </code>
@@ -207,7 +212,15 @@ function QuickAction({
   );
 }
 
-function UsageMeter({ item, unlimitedLabel, resourceLabel }: { item: UsageItem; unlimitedLabel: string; resourceLabel: string }) {
+function UsageMeter({
+  item,
+  unlimitedLabel,
+  resourceLabel,
+}: {
+  item: UsageItem;
+  unlimitedLabel: string;
+  resourceLabel: string;
+}) {
   const isUnlimited = item.limit === -1;
   const percentage = isUnlimited ? 0 : item.percentage;
   const barColor =

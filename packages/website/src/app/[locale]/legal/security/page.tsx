@@ -35,8 +35,8 @@ export default function SecurityWhitepaperPage() {
           <p>
             Panguard operates on enterprise-grade cloud infrastructure (hosted on providers that
             maintain their own SOC 2 Type II certification) with multi-region deployment across
-            Asia-Pacific, North America, and Europe. Our own SOC 2 Type II certification is currently
-            in progress, with completion expected in Q3 2026. Our infrastructure is
+            Asia-Pacific, North America, and Europe. Our own SOC 2 Type II certification is
+            currently in progress, with completion expected in Q3 2026. Our infrastructure is
             provisioned using infrastructure as code (IaC) with automated security scanning at every
             deployment stage. All production systems run on hardened, minimal operating system
             images with automatic patching enabled.
@@ -205,17 +205,22 @@ export default function SecurityWhitepaperPage() {
             <div className="p-3 bg-surface-1 border border-border rounded-lg">
               <div className="flex items-center gap-2">
                 <p className="font-medium text-text-primary">SOC 2 Type II</p>
-                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] border border-[#f59e0b]/20">In Progress</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] border border-[#f59e0b]/20">
+                  In Progress
+                </span>
               </div>
               <p className="mt-1 text-text-tertiary">
                 Audit in progress covering security, availability, and confidentiality trust service
-                criteria. Expected completion: Q3 2026. Reports will be available to customers under NDA upon completion.
+                criteria. Expected completion: Q3 2026. Reports will be available to customers under
+                NDA upon completion.
               </p>
             </div>
             <div className="p-3 bg-surface-1 border border-border rounded-lg">
               <div className="flex items-center gap-2">
                 <p className="font-medium text-text-primary">ISO 27001</p>
-                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-text-muted/10 text-text-muted border border-border">Planned</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-text-muted/10 text-text-muted border border-border">
+                  Planned
+                </span>
               </div>
               <p className="mt-1 text-text-tertiary">
                 Information security management system (ISMS) certification planned following SOC 2
@@ -258,7 +263,9 @@ export default function SecurityWhitepaperPage() {
               confidentiality controls is currently underway, with completion expected in Q3 2026
             </li>
             <li>
-              <strong className="text-text-primary">ISO 27001 Certification Audit (Planned):</strong>{' '}
+              <strong className="text-text-primary">
+                ISO 27001 Certification Audit (Planned):
+              </strong>{' '}
               Certification and surveillance audits by an accredited certification body are planned
               following SOC 2 completion
             </li>

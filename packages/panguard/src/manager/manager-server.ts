@@ -431,7 +431,10 @@ export class ManagerServer {
   }
 
   /** Recursively collect rule files from a directory */
-  private collectRuleFiles(dir: string, ext: string): { name: string; path: string; sizeBytes: number }[] {
+  private collectRuleFiles(
+    dir: string,
+    ext: string
+  ): { name: string; path: string; sizeBytes: number }[] {
     const results: { name: string; path: string; sizeBytes: number }[] = [];
 
     const walk = (currentDir: string): void => {

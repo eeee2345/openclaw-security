@@ -22,7 +22,11 @@ describe('SightingStore', () => {
 
   afterEach(() => {
     dbWrapper.close();
-    try { rmSync(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   });
 
   function createTestIoC(value = '10.0.0.1') {

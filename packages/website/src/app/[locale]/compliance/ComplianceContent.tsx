@@ -230,7 +230,9 @@ export default function ComplianceContent() {
           <FadeInUp delay={0.15}>
             <div className="bg-surface-2 rounded-xl border border-border overflow-hidden">
               <div className="bg-surface-3 px-4 py-3 border-b border-border">
-                <span className="text-sm font-semibold text-text-primary">{t('reports.availableReports')}</span>
+                <span className="text-sm font-semibold text-text-primary">
+                  {t('reports.availableReports')}
+                </span>
               </div>
               <div className="divide-y divide-border">
                 {reportTypes.map((report) => (
@@ -245,9 +247,7 @@ export default function ComplianceContent() {
                           {report.name}
                         </p>
                         {report.controls && (
-                          <p className="text-[11px] text-text-muted">
-                            {report.controls} controls
-                          </p>
+                          <p className="text-[11px] text-text-muted">{report.controls} controls</p>
                         )}
                       </div>
                     </div>
@@ -275,39 +275,41 @@ export default function ComplianceContent() {
           </FadeInUp>
           <FadeInUp delay={0.1}>
             <div className="overflow-x-auto">
-            <div className="bg-surface-1 rounded-xl border border-border overflow-hidden min-w-[480px]">
-              <div className="grid grid-cols-3 text-center text-xs font-semibold text-text-muted uppercase tracking-wider border-b border-border">
-                <div className="p-3"></div>
-                <div className="p-3 border-l border-border">{t('costComparison.consultant')}</div>
-                <div className="p-3 border-l border-border text-brand-sage">{t('costComparison.panguard')}</div>
-              </div>
-              {costRows.map((row, i) => {
-                const label =
-                  'labelKey' in row ? t(`costComparison.${row.labelKey}.label`) : row.label;
-                const consultant =
-                  'labelKey' in row
-                    ? t(`costComparison.${row.labelKey}.consultant`)
-                    : row.consultant;
-                const panguard =
-                  'labelKey' in row ? t(`costComparison.${row.labelKey}.panguard`) : row.panguard;
-                return (
-                  <div
-                    key={label}
-                    className={`grid grid-cols-3 text-sm ${
-                      i < costRows.length - 1 ? 'border-b border-border' : ''
-                    }`}
-                  >
-                    <div className="p-3 text-text-primary font-medium">{label}</div>
-                    <div className="p-3 text-text-tertiary border-l border-border">
-                      {consultant}
-                    </div>
-                    <div className="p-3 text-brand-sage font-semibold border-l border-border">
-                      {panguard}
-                    </div>
+              <div className="bg-surface-1 rounded-xl border border-border overflow-hidden min-w-[480px]">
+                <div className="grid grid-cols-3 text-center text-xs font-semibold text-text-muted uppercase tracking-wider border-b border-border">
+                  <div className="p-3"></div>
+                  <div className="p-3 border-l border-border">{t('costComparison.consultant')}</div>
+                  <div className="p-3 border-l border-border text-brand-sage">
+                    {t('costComparison.panguard')}
                   </div>
-                );
-              })}
-            </div>
+                </div>
+                {costRows.map((row, i) => {
+                  const label =
+                    'labelKey' in row ? t(`costComparison.${row.labelKey}.label`) : row.label;
+                  const consultant =
+                    'labelKey' in row
+                      ? t(`costComparison.${row.labelKey}.consultant`)
+                      : row.consultant;
+                  const panguard =
+                    'labelKey' in row ? t(`costComparison.${row.labelKey}.panguard`) : row.panguard;
+                  return (
+                    <div
+                      key={label}
+                      className={`grid grid-cols-3 text-sm ${
+                        i < costRows.length - 1 ? 'border-b border-border' : ''
+                      }`}
+                    >
+                      <div className="p-3 text-text-primary font-medium">{label}</div>
+                      <div className="p-3 text-text-tertiary border-l border-border">
+                        {consultant}
+                      </div>
+                      <div className="p-3 text-brand-sage font-semibold border-l border-border">
+                        {panguard}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </FadeInUp>
         </div>

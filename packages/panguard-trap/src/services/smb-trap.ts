@@ -73,16 +73,16 @@ function buildSMB2Header(
 ): Buffer {
   const header = Buffer.alloc(64);
 
-  SMB2_MAGIC.copy(header, 0);          // ProtocolId
-  writeUint16LE(header, 4, 64);        // StructureSize
-  writeUint16LE(header, 6, 0);         // CreditCharge
-  writeUint32LE(header, 8, status);    // Status
-  writeUint16LE(header, 12, command);  // Command
-  writeUint16LE(header, 14, 1);        // CreditResponse
-  writeUint32LE(header, 16, 0);        // Flags
-  writeUint32LE(header, 20, 0);        // NextCommand
+  SMB2_MAGIC.copy(header, 0); // ProtocolId
+  writeUint16LE(header, 4, 64); // StructureSize
+  writeUint16LE(header, 6, 0); // CreditCharge
+  writeUint32LE(header, 8, status); // Status
+  writeUint16LE(header, 12, command); // Command
+  writeUint16LE(header, 14, 1); // CreditResponse
+  writeUint32LE(header, 16, 0); // Flags
+  writeUint32LE(header, 20, 0); // NextCommand
   header.writeBigUInt64LE(messageId, 24); // MessageId
-  writeUint32LE(header, 36, 0xfffffffe);  // TreeId (0xFFFFFFFE for some cmds)
+  writeUint32LE(header, 36, 0xfffffffe); // TreeId (0xFFFFFFFE for some cmds)
   header.writeBigUInt64LE(sessionId, 40); // SessionId
 
   return header;
@@ -92,10 +92,10 @@ function buildSMB2Header(
 function buildNegotiateResponse(messageId: bigint): Buffer {
   // Minimal Negotiate Response (65 bytes body)
   const body = Buffer.alloc(65);
-  writeUint16LE(body, 0, 65);         // StructureSize
-  writeUint16LE(body, 2, 0);          // SecurityMode (signing enabled)
-  writeUint16LE(body, 4, 0x0311);     // DialectRevision: SMB 3.1.1
-  writeUint16LE(body, 6, 0);          // NegotiateContextCount
+  writeUint16LE(body, 0, 65); // StructureSize
+  writeUint16LE(body, 2, 0); // SecurityMode (signing enabled)
+  writeUint16LE(body, 4, 0x0311); // DialectRevision: SMB 3.1.1
+  writeUint16LE(body, 6, 0); // NegotiateContextCount
 
   // Server GUID (16 bytes random-ish)
   const guid = Buffer.from('PANGUARD-AI-SMB2', 'ascii');
@@ -108,11 +108,11 @@ function buildNegotiateResponse(messageId: bigint): Buffer {
 
   // SystemTime (Windows FILETIME) - approximate current time
   const now = BigInt(Date.now()) * 10000n + 116444736000000000n;
-  body.writeBigUInt64LE(now, 40);      // SystemTime
-  body.writeBigUInt64LE(now, 48);      // ServerStartTime
+  body.writeBigUInt64LE(now, 40); // SystemTime
+  body.writeBigUInt64LE(now, 48); // ServerStartTime
 
-  writeUint16LE(body, 56, 0);         // SecurityBufferOffset
-  writeUint16LE(body, 58, 0);         // SecurityBufferLength
+  writeUint16LE(body, 56, 0); // SecurityBufferOffset
+  writeUint16LE(body, 58, 0); // SecurityBufferLength
 
   const header = buildSMB2Header(SMB2_NEGOTIATE, STATUS_SUCCESS, messageId, 0n);
   return wrapNetBIOS(Buffer.concat([header, body]));
@@ -126,11 +126,11 @@ function buildNTLMSSPChallenge(): Buffer {
   // NTLMSSP header
   NTLMSSP_SIGNATURE.copy(challenge, 0);
   writeUint32LE(challenge, 8, NTLMSSP_CHALLENGE); // MessageType
-  writeUint16LE(challenge, 12, target.length);     // TargetNameLen
-  writeUint16LE(challenge, 14, target.length);     // TargetNameMaxLen
-  writeUint32LE(challenge, 16, 32 + 24);           // TargetNameOffset (after fixed fields)
+  writeUint16LE(challenge, 12, target.length); // TargetNameLen
+  writeUint16LE(challenge, 14, target.length); // TargetNameMaxLen
+  writeUint32LE(challenge, 16, 32 + 24); // TargetNameOffset (after fixed fields)
 
-  writeUint32LE(challenge, 20, 0x00028233);        // NegotiateFlags
+  writeUint32LE(challenge, 20, 0x00028233); // NegotiateFlags
 
   // Server Challenge (8 bytes)
   const serverChallenge = Buffer.from('12345678', 'ascii');
@@ -138,8 +138,8 @@ function buildNTLMSSPChallenge(): Buffer {
 
   // Minimal TargetInfo
   const targetInfo = Buffer.alloc(4); // MsvAvEOL
-  writeUint16LE(targetInfo, 0, 0);    // AvId: MsvAvEOL
-  writeUint16LE(targetInfo, 2, 0);    // AvLen
+  writeUint16LE(targetInfo, 0, 0); // AvId: MsvAvEOL
+  writeUint16LE(targetInfo, 2, 0); // AvLen
 
   return Buffer.concat([challenge, target, targetInfo]);
 }
@@ -153,10 +153,10 @@ function buildSessionSetupChallengeResponse(messageId: bigint, sessionId: bigint
   const securityBuffer = ntlmChallenge;
 
   const body = Buffer.alloc(9 + securityBuffer.length);
-  writeUint16LE(body, 0, 9);                       // StructureSize
-  writeUint16LE(body, 2, 0);                        // SessionFlags
-  writeUint16LE(body, 4, 64 + 9);                   // SecurityBufferOffset (header + body start)
-  writeUint16LE(body, 6, securityBuffer.length);     // SecurityBufferLength
+  writeUint16LE(body, 0, 9); // StructureSize
+  writeUint16LE(body, 2, 0); // SessionFlags
+  writeUint16LE(body, 4, 64 + 9); // SecurityBufferOffset (header + body start)
+  writeUint16LE(body, 6, securityBuffer.length); // SecurityBufferLength
   securityBuffer.copy(body, 8);
 
   const header = buildSMB2Header(SMB2_SESSION_SETUP, STATUS_MORE_PROCESSING, messageId, sessionId);
@@ -184,12 +184,16 @@ function parseNTLMSSPAuth(data: Buffer): { domain: string; username: string } | 
     // Domain name: offset at ntlmIdx+28 (4 bytes)
     const domainLen = data.readUInt16LE(ntlmIdx + 28);
     const domainOff = data.readUInt32LE(ntlmIdx + 32);
-    const domain = data.subarray(ntlmIdx + domainOff, ntlmIdx + domainOff + domainLen).toString('utf16le');
+    const domain = data
+      .subarray(ntlmIdx + domainOff, ntlmIdx + domainOff + domainLen)
+      .toString('utf16le');
 
     // User name: offset at ntlmIdx+36
     const userLen = data.readUInt16LE(ntlmIdx + 36);
     const userOff = data.readUInt32LE(ntlmIdx + 40);
-    const username = data.subarray(ntlmIdx + userOff, ntlmIdx + userOff + userLen).toString('utf16le');
+    const username = data
+      .subarray(ntlmIdx + userOff, ntlmIdx + userOff + userLen)
+      .toString('utf16le');
 
     return { domain, username };
   } catch {
@@ -266,7 +270,9 @@ export class SMBTrapService extends BaseTrapService {
         const msgId = isSMB2 ? payload.readBigUInt64LE(24) : 0n;
         try {
           socket.write(buildNegotiateResponse(msgId));
-        } catch { /* */ }
+        } catch {
+          /* */
+        }
         authPhase = 'negotiate';
 
         // If it's an SMB2 Negotiate, wait for Session Setup
@@ -295,7 +301,9 @@ export class SMBTrapService extends BaseTrapService {
             // Send NTLMSSP Challenge
             try {
               socket.write(buildSessionSetupChallengeResponse(msgId, sessionIdSMB));
-            } catch { /* */ }
+            } catch {
+              /* */
+            }
             authPhase = 'challenge_sent';
             return;
           }
@@ -306,7 +314,9 @@ export class SMBTrapService extends BaseTrapService {
             authAttempts++;
 
             const username = creds
-              ? (creds.domain ? `${creds.domain}\\${creds.username}` : creds.username)
+              ? creds.domain
+                ? `${creds.domain}\\${creds.username}`
+                : creds.username
               : 'unknown';
 
             this.recordCredential(session.sessionId, username, '***NTLM***', authAttempts >= 3);
@@ -317,16 +327,25 @@ export class SMBTrapService extends BaseTrapService {
               authPhase = 'authenticated';
               this.addMitreTechnique(session.sessionId, 'T1078');
               // Send success (but limited access)
-              const successHeader = buildSMB2Header(SMB2_SESSION_SETUP, STATUS_SUCCESS, msgId, sessionIdSMB);
+              const successHeader = buildSMB2Header(
+                SMB2_SESSION_SETUP,
+                STATUS_SUCCESS,
+                msgId,
+                sessionIdSMB
+              );
               const successBody = Buffer.alloc(9);
               writeUint16LE(successBody, 0, 9);
               try {
                 socket.write(wrapNetBIOS(Buffer.concat([successHeader, successBody])));
-              } catch { /* */ }
+              } catch {
+                /* */
+              }
             } else {
               try {
                 socket.write(buildSessionSetupFailure(msgId, sessionIdSMB));
-              } catch { /* */ }
+              } catch {
+                /* */
+              }
               authPhase = 'denied';
             }
             return;
@@ -336,7 +355,9 @@ export class SMBTrapService extends BaseTrapService {
         // No NTLMSSP found - send challenge anyway
         try {
           socket.write(buildSessionSetupChallengeResponse(msgId, sessionIdSMB));
-        } catch { /* */ }
+        } catch {
+          /* */
+        }
         authPhase = 'challenge_sent';
         return;
       }
@@ -347,15 +368,17 @@ export class SMBTrapService extends BaseTrapService {
 
         // Minimal Tree Connect Response
         const treeBody = Buffer.alloc(16);
-        writeUint16LE(treeBody, 0, 16);   // StructureSize
-        treeBody[2] = 0x01;                // ShareType: Disk
+        writeUint16LE(treeBody, 0, 16); // StructureSize
+        treeBody[2] = 0x01; // ShareType: Disk
         writeUint32LE(treeBody, 4, 0x00100081); // ShareFlags
         writeUint32LE(treeBody, 8, 0x001f01ff); // Capabilities
 
         const treeHeader = buildSMB2Header(SMB2_TREE_CONNECT, STATUS_SUCCESS, msgId, sessionIdSMB);
         try {
           socket.write(wrapNetBIOS(Buffer.concat([treeHeader, treeBody])));
-        } catch { /* */ }
+        } catch {
+          /* */
+        }
         return;
       }
 
@@ -365,7 +388,9 @@ export class SMBTrapService extends BaseTrapService {
         const closeHeader = buildSMB2Header(command, STATUS_SUCCESS, msgId, sessionIdSMB);
         try {
           socket.write(wrapNetBIOS(Buffer.concat([closeHeader, closeBody])));
-        } catch { /* */ }
+        } catch {
+          /* */
+        }
         if (command === SMB2_LOGOFF) {
           socket.end();
         }
@@ -378,7 +403,9 @@ export class SMBTrapService extends BaseTrapService {
       writeUint16LE(denyBody, 0, 9);
       try {
         socket.write(wrapNetBIOS(Buffer.concat([denyHeader, denyBody])));
-      } catch { /* */ }
+      } catch {
+        /* */
+      }
     });
 
     socket.on('timeout', () => {

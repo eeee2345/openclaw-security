@@ -62,10 +62,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="contact-name" className="block text-xs text-text-tertiary mb-1.5">
@@ -112,10 +109,7 @@ export default function ContactForm() {
           />
         </div>
         <div>
-          <label
-            htmlFor="contact-inquiry-type"
-            className="block text-xs text-text-tertiary mb-1.5"
-          >
+          <label htmlFor="contact-inquiry-type" className="block text-xs text-text-tertiary mb-1.5">
             {t('labels.inquiryType')}
           </label>
           <select

@@ -29,9 +29,16 @@ describe('QueryHandlers', () => {
     }
   });
 
-  function insertEvents(count: number, overrides: Partial<{
-    ip: string; attackType: string; technique: string; region: string; severity: string;
-  }> = {}) {
+  function insertEvents(
+    count: number,
+    overrides: Partial<{
+      ip: string;
+      attackType: string;
+      technique: string;
+      region: string;
+      severity: string;
+    }> = {}
+  ) {
     const baseTime = new Date();
     for (let i = 0; i < count; i++) {
       dbWrapper.insertEnrichedThreat(

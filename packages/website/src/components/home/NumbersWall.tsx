@@ -16,9 +16,27 @@ import {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const statIcons = [ShieldIcon, ScanIcon, CheckIcon, MonitorIcon, ShieldIcon, BlockIcon, NetworkIcon, LockIcon];
+const statIcons = [
+  ShieldIcon,
+  ScanIcon,
+  CheckIcon,
+  MonitorIcon,
+  ShieldIcon,
+  BlockIcon,
+  NetworkIcon,
+  LockIcon,
+];
 const statValues = [3155, 5895, 216, 1327, 3, 6, 8, 'MIT'];
-const statKeys = ['sigmaRules', 'yaraRules', 'controls', 'tests', 'layers', 'actions', 'protocols', 'mit'] as const;
+const statKeys = [
+  'sigmaRules',
+  'yaraRules',
+  'controls',
+  'tests',
+  'layers',
+  'actions',
+  'protocols',
+  'mit',
+] as const;
 
 export default function NumbersWall() {
   const t = useTranslations('home.numbersWall');
@@ -37,9 +55,7 @@ export default function NumbersWall() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
             {t('title')}
           </h2>
-          <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
-            {t('subtitle')}
-          </p>
+          <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">{t('subtitle')}</p>
         </motion.div>
 
         {/* Stats grid */}
@@ -84,7 +100,9 @@ export default function NumbersWall() {
           {(['openSource', 'security', 'privacy'] as const).map((key, i) => (
             <FadeInUp key={key} delay={0.6 + i * 0.08}>
               <div className="bg-surface-1/50 border border-border rounded-2xl p-5">
-                <h3 className="text-base font-bold text-text-primary mb-2">{t(`trust.${key}.title`)}</h3>
+                <h3 className="text-base font-bold text-text-primary mb-2">
+                  {t(`trust.${key}.title`)}
+                </h3>
                 <p className="text-sm text-gray-400 leading-relaxed">{t(`trust.${key}.desc`)}</p>
               </div>
             </FadeInUp>

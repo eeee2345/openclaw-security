@@ -51,10 +51,9 @@ export default function BlogContent() {
         const data = (await res.json()) as { ok: boolean; data?: BlogPost[] };
         if (data.ok && data.data && data.data.length > 0) {
           const jsonSlugs = new Set(data.data.map((p) => p.slug));
-          const merged = [
-            ...data.data,
-            ...staticPosts.filter((p) => !jsonSlugs.has(p.slug)),
-          ].sort((a, b) => b.date.localeCompare(a.date));
+          const merged = [...data.data, ...staticPosts.filter((p) => !jsonSlugs.has(p.slug))].sort(
+            (a, b) => b.date.localeCompare(a.date)
+          );
           setAllPosts(merged);
         }
       } catch {

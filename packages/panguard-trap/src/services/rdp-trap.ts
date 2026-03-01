@@ -70,16 +70,19 @@ function buildConnectionConfirm(requestedProtocol: number): Buffer {
   let pos = 0;
 
   // X.224 Connection Confirm
-  x224[pos++] = x224Len - 1;         // Length indicator (excluding itself)
+  x224[pos++] = x224Len - 1; // Length indicator (excluding itself)
   x224[pos++] = X224_CONNECTION_CONFIRM; // CC
-  x224[pos++] = 0x00; x224[pos++] = 0x00; // DST-REF
-  x224[pos++] = 0x00; x224[pos++] = 0x00; // SRC-REF
-  x224[pos++] = 0x00;                // Class/Options
+  x224[pos++] = 0x00;
+  x224[pos++] = 0x00; // DST-REF
+  x224[pos++] = 0x00;
+  x224[pos++] = 0x00; // SRC-REF
+  x224[pos++] = 0x00; // Class/Options
 
   // RDP Negotiation Response
   x224[pos++] = TYPE_RDP_NEG_RSP;
-  x224[pos++] = 0x00;                // Flags
-  x224[pos++] = 0x08; x224[pos++] = 0x00; // Length (8)
+  x224[pos++] = 0x00; // Flags
+  x224[pos++] = 0x08;
+  x224[pos++] = 0x00; // Length (8)
   x224[pos++] = selectedProtocol & 0xff;
   x224[pos++] = (selectedProtocol >> 8) & 0xff;
   x224[pos++] = (selectedProtocol >> 16) & 0xff;
@@ -104,13 +107,16 @@ function buildNegFailure(failureCode: number): Buffer {
 
   x224[pos++] = x224Len - 1;
   x224[pos++] = X224_CONNECTION_CONFIRM;
-  x224[pos++] = 0x00; x224[pos++] = 0x00;
-  x224[pos++] = 0x00; x224[pos++] = 0x00;
+  x224[pos++] = 0x00;
+  x224[pos++] = 0x00;
+  x224[pos++] = 0x00;
+  x224[pos++] = 0x00;
   x224[pos++] = 0x00;
 
   x224[pos++] = TYPE_RDP_NEG_FAILURE;
   x224[pos++] = 0x00;
-  x224[pos++] = 0x08; x224[pos++] = 0x00;
+  x224[pos++] = 0x08;
+  x224[pos++] = 0x00;
   x224[pos++] = failureCode & 0xff;
   x224[pos++] = (failureCode >> 8) & 0xff;
   x224[pos++] = (failureCode >> 16) & 0xff;
@@ -136,7 +142,11 @@ function parseConnectionRequest(data: Buffer): {
   username: string | null;
   requestedProtocol: number;
 } {
-  const result = { cookie: null as string | null, username: null as string | null, requestedProtocol: 0 };
+  const result = {
+    cookie: null as string | null,
+    username: null as string | null,
+    requestedProtocol: 0,
+  };
 
   if (data.length < 11) return result;
 
@@ -157,7 +167,11 @@ function parseConnectionRequest(data: Buffer): {
   // Look for RDP Negotiation Request at the end
   // Find TYPE_RDP_NEG_REQ byte
   for (let i = remaining.length - 8; i >= 0; i--) {
-    if (remaining[i] === TYPE_RDP_NEG_REQ && remaining[i + 2] === 0x08 && remaining[i + 3] === 0x00) {
+    if (
+      remaining[i] === TYPE_RDP_NEG_REQ &&
+      remaining[i + 2] === 0x08 &&
+      remaining[i + 3] === 0x00
+    ) {
       result.requestedProtocol = remaining.readUInt32LE(i + 4);
       break;
     }
@@ -236,9 +250,14 @@ export class RDPTrapService extends BaseTrapService {
 
         if (parsed.username) {
           this.recordCredential(session.sessionId, parsed.username, '***RDP_COOKIE***', false);
-          this.recordEvent(session.sessionId, 'authentication_attempt', `RDP cookie: ${parsed.username}`, {
-            cookie: parsed.cookie,
-          });
+          this.recordEvent(
+            session.sessionId,
+            'authentication_attempt',
+            `RDP cookie: ${parsed.username}`,
+            {
+              cookie: parsed.cookie,
+            }
+          );
         }
 
         this.recordCommand(session.sessionId, `X224_CR protocol=${parsed.requestedProtocol}`);
@@ -269,10 +288,15 @@ export class RDPTrapService extends BaseTrapService {
 
       if (phase === 'tls') {
         // Client will send TLS ClientHello or CredSSP NTLM
-        this.recordEvent(session.sessionId, 'authentication_attempt', 'TLS/CredSSP handshake data', {
-          dataLength: data.length,
-          firstBytes: data.subarray(0, 16).toString('hex'),
-        });
+        this.recordEvent(
+          session.sessionId,
+          'authentication_attempt',
+          'TLS/CredSSP handshake data',
+          {
+            dataLength: data.length,
+            firstBytes: data.subarray(0, 16).toString('hex'),
+          }
+        );
 
         // Check for NTLMSSP in CredSSP
         const ntlmIdx = data.indexOf(Buffer.from('NTLMSSP\0', 'ascii'));
@@ -286,11 +310,15 @@ export class RDPTrapService extends BaseTrapService {
             try {
               const userLen = data.readUInt16LE(ntlmIdx + 36);
               const userOff = data.readUInt32LE(ntlmIdx + 40);
-              const username = data.subarray(ntlmIdx + userOff, ntlmIdx + userOff + userLen).toString('utf16le');
+              const username = data
+                .subarray(ntlmIdx + userOff, ntlmIdx + userOff + userLen)
+                .toString('utf16le');
 
               const domainLen = data.readUInt16LE(ntlmIdx + 28);
               const domainOff = data.readUInt32LE(ntlmIdx + 32);
-              const domain = data.subarray(ntlmIdx + domainOff, ntlmIdx + domainOff + domainLen).toString('utf16le');
+              const domain = data
+                .subarray(ntlmIdx + domainOff, ntlmIdx + domainOff + domainLen)
+                .toString('utf16le');
 
               const fullUser = domain ? `${domain}\\${username}` : username;
               this.recordCredential(session.sessionId, fullUser, '***NTLM_RDP***', false);
@@ -304,7 +332,11 @@ export class RDPTrapService extends BaseTrapService {
         if (dataCount > 5) {
           phase = 'post_tls';
           setTimeout(() => {
-            try { socket.end(); } catch { /* */ }
+            try {
+              socket.end();
+            } catch {
+              /* */
+            }
           }, 500);
         }
         return;

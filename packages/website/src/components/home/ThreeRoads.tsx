@@ -7,7 +7,15 @@ import { Link } from '@/navigation';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const rowKeys = ['setup', 'cost', 'monitoring', 'response', 'learning', 'compliance', 'scales'] as const;
+const rowKeys = [
+  'setup',
+  'cost',
+  'monitoring',
+  'response',
+  'learning',
+  'compliance',
+  'scales',
+] as const;
 
 function CellValue({ value }: { value: string }) {
   if (value === 'yes') return <Check className="w-4 h-4 text-panguard-green mx-auto" />;
@@ -29,12 +37,8 @@ export default function ThreeRoads() {
           transition={{ duration: 0.5, ease }}
           className="text-center mb-10"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
-            {t('title')}
-          </h2>
-          <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
-            {t('subtitle')}
-          </p>
+          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">{t('title')}</h2>
+          <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">{t('subtitle')}</p>
         </motion.div>
 
         {/* Comparison table - desktop */}
@@ -62,7 +66,10 @@ export default function ThreeRoads() {
             </thead>
             <tbody>
               {rowKeys.map((key) => (
-                <tr key={key} className="border-b border-gray-800/50 hover:bg-white/[0.02] transition-colors">
+                <tr
+                  key={key}
+                  className="border-b border-gray-800/50 hover:bg-white/[0.02] transition-colors"
+                >
                   <td className="py-3.5 px-4 text-gray-400 font-medium">
                     {t(`rows.${key}.label`)}
                   </td>
@@ -96,15 +103,25 @@ export default function ThreeRoads() {
               <div className="grid grid-cols-3 gap-2 text-sm">
                 <div className="text-center">
                   <p className="text-[11px] sm:text-xs text-gray-600 mb-1">{t('columns.diy')}</p>
-                  <p className="text-gray-500"><CellValue value={t(`rows.${key}.diy`)} /></p>
+                  <p className="text-gray-500">
+                    <CellValue value={t(`rows.${key}.diy`)} />
+                  </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">{t('columns.consultant')}</p>
-                  <p className="text-gray-500"><CellValue value={t(`rows.${key}.consultant`)} /></p>
+                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">
+                    {t('columns.consultant')}
+                  </p>
+                  <p className="text-gray-500">
+                    <CellValue value={t(`rows.${key}.consultant`)} />
+                  </p>
                 </div>
                 <div className="text-center bg-[#6B8F71]/10 rounded-lg py-1">
-                  <p className="text-[11px] sm:text-xs text-panguard-green mb-1">{t('columns.panguard')}</p>
-                  <p className="text-text-primary font-medium"><CellValue value={t(`rows.${key}.panguard`)} /></p>
+                  <p className="text-[11px] sm:text-xs text-panguard-green mb-1">
+                    {t('columns.panguard')}
+                  </p>
+                  <p className="text-text-primary font-medium">
+                    <CellValue value={t(`rows.${key}.panguard`)} />
+                  </p>
                 </div>
               </div>
             </motion.div>

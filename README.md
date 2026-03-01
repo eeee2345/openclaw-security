@@ -30,14 +30,14 @@ curl -fsSL https://get.panguard.ai | bash
 
 ## Product Suite
 
-| Product | What it does | Included from |
-|---------|-------------|---------------|
-| **Scan** | 60-second security audit with PDF report | Community (Free) |
-| **Guard** | 24/7 AI monitoring with auto-response | Solo ($9/mo) |
-| **Chat** | Plain-language alerts via Telegram / Slack / Email | Solo ($9/mo) |
-| **Trap** | 8 honeypot services for attacker profiling | Pro ($29/mo) |
-| **Report** | Compliance reports: ISO 27001, SOC 2, Taiwan TCSA | Pro ($29/mo) |
-| **Threat Cloud** | Collective threat intelligence from all Panguard users | All plans |
+| Product          | What it does                                           | Included from    |
+| ---------------- | ------------------------------------------------------ | ---------------- |
+| **Scan**         | 60-second security audit with PDF report               | Community (Free) |
+| **Guard**        | 24/7 AI monitoring with auto-response                  | Solo ($9/mo)     |
+| **Chat**         | Plain-language alerts via Telegram / Slack / Email     | Solo ($9/mo)     |
+| **Trap**         | 8 honeypot services for attacker profiling             | Pro ($29/mo)     |
+| **Report**       | Compliance reports: ISO 27001, SOC 2, Taiwan TCSA      | Pro ($29/mo)     |
+| **Threat Cloud** | Collective threat intelligence from all Panguard users | All plans        |
 
 ---
 
@@ -93,11 +93,11 @@ If cloud is down, local AI takes over. If local AI is down, the rules engine kee
 
 ### Confidence-Based Response
 
-| Confidence | Action |
-|-----------|--------|
-| > 90% | Auto-respond: block IP, kill process, quarantine file |
-| 70-90% | Ask you first with evidence |
-| < 70% | Log and notify only |
+| Confidence | Action                                                |
+| ---------- | ----------------------------------------------------- |
+| > 90%      | Auto-respond: block IP, kill process, quarantine file |
+| 70-90%     | Ask you first with evidence                           |
+| < 70%      | Log and notify only                                   |
 
 ### Architecture
 
@@ -139,6 +139,7 @@ panguard scan --lang zh-TW         # Traditional Chinese
 ```
 
 **What it checks:**
+
 - Open ports and exposed services
 - Password policy compliance
 - Firewall configuration
@@ -169,6 +170,7 @@ panguard guard stop     # Stop protection
 4. **Report Agent** - Logs incidents with evidence for compliance
 
 **Key features:**
+
 - 7-day learning period builds behavioral baseline
 - Deviation detection after baseline is established
 - Process monitoring, file integrity, network connections
@@ -193,6 +195,7 @@ panguard chat test                           # Send test notification
 **4 channels:** Telegram, Slack (Block Kit), Email (SMTP/Resend), Webhooks
 
 **3 tone modes:**
+
 - `boss` - Impact summary in plain language
 - `developer` - Technical details with CLI commands
 - `it_admin` - Step-by-step remediation instructions
@@ -208,6 +211,7 @@ Honeypot system that catches attackers and profiles their techniques.
 **8 honeypot services:** SSH, HTTP, FTP, SMB, MySQL, RDP, Telnet, Redis
 
 **How it works:**
+
 1. Deploys decoy services on unused ports
 2. Attackers interact thinking they're real
 3. Every command, credential, and file upload is captured
@@ -228,11 +232,11 @@ panguard report --framework iso27001      # ISO 27001
 panguard report --framework soc2          # SOC 2
 ```
 
-| Framework | Controls | Output |
-|-----------|----------|--------|
+| Framework                        | Controls    | Output                |
+| -------------------------------- | ----------- | --------------------- |
 | Taiwan Cyber Security Act (TCSA) | 10 controls | PDF + JSON, bilingual |
-| ISO/IEC 27001:2022 | 30 controls | PDF + JSON, bilingual |
-| SOC 2 Trust Services | 10 controls | PDF + JSON |
+| ISO/IEC 27001:2022               | 30 controls | PDF + JSON, bilingual |
+| SOC 2 Trust Services             | 10 controls | PDF + JSON            |
 
 Each report includes: executive summary, control-by-control assessment, evidence packages, remediation recommendations, and priority ranking.
 
@@ -253,6 +257,7 @@ All Panguard users protected (minutes)
 ```
 
 **Privacy guarantees:**
+
 - Only anonymized threat signatures leave your machine
 - Zero raw data, zero telemetry
 - TLS 1.3 encrypted transport
@@ -264,23 +269,23 @@ All Panguard users protected (minutes)
 
 ## Pricing
 
-| Plan | Price | Machines | Includes |
-|------|-------|----------|----------|
-| **Community** | Free | 1 | Scan (unlimited) + Guard (Layer 1) + Threat Cloud |
-| **Solo** | $9/mo | 3 | + Full Guard (3 layers) + Chat + Local AI |
-| **Pro** | $29/mo | 10 | + Trap (8 honeypots) + Cloud AI + 1 compliance report/mo |
-| **Business** | $79/mo | 25 | + SIEM integration + SSO + dedicated support |
+| Plan          | Price  | Machines | Includes                                                 |
+| ------------- | ------ | -------- | -------------------------------------------------------- |
+| **Community** | Free   | 1        | Scan (unlimited) + Guard (Layer 1) + Threat Cloud        |
+| **Solo**      | $9/mo  | 3        | + Full Guard (3 layers) + Chat + Local AI                |
+| **Pro**       | $29/mo | 10       | + Trap (8 honeypots) + Cloud AI + 1 compliance report/mo |
+| **Business**  | $79/mo | 25       | + SIEM integration + SSO + dedicated support             |
 
 **Annual billing:** 20% discount on all plans.
 
 **Compliance reports** (one-time purchase, Pro+ plans):
 
-| Report | Price | Market rate |
-|--------|-------|------------|
-| Taiwan TCSA | $299 | $10,000+ |
-| ISO 27001 | $499 | $15,000+ |
-| SOC 2 | $699 | $20,000+ |
-| All 3 Bundle | $999 | $30,000+ |
+| Report       | Price | Market rate |
+| ------------ | ----- | ----------- |
+| Taiwan TCSA  | $299  | $10,000+    |
+| ISO 27001    | $499  | $15,000+    |
+| SOC 2        | $699  | $20,000+    |
+| All 3 Bundle | $999  | $30,000+    |
 
 ---
 
@@ -314,18 +319,18 @@ panguard-ai/
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| Language | TypeScript 5.7 (strict mode) |
-| Runtime | Node.js 20+ |
-| Monorepo | pnpm 10 workspaces |
-| Testing | Vitest 3 |
-| Auth | Google OAuth (PKCE) + scrypt + SQLite |
-| AI | Ollama (local) + Claude / OpenAI (cloud) |
-| Rules | Sigma + YARA + Suricata + Falco |
-| Frontend | Next.js 14 + React 18 + Tailwind CSS |
-| i18n | next-intl (EN + zh-TW) |
-| Encryption | AES-256-GCM |
+| Category   | Technology                               |
+| ---------- | ---------------------------------------- |
+| Language   | TypeScript 5.7 (strict mode)             |
+| Runtime    | Node.js 20+                              |
+| Monorepo   | pnpm 10 workspaces                       |
+| Testing    | Vitest 3                                 |
+| Auth       | Google OAuth (PKCE) + scrypt + SQLite    |
+| AI         | Ollama (local) + Claude / OpenAI (cloud) |
+| Rules      | Sigma + YARA + Suricata + Falco          |
+| Frontend   | Next.js 14 + React 18 + Tailwind CSS     |
+| i18n       | next-intl (EN + zh-TW)                   |
+| Encryption | AES-256-GCM                              |
 
 ---
 
@@ -349,25 +354,25 @@ pnpm dev              # Start all dev servers
 
 ### Test Coverage
 
-| Scope | Tests | Files |
-|-------|-------|-------|
-| Unit tests | 1,178 | 213 |
-| Integration tests | 268 | 19 |
-| **Total** | **1,326** | **232** |
+| Scope             | Tests     | Files   |
+| ----------------- | --------- | ------- |
+| Unit tests        | 1,178     | 213     |
+| Integration tests | 268       | 19      |
+| **Total**         | **1,326** | **232** |
 
 ---
 
 ## Documentation
 
-| Section | Contents |
-|---------|----------|
-| [Getting Started](docs/getting-started.md) | Install, login, first scan in 5 minutes |
-| [Product Overview](docs/overview.md) | Architecture, product suite, subscription tiers |
-| **Concepts** | [Three-Layer AI](docs/concepts/three-layer-ai.md) / [Learning Mode](docs/concepts/learning-mode.md) / [Security Score](docs/concepts/security-score.md) / [Threat Intelligence](docs/concepts/threat-intelligence.md) / [Authentication](docs/concepts/authentication.md) |
-| **Guides** | [Scan](docs/guides/scan.md) / [Guard](docs/guides/guard.md) / [Chat](docs/guides/chat.md) / [Trap](docs/guides/trap.md) / [Report](docs/guides/report.md) / [Threat Cloud](docs/guides/threat-cloud.md) / [System Service](docs/guides/system-service.md) |
-| **Reference** | [CLI Commands](docs/reference/cli.md) / [Configuration](docs/reference/configuration.md) / [Sigma Rules](docs/reference/sigma-rules.md) / [YARA Rules](docs/reference/yara-rules.md) / [API](docs/reference/api.md) |
-| [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions |
-| [Changelog](docs/changelog.md) | Release history |
+| Section                                    | Contents                                                                                                                                                                                                                                                                  |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Getting Started](docs/getting-started.md) | Install, login, first scan in 5 minutes                                                                                                                                                                                                                                   |
+| [Product Overview](docs/overview.md)       | Architecture, product suite, subscription tiers                                                                                                                                                                                                                           |
+| **Concepts**                               | [Three-Layer AI](docs/concepts/three-layer-ai.md) / [Learning Mode](docs/concepts/learning-mode.md) / [Security Score](docs/concepts/security-score.md) / [Threat Intelligence](docs/concepts/threat-intelligence.md) / [Authentication](docs/concepts/authentication.md) |
+| **Guides**                                 | [Scan](docs/guides/scan.md) / [Guard](docs/guides/guard.md) / [Chat](docs/guides/chat.md) / [Trap](docs/guides/trap.md) / [Report](docs/guides/report.md) / [Threat Cloud](docs/guides/threat-cloud.md) / [System Service](docs/guides/system-service.md)                 |
+| **Reference**                              | [CLI Commands](docs/reference/cli.md) / [Configuration](docs/reference/configuration.md) / [Sigma Rules](docs/reference/sigma-rules.md) / [YARA Rules](docs/reference/yara-rules.md) / [API](docs/reference/api.md)                                                       |
+| [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions                                                                                                                                                                                                                                               |
+| [Changelog](docs/changelog.md)             | Release history                                                                                                                                                                                                                                                           |
 
 ---
 

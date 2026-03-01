@@ -21,11 +21,36 @@ import {
 
 /* ─── Layer Config ─── */
 const layerConfigs = [
-  { key: 'layer1' as const, color: 'bg-brand-sage/10 text-brand-sage', width: '100%', icon: ScanIcon },
-  { key: 'layer2' as const, color: 'bg-brand-sage/10 text-brand-sage', width: '90%', icon: ShieldIcon },
-  { key: 'layer3' as const, color: 'bg-[#60a5fa]/10 text-[#60a5fa]', width: '75%', icon: AnalyticsIcon },
-  { key: 'layer4' as const, color: 'bg-[#f59e0b]/10 text-[#f59e0b]', width: '55%', icon: SettingsIcon },
-  { key: 'layer5' as const, color: 'bg-[#ef4444]/10 text-[#ef4444]', width: '40%', icon: ResponseIcon },
+  {
+    key: 'layer1' as const,
+    color: 'bg-brand-sage/10 text-brand-sage',
+    width: '100%',
+    icon: ScanIcon,
+  },
+  {
+    key: 'layer2' as const,
+    color: 'bg-brand-sage/10 text-brand-sage',
+    width: '90%',
+    icon: ShieldIcon,
+  },
+  {
+    key: 'layer3' as const,
+    color: 'bg-[#60a5fa]/10 text-[#60a5fa]',
+    width: '75%',
+    icon: AnalyticsIcon,
+  },
+  {
+    key: 'layer4' as const,
+    color: 'bg-[#f59e0b]/10 text-[#f59e0b]',
+    width: '55%',
+    icon: SettingsIcon,
+  },
+  {
+    key: 'layer5' as const,
+    color: 'bg-[#ef4444]/10 text-[#ef4444]',
+    width: '40%',
+    icon: ResponseIcon,
+  },
 ];
 
 /* ─── Agent Config ─── */
@@ -126,17 +151,25 @@ export default function HowItWorksContent() {
                 >
                   <div className="flex items-start gap-4">
                     <div className="shrink-0">
-                      <span className={`${l.color} text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full`}>
+                      <span
+                        className={`${l.color} text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full`}
+                      >
                         {t(`layers.${l.key}.badge`)}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <Icon className="w-4 h-4 text-text-tertiary shrink-0" />
-                        <p className="text-sm font-semibold text-text-primary">{t(`layers.${l.key}.name`)}</p>
+                        <p className="text-sm font-semibold text-text-primary">
+                          {t(`layers.${l.key}.name`)}
+                        </p>
                       </div>
-                      <p className="text-sm text-text-secondary leading-relaxed">{t(`layers.${l.key}.desc`)}</p>
-                      <p className="text-xs text-text-tertiary mt-2 italic">{t(`layers.${l.key}.detail`)}</p>
+                      <p className="text-sm text-text-secondary leading-relaxed">
+                        {t(`layers.${l.key}.desc`)}
+                      </p>
+                      <p className="text-xs text-text-tertiary mt-2 italic">
+                        {t(`layers.${l.key}.detail`)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -158,23 +191,30 @@ export default function HowItWorksContent() {
             <FadeInUp key={tier.key} delay={i * 0.1}>
               <div className="bg-surface-1 rounded-xl border border-border p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-sm font-semibold text-text-primary">{t(`aiFunnel.${tier.key}.name`)}</p>
-                  <span className="text-lg font-extrabold text-brand-sage">{t(`aiFunnel.${tier.key}.pct`)}</span>
+                  <p className="text-sm font-semibold text-text-primary">
+                    {t(`aiFunnel.${tier.key}.name`)}
+                  </p>
+                  <span className="text-lg font-extrabold text-brand-sage">
+                    {t(`aiFunnel.${tier.key}.pct`)}
+                  </span>
                 </div>
                 <div className="h-2 bg-surface-2 rounded-full mb-4 overflow-hidden">
-                  <div className={`h-full ${tier.barColor} rounded-full`} style={{ width: tier.barWidth }} />
+                  <div
+                    className={`h-full ${tier.barColor} rounded-full`}
+                    style={{ width: tier.barWidth }}
+                  />
                 </div>
                 <ul className="space-y-1.5">
-                  {t(`aiFunnel.${tier.key}.items`).split('|').map((item, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm text-text-secondary">
-                      <CheckIcon className="w-3.5 h-3.5 text-brand-sage mt-0.5 shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                  {t(`aiFunnel.${tier.key}.items`)
+                    .split('|')
+                    .map((item, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-text-secondary">
+                        <CheckIcon className="w-3.5 h-3.5 text-brand-sage mt-0.5 shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
                 </ul>
-                <p className="text-xs text-text-tertiary mt-3">
-                  {t(`aiFunnel.${tier.key}.speed`)}
-                </p>
+                <p className="text-xs text-text-tertiary mt-3">{t(`aiFunnel.${tier.key}.speed`)}</p>
               </div>
             </FadeInUp>
           ))}
@@ -267,9 +307,13 @@ export default function HowItWorksContent() {
               <FadeInUp key={phase} delay={i * 0.1}>
                 <div className="flex gap-6 mb-8 last:mb-0">
                   <div className="relative shrink-0">
-                    <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
-                      i === 2 ? 'border-brand-sage bg-brand-sage/10 text-brand-sage' : 'border-border bg-surface-2 text-text-tertiary'
-                    }`}>
+                    <div
+                      className={`w-9 h-9 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
+                        i === 2
+                          ? 'border-brand-sage bg-brand-sage/10 text-brand-sage'
+                          : 'border-border bg-surface-2 text-text-tertiary'
+                      }`}
+                    >
                       {i + 1}
                     </div>
                   </div>

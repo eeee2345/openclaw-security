@@ -69,9 +69,7 @@ export default function ResetPasswordForm() {
               <Check className="w-6 h-6 text-status-safe" />
             </div>
             <h2 className="text-xl font-bold text-text-primary">{t('successTitle')}</h2>
-            <p className="text-sm text-text-secondary mt-2">
-              {t('successMessage')}
-            </p>
+            <p className="text-sm text-text-secondary mt-2">{t('successMessage')}</p>
             <button
               onClick={() => router.push('/login')}
               className="mt-6 bg-brand-sage text-surface-0 font-semibold text-sm rounded-lg px-6 py-2.5 hover:bg-brand-sage-light transition-all"
@@ -101,7 +99,10 @@ export default function ResetPasswordForm() {
         <div className="bg-surface-1 border border-border rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="reset-password" className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label
+                htmlFor="reset-password"
+                className="block text-sm font-medium text-text-secondary mb-1.5"
+              >
                 {t('newPasswordLabel')}
               </label>
               <div className="relative">
@@ -127,7 +128,10 @@ export default function ResetPasswordForm() {
               </div>
             </div>
             <div>
-              <label htmlFor="reset-confirm" className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label
+                htmlFor="reset-confirm"
+                className="block text-sm font-medium text-text-secondary mb-1.5"
+              >
                 {t('confirmPasswordLabel')}
               </label>
               <input
@@ -143,7 +147,10 @@ export default function ResetPasswordForm() {
             </div>
 
             {error && (
-              <div role="alert" className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger">
+              <div
+                role="alert"
+                className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger"
+              >
                 {error}
               </div>
             )}

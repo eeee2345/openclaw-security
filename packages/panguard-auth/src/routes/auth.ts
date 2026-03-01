@@ -66,7 +66,10 @@ export function createAuthRoutes(ctx: RouteContext) {
     if (existing) {
       // Match timing of password hashing to prevent timing-based enumeration
       await hashPassword('timing-safe-dummy');
-      json(res, 200, { ok: true, message: 'If this email is not already registered, your account has been created.' });
+      json(res, 200, {
+        ok: true,
+        message: 'If this email is not already registered, your account has been created.',
+      });
       return;
     }
 
@@ -168,7 +171,11 @@ export function createAuthRoutes(ctx: RouteContext) {
 
       // Verify TOTP code
       if (typeof totpCode === 'string') {
-        const matchedStep = verifyTotp(totpSecret.encryptedSecret, totpCode, totpSecret.lastUsedStep);
+        const matchedStep = verifyTotp(
+          totpSecret.encryptedSecret,
+          totpCode,
+          totpSecret.lastUsedStep
+        );
         if (matchedStep < 0) {
           logAuditEvent({
             level: 'warn',

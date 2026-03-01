@@ -187,29 +187,61 @@ async function runDeploy(opts: {
           type: 'it_admin',
           language: lang === 'zh-TW' ? 'zh-TW' : 'en',
           notificationChannel: ch as 'webhook' | 'telegram' | 'slack' | 'email',
-          preferences: { criticalAlerts: true, dailySummary: true, weeklySummary: true, peacefulReport: true },
+          preferences: {
+            criticalAlerts: true,
+            dailySummary: true,
+            weeklySummary: true,
+            peacefulReport: true,
+          },
         },
         channels: {},
         maxFollowUpTokens: 2000,
       });
 
       if (ch === 'webhook' && cfg['url']) {
-        agent.registerChannel(new WebhookChannel({ endpoint: cfg['url'], secret: cfg['secret'] ?? '', authMethod: 'bearer_token' }));
+        agent.registerChannel(
+          new WebhookChannel({
+            endpoint: cfg['url'],
+            secret: cfg['secret'] ?? '',
+            authMethod: 'bearer_token',
+          })
+        );
       } else if (ch === 'telegram' && cfg['botToken'] && cfg['chatId']) {
-        agent.registerChannel(new TelegramChannel({ botToken: cfg['botToken'], chatId: cfg['chatId'] }));
+        agent.registerChannel(
+          new TelegramChannel({ botToken: cfg['botToken'], chatId: cfg['chatId'] })
+        );
       } else if (ch === 'slack' && cfg['botToken']) {
-        agent.registerChannel(new SlackChannel({ botToken: cfg['botToken'], signingSecret: cfg['signingSecret'] ?? '', defaultChannel: cfg['channel'] ?? '#security' }));
+        agent.registerChannel(
+          new SlackChannel({
+            botToken: cfg['botToken'],
+            signingSecret: cfg['signingSecret'] ?? '',
+            defaultChannel: cfg['channel'] ?? '#security',
+          })
+        );
       } else if (ch === 'email' && cfg['host']) {
-        agent.registerChannel(new EmailChannel({ host: cfg['host'], port: Number(cfg['port'] ?? 587), secure: cfg['secure'] === 'true', auth: { user: cfg['user'] ?? '', pass: cfg['pass'] ?? '' }, from: cfg['from'] ?? '', to: [cfg['to'] ?? ''] }));
+        agent.registerChannel(
+          new EmailChannel({
+            host: cfg['host'],
+            port: Number(cfg['port'] ?? 587),
+            secure: cfg['secure'] === 'true',
+            auth: { user: cfg['user'] ?? '', pass: cfg['pass'] ?? '' },
+            from: cfg['from'] ?? '',
+            to: [cfg['to'] ?? ''],
+          })
+        );
       }
 
       const result = await agent.sendAlert('deploy-test', {
         severity: 'low',
         conclusion: 'benign',
         confidence: 1.0,
-        humanSummary: lang === 'zh-TW' ? 'Panguard AI 部署測試通知' : 'Panguard AI deployment test notification',
+        humanSummary:
+          lang === 'zh-TW'
+            ? 'Panguard AI 部署測試通知'
+            : 'Panguard AI deployment test notification',
         reasoning: 'Deploy command notification channel verification',
-        recommendedAction: lang === 'zh-TW' ? '無需動作 - 這是部署測試' : 'No action required - deployment test',
+        recommendedAction:
+          lang === 'zh-TW' ? '無需動作 - 這是部署測試' : 'No action required - deployment test',
         eventDescription: 'Deployment notification test',
         actionsTaken: [],
         timestamp: new Date().toISOString(),
@@ -290,4 +322,3 @@ function countDeploySteps(config: PanguardConfig): number {
   if (config.modules.scan) count++;
   return count;
 }
-

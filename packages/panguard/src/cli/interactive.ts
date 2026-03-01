@@ -694,8 +694,8 @@ async function actionThreat(): Promise<void> {
 
   // Port availability check
   const port = 8080;
+  const net = await import('node:net');
   const portAvailable = await new Promise<boolean>((resolve) => {
-    const net = await import('node:net');
     const tester = net.createServer();
     tester.once('error', () => resolve(false));
     tester.once('listening', () => {
@@ -1021,10 +1021,7 @@ async function actionDemo(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function actionUpgrade(): Promise<void> {
-  breadcrumb([
-    'Panguard',
-    currentLang === 'zh-TW' ? '\u5347\u7D1A\u65B9\u6848' : 'Upgrade Plan',
-  ]);
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u5347\u7D1A\u65B9\u6848' : 'Upgrade Plan']);
 
   // Delegate to the upgrade command module
   const { upgradeCommand } = await import('./commands/upgrade.js');

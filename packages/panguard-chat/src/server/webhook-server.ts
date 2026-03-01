@@ -186,5 +186,4 @@ export class WebhookServer {
     const expected = 'v0=' + createHmac('sha256', secret).update(sigBase).digest('hex');
     return signature === expected;
   }
-
 }

@@ -196,7 +196,11 @@ export default function AccountSettings() {
       {/* Header */}
       <header className="border-b border-border bg-surface-1">
         <div className="max-w-3xl mx-auto px-6 h-14 flex items-center gap-4">
-          <Link href="/dashboard" className="text-text-tertiary hover:text-text-secondary" aria-label={t('backToDashboard')}>
+          <Link
+            href="/dashboard"
+            className="text-text-tertiary hover:text-text-secondary"
+            aria-label={t('backToDashboard')}
+          >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <BrandLogo size={20} className="text-brand-sage" />
@@ -239,7 +243,9 @@ export default function AccountSettings() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Check className="w-4 h-4 text-status-safe" />
-                <span className="text-sm text-status-safe font-medium">{t('twoFA.statusEnabled')}</span>
+                <span className="text-sm text-status-safe font-medium">
+                  {t('twoFA.statusEnabled')}
+                </span>
               </div>
               <button
                 onClick={handleTotpDisable}
@@ -250,9 +256,7 @@ export default function AccountSettings() {
             </div>
           ) : setupData ? (
             <div className="space-y-4">
-              <p className="text-sm text-text-secondary">
-                {t('twoFA.qrInstruction')}
-              </p>
+              <p className="text-sm text-text-secondary">{t('twoFA.qrInstruction')}</p>
               <code className="block bg-surface-0 border border-border rounded-lg p-3 font-mono text-xs text-brand-sage break-all">
                 {setupData.secret}
               </code>
@@ -296,9 +300,7 @@ export default function AccountSettings() {
             </div>
           ) : (
             <div>
-              <p className="text-sm text-text-secondary mb-3">
-                {t('twoFA.description')}
-              </p>
+              <p className="text-sm text-text-secondary mb-3">{t('twoFA.description')}</p>
               <button
                 onClick={handleTotpSetup}
                 className="bg-brand-sage text-surface-0 font-medium text-sm rounded-lg px-4 py-2 hover:bg-brand-sage-light"
@@ -313,9 +315,7 @@ export default function AccountSettings() {
 
         {/* Data Export */}
         <Section title={t('exportData.sectionTitle')} icon={<Download className="w-5 h-5" />}>
-          <p className="text-sm text-text-secondary mb-3">
-            {t('exportData.description')}
-          </p>
+          <p className="text-sm text-text-secondary mb-3">{t('exportData.description')}</p>
           <button
             onClick={handleExportData}
             disabled={exportLoading}
@@ -331,12 +331,14 @@ export default function AccountSettings() {
         </Section>
 
         {/* Danger Zone */}
-        <Section title={t('deleteAccount.sectionTitle')} icon={<Trash2 className="w-5 h-5" />} danger>
+        <Section
+          title={t('deleteAccount.sectionTitle')}
+          icon={<Trash2 className="w-5 h-5" />}
+          danger
+        >
           {!deleteConfirm ? (
             <div>
-              <p className="text-sm text-text-secondary mb-3">
-                {t('deleteAccount.description')}
-              </p>
+              <p className="text-sm text-text-secondary mb-3">{t('deleteAccount.description')}</p>
               <button
                 onClick={() => setDeleteConfirm(true)}
                 className="border border-status-danger/30 text-status-danger rounded-lg px-4 py-2 text-sm hover:bg-status-danger/10 transition-colors"
@@ -348,9 +350,7 @@ export default function AccountSettings() {
             <div className="space-y-3">
               <div className="flex items-start gap-2 bg-status-danger/10 border border-status-danger/20 rounded-lg p-3">
                 <AlertTriangle className="w-4 h-4 text-status-danger shrink-0 mt-0.5" />
-                <p className="text-sm text-status-danger">
-                  {t('deleteAccount.warning')}
-                </p>
+                <p className="text-sm text-status-danger">{t('deleteAccount.warning')}</p>
               </div>
               <div>
                 <label className="block text-sm text-text-secondary mb-1.5">

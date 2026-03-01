@@ -4,14 +4,7 @@ import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 
 type SubscribeStatus = 'idle' | 'loading' | 'success' | 'error';
-import {
-  FileText,
-  Video,
-  Image as ImageIcon,
-  Download,
-  Mail,
-  Send,
-} from 'lucide-react';
+import { FileText, Video, Image as ImageIcon, Download, Mail, Send } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import SectionTitle from '@/components/ui/SectionTitle';
@@ -188,9 +181,7 @@ export default function ResourcesContent() {
                       <TypeIcon type={resource.type} className="w-3.5 h-3.5" />
                       <span>{resource.type}</span>
                     </div>
-                    <span className="text-text-muted text-sm font-semibold">
-                      {t('comingSoon')}
-                    </span>
+                    <span className="text-text-muted text-sm font-semibold">{t('comingSoon')}</span>
                   </div>
                 </div>
               </FadeInUp>

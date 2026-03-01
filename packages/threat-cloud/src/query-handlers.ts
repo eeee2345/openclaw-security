@@ -221,9 +221,7 @@ export class QueryHandlers {
     ).count;
 
     const iocsByTypeRows = this.db
-      .prepare(
-        `SELECT type, COUNT(*) as count FROM iocs WHERE status = 'active' GROUP BY type`
-      )
+      .prepare(`SELECT type, COUNT(*) as count FROM iocs WHERE status = 'active' GROUP BY type`)
       .all() as Array<{ type: string; count: number }>;
 
     const iocsByType: Record<string, number> = {};
@@ -277,7 +275,9 @@ export class QueryHandlers {
 
     const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const last24hThreats = (
-      this.db.prepare('SELECT COUNT(*) as count FROM threats WHERE received_at > ?').get(last24h) as {
+      this.db
+        .prepare('SELECT COUNT(*) as count FROM threats WHERE received_at > ?')
+        .get(last24h) as {
         count: number;
       }
     ).count;

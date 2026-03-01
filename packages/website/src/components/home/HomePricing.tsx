@@ -87,7 +87,9 @@ export default function HomePricing() {
         {/* Compliance reports */}
         <FadeInUp delay={0.3}>
           <div className="mt-12 max-w-4xl mx-auto">
-            <h3 className="text-lg font-bold text-text-primary text-center mb-6">{t('reportTitle')}</h3>
+            <h3 className="text-lg font-bold text-text-primary text-center mb-6">
+              {t('reportTitle')}
+            </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {Array.from({ length: REPORT_COUNT }).map((_, i) => {
                 const isBundle = i === 3;
@@ -105,9 +107,13 @@ export default function HomePricing() {
                         {t(`reports.${i}.badge`)}
                       </span>
                     )}
-                    <p className="text-sm font-semibold text-text-primary">{t(`reports.${i}.name`)}</p>
+                    <p className="text-sm font-semibold text-text-primary">
+                      {t(`reports.${i}.name`)}
+                    </p>
                     <p className="text-xs text-text-muted mt-1">{t(`reports.${i}.controls`)}</p>
-                    <p className="text-2xl font-extrabold text-panguard-green mt-3">{t(`reports.${i}.price`)}</p>
+                    <p className="text-2xl font-extrabold text-panguard-green mt-3">
+                      {t(`reports.${i}.price`)}
+                    </p>
                     <p className="text-xs text-panguard-red line-through opacity-70 mt-1">
                       {t(`reports.${i}.market`)}
                     </p>

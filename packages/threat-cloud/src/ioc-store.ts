@@ -195,7 +195,11 @@ export class IoCStore {
   /**
    * Lookup IoC with related threat count / 查詢 IoC 含相關威脅數
    */
-  lookupIoCWithContext(type: IoCType, value: string, countThreats: (ip: string) => number): IoCLookupResult {
+  lookupIoCWithContext(
+    type: IoCType,
+    value: string,
+    countThreats: (ip: string) => number
+  ): IoCLookupResult {
     const ioc = this.lookupIoC(type, value);
     if (!ioc) {
       return { found: false, relatedThreats: 0 };
@@ -351,9 +355,7 @@ export class IoCStore {
    */
   getTopMaliciousIoCs(limit: number): IoCRecord[] {
     const rows = this.db
-      .prepare(
-        "SELECT * FROM iocs WHERE status = 'active' ORDER BY reputation_score DESC LIMIT ?"
-      )
+      .prepare("SELECT * FROM iocs WHERE status = 'active' ORDER BY reputation_score DESC LIMIT ?")
       .all(limit) as IoCRow[];
     return rows.map(rowToRecord);
   }

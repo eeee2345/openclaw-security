@@ -26,12 +26,12 @@ panguard chat status
 
 ## 4 個通知管道
 
-| 管道     | 適合對象          | 特色                         |
-| -------- | ----------------- | ---------------------------- |
+| 管道     | 適合對象          | 特色                             |
+| -------- | ----------------- | -------------------------------- |
 | Telegram | 個人用戶 / 開發者 | Bot API，Markdown 格式，全球通用 |
-| Slack    | 團隊 / 企業       | Block Kit 豐富格式，頻道分流 |
-| Email    | 合規場景          | SMTP HTML，留存紀錄          |
-| Webhook  | 自動化整合        | mTLS 安全，自訂 payload      |
+| Slack    | 團隊 / 企業       | Block Kit 豐富格式，頻道分流     |
+| Email    | 合規場景          | SMTP HTML，留存紀錄              |
+| Webhook  | 自動化整合        | mTLS 安全，自訂 payload          |
 
 ---
 
@@ -52,11 +52,13 @@ panguard chat status
 ### 步驟 2：取得你的 Chat ID
 
 方法 A（推薦）：
+
 1. 在 Telegram 搜尋 **@userinfobot** 並開始對話
 2. 輸入任意文字（例如 `/start`）
 3. 它會回覆你的 **Chat ID**（純數字，例如 `123456789`）
 
 方法 B（API）：
+
 1. 先用 Telegram 傳一則訊息給你剛建立的 Bot
 2. 在瀏覽器打開：
    ```
@@ -71,6 +73,7 @@ panguard chat setup --channel telegram
 ```
 
 設定精靈會依序詢問：
+
 - **Bot Token**：貼上步驟 1 取得的 Token
 - **Chat ID**：貼上步驟 2 取得的 Chat ID
 
@@ -121,11 +124,11 @@ panguard chat test --channel telegram
 2. 往下滾到 **Scopes** 區塊
 3. 在 **Bot Token Scopes** 底下，新增以下權限：
 
-| Scope | 用途 |
-|-------|------|
-| `chat:write` | 發送訊息到頻道 |
+| Scope               | 用途                        |
+| ------------------- | --------------------------- |
+| `chat:write`        | 發送訊息到頻道              |
 | `chat:write.public` | 發送到 Bot 未加入的公開頻道 |
-| `files:write` | 上傳 PDF 報告等附件 |
+| `files:write`       | 上傳 PDF 報告等附件         |
 
 4. 點擊上方 **Install to Workspace**
 5. 點 **Allow** 授權
@@ -155,6 +158,7 @@ panguard chat setup --channel slack
 ```
 
 設定精靈會依序詢問：
+
 - **Bot Token**：貼上步驟 3 的 `xoxb-...` Token
 - **Signing Secret**：貼上步驟 4 的 Signing Secret
 - **Default Channel**：輸入 `#security-alerts`（或你建的頻道名稱）

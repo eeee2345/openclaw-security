@@ -386,9 +386,12 @@ export class GuardEngine {
 
     // Periodic Threat Cloud sync (rules + blocklist every hour)
     // 定期同步 Threat Cloud（每小時更新規則和封鎖清單）
-    this.cloudSyncTimer = setInterval(() => {
-      void this.syncThreatCloud();
-    }, 60 * 60 * 1000); // 1 hour
+    this.cloudSyncTimer = setInterval(
+      () => {
+        void this.syncThreatCloud();
+      },
+      60 * 60 * 1000
+    ); // 1 hour
 
     // Start monitor engine / 啟動監控引擎
     this.monitorEngine = new MonitorEngine({
@@ -581,9 +584,7 @@ export class GuardEngine {
         event.metadata?.['action'] !== 'deleted'
       ) {
         try {
-          const yaraResult = await this.yaraScanner.scanFile(
-            event.metadata['filePath'] as string
-          );
+          const yaraResult = await this.yaraScanner.scanFile(event.metadata['filePath'] as string);
           const yaraEvent = this.yaraScanner.toSecurityEvent(yaraResult);
           if (yaraEvent) {
             // Process YARA match as a separate high-priority event
@@ -765,18 +766,15 @@ export class GuardEngine {
 
       // Refresh blocklist / 更新封鎖清單
       const ips = await this.threatCloud.fetchBlocklist();
-      const added = ips.length > 0
-        ? this.feedManager.addExternalIPs(ips, 'threat_cloud_blocklist', 85)
-        : 0;
+      const added =
+        ips.length > 0 ? this.feedManager.addExternalIPs(ips, 'threat_cloud_blocklist', 85) : 0;
 
       logger.info(
         `Threat Cloud sync: ${newRules} rules, ${added} blocklist IPs / ` +
           `Threat Cloud 同步: ${newRules} 條規則, ${added} 個封鎖 IP`
       );
     } catch (err: unknown) {
-      logger.warn(
-        `Threat Cloud sync failed: ${err instanceof Error ? err.message : String(err)}`
-      );
+      logger.warn(`Threat Cloud sync failed: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 

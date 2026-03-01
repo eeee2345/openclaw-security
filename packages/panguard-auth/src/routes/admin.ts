@@ -352,8 +352,7 @@ export function createAdminRoutes(ctx: RouteContext) {
       const tierEntry = byTier[u.tier]!;
       tierEntry.userCount++;
       for (const s of u.usage) {
-        tierEntry.resources[s.resource] =
-          (tierEntry.resources[s.resource] ?? 0) + s.current;
+        tierEntry.resources[s.resource] = (tierEntry.resources[s.resource] ?? 0) + s.current;
       }
     }
 
@@ -363,11 +362,7 @@ export function createAdminRoutes(ctx: RouteContext) {
     });
   }
 
-  function handleAdminUsageUser(
-    req: IncomingMessage,
-    res: ServerResponse,
-    userId: string
-  ): void {
+  function handleAdminUsageUser(req: IncomingMessage, res: ServerResponse, userId: string): void {
     if (req.method !== 'GET') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -390,18 +385,19 @@ export function createAdminRoutes(ctx: RouteContext) {
     json(res, 200, {
       ok: true,
       data: {
-        user: { id: targetUser.id, email: targetUser.email, name: targetUser.name, tier: targetUser.tier },
+        user: {
+          id: targetUser.id,
+          email: targetUser.email,
+          name: targetUser.name,
+          tier: targetUser.tier,
+        },
         usage: summary,
         history,
       },
     });
   }
 
-  function handleAdminUserDetail(
-    req: IncomingMessage,
-    res: ServerResponse,
-    userId: string
-  ): void {
+  function handleAdminUserDetail(req: IncomingMessage, res: ServerResponse, userId: string): void {
     if (req.method !== 'GET') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -489,10 +485,7 @@ export function createAdminRoutes(ctx: RouteContext) {
     json(res, 200, { ok: true, data: { id: targetId, suspended } });
   }
 
-  async function handleAdminBulkAction(
-    req: IncomingMessage,
-    res: ServerResponse
-  ): Promise<void> {
+  async function handleAdminBulkAction(req: IncomingMessage, res: ServerResponse): Promise<void> {
     if (req.method !== 'POST') {
       json(res, 405, { ok: false, error: 'Method not allowed' });
       return;
@@ -569,12 +562,7 @@ export function createAdminRoutes(ctx: RouteContext) {
             break;
         }
 
-        db.addAuditLog(
-          `bulk_${action}`,
-          admin!.id,
-          uid,
-          JSON.stringify({ action, value })
-        );
+        db.addAuditLog(`bulk_${action}`, admin!.id, uid, JSON.stringify({ action, value }));
         results.push({ userId: uid, success: true });
         processed++;
       } catch (err) {

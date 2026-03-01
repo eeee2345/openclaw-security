@@ -53,9 +53,7 @@ export function readBody(req: IncomingMessage): Promise<ReadBodyResult> {
   });
 }
 
-export type ReadRawBodyResult =
-  | { ok: true; raw: string }
-  | { ok: false; status: 400 | 413 };
+export type ReadRawBodyResult = { ok: true; raw: string } | { ok: false; status: 400 | 413 };
 
 export function readRawBody(req: IncomingMessage): Promise<ReadRawBodyResult> {
   return new Promise((resolve) => {

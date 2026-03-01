@@ -1236,19 +1236,11 @@
       },
       "inProgress": {
         "title": "進行中",
-        "items": [
-          "Web 儀表板 UI",
-          "Windows 支援",
-          "Kubernetes 整合"
-        ]
+        "items": ["Web 儀表板 UI", "Windows 支援", "Kubernetes 整合"]
       },
       "planned": {
         "title": "規劃中",
-        "items": [
-          "行動 App（iOS/Android）",
-          "Threat Cloud API v2",
-          "偵測規則社群市集"
-        ]
+        "items": ["行動 App（iOS/Android）", "Threat Cloud API v2", "偵測規則社群市集"]
       }
     },
     "cta": {
@@ -2194,14 +2186,7 @@
       },
       "workflow": {
         "title": "適合你的工作流",
-        "tools": [
-          "CLI",
-          "REST API",
-          "GitHub Actions",
-          "Docker",
-          "SSH",
-          "Webhooks"
-        ]
+        "tools": ["CLI", "REST API", "GitHub Actions", "Docker", "SSH", "Webhooks"]
       },
       "cta": {
         "title": "一行指令保護你的技術棧",
@@ -2262,13 +2247,7 @@
       },
       "integrations": {
         "title": "你團隊已在使用的整合",
-        "tools": [
-          "Slack",
-          "Telegram",
-          "Email",
-          "Microsoft Teams",
-          "Webhooks"
-        ]
+        "tools": ["Slack", "Telegram", "Email", "Microsoft Teams", "Webhooks"]
       },
       "cta": {
         "title": "今天就保護你的企業",
@@ -2393,14 +2372,7 @@
       "stack": "例如 CrowdStrike、Cloudflare、自訂腳本...",
       "message": "告訴我們你的安全目標或任何具體問題..."
     },
-    "teamSizes": [
-      "只有我",
-      "2-10",
-      "11-50",
-      "51-200",
-      "201-500",
-      "500+"
-    ],
+    "teamSizes": ["只有我", "2-10", "11-50", "51-200", "201-500", "500+"],
     "submit": "預約示範",
     "submitting": "提交中...",
     "error": "提交失敗，請再試一次。",
@@ -2581,12 +2553,7 @@
       "inquiryType": "選擇類型",
       "message": "我們能如何幫助你？"
     },
-    "inquiryTypes": [
-      "業務",
-      "技術支援",
-      "合作夥伴",
-      "其他"
-    ],
+    "inquiryTypes": ["業務", "技術支援", "合作夥伴", "其他"],
     "submit": "發送訊息",
     "submitting": "發送中...",
     "successTitle": "訊息已發送。",
@@ -3600,34 +3567,19 @@
         "title": "MSP 合作夥伴",
         "subtitle": "託管安全服務供應商",
         "desc": "將 Panguard 的 AI 安全防護加入你的託管服務組合。多租戶儀表板、白標選項、量價定價。",
-        "highlights": [
-          "多租戶管理主控台",
-          "白標部署選項",
-          "量價定價層級",
-          "自動化佈建 API"
-        ]
+        "highlights": ["多租戶管理主控台", "白標部署選項", "量價定價層級", "自動化佈建 API"]
       },
       "technology": {
         "title": "技術合作夥伴",
         "subtitle": "整合與技術",
         "desc": "將 Panguard 與你的平台整合。API 存取、共同行銷機會、聯合解決方案開發。",
-        "highlights": [
-          "完整 REST API 存取",
-          "共同行銷計畫",
-          "聯合解決方案開發",
-          "技術整合支援"
-        ]
+        "highlights": ["完整 REST API 存取", "共同行銷計畫", "聯合解決方案開發", "技術整合支援"]
       },
       "reseller": {
         "title": "經銷合作夥伴",
         "subtitle": "增值經銷商",
         "desc": "向你的客戶群經銷 Panguard AI。交易登記、銷售賦能、專屬合作夥伴經理。",
-        "highlights": [
-          "交易登記保護",
-          "銷售賦能資源",
-          "專屬合作夥伴經理",
-          "具競爭力的利潤結構"
-        ]
+        "highlights": ["交易登記保護", "銷售賦能資源", "專屬合作夥伴經理", "具競爭力的利潤結構"]
       }
     },
     "benefits": {
@@ -4007,36 +3959,11 @@
     "upgradeDescription": "獲得更多掃描次數、端點及進階功能。",
     "viewPlans": "查看方案",
     "tierFeatures": {
-      "free": [
-        "每月 100 次掃描",
-        "1 個端點",
-        "1,000 次 API 呼叫"
-      ],
-      "solo": [
-        "無限次掃描",
-        "3 個端點",
-        "10,000 次 API 呼叫",
-        "1 個蜜罐"
-      ],
-      "pro": [
-        "無限次掃描",
-        "10 個端點",
-        "50,000 次 API 呼叫",
-        "5 份報告",
-        "3 個蜜罐"
-      ],
-      "business": [
-        "無限次掃描",
-        "25 個端點",
-        "無限次 API 呼叫",
-        "20 份報告",
-        "8 個蜜罐"
-      ],
-      "enterprise": [
-        "全功能無限制",
-        "優先技術支援",
-        "客製化 SLA"
-      ]
+      "free": ["每月 100 次掃描", "1 個端點", "1,000 次 API 呼叫"],
+      "solo": ["無限次掃描", "3 個端點", "10,000 次 API 呼叫", "1 個蜜罐"],
+      "pro": ["無限次掃描", "10 個端點", "50,000 次 API 呼叫", "5 份報告", "3 個蜜罐"],
+      "business": ["無限次掃描", "25 個端點", "無限次 API 呼叫", "20 份報告", "8 個蜜罐"],
+      "enterprise": ["全功能無限制", "優先技術支援", "客製化 SLA"]
     }
   }
 }

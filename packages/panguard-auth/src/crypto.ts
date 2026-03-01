@@ -20,7 +20,7 @@ function getEncryptionKey(): Buffer {
   if (!keyHex || keyHex.length !== 64) {
     throw new Error(
       'TOTP_ENCRYPTION_KEY must be set as a 64-character hex string (32 bytes). ' +
-      'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+        "Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
     );
   }
   return Buffer.from(keyHex, 'hex');
@@ -68,5 +68,5 @@ export function decryptSecret(ciphertext: string): string {
  */
 export function isEncrypted(value: string): boolean {
   const parts = value.split(':');
-  return parts.length === 3 && parts.every(p => /^[0-9a-f]+$/.test(p));
+  return parts.length === 3 && parts.every((p) => /^[0-9a-f]+$/.test(p));
 }

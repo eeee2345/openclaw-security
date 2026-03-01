@@ -10,12 +10,7 @@
 
 import { createHash } from 'node:crypto';
 import type Database from 'better-sqlite3';
-import type {
-  AuditAction,
-  AuditLogEntry,
-  AuditLogQuery,
-  PaginatedResponse,
-} from './types.js';
+import type { AuditAction, AuditLogEntry, AuditLogQuery, PaginatedResponse } from './types.js';
 
 /** Raw audit log row from SQLite */
 interface AuditRow {
@@ -120,9 +115,7 @@ export class AuditLogger {
     ).count;
 
     const rows = this.db
-      .prepare(
-        `SELECT * FROM audit_log ${where} ORDER BY created_at DESC LIMIT ?`
-      )
+      .prepare(`SELECT * FROM audit_log ${where} ORDER BY created_at DESC LIMIT ?`)
       .all(...values, safeLimit) as AuditRow[];
 
     return {
@@ -154,9 +147,7 @@ export class AuditLogger {
    * 清除超齡的稽核記錄
    */
   purgeOldEntries(olderThan: string): number {
-    const result = this.db
-      .prepare('DELETE FROM audit_log WHERE created_at < ?')
-      .run(olderThan);
+    const result = this.db.prepare('DELETE FROM audit_log WHERE created_at < ?').run(olderThan);
     return result.changes;
   }
 }

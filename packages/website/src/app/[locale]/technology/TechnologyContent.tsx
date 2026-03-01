@@ -185,7 +185,9 @@ export default function TechnologyContent() {
           <div className="hidden lg:flex items-center justify-center gap-2 mt-6 text-text-muted">
             {['detect', 'analyze', 'respond', 'report', 'chat'].map((step, i) => (
               <span key={step} className="flex items-center gap-2">
-                <span className="text-xs font-medium text-text-tertiary">{t(`agents.${step}.name`)}</span>
+                <span className="text-xs font-medium text-text-tertiary">
+                  {t(`agents.${step}.name`)}
+                </span>
                 {i < 4 && <ArrowRight className="w-3.5 h-3.5 text-text-muted" />}
               </span>
             ))}

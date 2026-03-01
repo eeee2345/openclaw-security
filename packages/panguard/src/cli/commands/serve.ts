@@ -51,7 +51,9 @@ export function serveCommand(): Command {
         warnings.push('GOOGLE_CLIENT_ID not set — Google OAuth login disabled');
       }
       if (!process.env['RESEND_API_KEY'] && !process.env['SMTP_HOST']) {
-        warnings.push('No email config (RESEND_API_KEY or SMTP_HOST) — password reset and waitlist emails disabled');
+        warnings.push(
+          'No email config (RESEND_API_KEY or SMTP_HOST) — password reset and waitlist emails disabled'
+        );
       }
       if (!process.env['JWT_SECRET'] && process.env['NODE_ENV'] === 'production') {
         warnings.push('JWT_SECRET not set in production — using fallback key (INSECURE)');
@@ -75,7 +77,10 @@ export function serveCommand(): Command {
       const emailConfig: EmailConfig | undefined = process.env['RESEND_API_KEY']
         ? {
             apiKey: process.env['RESEND_API_KEY'],
-            from: process.env['RESEND_FROM'] ?? process.env['SMTP_FROM'] ?? 'Panguard AI <noreply@panguard.ai>',
+            from:
+              process.env['RESEND_FROM'] ??
+              process.env['SMTP_FROM'] ??
+              'Panguard AI <noreply@panguard.ai>',
           }
         : process.env['SMTP_HOST']
           ? {
@@ -122,7 +127,14 @@ export function serveCommand(): Command {
 
       const baseUrl = process.env['PANGUARD_BASE_URL'] ?? `http://${host}:${port}`;
 
-      const authConfig: AuthRouteConfig = { db, smtp: emailConfig, baseUrl, google, sheets, lemonsqueezy };
+      const authConfig: AuthRouteConfig = {
+        db,
+        smtp: emailConfig,
+        baseUrl,
+        google,
+        sheets,
+        lemonsqueezy,
+      };
       const handlers = createAuthHandlers(authConfig);
 
       // Resolve admin static directory
@@ -160,9 +172,13 @@ export function serveCommand(): Command {
         console.log(`    ${c.dim('/health')}         Health check`);
         console.log('');
         console.log(`  Services:`);
-        console.log(`    Email:   ${emailConfig ? ('apiKey' in emailConfig ? c.safe('Resend API') : c.safe('SMTP')) : c.caution('Not configured')}`);
+        console.log(
+          `    Email:   ${emailConfig ? ('apiKey' in emailConfig ? c.safe('Resend API') : c.safe('SMTP')) : c.caution('Not configured')}`
+        );
         console.log(`    OAuth:   ${google ? c.safe('Google') : c.dim('Not configured')}`);
-        console.log(`    Billing: ${lemonsqueezy ? c.safe('Lemon Squeezy') : c.dim('Not configured')}`);
+        console.log(
+          `    Billing: ${lemonsqueezy ? c.safe('Lemon Squeezy') : c.dim('Not configured')}`
+        );
         console.log(`    Sheets:  ${sheets ? c.safe('Google Sheets') : c.dim('Not configured')}`);
         console.log('');
       });

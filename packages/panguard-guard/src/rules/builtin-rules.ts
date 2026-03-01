@@ -67,13 +67,7 @@ export const BUILTIN_RULES: SigmaRule[] = [
     logsource: { category: 'process_creation' },
     detection: {
       selection: {
-        'description|contains': [
-          'mimikatz',
-          'sekurlsa',
-          'lsadump',
-          'hashdump',
-          'credential dump',
-        ],
+        'description|contains': ['mimikatz', 'sekurlsa', 'lsadump', 'hashdump', 'credential dump'],
       },
       condition: 'selection',
     },
@@ -99,10 +93,7 @@ export const BUILTIN_RULES: SigmaRule[] = [
         'description|contains': ['nc -e /bin/', 'ncat -e /bin/', 'netcat -e'],
       },
       selection_python: {
-        'description|contains': [
-          "python -c 'import socket",
-          'python3 -c "import socket',
-        ],
+        'description|contains': ["python -c 'import socket", 'python3 -c "import socket'],
       },
       selection_perl: {
         'description|contains': ["perl -e 'use Socket"],
@@ -150,12 +141,7 @@ export const BUILTIN_RULES: SigmaRule[] = [
     logsource: { category: 'process_creation' },
     detection: {
       selection: {
-        'description|contains': [
-          'crontab -',
-          '/etc/cron',
-          '/var/spool/cron',
-          'CRON[',
-        ],
+        'description|contains': ['crontab -', '/etc/cron', '/var/spool/cron', 'CRON['],
       },
       condition: 'selection',
     },
@@ -192,10 +178,7 @@ export const BUILTIN_RULES: SigmaRule[] = [
     logsource: { category: 'file_change' },
     detection: {
       selection: {
-        'description|contains': [
-          'authorized_keys',
-          '.ssh/authorized',
-        ],
+        'description|contains': ['authorized_keys', '.ssh/authorized'],
       },
       condition: 'selection',
     },
@@ -216,12 +199,7 @@ export const BUILTIN_RULES: SigmaRule[] = [
     detection: {
       selection: {
         category: 'network',
-        'description|contains': [
-          'port scan',
-          'SYN scan',
-          'connection refused',
-          'nmap',
-        ],
+        'description|contains': ['port scan', 'SYN scan', 'connection refused', 'nmap'],
       },
       condition: 'selection',
     },
@@ -267,11 +245,7 @@ export const BUILTIN_RULES: SigmaRule[] = [
     detection: {
       selection: {
         category: 'network',
-        'description|contains': [
-          'ssh connection to',
-          'Accepted publickey',
-          'sshpass',
-        ],
+        'description|contains': ['ssh connection to', 'Accepted publickey', 'sshpass'],
       },
       condition: 'selection',
     },

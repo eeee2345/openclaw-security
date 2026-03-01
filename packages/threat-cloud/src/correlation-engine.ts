@@ -112,7 +112,9 @@ export class CorrelationEngine {
     const updatedCampaigns = 0;
     let eventsCorrelated = 0;
 
-    const sinceDate = new Date(Date.now() - this.config.scanWindowHours * 60 * 60 * 1000).toISOString();
+    const sinceDate = new Date(
+      Date.now() - this.config.scanWindowHours * 60 * 60 * 1000
+    ).toISOString();
 
     // Fetch uncorrelated events within scan window
     const events = this.db
@@ -133,7 +135,12 @@ export class CorrelationEngine {
     }>;
 
     if (events.length === 0) {
-      return { newCampaigns: 0, updatedCampaigns: 0, eventsCorrelated: 0, duration: Date.now() - startTime };
+      return {
+        newCampaigns: 0,
+        updatedCampaigns: 0,
+        eventsCorrelated: 0,
+        duration: Date.now() - startTime,
+      };
     }
 
     // --- IP Cluster detection ---
@@ -145,7 +152,9 @@ export class CorrelationEngine {
     }
 
     const assignedIds = new Set<number>();
-    const updateCampaignId = this.db.prepare('UPDATE enriched_threats SET campaign_id = ? WHERE id = ?');
+    const updateCampaignId = this.db.prepare(
+      'UPDATE enriched_threats SET campaign_id = ? WHERE id = ?'
+    );
 
     this.db.transaction(() => {
       for (const [ip, ipEvents] of byIP) {
@@ -204,7 +213,9 @@ export class CorrelationEngine {
 
         const campaignId = this.generateCampaignId(patternEvents.map((e) => e.id));
         const [attackType] = pattern.split('|');
-        const allTechniques = patternEvents.flatMap((e) => JSON.parse(e.mitre_techniques) as string[]);
+        const allTechniques = patternEvents.flatMap(
+          (e) => JSON.parse(e.mitre_techniques) as string[]
+        );
         const techniques = [...new Set(allTechniques)];
         const regions = [...new Set(patternEvents.map((e) => e.region))];
         const timestamps = patternEvents.map((e) => e.timestamp).sort();
@@ -242,24 +253,23 @@ export class CorrelationEngine {
 
   /** Get campaign by ID / 取得 campaign */
   getCampaign(campaignId: string): Campaign | null {
-    const row = this.db
-      .prepare('SELECT * FROM campaigns WHERE campaign_id = ?')
-      .get(campaignId) as CampaignRow | undefined;
+    const row = this.db.prepare('SELECT * FROM campaigns WHERE campaign_id = ?').get(campaignId) as
+      | CampaignRow
+      | undefined;
     return row ? rowToCampaign(row) : null;
   }
 
   /** List campaigns / 列表 campaigns */
-  listCampaigns(
-    pagination: PaginationParams,
-    status?: string
-  ): PaginatedResponse<Campaign> {
-    const where = status ? "WHERE status = ?" : "";
+  listCampaigns(pagination: PaginationParams, status?: string): PaginatedResponse<Campaign> {
+    const where = status ? 'WHERE status = ?' : '';
     const params: unknown[] = status ? [status] : [];
     const safeLimit = Math.min(Math.max(1, pagination.limit), 1000);
     const offset = (Math.max(1, pagination.page) - 1) * safeLimit;
 
     const total = (
-      this.db.prepare(`SELECT COUNT(*) as count FROM campaigns ${where}`).get(...params) as { count: number }
+      this.db.prepare(`SELECT COUNT(*) as count FROM campaigns ${where}`).get(...params) as {
+        count: number;
+      }
     ).count;
 
     const rows = this.db

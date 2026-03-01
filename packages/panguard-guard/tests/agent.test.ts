@@ -90,8 +90,12 @@ describe('DetectAgent', () => {
     });
 
     const agent = new DetectAgent(ruleEngine);
-    agent.detect(makeEvent({ id: 'evt-count-1', category: 'test', metadata: { sourceIP: '10.0.0.1' } }));
-    agent.detect(makeEvent({ id: 'evt-count-2', category: 'test', metadata: { sourceIP: '10.0.0.2' } }));
+    agent.detect(
+      makeEvent({ id: 'evt-count-1', category: 'test', metadata: { sourceIP: '10.0.0.1' } })
+    );
+    agent.detect(
+      makeEvent({ id: 'evt-count-2', category: 'test', metadata: { sourceIP: '10.0.0.2' } })
+    );
     expect(agent.getDetectionCount()).toBe(2);
   });
 });

@@ -126,15 +126,23 @@ export default function AdvancedSetupContent() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left py-3 px-4 text-text-muted font-medium">{t('envVar')}</th>
-                    <th className="text-left py-3 px-4 text-text-muted font-medium">{t('envPurpose')}</th>
+                    <th className="text-left py-3 px-4 text-text-muted font-medium">
+                      {t('envVar')}
+                    </th>
+                    <th className="text-left py-3 px-4 text-text-muted font-medium">
+                      {t('envPurpose')}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {(['env1', 'env2', 'env3', 'env4'] as const).map((key) => (
                     <tr key={key} className="border-b border-border/50">
-                      <td className="py-3 px-4 font-mono text-xs text-brand-sage">{t(`${key}.var`)}</td>
-                      <td className="py-3 px-4 text-text-secondary text-xs">{t(`${key}.purpose`)}</td>
+                      <td className="py-3 px-4 font-mono text-xs text-brand-sage">
+                        {t(`${key}.var`)}
+                      </td>
+                      <td className="py-3 px-4 text-text-secondary text-xs">
+                        {t(`${key}.purpose`)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

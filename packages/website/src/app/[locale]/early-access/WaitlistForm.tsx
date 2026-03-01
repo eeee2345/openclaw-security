@@ -52,7 +52,9 @@ export default function WaitlistForm() {
         {!submitted ? (
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-              <label htmlFor="waitlist-email" className="sr-only">Email address</label>
+              <label htmlFor="waitlist-email" className="sr-only">
+                Email address
+              </label>
               <input
                 id="waitlist-email"
                 type="email"
@@ -74,7 +76,11 @@ export default function WaitlistForm() {
               </button>
             </form>
 
-            {error && <p role="alert" className="text-sm text-status-alert mt-3">{error}</p>}
+            {error && (
+              <p role="alert" className="text-sm text-status-alert mt-3">
+                {error}
+              </p>
+            )}
 
             {/* Checkmarks */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-6">

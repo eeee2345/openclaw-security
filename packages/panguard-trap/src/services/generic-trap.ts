@@ -28,7 +28,7 @@ interface ProtocolHandler {
 
 interface HandleResult {
   response: string | null; // null = disconnect
-  mitre?: string[];        // techniques to add
+  mitre?: string[]; // techniques to add
   eventType?: 'exploit_attempt' | 'file_upload' | 'file_download';
 }
 
@@ -45,10 +45,18 @@ interface ConnectionState {
 // ---------------------------------------------------------------------------
 
 const TELNET_IAC = Buffer.from([
-  0xff, 0xfb, 0x01, // IAC WILL ECHO
-  0xff, 0xfb, 0x03, // IAC WILL SUPPRESS-GO-AHEAD
-  0xff, 0xfd, 0x18, // IAC DO TERMINAL-TYPE
-  0xff, 0xfd, 0x1f, // IAC DO NAWS (window size)
+  0xff,
+  0xfb,
+  0x01, // IAC WILL ECHO
+  0xff,
+  0xfb,
+  0x03, // IAC WILL SUPPRESS-GO-AHEAD
+  0xff,
+  0xfd,
+  0x18, // IAC DO TERMINAL-TYPE
+  0xff,
+  0xfd,
+  0x1f, // IAC DO NAWS (window size)
 ]);
 
 // ---------------------------------------------------------------------------
@@ -57,13 +65,13 @@ const TELNET_IAC = Buffer.from([
 
 const FTP_MITRE_PATTERNS: [RegExp, string][] = [
   [/STOR\s+.*\.(php|jsp|asp|sh|py|pl|cgi)/i, 'T1505.003'], // Web shell upload
-  [/STOR\s+.*\.(exe|dll|bat|ps1|vbs|msi)/i, 'T1105'],       // Ingress tool transfer
+  [/STOR\s+.*\.(exe|dll|bat|ps1|vbs|msi)/i, 'T1105'], // Ingress tool transfer
   [/RETR\s+.*(passwd|shadow|\.ssh|\.env|\.htaccess|\.git)/i, 'T1005'], // Data from local system
-  [/SITE\s+EXEC/i, 'T1059'],           // Command execution
-  [/SITE\s+CHMOD\s+777/i, 'T1222'],    // File permission modification
-  [/MKD\s+\.\./i, 'T1083'],            // Directory traversal
+  [/SITE\s+EXEC/i, 'T1059'], // Command execution
+  [/SITE\s+CHMOD\s+777/i, 'T1222'], // File permission modification
+  [/MKD\s+\.\./i, 'T1083'], // Directory traversal
   [/CWD\s+\.\./i, 'T1083'],
-  [/DELE\s+/i, 'T1485'],               // Data destruction
+  [/DELE\s+/i, 'T1485'], // Data destruction
   [/RMD\s+/i, 'T1485'],
 ];
 
@@ -72,21 +80,21 @@ const FTP_MITRE_PATTERNS: [RegExp, string][] = [
 // ---------------------------------------------------------------------------
 
 const TELNET_MITRE_PATTERNS: [RegExp, string][] = [
-  [/wget\s|curl\s/i, 'T1105'],                   // Ingress tool transfer
-  [/chmod\s+777/i, 'T1222'],                      // File permission modification
-  [/\/etc\/(shadow|passwd)/i, 'T1003'],            // OS credential dumping
-  [/crontab/i, 'T1053'],                          // Scheduled task
+  [/wget\s|curl\s/i, 'T1105'], // Ingress tool transfer
+  [/chmod\s+777/i, 'T1222'], // File permission modification
+  [/\/etc\/(shadow|passwd)/i, 'T1003'], // OS credential dumping
+  [/crontab/i, 'T1053'], // Scheduled task
   [/base64\s+-d|echo.*\|\s*(sh|bash)/i, 'T1140'], // Deobfuscation
-  [/\bnc\b|\bnetcat\b/i, 'T1571'],                // Non-standard port
-  [/iptables\s+-D/i, 'T1562'],                    // Impair defenses
-  [/rm\s+-rf\s+\//i, 'T1485'],                    // Data destruction
-  [/xmrig|minerd|cryptonight/i, 'T1496'],         // Resource hijacking
-  [/ssh-keygen|authorized_keys/i, 'T1098'],        // Account manipulation
-  [/\buname\b|\bwhoami\b|\bid\b/i, 'T1082'],      // System information discovery
-  [/ifconfig|ip\s+addr/i, 'T1016'],               // System network configuration
-  [/\bps\b\s+(aux|ef)/i, 'T1057'],                // Process discovery
-  [/cat\s+\/etc\/passwd/i, 'T1087'],              // Account discovery
-  [/find\s+.*-perm/i, 'T1083'],                   // File & directory discovery
+  [/\bnc\b|\bnetcat\b/i, 'T1571'], // Non-standard port
+  [/iptables\s+-D/i, 'T1562'], // Impair defenses
+  [/rm\s+-rf\s+\//i, 'T1485'], // Data destruction
+  [/xmrig|minerd|cryptonight/i, 'T1496'], // Resource hijacking
+  [/ssh-keygen|authorized_keys/i, 'T1098'], // Account manipulation
+  [/\buname\b|\bwhoami\b|\bid\b/i, 'T1082'], // System information discovery
+  [/ifconfig|ip\s+addr/i, 'T1016'], // System network configuration
+  [/\bps\b\s+(aux|ef)/i, 'T1057'], // Process discovery
+  [/cat\s+\/etc\/passwd/i, 'T1087'], // Account discovery
+  [/find\s+.*-perm/i, 'T1083'], // File & directory discovery
 ];
 
 // ---------------------------------------------------------------------------
@@ -94,23 +102,32 @@ const TELNET_MITRE_PATTERNS: [RegExp, string][] = [
 // ---------------------------------------------------------------------------
 
 const FAKE_SHELL_RESPONSES: Record<string, string> = {
-  'id': 'uid=1000(admin) gid=1000(admin) groups=1000(admin),27(sudo)',
-  'whoami': 'admin',
-  'uname -a': 'Linux server 5.15.0-91-generic #101-Ubuntu SMP Tue Nov 14 13:30:08 UTC 2023 x86_64 GNU/Linux',
-  'uname': 'Linux',
-  'hostname': 'prod-web-01',
-  'uptime': ' 14:32:01 up 42 days, 3:17, 1 user, load average: 0.08, 0.03, 0.01',
-  'pwd': '/home/admin',
-  'ls': 'backup.tar.gz  deploy.sh  logs  www',
-  'ls -la': 'total 32\ndrwxr-xr-x 4 admin admin 4096 Jan 15 10:00 .\ndrwxr-xr-x 3 root  root  4096 Jan  1 00:00 ..\n-rw------- 1 admin admin  512 Jan 15 10:30 .bash_history\n-rw-r--r-- 1 admin admin 8192 Jan 14 12:00 backup.tar.gz\n-rwxr-xr-x 1 admin admin  512 Jan 12 08:00 deploy.sh\ndrwxr-xr-x 2 admin admin 4096 Jan 15 10:00 logs\ndrwxr-xr-x 5 www-data www-data 4096 Jan 10 14:00 www',
-  'cat /etc/passwd': 'root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nadmin:x:1000:1000:admin:/home/admin:/bin/bash\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nmysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/false',
-  'ifconfig': 'eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255',
-  'ps aux': 'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1 169024 11264 ?        Ss   Jan01   0:05 /sbin/init\nadmin     1234  0.0  0.0   8072  4096 pts/0    Ss   14:32   0:00 -bash\nwww-data  5678  0.0  0.5 256000 40960 ?        S    Jan10   1:23 nginx: worker',
-  'w': ' 14:32:01 up 42 days,  3:17,  1 user,  load average: 0.08, 0.03, 0.01\nUSER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT\nadmin    pts/0    10.0.2.2         14:32    0.00s  0.01s  0.00s w',
-  'df -h': 'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   12G   35G  26% /\ntmpfs           2.0G     0  2.0G   0% /dev/shm',
-  'free -m': '              total        used        free      shared  buff/cache   available\nMem:           3951        1024         512         128        2415        2600\nSwap:          2048           0        2048',
-  'netstat -tlnp': 'Proto Recv-Q Send-Q Local Address     Foreign Address   State       PID/Program\ntcp        0      0 0.0.0.0:22        0.0.0.0:*         LISTEN      845/sshd\ntcp        0      0 0.0.0.0:80        0.0.0.0:*         LISTEN      5678/nginx\ntcp        0      0 127.0.0.1:3306    0.0.0.0:*         LISTEN      1122/mysqld',
-  'cat /etc/os-release': 'NAME="Ubuntu"\nVERSION="22.04.3 LTS (Jammy Jellyfish)"\nID=ubuntu\nVERSION_ID="22.04"',
+  id: 'uid=1000(admin) gid=1000(admin) groups=1000(admin),27(sudo)',
+  whoami: 'admin',
+  'uname -a':
+    'Linux server 5.15.0-91-generic #101-Ubuntu SMP Tue Nov 14 13:30:08 UTC 2023 x86_64 GNU/Linux',
+  uname: 'Linux',
+  hostname: 'prod-web-01',
+  uptime: ' 14:32:01 up 42 days, 3:17, 1 user, load average: 0.08, 0.03, 0.01',
+  pwd: '/home/admin',
+  ls: 'backup.tar.gz  deploy.sh  logs  www',
+  'ls -la':
+    'total 32\ndrwxr-xr-x 4 admin admin 4096 Jan 15 10:00 .\ndrwxr-xr-x 3 root  root  4096 Jan  1 00:00 ..\n-rw------- 1 admin admin  512 Jan 15 10:30 .bash_history\n-rw-r--r-- 1 admin admin 8192 Jan 14 12:00 backup.tar.gz\n-rwxr-xr-x 1 admin admin  512 Jan 12 08:00 deploy.sh\ndrwxr-xr-x 2 admin admin 4096 Jan 15 10:00 logs\ndrwxr-xr-x 5 www-data www-data 4096 Jan 10 14:00 www',
+  'cat /etc/passwd':
+    'root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nadmin:x:1000:1000:admin:/home/admin:/bin/bash\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nmysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/false',
+  ifconfig:
+    'eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255',
+  'ps aux':
+    'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1 169024 11264 ?        Ss   Jan01   0:05 /sbin/init\nadmin     1234  0.0  0.0   8072  4096 pts/0    Ss   14:32   0:00 -bash\nwww-data  5678  0.0  0.5 256000 40960 ?        S    Jan10   1:23 nginx: worker',
+  w: ' 14:32:01 up 42 days,  3:17,  1 user,  load average: 0.08, 0.03, 0.01\nUSER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT\nadmin    pts/0    10.0.2.2         14:32    0.00s  0.01s  0.00s w',
+  'df -h':
+    'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   12G   35G  26% /\ntmpfs           2.0G     0  2.0G   0% /dev/shm',
+  'free -m':
+    '              total        used        free      shared  buff/cache   available\nMem:           3951        1024         512         128        2415        2600\nSwap:          2048           0        2048',
+  'netstat -tlnp':
+    'Proto Recv-Q Send-Q Local Address     Foreign Address   State       PID/Program\ntcp        0      0 0.0.0.0:22        0.0.0.0:*         LISTEN      845/sshd\ntcp        0      0 0.0.0.0:80        0.0.0.0:*         LISTEN      5678/nginx\ntcp        0      0 127.0.0.1:3306    0.0.0.0:*         LISTEN      1122/mysqld',
+  'cat /etc/os-release':
+    'NAME="Ubuntu"\nVERSION="22.04.3 LTS (Jammy Jellyfish)"\nID=ubuntu\nVERSION_ID="22.04"',
 };
 
 // ---------------------------------------------------------------------------
@@ -174,14 +191,15 @@ const ftpHandler: ProtocolHandler = {
       case 'NLST':
       case 'LS':
         return {
-          response: '150 Opening ASCII mode data connection for file list\r\n'
-            + '-rw-r--r-- 1 admin admin   8192 Jan 14 12:00 backup.tar.gz\r\n'
-            + '-rwxr-xr-x 1 admin admin    512 Jan 12 08:00 deploy.sh\r\n'
-            + 'drwxr-xr-x 2 admin admin   4096 Jan 15 10:00 logs\r\n'
-            + 'drwxr-xr-x 5 www-data www-data 4096 Jan 10 14:00 www\r\n'
-            + '-rw-r--r-- 1 admin admin  16384 Jan 13 09:00 database.sql\r\n'
-            + '-rw------- 1 admin admin    256 Jan 11 07:00 .env\r\n'
-            + '226 Transfer complete\r\n',
+          response:
+            '150 Opening ASCII mode data connection for file list\r\n' +
+            '-rw-r--r-- 1 admin admin   8192 Jan 14 12:00 backup.tar.gz\r\n' +
+            '-rwxr-xr-x 1 admin admin    512 Jan 12 08:00 deploy.sh\r\n' +
+            'drwxr-xr-x 2 admin admin   4096 Jan 15 10:00 logs\r\n' +
+            'drwxr-xr-x 5 www-data www-data 4096 Jan 10 14:00 www\r\n' +
+            '-rw-r--r-- 1 admin admin  16384 Jan 13 09:00 database.sql\r\n' +
+            '-rw------- 1 admin admin    256 Jan 11 07:00 .env\r\n' +
+            '226 Transfer complete\r\n',
         };
 
       case 'PWD':
@@ -246,17 +264,19 @@ const ftpHandler: ProtocolHandler = {
 
       case 'STAT':
         return {
-          response: '211-Status of ProFTPD 1.3.8\r\n'
-            + ` Connected to ${state.username ?? 'anonymous'}\r\n`
-            + ` Working directory: ${state.cwd}\r\n`
-            + '211 End of status\r\n',
+          response:
+            '211-Status of ProFTPD 1.3.8\r\n' +
+            ` Connected to ${state.username ?? 'anonymous'}\r\n` +
+            ` Working directory: ${state.cwd}\r\n` +
+            '211 End of status\r\n',
         };
 
       case 'HELP':
         return {
-          response: '214-The following commands are recognized:\r\n'
-            + ' USER PASS QUIT LIST PWD CWD TYPE PASV PORT SYST SIZE MDTM RETR STOR DELE MKD RMD STAT HELP FEAT NLST SITE\r\n'
-            + '214 Help OK.\r\n',
+          response:
+            '214-The following commands are recognized:\r\n' +
+            ' USER PASS QUIT LIST PWD CWD TYPE PASV PORT SYST SIZE MDTM RETR STOR DELE MKD RMD STAT HELP FEAT NLST SITE\r\n' +
+            '214 Help OK.\r\n',
         };
 
       case 'NOOP':
@@ -298,11 +318,12 @@ const telnetHandler: ProtocolHandler = {
       if (state.authAttempts >= 3) {
         state.authenticated = true;
         return {
-          response: `\r\nWelcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-91-generic x86_64)\r\n\r\n`
-            + ` * Documentation:  https://help.ubuntu.com\r\n`
-            + ` * Management:     https://landscape.canonical.com\r\n`
-            + `\r\nLast login: Mon Jan 15 10:30:00 2025 from 10.0.2.2\r\n`
-            + `${state.username}@prod-web-01:~$ `,
+          response:
+            `\r\nWelcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-91-generic x86_64)\r\n\r\n` +
+            ` * Documentation:  https://help.ubuntu.com\r\n` +
+            ` * Management:     https://landscape.canonical.com\r\n` +
+            `\r\nLast login: Mon Jan 15 10:30:00 2025 from 10.0.2.2\r\n` +
+            `${state.username}@prod-web-01:~$ `,
           mitre: ['T1078'], // Valid accounts
         };
       }

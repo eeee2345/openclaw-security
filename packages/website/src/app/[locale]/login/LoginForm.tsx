@@ -110,7 +110,10 @@ export default function LoginForm() {
               {!needs2FA && (
                 <>
                   <div>
-                    <label htmlFor="login-email" className="block text-sm font-medium text-text-secondary mb-1.5">
+                    <label
+                      htmlFor="login-email"
+                      className="block text-sm font-medium text-text-secondary mb-1.5"
+                    >
                       {t('emailLabel')}
                     </label>
                     <input
@@ -125,7 +128,10 @@ export default function LoginForm() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="login-password" className="block text-sm font-medium text-text-secondary mb-1.5">
+                    <label
+                      htmlFor="login-password"
+                      className="block text-sm font-medium text-text-secondary mb-1.5"
+                    >
                       {t('passwordLabel')}
                     </label>
                     <div className="relative">
@@ -158,7 +164,10 @@ export default function LoginForm() {
 
               {needs2FA && (
                 <div>
-                  <label htmlFor="login-totp" className="block text-sm font-medium text-text-secondary mb-1.5">
+                  <label
+                    htmlFor="login-totp"
+                    className="block text-sm font-medium text-text-secondary mb-1.5"
+                  >
                     {t('authCodeLabel')}
                   </label>
                   <input
@@ -178,7 +187,10 @@ export default function LoginForm() {
               )}
 
               {error && (
-                <div role="alert" className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger">
+                <div
+                  role="alert"
+                  className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger"
+                >
                   {error}
                 </div>
               )}

@@ -73,8 +73,20 @@ describe('Scheduler', () => {
   });
 
   it('should run reputation recalculation manually', () => {
-    store.upsertIoC({ type: 'ip', value: '10.0.0.0', threatType: 'scanner', source: 'guard', confidence: 70 });
-    store.upsertIoC({ type: 'ip', value: '10.0.1.0', threatType: 'c2', source: 'trap', confidence: 90 });
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.0.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 70,
+    });
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.1.0',
+      threatType: 'c2',
+      source: 'trap',
+      confidence: 90,
+    });
 
     const result = scheduler.runReputation();
     expect(result.updated).toBe(2);
@@ -88,7 +100,13 @@ describe('Scheduler', () => {
 
   it('should run lifecycle cleanup manually', () => {
     // Insert an IoC and expire it
-    store.upsertIoC({ type: 'ip', value: '10.0.0.0', threatType: 'scanner', source: 'guard', confidence: 50 });
+    store.upsertIoC({
+      type: 'ip',
+      value: '10.0.0.0',
+      threatType: 'scanner',
+      source: 'guard',
+      confidence: 50,
+    });
     dbWrapper.getDB().prepare("UPDATE iocs SET last_seen = '2020-01-01T00:00:00Z'").run();
 
     const result = scheduler.runLifecycle();

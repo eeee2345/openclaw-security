@@ -6,12 +6,7 @@ import SectionWrapper from '@/components/ui/SectionWrapper';
 import SectionTitle from '@/components/ui/SectionTitle';
 import { Link } from '@/navigation';
 import { ExternalLink } from 'lucide-react';
-import {
-  ShieldIcon,
-  NetworkIcon,
-  TerminalIcon,
-  CheckIcon,
-} from '@/components/ui/BrandIcons';
+import { ShieldIcon, NetworkIcon, TerminalIcon, CheckIcon } from '@/components/ui/BrandIcons';
 
 /* ─── Why Icons ─── */
 const whyIcons = [ShieldIcon, NetworkIcon, TerminalIcon];
@@ -70,8 +65,12 @@ export default function OpenSourceContent() {
               <FadeInUp key={key} delay={i * 0.08}>
                 <div className="bg-surface-1 rounded-xl border border-border p-6 h-full card-glow">
                   <Icon className="w-6 h-6 text-brand-sage mb-4" />
-                  <p className="text-sm font-bold text-text-primary mb-2">{t(`why.${key}.title`)}</p>
-                  <p className="text-sm text-text-secondary leading-relaxed">{t(`why.${key}.desc`)}</p>
+                  <p className="text-sm font-bold text-text-primary mb-2">
+                    {t(`why.${key}.title`)}
+                  </p>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {t(`why.${key}.desc`)}
+                  </p>
                 </div>
               </FadeInUp>
             );
@@ -87,7 +86,14 @@ export default function OpenSourceContent() {
           subtitle={t('repos.subtitle')}
         />
         <div className="grid sm:grid-cols-3 gap-4 mt-14">
-          {(t.raw('repos.items') as Array<{ name: string; desc: string; lang: string; stars: string }>).map((repo, i) => (
+          {(
+            t.raw('repos.items') as Array<{
+              name: string;
+              desc: string;
+              lang: string;
+              stars: string;
+            }>
+          ).map((repo, i) => (
             <FadeInUp key={repo.name} delay={i * 0.08}>
               <div className="bg-surface-2 rounded-xl border border-border p-6 h-full flex flex-col">
                 <p className="font-mono text-sm font-bold text-text-primary mb-2">{repo.name}</p>
@@ -149,7 +155,9 @@ export default function OpenSourceContent() {
           {roadmapSections.map((section, i) => (
             <FadeInUp key={section.key} delay={i * 0.08}>
               <div className="bg-surface-2 rounded-xl border border-border p-6 h-full">
-                <span className={`${section.badge} text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full`}>
+                <span
+                  className={`${section.badge} text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full`}
+                >
                   {t(`roadmap.${section.key}.title`)}
                 </span>
                 <ul className="mt-4 space-y-2.5">

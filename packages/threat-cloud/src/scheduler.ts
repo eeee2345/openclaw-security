@@ -54,14 +54,10 @@ export class Scheduler {
 
     // Run correlation immediately, then on interval
     this.runCorrelation();
-    this.timers.push(
-      setInterval(() => this.runCorrelation(), this.config.correlationIntervalMs)
-    );
+    this.timers.push(setInterval(() => this.runCorrelation(), this.config.correlationIntervalMs));
 
     // Reputation recalculation
-    this.timers.push(
-      setInterval(() => this.runReputation(), this.config.reputationIntervalMs)
-    );
+    this.timers.push(setInterval(() => this.runReputation(), this.config.reputationIntervalMs));
 
     // Rule generation
     this.timers.push(
@@ -69,9 +65,7 @@ export class Scheduler {
     );
 
     // Data lifecycle cleanup
-    this.timers.push(
-      setInterval(() => this.runLifecycle(), this.config.aggregationIntervalMs)
-    );
+    this.timers.push(setInterval(() => this.runLifecycle(), this.config.aggregationIntervalMs));
   }
 
   /** Stop all scheduled tasks / 停止所有排程任務 */

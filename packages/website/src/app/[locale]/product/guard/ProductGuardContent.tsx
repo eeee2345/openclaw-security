@@ -66,7 +66,9 @@ export default function ProductGuardContent() {
             <div className="mt-10 max-w-3xl mx-auto bg-surface-1 rounded-xl border border-border shadow-2xl overflow-hidden">
               {/* Example label */}
               <div className="bg-surface-2/80 px-5 py-1.5 text-center border-b border-border">
-                <span className="text-[10px] text-text-muted uppercase tracking-wider">{t('dashboard.exampleLabel')}</span>
+                <span className="text-[10px] text-text-muted uppercase tracking-wider">
+                  {t('dashboard.exampleLabel')}
+                </span>
               </div>
               {/* Dashboard header */}
               <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-surface-2">
@@ -222,15 +224,21 @@ export default function ProductGuardContent() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
                 <div className="text-center">
                   <p className="text-xs text-text-muted">{t('learningPeriod.phase1Label')}</p>
-                  <p className="text-sm font-semibold text-text-primary mt-1">{t('learningPeriod.phase1')}</p>
+                  <p className="text-sm font-semibold text-text-primary mt-1">
+                    {t('learningPeriod.phase1')}
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-text-muted">{t('learningPeriod.phase2Label')}</p>
-                  <p className="text-sm font-semibold text-text-primary mt-1">{t('learningPeriod.phase2')}</p>
+                  <p className="text-sm font-semibold text-text-primary mt-1">
+                    {t('learningPeriod.phase2')}
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-text-muted">{t('learningPeriod.phase3Label')}</p>
-                  <p className="text-sm font-semibold text-brand-sage mt-1">{t('learningPeriod.phase3')}</p>
+                  <p className="text-sm font-semibold text-brand-sage mt-1">
+                    {t('learningPeriod.phase3')}
+                  </p>
                 </div>
               </div>
             </div>

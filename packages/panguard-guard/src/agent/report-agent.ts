@@ -222,7 +222,9 @@ export class ReportAgent {
           const stat = statSync(join(dir, entry.file));
           if (stat.mtimeMs < cutoff) {
             unlinkSync(join(dir, entry.file));
-            logger.info(`Retention: deleted ${entry.file} (older than ${this.rotation.retentionDays} days)`);
+            logger.info(
+              `Retention: deleted ${entry.file} (older than ${this.rotation.retentionDays} days)`
+            );
           }
         } catch {
           // Non-critical
@@ -421,10 +423,16 @@ export class ReportAgent {
       if (conclusion === 'benign' || conclusion === 'suspicious' || conclusion === 'malicious') {
         verdictBreakdown[conclusion]++;
       }
-      if (r.response.action !== 'log_only' && r.response.action !== 'notify' && r.response.success) {
+      if (
+        r.response.action !== 'log_only' &&
+        r.response.action !== 'notify' &&
+        r.response.success
+      ) {
         threatsBlocked++;
       }
-      const ip = (r.event.metadata?.['sourceIP'] as string) ?? (r.event.metadata?.['remoteAddress'] as string);
+      const ip =
+        (r.event.metadata?.['sourceIP'] as string) ??
+        (r.event.metadata?.['remoteAddress'] as string);
       if (ip && conclusion !== 'benign') {
         ipCounts.set(ip, (ipCounts.get(ip) ?? 0) + 1);
       }
@@ -437,7 +445,10 @@ export class ReportAgent {
       threatsBlocked,
       suspiciousEvents: verdictBreakdown.suspicious,
       benignEvents: verdictBreakdown.benign,
-      topAttackSources: [...ipCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([ip, count]) => ({ ip, count })),
+      topAttackSources: [...ipCounts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([ip, count]) => ({ ip, count })),
       actionsTaken: [...actionCounts.entries()].map(([action, count]) => ({ action, count })),
       verdictBreakdown,
     };

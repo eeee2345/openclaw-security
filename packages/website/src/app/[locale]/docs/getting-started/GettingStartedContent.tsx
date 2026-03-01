@@ -350,7 +350,10 @@ export default function GettingStartedContent() {
             <p className="text-text-secondary mb-6">{t('checklistDesc')}</p>
             <div className="space-y-3">
               {(['cl1', 'cl2', 'cl3', 'cl4', 'cl5'] as const).map((key) => (
-                <div key={key} className="flex items-start gap-3 bg-surface-1 border border-border rounded-xl p-4">
+                <div
+                  key={key}
+                  className="flex items-start gap-3 bg-surface-1 border border-border rounded-xl p-4"
+                >
                   <BrandCheck className="w-4 h-4 text-brand-sage shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-text-primary">{t(`${key}.title`)}</p>

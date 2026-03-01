@@ -333,8 +333,9 @@ body {
 .js-ready .animate-on-scroll {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
-              transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition:
+    opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .js-ready .animate-on-scroll.is-visible {
   opacity: 1;
@@ -342,10 +343,19 @@ body {
 }
 
 /* Directional variants */
-.js-ready .animate-on-scroll.from-down { transform: translateY(-24px); }
-.js-ready .animate-on-scroll.from-left { transform: translateX(24px); }
-.js-ready .animate-on-scroll.from-right { transform: translateX(-24px); }
-.js-ready .animate-on-scroll.from-none { transform: none; opacity: 0; }
+.js-ready .animate-on-scroll.from-down {
+  transform: translateY(-24px);
+}
+.js-ready .animate-on-scroll.from-left {
+  transform: translateX(24px);
+}
+.js-ready .animate-on-scroll.from-right {
+  transform: translateX(-24px);
+}
+.js-ready .animate-on-scroll.from-none {
+  transform: none;
+  opacity: 0;
+}
 
 .js-ready .animate-on-scroll.from-down.is-visible,
 .js-ready .animate-on-scroll.from-left.is-visible,
@@ -356,27 +366,61 @@ body {
 }
 
 /* Stagger delay classes */
-.stagger-1 { transition-delay: 0.08s; }
-.stagger-2 { transition-delay: 0.16s; }
-.stagger-3 { transition-delay: 0.24s; }
-.stagger-4 { transition-delay: 0.32s; }
-.stagger-5 { transition-delay: 0.40s; }
-.stagger-6 { transition-delay: 0.48s; }
-.stagger-7 { transition-delay: 0.56s; }
-.stagger-8 { transition-delay: 0.64s; }
-.stagger-9 { transition-delay: 0.72s; }
-.stagger-10 { transition-delay: 0.80s; }
-.stagger-11 { transition-delay: 0.88s; }
-.stagger-12 { transition-delay: 0.96s; }
+.stagger-1 {
+  transition-delay: 0.08s;
+}
+.stagger-2 {
+  transition-delay: 0.16s;
+}
+.stagger-3 {
+  transition-delay: 0.24s;
+}
+.stagger-4 {
+  transition-delay: 0.32s;
+}
+.stagger-5 {
+  transition-delay: 0.4s;
+}
+.stagger-6 {
+  transition-delay: 0.48s;
+}
+.stagger-7 {
+  transition-delay: 0.56s;
+}
+.stagger-8 {
+  transition-delay: 0.64s;
+}
+.stagger-9 {
+  transition-delay: 0.72s;
+}
+.stagger-10 {
+  transition-delay: 0.8s;
+}
+.stagger-11 {
+  transition-delay: 0.88s;
+}
+.stagger-12 {
+  transition-delay: 0.96s;
+}
 
 /* Hero entrance keyframes (page-load, not scroll-triggered) */
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .hero-entrance {
@@ -393,8 +437,14 @@ body {
   animation: tabFadeIn 0.2s ease-out forwards;
 }
 @keyframes tabFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Form state transition */
@@ -402,16 +452,23 @@ body {
   animation: formFadeIn 0.4s ease-out forwards;
 }
 @keyframes formFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Reveal text word animation */
 .js-ready .reveal-word {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
-              transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition:
+    opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .js-ready .reveal-text-container.is-visible .reveal-word {
   opacity: 1;
@@ -432,7 +489,7 @@ body {
 :lang(zh) {
   overflow-wrap: break-word;
   word-break: normal;
-  font-feature-settings: "palt";
+  font-feature-settings: 'palt';
 }
 
 :lang(zh) p,
@@ -488,8 +545,14 @@ body {
 /* ─── Pulse Danger Animation ─── */
 
 @keyframes pulse-danger {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; text-shadow: 0 0 12px rgba(220, 38, 38, 0.3); }
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(220, 38, 38, 0.3);
+  }
 }
 .animate-pulse-danger {
   animation: pulse-danger 2.5s ease-in-out infinite;
@@ -497,8 +560,13 @@ body {
 
 /* ─── Typewriter Cursor ─── */
 @keyframes blink-cursor {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 .cursor-blink {
   animation: blink-cursor 0.7s step-end infinite;
@@ -510,11 +578,16 @@ body {
   animation: card-glow-breathe 3s ease-in-out infinite;
 }
 @keyframes card-glow-breathe {
-  0%, 100% {
-    box-shadow: 0 0 0 1px rgba(139,154,142,0.15), 0 4px 24px rgba(139,154,142,0.06);
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(139, 154, 142, 0.15),
+      0 4px 24px rgba(139, 154, 142, 0.06);
   }
   50% {
-    box-shadow: 0 0 0 1px rgba(139,154,142,0.35), 0 8px 40px rgba(139,154,142,0.15);
+    box-shadow:
+      0 0 0 1px rgba(139, 154, 142, 0.35),
+      0 8px 40px rgba(139, 154, 142, 0.15);
   }
 }
 
