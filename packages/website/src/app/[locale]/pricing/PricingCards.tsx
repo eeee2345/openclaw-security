@@ -240,7 +240,7 @@ export default function PricingCards() {
         setLoading(null);
       }
     },
-    [authToken]
+    [authToken, t]
   );
 
   return (
