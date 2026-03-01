@@ -2784,13 +2784,13 @@
         "purpose": "CDN 及 DDoS 防護",
         "location": "全球"
       },
-      "stripe": {
-        "name": "Stripe",
-        "purpose": "支付處理",
+      "lemonSqueezy": {
+        "name": "Lemon Squeezy",
+        "purpose": "支付處理（委託商務代理）",
         "location": "美國"
       },
-      "sendgrid": {
-        "name": "SendGrid",
+      "resend": {
+        "name": "Resend",
         "purpose": "交易郵件",
         "location": "美國"
       },

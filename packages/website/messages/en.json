@@ -2058,13 +2058,13 @@
         "purpose": "CDN & DDoS Protection",
         "location": "Global"
       },
-      "stripe": {
-        "name": "Stripe",
-        "purpose": "Payment Processing",
+      "lemonSqueezy": {
+        "name": "Lemon Squeezy",
+        "purpose": "Payment Processing (Merchant of Record)",
         "location": "US"
       },
-      "sendgrid": {
-        "name": "SendGrid",
+      "resend": {
+        "name": "Resend",
         "purpose": "Transactional Email",
         "location": "US"
       },
