@@ -31,7 +31,8 @@
       "@panguard-ai/panguard-report": ["./packages/panguard-report/src"],
       "@panguard-ai/panguard-web": ["./packages/panguard-web/src"],
       "@panguard-ai/panguard": ["./packages/panguard/src"],
-      "@panguard-ai/panguard-auth": ["./packages/panguard-auth/src"]
+      "@panguard-ai/panguard-auth": ["./packages/panguard-auth/src"],
+      "@panguard-ai/manager": ["./packages/panguard-manager/src"]
     }
   },
   "references": [
@@ -44,6 +45,7 @@
     { "path": "./packages/panguard-web" },
     { "path": "./packages/panguard" },
     { "path": "./packages/panguard-auth" },
+    { "path": "./packages/panguard-manager" },
     { "path": "./security-hardening" }
   ],
   "include": [],

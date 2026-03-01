@@ -35,6 +35,7 @@ export default defineConfig({
       '@panguard-ai/security-hardening': resolve(__dirname, './security-hardening/src'),
       '@panguard-ai/panguard-web': resolve(__dirname, './packages/panguard-web/src'),
       '@panguard-ai/panguard-auth': resolve(__dirname, './packages/panguard-auth/src'),
+      '@panguard-ai/manager': resolve(__dirname, './packages/panguard-manager/src'),
     },
   },
 });

@@ -1,0 +1,30 @@
+{
+  "name": "@panguard-ai/manager",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Manager node for distributed Guard agent orchestration / Guard 代理分散式架構管理節點",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "tsc --build --watch",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@panguard-ai/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.7.3"
+  }
+}
