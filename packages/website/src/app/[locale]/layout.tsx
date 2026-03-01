@@ -66,6 +66,7 @@ export async function generateMetadata({
       images: ['/og-image.png'],
     },
     robots: { index: true, follow: true },
+    manifest: '/manifest.webmanifest',
     icons: {
       icon: [
         { url: '/favicon.svg', type: 'image/svg+xml' },

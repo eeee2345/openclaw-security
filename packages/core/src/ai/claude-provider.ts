@@ -95,7 +95,6 @@ export class ClaudeProvider extends LLMProviderBase {
 
     let Anthropic: AnthropicConstructor;
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const module = await (import('@anthropic-ai/sdk' as string) as Promise<
         Record<string, unknown>
       >);

@@ -101,7 +101,6 @@ export class OpenAIProvider extends LLMProviderBase {
 
     let OpenAI: OpenAIConstructor;
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const module = await (import('openai' as string) as Promise<Record<string, unknown>>);
       OpenAI = (module['default'] ?? module) as unknown as OpenAIConstructor;
     } catch (error) {
