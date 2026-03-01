@@ -211,10 +211,10 @@ export default function PricingCards() {
       } else if (res.status === 401) {
         window.location.href = `/login?redirect=/pricing`;
       } else {
-        setCheckoutError(data.error ?? 'Checkout is currently unavailable. Please try again later.');
+        setCheckoutError(data.error ?? t('checkoutUnavailable'));
       }
     } catch {
-      setCheckoutError('Unable to connect. Please check your connection and try again.');
+      setCheckoutError(t('connectionError'));
     } finally {
       setLoading(null);
     }

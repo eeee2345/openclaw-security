@@ -693,6 +693,8 @@
       "ctaDemo": "Request a Demo"
     },
     "guarantee": "30-day money-back guarantee on all paid plans. No questions asked.",
+    "checkoutUnavailable": "Checkout is currently unavailable. Please try again later.",
+    "connectionError": "Unable to connect. Please check your connection and try again.",
     "plans": {
       "community": {
         "name": "Community",

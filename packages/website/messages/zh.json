@@ -1427,6 +1427,8 @@
       "ctaDemo": "預約 Demo"
     },
     "guarantee": "所有付費方案享 30 天無條件退款保證。",
+    "checkoutUnavailable": "結帳服務暫時無法使用，請稍後再試。",
+    "connectionError": "無法連線，請檢查你的網路連線後重試。",
     "plans": {
       "community": {
         "name": "Community 社群版",
