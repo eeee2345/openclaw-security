@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth';
 import { useRouter, Link } from '@/navigation';
 import {
@@ -18,6 +19,7 @@ import BrandLogo from '@/components/ui/BrandLogo';
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
 export default function AccountSettings() {
+  const t = useTranslations('accountSettings');
   const { user, token, loading, logout } = useAuth();
   const router = useRouter();
 
@@ -55,13 +57,13 @@ export default function AccountSettings() {
         const data = (await res.json()) as { ok: boolean; data?: { enabled: boolean } };
         if (data.ok) setTotpEnabled(data.data?.enabled ?? false);
       } catch {
-        setTotpError('Unable to check 2FA status');
+        setTotpError(t('twoFA.errorCheckStatus'));
       } finally {
         setTotpLoading(false);
       }
     }
     void checkTotp();
-  }, [token]);
+  }, [token, t]);
 
   async function handleTotpSetup() {
     if (!token) return;
@@ -79,7 +81,7 @@ export default function AccountSettings() {
         setSetupData(data.data);
       }
     } catch {
-      setTotpError('Failed to start 2FA setup');
+      setTotpError(t('twoFA.errorSetupFailed'));
     }
   }
 
@@ -100,12 +102,12 @@ export default function AccountSettings() {
         setTotpEnabled(true);
         setSetupData(null);
         setTotpCode('');
-        setTotpSuccess('Two-factor authentication enabled');
+        setTotpSuccess(t('twoFA.successEnabled'));
       } else {
-        setTotpError(data.error ?? 'Invalid code');
+        setTotpError(data.error ?? t('twoFA.errorInvalidCode'));
       }
     } catch {
-      setTotpError('Verification failed');
+      setTotpError(t('twoFA.errorVerifyFailed'));
     }
   }
 
@@ -124,12 +126,12 @@ export default function AccountSettings() {
       const data = (await res.json()) as { ok: boolean; error?: string };
       if (data.ok) {
         setTotpEnabled(false);
-        setTotpSuccess('Two-factor authentication disabled');
+        setTotpSuccess(t('twoFA.successDisabled'));
       } else {
-        setTotpError(data.error ?? 'Failed to disable 2FA');
+        setTotpError(data.error ?? t('twoFA.errorDisableFailed'));
       }
     } catch {
-      setTotpError('Failed to disable 2FA');
+      setTotpError(t('twoFA.errorDisableFailed'));
     }
   }
 
@@ -172,10 +174,10 @@ export default function AccountSettings() {
         await logout();
         router.push('/');
       } else {
-        setDeleteError(data.error ?? 'Failed to delete account');
+        setDeleteError(data.error ?? t('deleteAccount.errorFailed'));
       }
     } catch {
-      setDeleteError('Network error');
+      setDeleteError(t('deleteAccount.errorNetwork'));
     } finally {
       setDeleteLoading(false);
     }
@@ -194,34 +196,34 @@ export default function AccountSettings() {
       {/* Header */}
       <header className="border-b border-border bg-surface-1">
         <div className="max-w-3xl mx-auto px-6 h-14 flex items-center gap-4">
-          <Link href="/dashboard" className="text-text-tertiary hover:text-text-secondary" aria-label="Back to dashboard">
+          <Link href="/dashboard" className="text-text-tertiary hover:text-text-secondary" aria-label={t('backToDashboard')}>
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <BrandLogo size={20} className="text-brand-sage" />
-          <span className="font-semibold text-text-primary text-sm">Account Settings</span>
+          <span className="font-semibold text-text-primary text-sm">{t('headerTitle')}</span>
         </div>
       </header>
 
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
         {/* Profile */}
-        <Section title="Profile" icon={<Shield className="w-5 h-5" />}>
+        <Section title={t('profile.sectionTitle')} icon={<Shield className="w-5 h-5" />}>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-text-tertiary">Name</span>
+              <span className="text-text-tertiary">{t('profile.nameLabel')}</span>
               <p className="text-text-primary font-medium">{user.name}</p>
             </div>
             <div>
-              <span className="text-text-tertiary">Email</span>
+              <span className="text-text-tertiary">{t('profile.emailLabel')}</span>
               <p className="text-text-primary font-medium">{user.email}</p>
             </div>
             <div>
-              <span className="text-text-tertiary">Plan</span>
+              <span className="text-text-tertiary">{t('profile.planLabel')}</span>
               <p className="text-brand-sage font-medium">
                 {user.tier.charAt(0).toUpperCase() + user.tier.slice(1)}
               </p>
             </div>
             <div>
-              <span className="text-text-tertiary">Member since</span>
+              <span className="text-text-tertiary">{t('profile.memberSinceLabel')}</span>
               <p className="text-text-primary font-medium">
                 {new Date(user.createdAt).toLocaleDateString()}
               </p>
@@ -230,33 +232,33 @@ export default function AccountSettings() {
         </Section>
 
         {/* 2FA */}
-        <Section title="Two-Factor Authentication" icon={<Key className="w-5 h-5" />}>
+        <Section title={t('twoFA.sectionTitle')} icon={<Key className="w-5 h-5" />}>
           {totpLoading ? (
             <Loader2 className="w-4 h-4 text-text-tertiary animate-spin" />
           ) : totpEnabled ? (
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Check className="w-4 h-4 text-status-safe" />
-                <span className="text-sm text-status-safe font-medium">2FA is enabled</span>
+                <span className="text-sm text-status-safe font-medium">{t('twoFA.statusEnabled')}</span>
               </div>
               <button
                 onClick={handleTotpDisable}
                 className="text-sm text-status-danger hover:underline"
               >
-                Disable 2FA
+                {t('twoFA.disableButton')}
               </button>
             </div>
           ) : setupData ? (
             <div className="space-y-4">
               <p className="text-sm text-text-secondary">
-                Scan this QR code with your authenticator app, or enter the secret manually:
+                {t('twoFA.qrInstruction')}
               </p>
               <code className="block bg-surface-0 border border-border rounded-lg p-3 font-mono text-xs text-brand-sage break-all">
                 {setupData.secret}
               </code>
               <div>
                 <label className="block text-sm text-text-secondary mb-1.5">
-                  Enter the 6-digit code from your app:
+                  {t('twoFA.codeLabel')}
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -273,14 +275,14 @@ export default function AccountSettings() {
                     onClick={handleTotpVerify}
                     className="bg-brand-sage text-surface-0 font-medium text-sm rounded-lg px-4 py-2 hover:bg-brand-sage-light"
                   >
-                    Verify
+                    {t('twoFA.verifyButton')}
                   </button>
                 </div>
               </div>
               {setupData.backupCodes.length > 0 && (
                 <div>
                   <p className="text-sm text-text-secondary mb-2">
-                    Save these backup codes in a safe place:
+                    {t('twoFA.backupCodesInstruction')}
                   </p>
                   <div className="bg-surface-0 border border-border rounded-lg p-3 grid grid-cols-2 gap-1">
                     {setupData.backupCodes.map((code) => (
@@ -295,14 +297,13 @@ export default function AccountSettings() {
           ) : (
             <div>
               <p className="text-sm text-text-secondary mb-3">
-                Add an extra layer of security to your account with TOTP-based two-factor
-                authentication.
+                {t('twoFA.description')}
               </p>
               <button
                 onClick={handleTotpSetup}
                 className="bg-brand-sage text-surface-0 font-medium text-sm rounded-lg px-4 py-2 hover:bg-brand-sage-light"
               >
-                Set up 2FA
+                {t('twoFA.setupButton')}
               </button>
             </div>
           )}
@@ -311,9 +312,9 @@ export default function AccountSettings() {
         </Section>
 
         {/* Data Export */}
-        <Section title="Export Data" icon={<Download className="w-5 h-5" />}>
+        <Section title={t('exportData.sectionTitle')} icon={<Download className="w-5 h-5" />}>
           <p className="text-sm text-text-secondary mb-3">
-            Download all your data in JSON format (GDPR compliant).
+            {t('exportData.description')}
           </p>
           <button
             onClick={handleExportData}
@@ -325,23 +326,22 @@ export default function AccountSettings() {
             ) : (
               <Download className="w-4 h-4" />
             )}
-            Export My Data
+            {t('exportData.exportButton')}
           </button>
         </Section>
 
         {/* Danger Zone */}
-        <Section title="Delete Account" icon={<Trash2 className="w-5 h-5" />} danger>
+        <Section title={t('deleteAccount.sectionTitle')} icon={<Trash2 className="w-5 h-5" />} danger>
           {!deleteConfirm ? (
             <div>
               <p className="text-sm text-text-secondary mb-3">
-                Permanently delete your account and all associated data. This action cannot be
-                undone.
+                {t('deleteAccount.description')}
               </p>
               <button
                 onClick={() => setDeleteConfirm(true)}
                 className="border border-status-danger/30 text-status-danger rounded-lg px-4 py-2 text-sm hover:bg-status-danger/10 transition-colors"
               >
-                Delete Account
+                {t('deleteAccount.sectionTitle')}
               </button>
             </div>
           ) : (
@@ -349,19 +349,19 @@ export default function AccountSettings() {
               <div className="flex items-start gap-2 bg-status-danger/10 border border-status-danger/20 rounded-lg p-3">
                 <AlertTriangle className="w-4 h-4 text-status-danger shrink-0 mt-0.5" />
                 <p className="text-sm text-status-danger">
-                  This will permanently delete your account, all data, sessions, and subscription.
+                  {t('deleteAccount.warning')}
                 </p>
               </div>
               <div>
                 <label className="block text-sm text-text-secondary mb-1.5">
-                  Enter your password to confirm:
+                  {t('deleteAccount.passwordLabel')}
                 </label>
                 <input
                   type="password"
                   value={deletePassword}
                   onChange={(e) => setDeletePassword(e.target.value)}
                   className="w-full bg-surface-0 border border-border rounded-lg px-4 py-2 text-text-primary text-sm focus:outline-none focus:border-status-danger"
-                  placeholder="Your password"
+                  placeholder={t('deleteAccount.passwordPlaceholder')}
                 />
               </div>
               {deleteError && <p className="text-sm text-status-danger">{deleteError}</p>}
@@ -374,7 +374,7 @@ export default function AccountSettings() {
                   }}
                   className="border border-border rounded-lg px-4 py-2 text-sm text-text-secondary hover:text-text-primary"
                 >
-                  Cancel
+                  {t('deleteAccount.cancelButton')}
                 </button>
                 <button
                   onClick={handleDeleteAccount}
@@ -382,7 +382,7 @@ export default function AccountSettings() {
                   className="bg-status-danger text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-status-danger/90 disabled:opacity-50 flex items-center gap-2"
                 >
                   {deleteLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Permanently Delete
+                  {t('deleteAccount.confirmButton')}
                 </button>
               </div>
             </div>

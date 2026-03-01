@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from '@/navigation';
 import { Link } from '@/navigation';
@@ -25,16 +26,8 @@ interface UsageItem {
   percentage: number;
 }
 
-const RESOURCE_LABELS: Record<string, string> = {
-  scan: 'Security Scans',
-  guard_endpoints: 'Guard Endpoints',
-  reports: 'Compliance Reports',
-  api_calls: 'API Calls',
-  notifications: 'Notification Channels',
-  trap_instances: 'Honeypot Instances',
-};
-
 export default function DashboardContent() {
+  const t = useTranslations('dashboard');
   const { user, token, loading, logout } = useAuth();
   const router = useRouter();
   const [usage, setUsage] = useState<UsageItem[]>([]);
@@ -59,13 +52,13 @@ export default function DashboardContent() {
           setUsage(data.data.usage);
         }
       } catch {
-        setUsageError('Unable to load usage data. Please refresh.');
+        setUsageError(t('usageError'));
       } finally {
         setUsageLoading(false);
       }
     }
     void fetchUsage();
-  }, [token]);
+  }, [token, t]);
 
   if (loading || !user) {
     return (
@@ -94,7 +87,7 @@ export default function DashboardContent() {
                 router.push('/');
               }}
               className="text-text-tertiary hover:text-text-secondary transition-colors"
-              aria-label="Log out"
+              aria-label={t('logOut')}
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -105,13 +98,13 @@ export default function DashboardContent() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Welcome */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-text-primary">Welcome, {user.name}</h1>
+          <h1 className="text-2xl font-bold text-text-primary">{t('welcome', { name: user.name })}</h1>
           <p className="text-sm text-text-secondary mt-1">
-            Plan: <span className="text-brand-sage font-medium">{tierDisplay}</span>
+            {t('planLabel')} <span className="text-brand-sage font-medium">{tierDisplay}</span>
             {user.planExpiresAt && (
               <span className="text-text-tertiary">
                 {' '}
-                (expires {new Date(user.planExpiresAt).toLocaleDateString()})
+                {t('planExpires', { date: new Date(user.planExpiresAt).toLocaleDateString() })}
               </span>
             )}
           </p>
@@ -121,26 +114,26 @@ export default function DashboardContent() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <QuickAction
             icon={<Terminal className="w-5 h-5" />}
-            title="Install CLI"
-            description="Get started with scanning"
+            title={t('quickActions.installCLI.title')}
+            description={t('quickActions.installCLI.description')}
             href="/docs/getting-started"
           />
           <QuickAction
             icon={<Settings className="w-5 h-5" />}
-            title="Account Settings"
-            description="2FA, profile, security"
+            title={t('quickActions.accountSettings.title')}
+            description={t('quickActions.accountSettings.description')}
             href="/account/settings"
           />
           <QuickAction
             icon={<CreditCard className="w-5 h-5" />}
-            title="Billing"
-            description="Manage subscription"
+            title={t('quickActions.billing.title')}
+            description={t('quickActions.billing.description')}
             href="/account/billing"
           />
           <QuickAction
             icon={<BarChart3 className="w-5 h-5" />}
-            title="API Docs"
-            description="Integrate with your tools"
+            title={t('quickActions.apiDocs.title')}
+            description={t('quickActions.apiDocs.description')}
             href="/docs/api"
           />
         </div>
@@ -149,7 +142,7 @@ export default function DashboardContent() {
         <div className="bg-surface-1 border border-border rounded-xl p-6">
           <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
             <Activity className="w-5 h-5 text-brand-sage" />
-            Usage This Month
+            {t('usageHeading')}
           </h2>
 
           {usageLoading ? (
@@ -159,11 +152,11 @@ export default function DashboardContent() {
           ) : usageError ? (
             <p className="text-sm text-status-caution py-4">{usageError}</p>
           ) : usage.length === 0 ? (
-            <p className="text-sm text-text-tertiary py-4">No usage data available.</p>
+            <p className="text-sm text-text-tertiary py-4">{t('usageEmpty')}</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {usage.map((item) => (
-                <UsageMeter key={item.resource} item={item} />
+                <UsageMeter key={item.resource} item={item} unlimitedLabel={t('unlimited')} resourceLabel={t(`resources.${item.resource}` as 'resources.scan')} />
               ))}
             </div>
           )}
@@ -174,9 +167,9 @@ export default function DashboardContent() {
           <div className="flex items-start gap-4">
             <Shield className="w-8 h-8 text-brand-sage shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-text-primary">Quick Start</h3>
+              <h3 className="font-semibold text-text-primary">{t('quickStartHeading')}</h3>
               <p className="text-sm text-text-secondary mt-1">
-                Install the Panguard CLI to start scanning your infrastructure:
+                {t('quickStartDescription')}
               </p>
               <code className="inline-block mt-3 bg-surface-0 border border-border rounded-lg px-4 py-2 font-mono text-sm text-brand-sage">
                 curl -fsSL https://panguard.ai/install | bash
@@ -214,8 +207,7 @@ function QuickAction({
   );
 }
 
-function UsageMeter({ item }: { item: UsageItem }) {
-  const label = RESOURCE_LABELS[item.resource] ?? item.resource;
+function UsageMeter({ item, unlimitedLabel, resourceLabel }: { item: UsageItem; unlimitedLabel: string; resourceLabel: string }) {
   const isUnlimited = item.limit === -1;
   const percentage = isUnlimited ? 0 : item.percentage;
   const barColor =
@@ -228,10 +220,10 @@ function UsageMeter({ item }: { item: UsageItem }) {
   return (
     <div className="bg-surface-0 border border-border rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-text-primary">{label}</span>
+        <span className="text-sm font-medium text-text-primary">{resourceLabel}</span>
         <span className="text-xs text-text-tertiary">
           {item.current.toLocaleString()} /{' '}
-          {isUnlimited ? 'Unlimited' : item.limit.toLocaleString()}
+          {isUnlimited ? unlimitedLabel : item.limit.toLocaleString()}
         </span>
       </div>
       <div className="h-2 bg-surface-2 rounded-full overflow-hidden">

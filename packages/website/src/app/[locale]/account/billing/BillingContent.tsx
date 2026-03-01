@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth';
 import { useRouter, Link } from '@/navigation';
 import { CreditCard, ExternalLink, Loader2, ArrowLeft, ArrowUpRight, Check } from 'lucide-react';
@@ -17,15 +18,8 @@ interface BillingData {
   };
 }
 
-const TIER_FEATURES: Record<string, string[]> = {
-  free: ['100 scans/month', '1 endpoint', '1,000 API calls'],
-  solo: ['Unlimited scans', '3 endpoints', '10,000 API calls', '1 honeypot'],
-  pro: ['Unlimited scans', '10 endpoints', '50,000 API calls', '5 reports', '3 honeypots'],
-  business: ['Unlimited scans', '25 endpoints', 'Unlimited API calls', '20 reports', '8 honeypots'],
-  enterprise: ['Everything unlimited', 'Priority support', 'Custom SLA'],
-};
-
 export default function BillingContent() {
+  const t = useTranslations('billing');
   const { user, token, loading } = useAuth();
   const router = useRouter();
   const [billing, setBilling] = useState<BillingData | null>(null);
@@ -51,13 +45,13 @@ export default function BillingContent() {
           setBilling(data.data);
         }
       } catch {
-        setBillingError('Unable to load billing data. Please refresh.');
+        setBillingError(t('errorLoading'));
       } finally {
         setBillingLoading(false);
       }
     }
     void fetchBilling();
-  }, [token]);
+  }, [token, t]);
 
   async function openPortal() {
     if (!token) return;
@@ -87,7 +81,7 @@ export default function BillingContent() {
 
   const tier = billing?.tier ?? user.tier;
   const tierDisplay = tier.charAt(0).toUpperCase() + tier.slice(1);
-  const features = TIER_FEATURES[tier] ?? TIER_FEATURES['free']!;
+  const features = (t.raw(`tierFeatures.${tier}`) as string[] | undefined) ?? (t.raw('tierFeatures.free') as string[]);
   const sub = billing?.subscription;
   const statusColor =
     sub?.status === 'active'
@@ -105,7 +99,7 @@ export default function BillingContent() {
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <BrandLogo size={20} className="text-brand-sage" />
-          <span className="font-semibold text-text-primary text-sm">Billing</span>
+          <span className="font-semibold text-text-primary text-sm">{t('headerTitle')}</span>
         </div>
       </header>
 
@@ -115,7 +109,7 @@ export default function BillingContent() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-brand-sage" />
-              Current Plan
+              {t('currentPlan')}
             </h2>
             {tier !== 'free' && sub && (
               <button
@@ -128,7 +122,7 @@ export default function BillingContent() {
                 ) : (
                   <ExternalLink className="w-3 h-3" />
                 )}
-                Manage Subscription
+                {t('manageSubscription')}
               </button>
             )}
           </div>
@@ -150,21 +144,21 @@ export default function BillingContent() {
 
               {sub?.renewsAt && (
                 <p className="text-sm text-text-secondary">
-                  Renews on {new Date(sub.renewsAt).toLocaleDateString()}
+                  {t('renewsOn', { date: new Date(sub.renewsAt).toLocaleDateString() })}
                 </p>
               )}
               {sub?.endsAt && (
                 <p className="text-sm text-status-caution">
-                  Ends on {new Date(sub.endsAt).toLocaleDateString()}
+                  {t('endsOn', { date: new Date(sub.endsAt).toLocaleDateString() })}
                 </p>
               )}
               {!sub && tier === 'free' && (
-                <p className="text-sm text-text-tertiary">Free tier — no subscription</p>
+                <p className="text-sm text-text-tertiary">{t('freeTier')}</p>
               )}
 
               <div className="pt-4 border-t border-border">
                 <p className="text-xs text-text-tertiary uppercase tracking-wider mb-2">
-                  Plan includes
+                  {t('planIncludes')}
                 </p>
                 <ul className="space-y-1.5">
                   {features.map((f) => (
@@ -182,15 +176,15 @@ export default function BillingContent() {
         {/* Upgrade CTA */}
         {tier === 'free' && (
           <div className="bg-brand-sage-wash border border-brand-sage/20 rounded-xl p-6">
-            <h3 className="font-semibold text-text-primary mb-2">Upgrade your plan</h3>
+            <h3 className="font-semibold text-text-primary mb-2">{t('upgradeHeading')}</h3>
             <p className="text-sm text-text-secondary mb-4">
-              Get more scans, endpoints, and advanced features.
+              {t('upgradeDescription')}
             </p>
             <Link
               href="/pricing"
               className="inline-flex items-center gap-1.5 bg-brand-sage text-surface-0 font-semibold text-sm rounded-lg px-5 py-2.5 hover:bg-brand-sage-light transition-all"
             >
-              View Plans
+              {t('viewPlans')}
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>

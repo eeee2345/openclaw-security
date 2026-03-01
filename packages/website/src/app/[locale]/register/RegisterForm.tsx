@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/navigation';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from '@/navigation';
@@ -8,6 +9,7 @@ import { Check, Eye, EyeOff, Loader2 } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
 export default function RegisterForm() {
+  const t = useTranslations('auth.register');
   const { register } = useAuth();
   const router = useRouter();
 
@@ -24,7 +26,7 @@ export default function RegisterForm() {
     setError('');
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError(t('errorPasswordLength'));
       return;
     }
 
@@ -34,7 +36,7 @@ export default function RegisterForm() {
     if (result.ok) {
       setSuccess(true);
     } else {
-      setError(result.error ?? 'Registration failed');
+      setError(result.error ?? t('errorFallback'));
     }
     setLoading(false);
   }
@@ -47,15 +49,15 @@ export default function RegisterForm() {
             <div className="w-12 h-12 bg-status-safe/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-6 h-6 text-status-safe" />
             </div>
-            <h2 className="text-xl font-bold text-text-primary">Account created</h2>
+            <h2 className="text-xl font-bold text-text-primary">{t('successTitle')}</h2>
             <p className="text-sm text-text-secondary mt-2">
-              Check your email to verify your account, then log in.
+              {t('successMessage')}
             </p>
             <button
               onClick={() => router.push('/login')}
               className="mt-6 bg-brand-sage text-surface-0 font-semibold text-sm rounded-lg px-6 py-2.5 hover:bg-brand-sage-light transition-all"
             >
-              Go to Login
+              {t('goToLogin')}
             </button>
           </div>
         </div>
@@ -73,14 +75,14 @@ export default function RegisterForm() {
               PANGUARD AI
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-text-primary">Create your account</h1>
-          <p className="text-sm text-text-secondary mt-2">Start protecting your infrastructure</p>
+          <h1 className="text-2xl font-bold text-text-primary">{t('title')}</h1>
+          <p className="text-sm text-text-secondary mt-2">{t('subtitle')}</p>
         </div>
 
         <div className="bg-surface-1 border border-border rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="register-name" className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
+              <label htmlFor="register-name" className="block text-sm font-medium text-text-secondary mb-1.5">{t('nameLabel')}</label>
               <input
                 id="register-name"
                 type="text"
@@ -89,11 +91,11 @@ export default function RegisterForm() {
                 required
                 autoComplete="name"
                 className="w-full bg-surface-0 border border-border rounded-lg px-4 py-2.5 text-text-primary placeholder-text-muted text-sm focus:outline-none focus:border-brand-sage transition-colors"
-                placeholder="Your name"
+                placeholder={t('namePlaceholder')}
               />
             </div>
             <div>
-              <label htmlFor="register-email" className="block text-sm font-medium text-text-secondary mb-1.5">Email</label>
+              <label htmlFor="register-email" className="block text-sm font-medium text-text-secondary mb-1.5">{t('emailLabel')}</label>
               <input
                 id="register-email"
                 type="email"
@@ -102,12 +104,12 @@ export default function RegisterForm() {
                 required
                 autoComplete="email"
                 className="w-full bg-surface-0 border border-border rounded-lg px-4 py-2.5 text-text-primary placeholder-text-muted text-sm focus:outline-none focus:border-brand-sage transition-colors"
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
               />
             </div>
             <div>
               <label htmlFor="register-password" className="block text-sm font-medium text-text-secondary mb-1.5">
-                Password
+                {t('passwordLabel')}
               </label>
               <div className="relative">
                 <input
@@ -119,13 +121,13 @@ export default function RegisterForm() {
                   minLength={8}
                   autoComplete="new-password"
                   className="w-full bg-surface-0 border border-border rounded-lg px-4 py-2.5 pr-10 text-text-primary placeholder-text-muted text-sm focus:outline-none focus:border-brand-sage transition-colors"
-                  placeholder="At least 8 characters"
+                  placeholder={t('passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -144,29 +146,29 @@ export default function RegisterForm() {
               className="w-full bg-brand-sage text-surface-0 font-semibold text-sm rounded-lg px-4 py-2.5 hover:bg-brand-sage-light transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              Create Account
+              {t('createButton')}
             </button>
 
             <p className="text-center text-sm text-text-tertiary">
-              Already have an account?{' '}
+              {t('alreadyHaveAccount')}{' '}
               <Link
                 href="/login"
                 className="text-brand-sage hover:text-brand-sage-light transition-colors"
               >
-                Log in
+                {t('loginLink')}
               </Link>
             </p>
           </form>
         </div>
 
         <p className="text-center text-xs text-text-muted mt-6">
-          By creating an account, you agree to our{' '}
+          {t('legalPrefix')}{' '}
           <Link href="/legal/terms" className="underline hover:text-text-tertiary">
-            Terms
+            {t('termsLink')}
           </Link>{' '}
-          and{' '}
+          {t('legalAnd')}{' '}
           <Link href="/legal/privacy" className="underline hover:text-text-tertiary">
-            Privacy Policy
+            {t('privacyLink')}
           </Link>
           .
         </p>

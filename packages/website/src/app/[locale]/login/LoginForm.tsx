@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/navigation';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from '@/navigation';
@@ -11,6 +12,7 @@ import BrandLogo from '@/components/ui/BrandLogo';
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
 export default function LoginForm() {
+  const t = useTranslations('auth.login');
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,13 +47,13 @@ export default function LoginForm() {
       return;
     }
 
-    setError(result.error ?? 'Login failed');
+    setError(result.error ?? t('errorFallback'));
     setLoading(false);
   }
 
   async function handleForgotPassword() {
     if (!email.trim()) {
-      setError('Please enter your email first');
+      setError(t('errorEmailFirst'));
       return;
     }
     setLoading(true);
@@ -64,7 +66,7 @@ export default function LoginForm() {
       setForgotSent(true);
       setError('');
     } catch {
-      setError('Failed to send reset email');
+      setError(t('errorResetEmail'));
     } finally {
       setLoading(false);
     }
@@ -81,12 +83,10 @@ export default function LoginForm() {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-text-primary">
-            {needs2FA ? 'Two-Factor Authentication' : 'Welcome back'}
+            {needs2FA ? t('title2FA') : t('title')}
           </h1>
           <p className="text-sm text-text-secondary mt-2">
-            {needs2FA
-              ? 'Enter the 6-digit code from your authenticator app'
-              : 'Log in to your account'}
+            {needs2FA ? t('subtitle2FA') : t('subtitle')}
           </p>
         </div>
 
@@ -94,15 +94,15 @@ export default function LoginForm() {
           {forgotSent ? (
             <div className="text-center py-4">
               <Shield className="w-10 h-10 text-brand-sage mx-auto mb-3" />
-              <p className="text-text-primary font-medium">Check your email</p>
+              <p className="text-text-primary font-medium">{t('forgotPasswordSentTitle')}</p>
               <p className="text-sm text-text-secondary mt-1">
-                If an account exists for {email}, we sent a password reset link.
+                {t('forgotPasswordSentMessage', { email })}
               </p>
               <button
                 onClick={() => setForgotSent(false)}
                 className="text-brand-sage text-sm mt-4 hover:underline"
               >
-                Back to login
+                {t('backToLogin')}
               </button>
             </div>
           ) : (
@@ -111,7 +111,7 @@ export default function LoginForm() {
                 <>
                   <div>
                     <label htmlFor="login-email" className="block text-sm font-medium text-text-secondary mb-1.5">
-                      Email
+                      {t('emailLabel')}
                     </label>
                     <input
                       id="login-email"
@@ -121,12 +121,12 @@ export default function LoginForm() {
                       required
                       autoComplete="email"
                       className="w-full bg-surface-0 border border-border rounded-lg px-4 py-2.5 text-text-primary placeholder-text-muted text-sm focus:outline-none focus:border-brand-sage transition-colors"
-                      placeholder="you@example.com"
+                      placeholder={t('emailPlaceholder')}
                     />
                   </div>
                   <div>
                     <label htmlFor="login-password" className="block text-sm font-medium text-text-secondary mb-1.5">
-                      Password
+                      {t('passwordLabel')}
                     </label>
                     <div className="relative">
                       <input
@@ -137,13 +137,13 @@ export default function LoginForm() {
                         required
                         autoComplete="current-password"
                         className="w-full bg-surface-0 border border-border rounded-lg px-4 py-2.5 pr-10 text-text-primary placeholder-text-muted text-sm focus:outline-none focus:border-brand-sage transition-colors"
-                        placeholder="Your password"
+                        placeholder={t('passwordPlaceholder')}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary"
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                       >
                         {showPassword ? (
                           <EyeOff className="w-4 h-4" />
@@ -159,7 +159,7 @@ export default function LoginForm() {
               {needs2FA && (
                 <div>
                   <label htmlFor="login-totp" className="block text-sm font-medium text-text-secondary mb-1.5">
-                    Authentication Code
+                    {t('authCodeLabel')}
                   </label>
                   <input
                     id="login-totp"
@@ -189,7 +189,7 @@ export default function LoginForm() {
                 className="w-full bg-brand-sage text-surface-0 font-semibold text-sm rounded-lg px-4 py-2.5 hover:bg-brand-sage-light transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {needs2FA ? 'Verify' : 'Log In'}
+                {needs2FA ? t('verifyButton') : t('loginButton')}
               </button>
 
               {!needs2FA && (
@@ -199,13 +199,13 @@ export default function LoginForm() {
                     onClick={handleForgotPassword}
                     className="text-text-tertiary hover:text-brand-sage transition-colors"
                   >
-                    Forgot password?
+                    {t('forgotPassword')}
                   </button>
                   <Link
                     href="/register"
                     className="text-brand-sage hover:text-brand-sage-light transition-colors"
                   >
-                    Create account
+                    {t('createAccount')}
                   </Link>
                 </div>
               )}
@@ -217,7 +217,7 @@ export default function LoginForm() {
                       <div className="w-full border-t border-border" />
                     </div>
                     <div className="relative flex justify-center text-xs">
-                      <span className="bg-surface-1 px-3 text-text-tertiary">or</span>
+                      <span className="bg-surface-1 px-3 text-text-tertiary">{t('or')}</span>
                     </div>
                   </div>
 
@@ -243,7 +243,7 @@ export default function LoginForm() {
                         fill="#EA4335"
                       />
                     </svg>
-                    Continue with Google
+                    {t('continueWithGoogle')}
                   </a>
                 </>
               )}
