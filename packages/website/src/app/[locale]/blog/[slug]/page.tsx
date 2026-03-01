@@ -5,18 +5,11 @@ import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
-import { blogPosts as staticPosts } from '@/data/blog-posts';
 import { getAllPosts } from '@/lib/blog-store';
 import { notFound } from 'next/navigation';
 
-/* ─── Static Params (only static posts for SSG) ─── */
-
-export function generateStaticParams() {
-  return staticPosts.map((post) => ({ slug: post.slug }));
-}
-
-/* ─── Allow dynamic JSON posts to render via SSR ─── */
-export const dynamicParams = true;
+/* ─── All blog pages are SSR to support dynamic JSON posts ─── */
+export const dynamic = 'force-dynamic';
 
 /* ─── Metadata ─── */
 
