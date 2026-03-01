@@ -90,8 +90,8 @@ describe('DetectAgent', () => {
     });
 
     const agent = new DetectAgent(ruleEngine);
-    agent.detect(makeEvent({ category: 'test' }));
-    agent.detect(makeEvent({ category: 'test' }));
+    agent.detect(makeEvent({ id: 'evt-count-1', category: 'test', metadata: { sourceIP: '10.0.0.1' } }));
+    agent.detect(makeEvent({ id: 'evt-count-2', category: 'test', metadata: { sourceIP: '10.0.0.2' } }));
     expect(agent.getDetectionCount()).toBe(2);
   });
 });
@@ -370,23 +370,23 @@ describe('ReportAgent', () => {
 
     const result = agent.report(event, verdict, response, baseline);
     expect(result.anonymizedData).toBeDefined();
-    // Anonymized IP should have last octet zeroed
-    expect(result.anonymizedData!.attackSourceIP).toBe('203.0.113.0');
+    // Anonymized IP should have last two octets zeroed
+    expect(result.anonymizedData!.attackSourceIP).toBe('203.0.0.0');
     // Region should be a country code, not a timezone
     expect(result.anonymizedData!.region).not.toContain('/');
   });
 
-  it('should generate empty daily summary when no events', () => {
+  it('should generate empty daily summary when no events', async () => {
     const logPath = join(tmpDir, 'events.jsonl');
     const agent = new ReportAgent(logPath, 'protection');
 
-    const summary = agent.generateDailySummary();
+    const summary = await agent.generateDailySummary();
     expect(summary.totalEvents).toBe(0);
     expect(summary.threatsBlocked).toBe(0);
     expect(summary.topAttackSources).toEqual([]);
   });
 
-  it('should generate daily summary from logged events', () => {
+  it('should generate daily summary from logged events', async () => {
     const logPath = join(tmpDir, 'events.jsonl');
     const agent = new ReportAgent(logPath, 'protection');
     const baseline = createEmptyBaseline();
@@ -410,7 +410,7 @@ describe('ReportAgent', () => {
       agent.report(event, verdict, response, baseline);
     }
 
-    const summary = agent.generateDailySummary();
+    const summary = await agent.generateDailySummary();
     expect(summary.totalEvents).toBe(3);
     expect(summary.verdictBreakdown.suspicious).toBe(2);
     expect(summary.verdictBreakdown.malicious).toBe(1);

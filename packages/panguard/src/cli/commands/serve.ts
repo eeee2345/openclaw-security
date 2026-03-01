@@ -42,6 +42,28 @@ export function serveCommand(): Command {
       console.log(`  ${c.sage('Panguard Serve')} - Unified Server Gateway`);
       console.log('');
 
+      // Startup environment validation
+      const warnings: string[] = [];
+      if (!process.env['PANGUARD_BASE_URL']) {
+        warnings.push('PANGUARD_BASE_URL not set — OAuth callbacks will use localhost');
+      }
+      if (!process.env['GOOGLE_CLIENT_ID']) {
+        warnings.push('GOOGLE_CLIENT_ID not set — Google OAuth login disabled');
+      }
+      if (!process.env['RESEND_API_KEY'] && !process.env['SMTP_HOST']) {
+        warnings.push('No email config (RESEND_API_KEY or SMTP_HOST) — password reset and waitlist emails disabled');
+      }
+      if (!process.env['JWT_SECRET'] && process.env['NODE_ENV'] === 'production') {
+        warnings.push('JWT_SECRET not set in production — using fallback key (INSECURE)');
+      }
+      if (warnings.length > 0) {
+        console.log(`  ${c.caution('Environment warnings:')}`);
+        for (const w of warnings) {
+          console.log(`    ${c.dim('-')} ${w}`);
+        }
+        console.log('');
+      }
+
       // Initialize error tracking (Sentry if configured, console fallback)
       await initErrorTracking();
 

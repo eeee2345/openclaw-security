@@ -11,7 +11,7 @@ const statsGrid = [
   { target: 3149, suffix: '', key: 'sigmaRules' as const },
   { target: 4326, suffix: '', key: 'yaraRules' as const },
   { target: 50, suffix: '', key: 'controls' as const },
-  { target: 1446, suffix: '', key: 'tests' as const },
+  { target: 1326, suffix: '', key: 'tests' as const },
   { target: 5, suffix: '', key: 'layers' as const },
   { target: 6, suffix: '', key: 'actions' as const },
   { target: 8, suffix: '', key: 'protocols' as const },

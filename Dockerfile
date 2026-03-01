@@ -54,6 +54,7 @@ COPY packages/panguard-web/ packages/panguard-web/
 COPY packages/threat-cloud/ packages/threat-cloud/
 COPY security-hardening/ security-hardening/
 COPY config/ config/
+COPY packages/admin/ packages/admin/
 
 # Build all backend packages (skip website)
 RUN pnpm --filter '!@panguard-ai/website' -r run build
@@ -103,6 +104,9 @@ COPY --from=builder /standalone .
 
 # Copy config directory (YARA rules etc., at monorepo root)
 COPY --from=builder /build/config ./config
+
+# Copy admin dashboard static files (served by panguard serve at /admin)
+COPY --from=builder /build/packages/admin ./packages/admin
 
 # Persistent data directory
 RUN mkdir -p /data

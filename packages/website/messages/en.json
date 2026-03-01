@@ -150,7 +150,7 @@
       "copied": "Copied!",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,446 Tests Passing",
+        "tests": "1,326 Tests Passing",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -345,7 +345,7 @@
         "subtitle": "Because security shouldn't have walls.",
         "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
         "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
-        "proof": "1,446 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+        "proof": "1,326 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
       }
     },
     "the3amStory": {
@@ -500,7 +500,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "1,446 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "1,326 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -609,7 +609,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "badge1": "MIT Open Source",
-      "badge2": "1,446 Tests Passing",
+      "badge2": "1,326 Tests Passing",
       "badge3": "Built in Taiwan"
     }
   },
@@ -3304,7 +3304,7 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "1,446",
+          "value": "1,326",
           "label": "Tests passing"
         },
         {
@@ -3434,7 +3434,7 @@
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
           "3,149 Sigma + 4,326 YARA rules",
-          "1,446 automated tests"
+          "1,326 automated tests"
         ]
       },
       "inProgress": {
