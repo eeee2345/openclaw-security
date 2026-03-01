@@ -227,7 +227,7 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
 
     it('should have notification setup options matching channels', () => {
       const step = getGuidanceStep('notification_setup')!;
-      expect(step.options!.length).toBe(3); // Telegram, Slack, Email
+      expect(step.options!.length).toBe(4); // LINE, Telegram, Slack, Email
     });
   });
 
