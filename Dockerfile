@@ -98,4 +98,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:3000/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
 
 ENTRYPOINT ["node", "packages/panguard/dist/cli/index.js"]
-CMD ["threat", "start", "--port", "3000"]
+CMD ["serve", "--port", "3000", "--host", "0.0.0.0", "--db", "/data/auth.db"]

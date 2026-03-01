@@ -178,6 +178,7 @@ export default function PricingCards() {
   const tc = useTranslations('common');
   const [annual, setAnnual] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const displayPrice = (price: number) => {
     if (price === 0) return '$0';
@@ -187,6 +188,7 @@ export default function PricingCards() {
 
   const handleCheckout = useCallback(async (tier: string) => {
     setLoading(tier);
+    setCheckoutError(null);
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('panguard_token') : null;
       if (!token) {
@@ -208,10 +210,10 @@ export default function PricingCards() {
       } else if (res.status === 401) {
         window.location.href = `/login?redirect=/pricing`;
       } else {
-        window.location.href = '/early-access';
+        setCheckoutError(data.error ?? 'Checkout is currently unavailable. Please try again later.');
       }
     } catch {
-      window.location.href = '/early-access';
+      setCheckoutError('Unable to connect. Please check your connection and try again.');
     } finally {
       setLoading(null);
     }
@@ -219,6 +221,14 @@ export default function PricingCards() {
 
   return (
     <>
+      {/* Checkout error */}
+      {checkoutError && (
+        <div className="max-w-xl mx-auto mb-6 bg-status-critical/10 border border-status-critical/20 rounded-xl px-5 py-3 flex items-center gap-3">
+          <X className="w-4 h-4 text-status-critical shrink-0 cursor-pointer" onClick={() => setCheckoutError(null)} />
+          <p className="text-sm text-status-critical">{checkoutError}</p>
+        </div>
+      )}
+
       {/* Annual toggle */}
       <FadeInUp>
         <div className="flex items-center justify-center gap-3 mb-10">
