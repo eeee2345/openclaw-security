@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/panguard-web",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "description": "Panguard AI official website engine - scenario-based copy + online guidance / Panguard AI \u5b98\u7db2\u5f15\u64ce - \u5834\u666f\u5316\u6587\u6848 + \u7dda\u4e0a\u5f15\u5c0e",
   "main": "./dist/index.js",
