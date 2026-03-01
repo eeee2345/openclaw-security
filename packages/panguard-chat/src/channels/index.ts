@@ -5,7 +5,6 @@
  * @module @panguard-ai/panguard-chat/channels
  */
 
-export { LineChannel } from './line.js';
 export { TelegramChannel } from './telegram.js';
 export { SlackChannel } from './slack.js';
 export { EmailChannel } from './email.js';

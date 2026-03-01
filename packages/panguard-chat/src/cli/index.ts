@@ -137,7 +137,6 @@ async function commandTest(args: string[]): Promise<void> {
       );
       console.log('  panguard-chat test --channel slack');
       console.log('  panguard-chat test --channel telegram');
-      console.log('  panguard-chat test --channel line');
       return;
     }
 
@@ -364,7 +363,7 @@ Commands:
   help              Show this help / 顯示此說明
 
 Options:
-  --channel <type>    Channel type (line, telegram, slack, email, webhook)
+  --channel <type>    Channel type (telegram, slack, email, webhook)
   --user-type <type>  User type (developer, boss, it_admin)
   --lang <lang>       Language (zh-TW, en) / 語言
   --data-dir <path>   Data directory / 資料目錄
