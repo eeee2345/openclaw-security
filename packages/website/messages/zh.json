@@ -3331,7 +3331,9 @@
     "subscribe": "訂閱",
     "emailPlaceholder": "you@company.com",
     "emailAriaLabel": "電子郵件地址",
-    "emptyFilter": "沒有符合所選篩選條件的項目。"
+    "emptyFilter": "沒有符合所選篩選條件的項目。",
+    "subscribeSuccess": "訂閱成功！你將在收件匣收到更新通知。",
+    "subscribeError": "發生錯誤，請再試一次。"
   },
   "resources": {
     "overline": "資源中心",
@@ -3348,6 +3350,7 @@
     "featured": "精選",
     "watch": "觀看",
     "download": "下載",
+    "comingSoon": "即將推出",
     "noResources": "此分類尚無資源。請稍後再來。",
     "newsletter": {
       "title": "資源直送你的收件匣",
@@ -3355,7 +3358,9 @@
       "subscribe": "訂閱",
       "emailPlaceholder": "you@company.com",
       "emailAriaLabel": "電子郵件地址",
-      "note": "加入 2,000+ 位注重安全的工程師。隨時退訂。"
+      "note": "加入 2,000+ 位注重安全的工程師。隨時退訂。",
+      "success": "訂閱成功！你將在收件匣收到資源。",
+      "error": "發生錯誤，請再試一次。"
     }
   },
   "integrations": {

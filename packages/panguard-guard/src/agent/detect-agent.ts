@@ -1,12 +1,11 @@
 /**
- * Detect Agent - Event detection through rules and threat intelligence
- * 偵測代理 - 透過規則和威脅情報進行事件偵測
+ * Detect Agent - Event detection through rules, threat intelligence, and correlation
+ * 偵測代理 - 透過規則、威脅情報和事件關聯進行事件偵測
  *
  * First stage of the multi-agent pipeline. Receives raw SecurityEvents,
  * runs them through the Sigma rule engine and threat intelligence feeds,
+ * correlates events within a sliding time window to detect attack chains,
  * and emits DetectionResults for events that match.
- * 多代理管線的第一階段。接收原始安全事件，透過 Sigma 規則引擎和
- * 威脅情報來源進行比對，為符合條件的事件產生偵測結果。
  *
  * @module @panguard-ai/panguard-guard/agent/detect-agent
  */
@@ -17,49 +16,73 @@ import type { DetectionResult } from '../types.js';
 
 const logger = createLogger('panguard-guard:detect-agent');
 
+/** Correlation window in ms (5 minutes) */
+const CORRELATION_WINDOW_MS = 5 * 60 * 1000;
+
+/** Max correlated events to keep in memory */
+const MAX_CORRELATION_BUFFER = 1000;
+
+/** Deduplication window in ms (60 seconds) */
+const DEDUP_WINDOW_MS = 60 * 1000;
+
+/** Max dedup entries to track */
+const MAX_DEDUP_ENTRIES = 500;
+
+/** Minimum events from same source to flag as attack chain */
+const ATTACK_CHAIN_THRESHOLD = 3;
+
+/** Correlated event stored in sliding window */
+interface CorrelatedEvent {
+  event: SecurityEvent;
+  ruleIds: string[];
+  sourceIP?: string;
+  timestamp: number;
+}
+
+/** Dedup entry key → last-seen timestamp */
+interface DedupEntry {
+  key: string;
+  timestamp: number;
+}
+
 /**
- * Detect Agent processes security events through rule matching and threat intelligence
- * 偵測代理透過規則比對和威脅情報處理安全事件
+ * Detect Agent processes security events through rule matching,
+ * threat intelligence, event correlation, and deduplication.
  */
 export class DetectAgent {
   private readonly ruleEngine: RuleEngine;
   private detectionCount = 0;
 
-  /**
-   * @param ruleEngine - The Sigma rule engine instance / Sigma 規則引擎實例
-   */
+  /** Sliding window for event correlation */
+  private readonly correlationBuffer: CorrelatedEvent[] = [];
+
+  /** Deduplication tracker: key → last detection timestamp */
+  private readonly dedupMap = new Map<string, number>();
+
   constructor(ruleEngine: RuleEngine) {
     this.ruleEngine = ruleEngine;
   }
 
   /**
    * Process a security event and detect threats
-   * 處理安全事件並偵測威脅
    *
    * Steps:
    * 1. Match the event against loaded Sigma rules
-   * 2. Check threat intelligence for network events (IP lookup)
-   * 3. If any matches found, return a DetectionResult; otherwise null
-   *
-   * 步驟：
-   * 1. 將事件與已載入的 Sigma 規則進行比對
-   * 2. 對網路事件檢查威脅情報（IP 查詢）
-   * 3. 如有任何比對結果，回傳 DetectionResult；否則回傳 null
-   *
-   * @param event - The security event to process / 要處理的安全事件
-   * @returns DetectionResult if threats detected, null if clean / 偵測到威脅回傳 DetectionResult，無威脅回傳 null
+   * 2. Check threat intelligence for network events (IP lookup, IPv4 + IPv6)
+   * 3. Deduplicate: skip if same source+rule fired within dedup window
+   * 4. Correlate: check sliding window for attack chain patterns
+   * 5. If any matches found, return a DetectionResult; otherwise null
    */
   detect(event: SecurityEvent): DetectionResult | null {
-    logger.info(`Processing event: ${event.id} [${event.source}] / 處理事件: ${event.id}`);
+    logger.info(`Processing event: ${event.id} [${event.source}]`);
 
-    // Step 1: Match against Sigma rules / 步驟 1: 比對 Sigma 規則
+    // Step 1: Match against Sigma rules
     const ruleMatches: RuleMatch[] = this.ruleEngine.match(event);
 
-    // Step 2: Check threat intelligence for network events / 步驟 2: 對網路事件檢查威脅情報
+    // Step 2: Check threat intelligence (supports multiple IP fields)
     let threatIntelMatch: { ip: string; threat: string } | undefined;
-    if (event.source === 'network') {
-      const ip =
-        (event.metadata?.['remoteAddress'] as string) ?? (event.metadata?.['sourceIP'] as string);
+    if (event.source === 'network' || event.source === 'suricata') {
+      const ip = this.extractIP(event);
       if (ip) {
         const threatEntry = checkThreatIntel(ip);
         if (threatEntry) {
@@ -68,11 +91,23 @@ export class DetectAgent {
       }
     }
 
-    // If no matches found, return null (normal event) / 無比對結果則回傳 null
+    // If no matches found, return null (normal event)
     if (ruleMatches.length === 0 && !threatIntelMatch) {
-      logger.info(`No threats detected for event ${event.id} / 事件 ${event.id} 未偵測到威脅`);
       return null;
     }
+
+    // Step 3: Deduplication — skip if identical detection within window
+    const dedupKey = this.buildDedupKey(event, ruleMatches);
+    if (this.isDuplicate(dedupKey)) {
+      logger.info(`Dedup: skipping duplicate detection for event ${event.id}`);
+      return null;
+    }
+    this.recordDedup(dedupKey);
+
+    // Step 4: Correlation — check for attack chain
+    const sourceIP = this.extractIP(event);
+    const ruleIds = ruleMatches.map((m) => m.rule.id);
+    const attackChain = this.correlate(event, ruleIds, sourceIP);
 
     this.detectionCount++;
 
@@ -85,21 +120,163 @@ export class DetectAgent {
       })),
       threatIntelMatch,
       timestamp: new Date().toISOString(),
+      // Attach correlation metadata if attack chain detected
+      ...(attackChain ? { attackChain } : {}),
     };
 
     logger.info(
       `Threat detected for event ${event.id}: ${ruleMatches.length} rule matches, ` +
-        `threat intel: ${threatIntelMatch ? 'yes' : 'no'} / ` +
-        `事件 ${event.id} 偵測到威脅: ${ruleMatches.length} 條規則比對`
+        `threat intel: ${threatIntelMatch ? 'yes' : 'no'}, ` +
+        `attack chain: ${attackChain ? `${attackChain.eventCount} events` : 'no'}`
     );
 
     return result;
   }
 
   /**
-   * Get total number of detections / 取得偵測總數
+   * Extract IP address from event metadata (IPv4 + IPv6 support)
    */
+  private extractIP(event: SecurityEvent): string | undefined {
+    const meta = event.metadata;
+    if (!meta) return undefined;
+
+    // Check multiple possible IP fields
+    const candidates = [
+      meta['remoteAddress'],
+      meta['sourceIP'],
+      meta['src_ip'],
+      meta['destinationIP'],
+      meta['dst_ip'],
+      meta['clientIP'],
+      meta['peerAddress'],
+    ];
+
+    for (const candidate of candidates) {
+      if (typeof candidate === 'string' && candidate.length > 0) {
+        return candidate;
+      }
+    }
+
+    return undefined;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Deduplication
+  // ---------------------------------------------------------------------------
+
+  /** Build a dedup key from event source + matched rule IDs */
+  private buildDedupKey(event: SecurityEvent, matches: RuleMatch[]): string {
+    const ip = this.extractIP(event) ?? 'no-ip';
+    const rules = matches
+      .map((m) => m.rule.id)
+      .sort()
+      .join(',');
+    return `${event.source}:${ip}:${rules}`;
+  }
+
+  /** Check if this key was seen within the dedup window */
+  private isDuplicate(key: string): boolean {
+    const lastSeen = this.dedupMap.get(key);
+    if (!lastSeen) return false;
+    return Date.now() - lastSeen < DEDUP_WINDOW_MS;
+  }
+
+  /** Record a dedup entry and evict old entries if over limit */
+  private recordDedup(key: string): void {
+    this.dedupMap.set(key, Date.now());
+
+    // Evict expired entries periodically
+    if (this.dedupMap.size > MAX_DEDUP_ENTRIES) {
+      const now = Date.now();
+      for (const [k, ts] of this.dedupMap) {
+        if (now - ts > DEDUP_WINDOW_MS) {
+          this.dedupMap.delete(k);
+        }
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Event Correlation (Attack Chain Detection)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Correlate events within a sliding time window.
+   * Returns attack chain metadata if multiple events from same source detected.
+   */
+  private correlate(
+    event: SecurityEvent,
+    ruleIds: string[],
+    sourceIP?: string
+  ): { sourceIP: string; eventCount: number; ruleIds: string[]; windowMs: number } | undefined {
+    const now = Date.now();
+
+    // Add current event to correlation buffer
+    this.correlationBuffer.push({
+      event,
+      ruleIds,
+      sourceIP,
+      timestamp: now,
+    });
+
+    // Evict events outside the correlation window
+    while (
+      this.correlationBuffer.length > 0 &&
+      now - this.correlationBuffer[0]!.timestamp > CORRELATION_WINDOW_MS
+    ) {
+      this.correlationBuffer.shift();
+    }
+
+    // Trim buffer if too large
+    while (this.correlationBuffer.length > MAX_CORRELATION_BUFFER) {
+      this.correlationBuffer.shift();
+    }
+
+    // Only correlate if we have a source IP
+    if (!sourceIP) return undefined;
+
+    // Find all events from this source IP within the window
+    const relatedEvents = this.correlationBuffer.filter(
+      (e) => e.sourceIP === sourceIP && now - e.timestamp <= CORRELATION_WINDOW_MS
+    );
+
+    if (relatedEvents.length >= ATTACK_CHAIN_THRESHOLD) {
+      // Collect all unique rule IDs across the chain
+      const allRuleIds = new Set<string>();
+      for (const re of relatedEvents) {
+        for (const rid of re.ruleIds) {
+          allRuleIds.add(rid);
+        }
+      }
+
+      logger.warn(
+        `Attack chain detected from ${sourceIP}: ${relatedEvents.length} events, ` +
+          `${allRuleIds.size} unique rules in ${CORRELATION_WINDOW_MS / 1000}s window`
+      );
+
+      return {
+        sourceIP,
+        eventCount: relatedEvents.length,
+        ruleIds: [...allRuleIds],
+        windowMs: CORRELATION_WINDOW_MS,
+      };
+    }
+
+    return undefined;
+  }
+
+  /** Get total number of detections */
   getDetectionCount(): number {
     return this.detectionCount;
+  }
+
+  /** Get current correlation buffer size (for monitoring) */
+  getCorrelationBufferSize(): number {
+    return this.correlationBuffer.length;
+  }
+
+  /** Get current dedup map size (for monitoring) */
+  getDedupMapSize(): number {
+    return this.dedupMap.size;
   }
 }

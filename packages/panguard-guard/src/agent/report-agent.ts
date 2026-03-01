@@ -1,18 +1,26 @@
 /**
- * Report Agent - Event logging, baseline updates, and anonymized data generation
- * 報告代理 - 事件記錄、基線更新和匿名化數據產生
+ * Report Agent - Event logging with rotation, streaming reads, and retention policy
+ * 報告代理 - 事件記錄，支援 log rotation、串流讀取和資料保留策略
  *
- * Fourth and final stage of the multi-agent pipeline. Logs all events to JSONL,
- * updates the baseline during learning mode, and generates anonymized threat data
- * for collective threat intelligence sharing.
- * 多代理管線的第四也是最後一個階段。將所有事件記錄到 JSONL，
- * 在學習模式下更新基線，並產生匿名化威脅數據用於集體威脅情報分享。
+ * Fourth stage of the multi-agent pipeline. Logs all events to JSONL with
+ * automatic rotation, updates the baseline during learning mode, and
+ * generates anonymized threat data for collective intelligence.
  *
  * @module @panguard-ai/panguard-guard/agent/report-agent
  */
 
-import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import {
+  appendFileSync,
+  mkdirSync,
+  readFileSync,
+  statSync,
+  renameSync,
+  readdirSync,
+  unlinkSync,
+  createReadStream,
+} from 'node:fs';
+import { dirname, join, basename } from 'node:path';
+import { createInterface } from 'node:readline';
 import { createLogger } from '@panguard-ai/core';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type {
@@ -26,7 +34,7 @@ import { updateBaseline } from '../memory/baseline.js';
 
 const logger = createLogger('panguard-guard:report-agent');
 
-/** Full report record written to JSONL / 寫入 JSONL 的完整報告記錄 */
+/** Full report record written to JSONL */
 export interface ReportRecord {
   event: SecurityEvent;
   verdict: ThreatVerdict;
@@ -34,7 +42,7 @@ export interface ReportRecord {
   timestamp: string;
 }
 
-/** Daily/weekly summary structure / 日報/週報摘要結構 */
+/** Daily/weekly summary structure */
 export interface ReportSummary {
   period: { start: string; end: string };
   totalEvents: number;
@@ -46,48 +54,52 @@ export interface ReportSummary {
   verdictBreakdown: { benign: number; suspicious: number; malicious: number };
 }
 
+/** Log rotation configuration */
+interface RotationConfig {
+  /** Max log file size before rotation (default 50MB) */
+  maxFileSizeBytes: number;
+  /** Max number of rotated log files to keep (default 10) */
+  maxRotatedFiles: number;
+  /** Retention period in days (default 90) */
+  retentionDays: number;
+}
+
+const DEFAULT_ROTATION: RotationConfig = {
+  maxFileSizeBytes: 50 * 1024 * 1024, // 50MB
+  maxRotatedFiles: 10,
+  retentionDays: 90,
+};
+
 /**
- * Report Agent logs events, updates baselines, and generates anonymized data
- * 報告代理記錄事件、更新基線並產生匿名化數據
+ * Report Agent logs events with rotation, updates baselines, and generates anonymized data.
  */
 export class ReportAgent {
   private readonly logPath: string;
   private mode: GuardMode;
   private reportCount = 0;
+  private readonly rotation: RotationConfig;
 
-  /**
-   * @param logPath - Path to the JSONL event log / JSONL 事件日誌路徑
-   * @param mode - Current operating mode / 當前運作模式
-   */
-  constructor(logPath: string, mode: GuardMode) {
+  constructor(logPath: string, mode: GuardMode, rotation?: Partial<RotationConfig>) {
     this.logPath = logPath;
     this.mode = mode;
+    this.rotation = { ...DEFAULT_ROTATION, ...rotation };
 
-    // Ensure log directory exists / 確保日誌目錄存在
+    // Ensure log directory exists
     try {
       mkdirSync(dirname(logPath), { recursive: true });
     } catch {
-      // Directory may already exist / 目錄可能已存在
+      // Directory may already exist
     }
   }
 
-  /**
-   * Update operating mode / 更新操作模式
-   */
+  /** Update operating mode */
   setMode(mode: GuardMode): void {
     this.mode = mode;
   }
 
   /**
-   * Process a complete pipeline result: log, update baseline, generate anonymized data
-   * 處理完整的管線結果：記錄、更新基線、產生匿名化數據
-   *
-   * @param event - The original security event / 原始安全事件
-   * @param verdict - The threat verdict from analysis / 分析產生的威脅判決
-   * @param response - The response action result / 回應動作結果
-   * @param baseline - Current environment baseline / 當前環境基線
-   * @returns Updated baseline and optional anonymized threat data /
-   *          更新後的基線和可選的匿名化威脅數據
+   * Process a complete pipeline result: log, update baseline, generate anonymized data.
+   * Automatically rotates log file when size limit is reached.
    */
   report(
     event: SecurityEvent,
@@ -97,7 +109,10 @@ export class ReportAgent {
   ): { updatedBaseline: EnvironmentBaseline; anonymizedData?: AnonymizedThreatData } {
     this.reportCount++;
 
-    // Step 1: Log to JSONL / 步驟 1: 記錄到 JSONL
+    // Step 1: Check if rotation needed before writing
+    this.rotateIfNeeded();
+
+    // Step 2: Log to JSONL
     const record: ReportRecord = {
       event,
       verdict,
@@ -106,16 +121,13 @@ export class ReportAgent {
     };
     this.appendLog(record);
 
-    // Step 2: Update baseline (learning mode adds normal patterns)
-    // 步驟 2: 更新基線（學習模式下添加正常模式）
+    // Step 3: Update baseline (learning mode adds normal patterns)
     let updatedBaseline = baseline;
     if (this.mode === 'learning') {
       updatedBaseline = updateBaseline(baseline, event);
-      logger.info(`Baseline updated during learning / 學習模式下已更新基線`);
     }
 
-    // Step 3: Generate anonymized data for malicious/suspicious verdicts
-    // 步驟 3: 為惡意/可疑判決產生匿名化數據
+    // Step 4: Generate anonymized data for malicious/suspicious verdicts
     let anonymizedData: AnonymizedThreatData | undefined;
     if (verdict.conclusion !== 'benign') {
       anonymizedData = this.generateAnonymizedData(event, verdict);
@@ -123,70 +135,213 @@ export class ReportAgent {
 
     logger.info(
       `Report #${this.reportCount}: ${verdict.conclusion} ` +
-        `(action: ${response.action}, success: ${response.success}) / ` +
-        `報告 #${this.reportCount}: ${verdict.conclusion}`
+        `(action: ${response.action}, success: ${response.success})`
     );
 
     return { updatedBaseline, anonymizedData };
   }
 
+  // ---------------------------------------------------------------------------
+  // Log Rotation
+  // ---------------------------------------------------------------------------
+
   /**
-   * Generate anonymized threat data for collective intelligence
-   * 產生匿名化威脅數據用於集體情報
+   * Rotate log file if it exceeds the size limit.
+   * Naming: events.jsonl -> events.jsonl.1 -> events.jsonl.2 -> ...
+   * Oldest files beyond maxRotatedFiles are deleted.
    */
-  private generateAnonymizedData(
-    event: SecurityEvent,
-    verdict: ThreatVerdict
-  ): AnonymizedThreatData {
-    // Extract source IP, anonymize last octet / 提取來源 IP，匿名化最後一段
-    const rawIP =
-      (event.metadata?.['sourceIP'] as string) ??
-      (event.metadata?.['remoteAddress'] as string) ??
-      'unknown';
-    const attackSourceIP = anonymizeIP(rawIP);
+  private rotateIfNeeded(): void {
+    try {
+      const stats = statSync(this.logPath);
+      if (stats.size < this.rotation.maxFileSizeBytes) return;
+    } catch {
+      return; // File doesn't exist yet, no rotation needed
+    }
 
-    // Find matching Sigma rule ID / 查找匹配的 Sigma 規則 ID
-    const sigmaRuleMatched =
-      verdict.evidence
-        .filter((e) => e.source === 'rule_match')
-        .map((e) => (e.data as Record<string, unknown>)?.['ruleId'] as string)
-        .filter(Boolean)
-        .join(',') || 'none';
+    logger.info(`Log rotation triggered (file exceeds ${this.rotation.maxFileSizeBytes} bytes)`);
 
-    return {
-      attackSourceIP,
-      attackType: event.category,
-      mitreTechnique: verdict.mitreTechnique ?? 'unknown',
-      sigmaRuleMatched,
-      timestamp: new Date().toISOString(),
-      region: getCountryCode(),
-    };
+    const dir = dirname(this.logPath);
+    const base = basename(this.logPath);
+
+    // Shift existing rotated files: .9 -> .10, .8 -> .9, etc.
+    for (let i = this.rotation.maxRotatedFiles; i >= 1; i--) {
+      const from = join(dir, `${base}.${i}`);
+      const to = join(dir, `${base}.${i + 1}`);
+      try {
+        renameSync(from, to);
+      } catch {
+        // File may not exist
+      }
+    }
+
+    // Rename current log to .1
+    try {
+      renameSync(this.logPath, join(dir, `${base}.1`));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error(`Log rotation rename failed: ${msg}`);
+    }
+
+    // Delete files beyond retention limit
+    this.enforceRetention();
   }
 
   /**
-   * Append a record to the JSONL log file / 追加記錄到 JSONL 日誌
+   * Delete rotated log files beyond maxRotatedFiles and older than retentionDays
    */
+  private enforceRetention(): void {
+    const dir = dirname(this.logPath);
+    const base = basename(this.logPath);
+    const cutoff = Date.now() - this.rotation.retentionDays * 24 * 60 * 60 * 1000;
+
+    try {
+      const files = readdirSync(dir).filter((f) => f.startsWith(base + '.'));
+
+      // Delete files beyond max count
+      const numbered = files
+        .map((f) => {
+          const num = parseInt(f.slice(base.length + 1), 10);
+          return { file: f, num };
+        })
+        .filter((x) => !isNaN(x.num))
+        .sort((a, b) => a.num - b.num);
+
+      for (const entry of numbered) {
+        if (entry.num > this.rotation.maxRotatedFiles) {
+          try {
+            unlinkSync(join(dir, entry.file));
+            logger.info(`Retention: deleted ${entry.file} (exceeds max rotated files)`);
+          } catch {
+            // Non-critical
+          }
+          continue;
+        }
+
+        // Also delete if older than retention period
+        try {
+          const stat = statSync(join(dir, entry.file));
+          if (stat.mtimeMs < cutoff) {
+            unlinkSync(join(dir, entry.file));
+            logger.info(`Retention: deleted ${entry.file} (older than ${this.rotation.retentionDays} days)`);
+          }
+        } catch {
+          // Non-critical
+        }
+      }
+    } catch {
+      // Directory read failure is non-critical
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Log Writing
+  // ---------------------------------------------------------------------------
+
   private appendLog(record: ReportRecord): void {
     try {
       const line = JSON.stringify(record) + '\n';
       appendFileSync(this.logPath, line, 'utf-8');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(`Failed to write log: ${msg} / 寫入日誌失敗: ${msg}`);
+      logger.error(`Failed to write log: ${msg}`);
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Streaming Log Reader (memory-efficient)
+  // ---------------------------------------------------------------------------
+
   /**
-   * Generate a summary for the given time period from the JSONL log
-   * 從 JSONL 日誌產生指定時段的摘要
-   *
-   * @param hoursBack - Number of hours to look back / 回溯小時數
-   * @returns Summary of events in the period / 時段內的事件摘要
+   * Read log records from JSONL using streaming (line-by-line).
+   * Only loads records after the cutoff date into memory.
+   * This replaces the previous readFileSync approach that loaded entire files.
    */
-  generateSummary(hoursBack: number): ReportSummary {
+  async readLogRecordsStreaming(after: Date): Promise<ReportRecord[]> {
+    const records: ReportRecord[] = [];
+    const allFiles = this.getLogFiles();
+
+    for (const filePath of allFiles) {
+      try {
+        const fileRecords = await this.streamFile(filePath, after);
+        records.push(...fileRecords);
+      } catch {
+        // File may not exist or be corrupted
+      }
+    }
+
+    return records;
+  }
+
+  /**
+   * Get all log files (current + rotated) sorted newest first
+   */
+  private getLogFiles(): string[] {
+    const files: string[] = [this.logPath];
+    const dir = dirname(this.logPath);
+    const base = basename(this.logPath);
+
+    try {
+      const rotated = readdirSync(dir)
+        .filter((f) => f.startsWith(base + '.'))
+        .map((f) => {
+          const num = parseInt(f.slice(base.length + 1), 10);
+          return { file: join(dir, f), num };
+        })
+        .filter((x) => !isNaN(x.num))
+        .sort((a, b) => a.num - b.num)
+        .map((x) => x.file);
+
+      files.push(...rotated);
+    } catch {
+      // No rotated files
+    }
+
+    return files;
+  }
+
+  /**
+   * Stream a single JSONL file, returning records after the cutoff
+   */
+  private streamFile(filePath: string, after: Date): Promise<ReportRecord[]> {
+    return new Promise((resolve) => {
+      const records: ReportRecord[] = [];
+
+      try {
+        const stream = createReadStream(filePath, { encoding: 'utf-8' });
+        const rl = createInterface({ input: stream, crlfDelay: Infinity });
+
+        rl.on('line', (line) => {
+          if (!line.trim()) return;
+          try {
+            const record = JSON.parse(line) as ReportRecord;
+            if (new Date(record.timestamp) >= after) {
+              records.push(record);
+            }
+          } catch {
+            // Skip malformed lines
+          }
+        });
+
+        rl.on('close', () => resolve(records));
+        rl.on('error', () => resolve(records));
+      } catch {
+        resolve(records);
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Summary Generation (now uses streaming)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Generate a summary for the given time period.
+   * Uses streaming reader for memory efficiency.
+   */
+  async generateSummary(hoursBack: number): Promise<ReportSummary> {
     const now = new Date();
     const cutoff = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
-    const records = this.readLogRecords(cutoff);
+    const records = await this.readLogRecordsStreaming(cutoff);
 
     const ipCounts = new Map<string, number>();
     const actionCounts = new Map<string, number>();
@@ -194,13 +349,11 @@ export class ReportAgent {
     let threatsBlocked = 0;
 
     for (const r of records) {
-      // Count verdicts / 統計判決
       const conclusion = r.verdict.conclusion;
       if (conclusion === 'benign' || conclusion === 'suspicious' || conclusion === 'malicious') {
         verdictBreakdown[conclusion]++;
       }
 
-      // Count blocked threats / 統計已阻擋威脅
       if (
         r.response.action !== 'log_only' &&
         r.response.action !== 'notify' &&
@@ -209,7 +362,6 @@ export class ReportAgent {
         threatsBlocked++;
       }
 
-      // Count attack source IPs / 統計攻擊來源 IP
       const ip =
         (r.event.metadata?.['sourceIP'] as string) ??
         (r.event.metadata?.['remoteAddress'] as string);
@@ -217,12 +369,10 @@ export class ReportAgent {
         ipCounts.set(ip, (ipCounts.get(ip) ?? 0) + 1);
       }
 
-      // Count actions / 統計動作
       const act = r.response.action;
       actionCounts.set(act, (actionCounts.get(act) ?? 0) + 1);
     }
 
-    // Top attack sources (sorted by count desc) / 攻擊來源排名
     const topAttackSources = [...ipCounts.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
@@ -242,25 +392,59 @@ export class ReportAgent {
     };
   }
 
-  /**
-   * Generate daily summary (last 24 hours) / 產生日報（最近 24 小時）
-   */
-  generateDailySummary(): ReportSummary {
+  /** Generate daily summary (last 24 hours) */
+  async generateDailySummary(): Promise<ReportSummary> {
     return this.generateSummary(24);
   }
 
-  /**
-   * Generate weekly summary (last 7 days) / 產生週報（最近 7 天）
-   */
-  generateWeeklySummary(): ReportSummary {
+  /** Generate weekly summary (last 7 days) */
+  async generateWeeklySummary(): Promise<ReportSummary> {
     return this.generateSummary(7 * 24);
   }
 
   /**
-   * Read log records from JSONL after the given cutoff date
-   * 讀取指定日期之後的 JSONL 日誌記錄
+   * Synchronous summary for backwards compatibility (reads current file only).
+   * Prefer async generateSummary() for production use.
    */
-  private readLogRecords(after: Date): ReportRecord[] {
+  generateSummarySync(hoursBack: number): ReportSummary {
+    const now = new Date();
+    const cutoff = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
+    const records = this.readLogRecordsSync(cutoff);
+
+    const ipCounts = new Map<string, number>();
+    const actionCounts = new Map<string, number>();
+    const verdictBreakdown = { benign: 0, suspicious: 0, malicious: 0 };
+    let threatsBlocked = 0;
+
+    for (const r of records) {
+      const conclusion = r.verdict.conclusion;
+      if (conclusion === 'benign' || conclusion === 'suspicious' || conclusion === 'malicious') {
+        verdictBreakdown[conclusion]++;
+      }
+      if (r.response.action !== 'log_only' && r.response.action !== 'notify' && r.response.success) {
+        threatsBlocked++;
+      }
+      const ip = (r.event.metadata?.['sourceIP'] as string) ?? (r.event.metadata?.['remoteAddress'] as string);
+      if (ip && conclusion !== 'benign') {
+        ipCounts.set(ip, (ipCounts.get(ip) ?? 0) + 1);
+      }
+      actionCounts.set(r.response.action, (actionCounts.get(r.response.action) ?? 0) + 1);
+    }
+
+    return {
+      period: { start: cutoff.toISOString(), end: now.toISOString() },
+      totalEvents: records.length,
+      threatsBlocked,
+      suspiciousEvents: verdictBreakdown.suspicious,
+      benignEvents: verdictBreakdown.benign,
+      topAttackSources: [...ipCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([ip, count]) => ({ ip, count })),
+      actionsTaken: [...actionCounts.entries()].map(([action, count]) => ({ action, count })),
+      verdictBreakdown,
+    };
+  }
+
+  /** Synchronous read of current log file only */
+  private readLogRecordsSync(after: Date): ReportRecord[] {
     const records: ReportRecord[] = [];
     try {
       const content = readFileSync(this.logPath, 'utf-8');
@@ -272,31 +456,76 @@ export class ReportAgent {
             records.push(record);
           }
         } catch {
-          // Skip malformed lines / 跳過格式錯誤的行
+          // Skip malformed lines
         }
       }
     } catch {
-      // Log file may not exist yet / 日誌檔可能尚不存在
+      // Log file may not exist yet
     }
     return records;
   }
 
-  /**
-   * Get total report count / 取得報告總數
-   */
+  // ---------------------------------------------------------------------------
+  // Anonymized Data Generation
+  // ---------------------------------------------------------------------------
+
+  private generateAnonymizedData(
+    event: SecurityEvent,
+    verdict: ThreatVerdict
+  ): AnonymizedThreatData {
+    const rawIP =
+      (event.metadata?.['sourceIP'] as string) ??
+      (event.metadata?.['remoteAddress'] as string) ??
+      'unknown';
+    const attackSourceIP = anonymizeIP(rawIP);
+
+    const sigmaRuleMatched =
+      verdict.evidence
+        .filter((e) => e.source === 'rule_match')
+        .map((e) => (e.data as Record<string, unknown>)?.['ruleId'] as string)
+        .filter(Boolean)
+        .join(',') || 'none';
+
+    return {
+      attackSourceIP,
+      attackType: event.category,
+      mitreTechnique: verdict.mitreTechnique ?? 'unknown',
+      sigmaRuleMatched,
+      timestamp: new Date().toISOString(),
+      region: getCountryCode(),
+    };
+  }
+
+  /** Get total report count */
   getReportCount(): number {
     return this.reportCount;
   }
+
+  /** Get current log file size in bytes */
+  getLogSizeBytes(): number {
+    try {
+      return statSync(this.logPath).size;
+    } catch {
+      return 0;
+    }
+  }
+
+  /** Get number of rotated log files */
+  getRotatedFileCount(): number {
+    const dir = dirname(this.logPath);
+    const base = basename(this.logPath);
+    try {
+      return readdirSync(dir).filter((f) => f.startsWith(base + '.') && /\.\d+$/.test(f)).length;
+    } catch {
+      return 0;
+    }
+  }
 }
 
-/**
- * Get country code from timezone for anonymized data
- * 從時區取得國家碼用於匿名化數據
- *
- * Maps common timezones to country-level codes.
- * Only provides country-level granularity to protect privacy.
- * 僅提供國家級精度以保護隱私。
- */
+// ---------------------------------------------------------------------------
+// Utility functions
+// ---------------------------------------------------------------------------
+
 function getCountryCode(): string {
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const tzCountryMap: Record<string, string> = {
@@ -319,21 +548,27 @@ function getCountryCode(): string {
 }
 
 /**
- * Anonymize an IPv4 address by zeroing the last octet
- * 匿名化 IPv4 地址（將最後一段歸零）
+ * Anonymize IP: zero last two octets for IPv4, last two segments for IPv6.
+ * Stronger anonymization than single-octet zeroing.
  */
 function anonymizeIP(ip: string): string {
   if (ip === 'unknown') return ip;
-  const parts = ip.split('.');
-  if (parts.length === 4) {
-    parts[3] = '0';
-    return parts.join('.');
+
+  // IPv4: zero last two octets (x.x.0.0)
+  const v4parts = ip.split('.');
+  if (v4parts.length === 4) {
+    v4parts[2] = '0';
+    v4parts[3] = '0';
+    return v4parts.join('.');
   }
-  // IPv6 or other: truncate last segment / IPv6 或其他：截斷最後一段
+
+  // IPv6: zero last two segments
   const v6parts = ip.split(':');
-  if (v6parts.length > 1) {
+  if (v6parts.length > 2) {
     v6parts[v6parts.length - 1] = '0';
+    v6parts[v6parts.length - 2] = '0';
     return v6parts.join(':');
   }
+
   return ip;
 }

@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Rss } from 'lucide-react';
+
+type SubscribeStatus = 'idle' | 'loading' | 'success' | 'error';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import SectionTitle from '@/components/ui/SectionTitle';
@@ -62,6 +64,8 @@ export default function ChangelogContent() {
   const locale = useLocale();
 
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
+  const [subscribeStatus, setSubscribeStatus] = useState<SubscribeStatus>('idle');
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const filtered = filterEntries(changelogEntries, activeFilter);
 
@@ -182,22 +186,49 @@ export default function ChangelogContent() {
             </p>
 
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const email = emailRef.current?.value?.trim();
+                if (!email) return;
+                setSubscribeStatus('loading');
+                try {
+                  const res = await fetch('/api/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, source: 'changelog' }),
+                  });
+                  if (!res.ok) throw new Error('Failed');
+                  setSubscribeStatus('success');
+                  if (emailRef.current) emailRef.current.value = '';
+                } catch {
+                  setSubscribeStatus('error');
+                }
+              }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
               <input
+                ref={emailRef}
                 type="email"
                 placeholder={t('emailPlaceholder')}
                 aria-label={t('emailAriaLabel')}
                 className="w-full sm:w-auto sm:min-w-[280px] rounded-full border border-border bg-surface-1 px-5 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"
+                required
+                disabled={subscribeStatus === 'loading'}
               />
               <button
                 type="submit"
-                className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3 text-sm hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] whitespace-nowrap"
+                disabled={subscribeStatus === 'loading'}
+                className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3 text-sm hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] whitespace-nowrap disabled:opacity-60"
               >
-                {t('subscribe')}
+                {subscribeStatus === 'loading' ? '...' : t('subscribe')}
               </button>
             </form>
+            {subscribeStatus === 'success' && (
+              <p className="text-brand-sage text-sm mt-3">{t('subscribeSuccess')}</p>
+            )}
+            {subscribeStatus === 'error' && (
+              <p className="text-status-danger text-sm mt-3">{t('subscribeError')}</p>
+            )}
           </div>
         </FadeInUp>
       </SectionWrapper>
