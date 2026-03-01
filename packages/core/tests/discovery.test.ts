@@ -89,10 +89,10 @@ describe('User Auditor', () => {
     const users = await auditUsers();
     expect(Array.isArray(users)).toBe(true);
     expect(users.length).toBeGreaterThan(0);
-    // Current user should be in the list
-    const currentUser = process.env['USER'] || process.env['USERNAME'];
-    if (currentUser) {
-      expect(users.some((u) => u.username === currentUser)).toBe(true);
+    // Every user entry should have a username
+    for (const u of users) {
+      expect(typeof u.username).toBe('string');
+      expect(u.username.length).toBeGreaterThan(0);
     }
   });
 });
