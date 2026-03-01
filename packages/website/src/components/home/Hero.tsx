@@ -22,9 +22,9 @@ function InstallBar() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="relative flex items-center gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-5 py-3.5 font-mono text-sm">
-        <span className="text-panguard-green select-none">{prompt}</span>
-        <code className="text-text-secondary flex-1 select-all truncate">
+      <div className="relative flex items-center gap-2 sm:gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-xs sm:text-sm">
+        <span className="text-panguard-green select-none shrink-0">{prompt}</span>
+        <code className="text-text-secondary flex-1 select-all truncate min-w-0">
           {installCmd}
         </code>
         <button
@@ -62,7 +62,7 @@ export default function Hero() {
       />
 
       {/* Central glow orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none hero-orb" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(700px,200vw)] h-[min(700px,200vw)] rounded-full pointer-events-none hero-orb" />
 
       {/* Scan line */}
       <div className="absolute left-0 right-0 pointer-events-none hero-scanline" />
@@ -122,6 +122,7 @@ export default function Hero() {
           className="mt-10"
         >
           <InstallBar />
+          <p className="text-xs text-text-muted mt-2 text-center">{t('prereq')}</p>
         </motion.div>
 
         {/* CTA Buttons */}
@@ -132,8 +133,8 @@ export default function Hero() {
           className="flex flex-wrap gap-3 justify-center mt-8"
         >
           <Link
-            href="/early-access"
-            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-8 py-3.5 hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
+            href="/docs/getting-started"
+            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
           >
             {t('getStarted')} <ArrowRight className="w-4 h-4" />
           </Link>
@@ -141,7 +142,7 @@ export default function Hero() {
             href="https://github.com/panguard-ai/panguard-ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
+            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base transition-all duration-200"
           >
             {t('github')}
           </a>

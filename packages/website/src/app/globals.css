@@ -9,6 +9,7 @@ html {
 body {
   color: #f5f1e8;
   background: #1a1614;
+  overflow-x: hidden;
 }
 
 ::selection {

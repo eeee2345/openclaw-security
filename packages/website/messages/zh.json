@@ -149,6 +149,7 @@
       "getStarted": "立即開始",
       "github": "GitHub",
       "copied": "已複製!",
+      "prereq": "需要 Node.js 20+ 和 git",
       "badges": {
         "mit": "MIT 開源授權",
         "tests": "1,446 項測試通過",
@@ -181,7 +182,7 @@
           "label": "建置時間",
           "diy": "好幾週",
           "consultant": "好幾個月",
-          "panguard": "60 秒"
+          "panguard": "一行指令"
         },
         "cost": {
           "label": "每月費用",
@@ -220,7 +221,7 @@
           "panguard": "yes"
         }
       },
-      "cta": "試試 60 秒建置"
+      "cta": "試試一行指令建置"
     },
     "redefine": {
       "line1": "所有人都在問：",
@@ -604,7 +605,7 @@
     },
     "finalCta": {
       "title": "你部署，我們防守。",
-      "subtitle": "60 秒安裝，免費版就有完整掃描。不用帳號、不用信用卡、不用跟業務講電話。",
+      "subtitle": "一行指令安裝，免費版就有完整掃描。不用帳號、不用信用卡、不用跟業務講電話。",
       "manifesto": "我們做 Panguard，是因為資安不該需要六位數預算或一整支團隊。一行指令就夠了。",
       "btnGetStarted": "免費掃描我的伺服器",
       "btnGithub": "GitHub",
@@ -617,7 +618,7 @@
   "pricing": {
     "overline": "價格方案",
     "title": "簡單透明的定價",
-    "subtitle": "所有付費方案提供 30 天免費試用。無需信用卡。60 秒內開始保護你的端點。",
+    "subtitle": "所有付費方案提供 30 天免費試用。無需信用卡。一行指令開始保護你的端點。",
     "addonsOverline": "附加功能",
     "addonsTitle": "合規報告附加功能",
     "addonsSubtitle": "Starter 方案以上可用。為任何方案加入合規報告功能。",
@@ -641,24 +642,24 @@
     "guarantee": "所有付費方案提供 30 天無條件退款保證。"
   },
   "earlyAccess": {
-    "overline": "搶先體驗",
-    "title1": "搶先體驗",
-    "title2": "會說人話的 AI 資安防護。",
-    "subtitle": "Panguard AI 即將上線。加入候補名單，取得優先使用權、直接回饋管道，並鎖定創始會員定價。",
+    "overline": "Pro 搶先體驗",
+    "title1": "搶先使用",
+    "title2": "Pro 與 Enterprise 進階功能。",
+    "subtitle": "Panguard 免費版已開放安裝。加入搶先體驗，率先使用即將推出的 Pro 與 Enterprise 功能、取得直接回饋管道，並鎖定創始會員定價。",
     "whatYouGet": "搶先體驗會員專屬權益",
-    "priority": "優先使用權",
-    "priorityDesc": "成為最早在端點安裝 Panguard 的使用者。搶先體驗會員比公開上線提前數週開始使用。",
+    "priority": "優先使用進階功能",
+    "priorityDesc": "率先體驗 Pro 與 Enterprise 功能——多端點管理、進階合規報告、團隊協作儀表板等。",
     "feedback": "直接回饋管道",
     "feedbackDesc": "加入我們的私人 Slack 社群。直接與工程師對話。你的回饋決定我們下一步開發什麼功能。",
     "founding": "創始會員定價",
-    "foundingDesc": "鎖定任何方案的永久折扣。創始會員的費率終身不變，即使未來調漲價格。",
-    "timeline": "上線時程",
+    "foundingDesc": "鎖定任何付費方案的永久折扣。創始會員的費率終身不變，即使未來調漲價格。",
+    "timeline": "功能上線時程",
     "now": "現在",
-    "nowLabel": "候補名單已開放 -- 立即加入",
+    "nowLabel": "免費版已開放安裝 -- Pro 搶先體驗報名中",
     "q2": "2026 Q2",
-    "q2Label": "搶先體驗會員私人測試",
+    "q2Label": "Pro 功能搶先體驗",
     "q3": "2026 Q3",
-    "q3Label": "正式公開上線"
+    "q3Label": "Enterprise 功能正式上線"
   },
   "howItWorks": {
     "overline": "運作原理",
@@ -1214,8 +1215,8 @@
       "description": "AI 端點安全防護的透明定價。免費掃描、Solo 每月 $9、Starter 每月 $19、Team 每端點每月 $14、Business 每端點每月 $10、Enterprise 客製。30 天免費試用。"
     },
     "earlyAccess": {
-      "title": "搶先體驗",
-      "description": "搶先體驗會說人話的 AI 資安防護。加入 Panguard AI 候補名單，取得優先使用權、創始會員定價及直接回饋管道。"
+      "title": "Pro 搶先體驗",
+      "description": "率先使用 Panguard Pro 與 Enterprise 進階功能。免費版已開放安裝。加入搶先體驗，鎖定創始會員定價及直接回饋管道。"
     },
     "scan": {
       "title": "免費安全掃描",
@@ -2093,7 +2094,7 @@
       "features": {
         "item1": {
           "title": "一行指令設定",
-          "desc": "用一行 CLI 指令安裝 Panguard。沒有複雜的設定檔、沒有 YAML 氾濫、沒有代理衝突。執行安裝程式，60 秒內受到保護。"
+          "desc": "用一行 CLI 指令安裝 Panguard。沒有複雜的設定檔、沒有 YAML 氾濫、沒有代理衝突。執行安裝程式，幾分鐘內完成部署。"
         },
         "item2": {
           "title": "零時間成本",
@@ -2131,7 +2132,7 @@
         ]
       },
       "cta": {
-        "title": "60 秒保護你的技術棧",
+        "title": "一行指令保護你的技術棧",
         "desc": "個人專案免費。無需信用卡。"
       }
     },
@@ -3235,7 +3236,7 @@
       "title": "快速入門",
       "item1": {
         "title": "安裝",
-        "desc": "60 秒內啟動 Panguard。一行指令，零設定。",
+        "desc": "一行指令啟動 Panguard。零設定，幾分鐘完成。",
         "link": "快速入門指南"
       },
       "item2": {
@@ -3301,9 +3302,9 @@
       "title": "Panguard 入門指南",
       "subtitle": "在 5 分鐘內安裝 Panguard、執行第一次掃描、並啟用即時防護。",
       "requirementsTitle": "系統需求",
-      "req1": "Linux (Ubuntu 20.04+, Debian 11+, CentOS 8+) 或 macOS 12+",
-      "req2": "Node.js 18+（若未安裝會自動安裝）",
-      "req3": "最低 2 GB RAM，建議 4 GB",
+      "req1": "Linux (Ubuntu 20.04+, Debian 11+, CentOS 8+) 或 macOS 12+，Windows 需 WSL2",
+      "req2": "Node.js 20+ 和 git",
+      "req3": "最低 2 GB RAM，建議 4 GB。首次安裝約 3-5 分鐘（從 source 建置）",
       "step1Title": "步驟一：安裝 Panguard",
       "step1Desc": "一行指令安裝一切：CLI、規則引擎和本地 AI 模型。",
       "step1Note": "安裝程式會自動偵測你的作業系統和架構。預期輸出：",

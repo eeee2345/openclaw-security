@@ -149,6 +149,7 @@
       "getStarted": "Get Started",
       "github": "GitHub",
       "copied": "Copied!",
+      "prereq": "Requires Node.js 20+ and git",
       "badges": {
         "mit": "MIT Open Source",
         "tests": "1,446 Tests Passing",
@@ -181,7 +182,7 @@
           "label": "Setup time",
           "diy": "Weeks",
           "consultant": "Months",
-          "panguard": "60 seconds"
+          "panguard": "One command"
         },
         "cost": {
           "label": "Monthly cost",
@@ -220,7 +221,7 @@
           "panguard": "yes"
         }
       },
-      "cta": "Try the 60-second setup"
+      "cta": "Try the one-command setup"
     },
     "redefine": {
       "line1": "Everyone asks:",
@@ -604,7 +605,7 @@
     },
     "finalCta": {
       "title": "You deploy. We defend.",
-      "subtitle": "Install in 60 seconds. Free tier with full scanning. No account. No credit card. No sales call.",
+      "subtitle": "One command to install. Free tier with full scanning. No account. No credit card. No sales call.",
       "manifesto": "We built Panguard because security shouldn't need a six-figure budget or a dedicated team. It should be one command away.",
       "btnGetStarted": "Free Server Scan",
       "btnGithub": "GitHub",
@@ -617,7 +618,7 @@
   "pricing": {
     "overline": "Pricing",
     "title": "Simple, transparent pricing",
-    "subtitle": "30-day free trial on every paid plan. No credit card required. Start protecting your endpoints in under 60 seconds.",
+    "subtitle": "30-day free trial on every paid plan. No credit card required. Start protecting your endpoints with one command.",
     "addonsOverline": "Add-ons",
     "addonsTitle": "Compliance report add-ons",
     "addonsSubtitle": "Available on Starter plans and above. Add compliance reporting to any plan.",
@@ -1367,7 +1368,7 @@
       "features": {
         "item1": {
           "title": "One Command Setup",
-          "desc": "Install Panguard with a single CLI command. No complex configuration files, no YAML sprawl, no agent conflicts. Just run the installer and you are protected in under 60 seconds."
+          "desc": "Install Panguard with a single CLI command. No complex configuration files, no YAML sprawl, no agent conflicts. Just run the installer and you are protected in minutes."
         },
         "item2": {
           "title": "Zero Time Overhead",
@@ -1405,7 +1406,7 @@
         ]
       },
       "cta": {
-        "title": "Secure your stack in 60 seconds",
+        "title": "Secure your stack with one command",
         "desc": "Free for personal projects. No credit card required."
       }
     },
@@ -2509,7 +2510,7 @@
       "title": "Quick Start",
       "item1": {
         "title": "Installation",
-        "desc": "Get Panguard running in 60 seconds. One command, zero configuration.",
+        "desc": "Get Panguard running with one command. Zero configuration.",
         "link": "Quick Start Guide"
       },
       "item2": {
@@ -2575,9 +2576,9 @@
       "title": "Getting Started with Panguard",
       "subtitle": "Install Panguard, run your first scan, and enable real-time protection in under 5 minutes.",
       "requirementsTitle": "System Requirements",
-      "req1": "Linux (Ubuntu 20.04+, Debian 11+, CentOS 8+) or macOS 12+",
-      "req2": "Node.js 18+ (auto-installed if missing)",
-      "req3": "2 GB RAM minimum, 4 GB recommended",
+      "req1": "Linux (Ubuntu 20.04+, Debian 11+, CentOS 8+) or macOS 12+. Windows requires WSL2",
+      "req2": "Node.js 20+ and git",
+      "req3": "2 GB RAM minimum, 4 GB recommended. First install takes ~3-5 min (builds from source)",
       "step1Title": "Step 1: Install Panguard",
       "step1Desc": "One command installs everything: the CLI, rule engine, and local AI model.",
       "step1Note": "The installer auto-detects your OS and architecture. Expected output:",
@@ -2925,24 +2926,24 @@
     "submitFailed": "Something went wrong. Please try again."
   },
   "earlyAccess": {
-    "overline": "Early Access",
-    "title1": "Be the first to experience",
-    "title2": "AI security that speaks human.",
-    "subtitle": "Panguard AI is launching soon. Join the waitlist to get priority access, shape the product with direct feedback, and lock in founding member pricing.",
+    "overline": "Pro Early Access",
+    "title1": "Get early access to",
+    "title2": "Pro & Enterprise features.",
+    "subtitle": "Panguard Free is available now. Join early access to be the first to use upcoming Pro & Enterprise features, get a direct feedback channel, and lock in founding member pricing.",
     "whatYouGet": "What early access members get",
-    "priority": "Priority Access",
-    "priorityDesc": "Be among the first to install Panguard on your endpoints. Early access members onboard weeks before public launch.",
+    "priority": "Priority Feature Access",
+    "priorityDesc": "Be the first to try Pro & Enterprise features -- multi-endpoint management, advanced compliance reports, team dashboards, and more.",
     "feedback": "Direct Feedback Channel",
     "feedbackDesc": "Join our private Slack community. Speak directly with engineers. Your feedback shapes the features we build next.",
     "founding": "Founding Member Pricing",
-    "foundingDesc": "Lock in a permanent discount on any plan. Founding members keep their rate for life, even as prices increase.",
-    "timeline": "Launch timeline",
+    "foundingDesc": "Lock in a permanent discount on any paid plan. Founding members keep their rate for life, even as prices increase.",
+    "timeline": "Feature launch timeline",
     "now": "Now",
-    "nowLabel": "Waitlist open -- join today",
+    "nowLabel": "Free tier available -- Pro early access sign-up open",
     "q2": "Q2 2026",
-    "q2Label": "Private beta for early access members",
+    "q2Label": "Pro features early access",
     "q3": "Q3 2026",
-    "q3Label": "Public launch"
+    "q3Label": "Enterprise features general availability"
   },
   "howItWorks": {
     "overline": "HOW IT WORKS",
@@ -3498,8 +3499,8 @@
       "description": "Simple, transparent pricing for AI-powered endpoint security. Free Scan, Solo $9/mo, Starter $19/mo, Team $14/endpoint/mo, Business $10/endpoint/mo, Enterprise custom. 30-day free trial."
     },
     "earlyAccess": {
-      "title": "Early Access",
-      "description": "Be the first to experience AI security that speaks human. Join the Panguard AI waitlist for priority access, founding member pricing, and a direct feedback channel."
+      "title": "Pro Early Access",
+      "description": "Get early access to Panguard Pro & Enterprise features. Free tier available now. Join to lock in founding member pricing and a direct feedback channel."
     },
     "scan": {
       "title": "Free Security Scan",
