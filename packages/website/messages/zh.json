@@ -152,7 +152,7 @@
       "prereq": "需要 Node.js 20+ 和 git",
       "badges": {
         "mit": "MIT 開源授權",
-        "tests": "1,327 項測試通過",
+        "tests": "1,333 項測試通過",
         "taiwan": "台灣製造"
       }
     },
@@ -392,7 +392,7 @@
         "subtitle": "因為資安不該有門檻。",
         "desc": "MIT 授權，完整原始碼，零黑箱。每一行 code 都經得起檢驗。",
         "belief": "要真正打破資安壁壘，不是把價格壓低，而是讓所有人都能參與。",
-        "proof": "1,327 項測試 · TypeScript strict mode · MIT 授權——這不是業餘專案，這是基礎建設。"
+        "proof": "1,333 項測試 · TypeScript strict mode · MIT 授權——這不是業餘專案，這是基礎建設。"
       }
     },
     "the3amStory": {
@@ -547,7 +547,7 @@
         },
         "security": {
           "title": "安全優先",
-          "desc": "1,327 項測試通過。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
+          "desc": "1,333 項測試通過。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
         },
         "privacy": {
           "title": "隱私優先",
@@ -656,7 +656,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "技術文件",
       "badge1": "MIT 開源授權",
-      "badge2": "1,327 測試通過",
+      "badge2": "1,333 測試通過",
       "badge3": "台灣製造"
     }
   },
@@ -1101,7 +1101,7 @@
       "title": "嚴謹打造",
       "stats": [
         {
-          "value": "1,327",
+          "value": "1,333",
           "label": "測試通過"
         },
         {
@@ -1231,7 +1231,7 @@
           "核心平台（Scan + Guard + Chat + Trap + Report）",
           "Threat Cloud v1",
           "3,155條 Sigma + 5,895 條 YARA 規則",
-          "1,327 個自動化測試"
+          "1,333 個自動化測試"
         ]
       },
       "inProgress": {
@@ -2622,38 +2622,37 @@
       "overline": "支援框架",
       "title": "三個框架。一個平台。",
       "subtitle": "每個發現自動對應到相關控制。稽核員清楚看到哪些控制已滿足、哪些需要關注。",
-      "coverageLabel": "覆蓋率",
-      "coverageLabel": "狀態",
-      "controlsLabel": "檢查項",
+      "coverageLabel": "控制項對應",
+      "controlsLabel": "控制項",
       "whoNeedsLabel": "誰需要",
       "whatItCoversLabel": "涵蓋內容",
       "panguardDoesLabel": "Panguard 做什麼",
       "iso27001": {
         "name": "ISO 27001",
         "fullName": "資訊安全管理系統",
-        "controls": "30",
-        "coverage": "就緒",
+        "controls": "114",
+        "coverage": "114 個控制項已對應",
         "whoNeeds": "任何處理敏感資料、追求企業客戶或準備投資盡職調查的公司。",
         "whatItCovers": "風險評估、存取控制、密碼學、營運安全、供應商關係、事件管理和業務持續。",
-        "panguardDoes": "評估 30 個附錄 A 控制項，涵蓋組織和技術主題，對應你的即時安全遙測。生成差距分析和具體修復步驟。"
+        "panguardDoes": "將發現對應到 114 個附錄 A 控制項，涵蓋組織和技術主題，對應你的即時安全遙測。生成差距分析和具體修復步驟。"
       },
       "soc2": {
         "name": "SOC 2 Type II",
         "fullName": "信任服務準則",
-        "controls": "10",
-        "coverage": "就緒",
+        "controls": "64",
+        "coverage": "64 個控制項已對應",
         "whoNeeds": "向美國企業客戶銷售的 SaaS 公司。大多數採購團隊和投資人要求。",
         "whatItCovers": "安全、可用性、處理完整性、保密性和隱私信任服務準則，配合持續證據收集。",
-        "panguardDoes": "評估 10 個信任服務控制項，自動化證據收集。生成稽核就緒文件包，包含時間戳日誌、組態快照和 AI 推理鏈。"
+        "panguardDoes": "將發現對應到 64 個信任服務控制項，自動化證據收集。生成稽核就緒文件包，包含時間戳日誌、組態快照和 AI 推理鏈。"
       },
       "tcsa": {
         "name": "台灣資通安全管理法",
         "fullName": "TCSA",
-        "controls": "10",
-        "coverage": "就緒",
+        "controls": "38",
+        "coverage": "38 個控制項已對應",
         "whoNeeds": "政府承包商、關鍵基礎設施供應商，以及任何受資通安全管理法規範的台灣組織。",
         "whatItCovers": "安全監控、事件通報、基礎設施保護、風險評估和政府監管實體的合規報告。",
-        "panguardDoes": "完整雙語輸出（英文 + 繁體中文）。評估 10 個控制項涵蓋監控、事件通報和合規。生成符合監管提交格式的報告。"
+        "panguardDoes": "完整雙語輸出（英文 + 繁體中文）。將發現對應到 38 個控制項涵蓋監控、事件通報和合規。生成符合監管提交格式的報告。"
       }
     },
     "taiwanMarket": {
@@ -3410,7 +3409,19 @@
         "title": "5. 合規報告（選用）— 產生合規報告",
         "desc": "自動產生 ISO 27001、SOC 2 或台灣資安法合規報告。可作為稽核佐證。",
         "cmd": "panguard report generate --framework iso27001"
-      }
+      },
+      "advancedHintTitle": "進階組態",
+      "advancedHintDesc": "Panguard 開箱即用，但你可以透過選配的外部工具增強偵測能力。所有工具都支援優雅降級——即使外部工具不可用，Panguard 也不會停止運作。",
+      "advancedHintOllama": "Ollama -- 在本地執行 AI 分析，無需雲端 API。適合離線環境。",
+      "advancedHintFalco": "Falco -- 透過 eBPF 進行 Linux 核心層級 syscall 監控，實現深層行為偵測。",
+      "advancedHintSuricata": "Suricata -- 網路層 IDS/IPS，提供進階流量分析。",
+      "advancedHintEnv": "關鍵環境變數：ANTHROPIC_API_KEY（Claude AI）、OPENAI_API_KEY（GPT 備選）、PANGUARD_LLM_MODEL（Ollama 模型覆寫）、OLLAMA_API_ENDPOINT（自訂 Ollama URL）。",
+      "advancedHintLink": "查看完整的進階設定指南，了解安裝說明和組態細節。",
+      "multiEndpointTitle": "多端點部署",
+      "multiEndpointDesc": "在多台伺服器上部署 Panguard 非常簡單。小規模叢集可用 SSH 迴圈，大規模環境建議使用 Ansible。",
+      "multiEndpointSshLabel": "SSH 批次安裝（5-20 台伺服器）",
+      "multiEndpointAnsibleHint": "如果有 20 台以上的伺服器，建議使用 Ansible Playbook 進行冪等、可重複的部署。",
+      "multiEndpointLink": "查看完整的多端點部署指南，了解 Ansible Playbook 範例和 Threat Cloud 整合。"
     },
     "advancedSetup": {
       "backToDocs": "< 返回技術文件",

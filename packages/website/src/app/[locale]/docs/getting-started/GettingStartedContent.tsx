@@ -418,8 +418,92 @@ export default function GettingStartedContent() {
         </div>
       </SectionWrapper>
 
-      {/* Next steps CTA */}
+      {/* Deployment Checklist */}
       <SectionWrapper>
+        <div className="max-w-3xl mx-auto">
+          <FadeInUp>
+            <h2 className="text-xl font-bold text-text-primary mb-2">{t('checklistTitle')}</h2>
+            <p className="text-text-secondary mb-6">{t('checklistDesc')}</p>
+
+            <div className="space-y-4">
+              {(['cl1', 'cl2', 'cl3', 'cl4', 'cl5'] as const).map((key) => (
+                <div key={key} className="bg-surface-1 border border-border rounded-xl p-5">
+                  <p className="text-sm font-semibold text-text-primary mb-1">
+                    {t(`${key}.title`)}
+                  </p>
+                  <p className="text-text-secondary text-sm mb-3">{t(`${key}.desc`)}</p>
+                  <CodeBlock code={t(`${key}.cmd`)} label="Terminal" />
+                </div>
+              ))}
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
+      {/* Advanced Configuration Hints */}
+      <SectionWrapper dark>
+        <div className="max-w-3xl mx-auto">
+          <FadeInUp>
+            <h2 className="text-xl font-bold text-text-primary mb-2">
+              {t('advancedHintTitle')}
+            </h2>
+            <p className="text-text-secondary mb-6">{t('advancedHintDesc')}</p>
+
+            <div className="space-y-3">
+              {[
+                t('advancedHintOllama'),
+                t('advancedHintFalco'),
+                t('advancedHintSuricata'),
+              ].map((hint) => (
+                <div key={hint} className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-brand-sage shrink-0 mt-0.5" />
+                  <p className="text-sm text-text-secondary leading-relaxed">{hint}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-text-muted mt-4 mb-4">{t('advancedHintEnv')}</p>
+
+            <Link
+              href="/docs/advanced-setup"
+              className="inline-flex items-center gap-1.5 text-sm text-brand-sage hover:text-brand-sage-light transition-colors font-medium"
+            >
+              {t('advancedHintLink')}
+            </Link>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
+      {/* Multi-Endpoint Deployment Hints */}
+      <SectionWrapper>
+        <div className="max-w-3xl mx-auto">
+          <FadeInUp>
+            <h2 className="text-xl font-bold text-text-primary mb-2">
+              {t('multiEndpointTitle')}
+            </h2>
+            <p className="text-text-secondary mb-6">{t('multiEndpointDesc')}</p>
+
+            <CodeBlock
+              code={`#!/bin/bash\n# servers.txt: one IP per line\nfor server in $(cat servers.txt); do\n  ssh root@$server 'curl -fsSL https://get.panguard.ai | bash && panguard guard start'\ndone`}
+              label={t('multiEndpointSshLabel')}
+            />
+
+            <p className="text-sm text-text-secondary mt-4 mb-4">
+              {t('multiEndpointAnsibleHint')}
+            </p>
+
+            <Link
+              href="/docs/deployment"
+              className="inline-flex items-center gap-1.5 text-sm text-brand-sage hover:text-brand-sage-light transition-colors font-medium"
+            >
+              {t('multiEndpointLink')}
+            </Link>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
+      {/* Next steps CTA */}
+      <SectionWrapper dark>
         <div className="max-w-3xl mx-auto text-center">
           <FadeInUp>
             <h2 className="text-2xl font-bold text-text-primary mb-3">{t('nextTitle')}</h2>

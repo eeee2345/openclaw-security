@@ -152,7 +152,7 @@
       "prereq": "Requires Node.js 20+ and git",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,327 Tests Passing",
+        "tests": "1,333 Tests Passing",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -392,7 +392,7 @@
         "subtitle": "Because security shouldn't have walls.",
         "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
         "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
-        "proof": "1,327 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+        "proof": "1,333 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
       }
     },
     "the3amStory": {
@@ -547,7 +547,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "1,327 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "1,333 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -656,7 +656,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "badge1": "MIT Open Source",
-      "badge2": "1,327 Tests Passing",
+      "badge2": "1,333 Tests Passing",
       "badge3": "Built in Taiwan"
     }
   },
@@ -1896,37 +1896,37 @@
       "overline": "Supported Frameworks",
       "title": "Three frameworks. One platform.",
       "subtitle": "Every finding is automatically mapped to relevant controls. Auditors see exactly which controls are satisfied and which need attention.",
-      "coverageLabel": "Status",
-      "controlsLabel": "Checks",
+      "coverageLabel": "Controls Mapped",
+      "controlsLabel": "Controls",
       "whoNeedsLabel": "Who needs it",
       "whatItCoversLabel": "What it covers",
       "panguardDoesLabel": "What Panguard does",
       "iso27001": {
         "name": "ISO 27001",
         "fullName": "Information Security Management System",
-        "controls": "30",
-        "coverage": "Ready",
+        "controls": "114",
+        "coverage": "114 controls mapped",
         "whoNeeds": "Any company handling sensitive data, pursuing enterprise customers, or preparing for investment due diligence.",
         "whatItCovers": "Risk assessment, access control, cryptography, operations security, supplier relationships, incident management, and business continuity.",
-        "panguardDoes": "Evaluates 30 Annex A controls across organizational and technical themes against your live security telemetry. Generates gap analysis with specific remediation steps."
+        "panguardDoes": "Maps findings to 114 Annex A controls across organizational and technical themes against your live security telemetry. Generates gap analysis with specific remediation steps."
       },
       "soc2": {
         "name": "SOC 2 Type II",
         "fullName": "Trust Service Criteria",
-        "controls": "10",
-        "coverage": "Ready",
+        "controls": "64",
+        "coverage": "64 controls mapped",
         "whoNeeds": "SaaS companies selling to US enterprise customers. Required by most procurement teams and investors.",
         "whatItCovers": "Security, Availability, Processing Integrity, Confidentiality, and Privacy trust service criteria with continuous evidence collection.",
-        "panguardDoes": "Evaluates 10 trust service controls with automated evidence collection. Generates audit-ready documentation packages including timestamped logs, configuration snapshots, and AI reasoning chains."
+        "panguardDoes": "Maps findings to 64 trust service controls with automated evidence collection. Generates audit-ready documentation packages including timestamped logs, configuration snapshots, and AI reasoning chains."
       },
       "tcsa": {
         "name": "Taiwan Cyber Security Act",
         "fullName": "TCSA",
-        "controls": "10",
-        "coverage": "Ready",
+        "controls": "38",
+        "coverage": "38 controls mapped",
         "whoNeeds": "Government contractors, critical infrastructure providers, and any Taiwan-based organization subject to the Cyber Security Management Act.",
         "whatItCovers": "Security monitoring, incident reporting, infrastructure protection, risk assessment, and compliance reporting for government-regulated entities.",
-        "panguardDoes": "Full bilingual output (English + Traditional Chinese). Evaluates 10 controls covering monitoring, incident reporting, and compliance. Reports formatted for regulatory submission."
+        "panguardDoes": "Full bilingual output (English + Traditional Chinese). Maps findings to 38 controls covering monitoring, incident reporting, and compliance. Reports formatted for regulatory submission."
       }
     },
     "taiwanMarket": {
@@ -2683,7 +2683,19 @@
         "title": "5. Compliance Reports (Optional) -- Generate reports",
         "desc": "Auto-generate ISO 27001, SOC 2, or Taiwan Cyber Security Act compliance reports. Use as audit evidence.",
         "cmd": "panguard report generate --framework iso27001"
-      }
+      },
+      "advancedHintTitle": "Advanced Configuration",
+      "advancedHintDesc": "Panguard works out of the box, but you can enhance detection with optional external tools. All tools degrade gracefully -- Panguard never stops working if an external tool is unavailable.",
+      "advancedHintOllama": "Ollama -- Run AI analysis locally without cloud APIs. Ideal for air-gapped environments.",
+      "advancedHintFalco": "Falco -- Linux kernel-level syscall monitoring via eBPF for deep behavioral detection.",
+      "advancedHintSuricata": "Suricata -- Network-layer IDS/IPS for advanced traffic analysis.",
+      "advancedHintEnv": "Key environment variables: ANTHROPIC_API_KEY (Claude AI), OPENAI_API_KEY (GPT fallback), PANGUARD_LLM_MODEL (Ollama model override), OLLAMA_API_ENDPOINT (custom Ollama URL).",
+      "advancedHintLink": "See the full Advanced Setup guide for installation instructions and configuration details.",
+      "multiEndpointTitle": "Multi-Endpoint Deployment",
+      "multiEndpointDesc": "Deploying Panguard across multiple servers is straightforward. Use SSH loops for small fleets or Ansible for larger environments.",
+      "multiEndpointSshLabel": "SSH batch install (5-20 servers)",
+      "multiEndpointAnsibleHint": "For 20+ servers, consider using an Ansible playbook for idempotent, repeatable deployment.",
+      "multiEndpointLink": "See the full Multi-Endpoint Deployment guide for Ansible playbook examples and Threat Cloud integration."
     },
     "advancedSetup": {
       "backToDocs": "< Back to Docs",
@@ -3466,7 +3478,7 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "1,327",
+          "value": "1,333",
           "label": "Tests passing"
         },
         {
@@ -3596,7 +3608,7 @@
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
           "3,155 Sigma + 5,895 YARA rules",
-          "1,327 automated tests"
+          "1,333 automated tests"
         ]
       },
       "inProgress": {
