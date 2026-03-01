@@ -67,7 +67,7 @@ const tabContent: Record<TabId, Line[]> = {
     { text: '  Severity: HIGH', color: c.err },
     { text: '  Action: IP blocked', color: c.ok },
     { text: '' },
-    { text: '[15:32:06] LINE notification sent', color: c.sage },
+    { text: '[15:32:06] Telegram notification sent', color: c.sage },
     { text: '' },
     { text: 'Status: 2,847 events | 12 threats blocked | 0 critical', color: c.sage },
   ],

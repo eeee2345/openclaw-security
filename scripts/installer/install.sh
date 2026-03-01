@@ -16,7 +16,7 @@ FALLBACK_REPO="https://github.com/eeee2345/Panguard-AI.git"
 # ── Install paths ────────────────────────────────────────────────────
 INSTALL_DIR="${HOME}/.panguard/source"
 SYMLINK_TARGET="/usr/local/bin/panguard"
-MIN_NODE_VERSION=18
+MIN_NODE_VERSION=20
 
 # ── Colors ───────────────────────────────────────────────────────────
 RED='\033[0;31m'
@@ -57,7 +57,7 @@ case "$OS" in
     ;;
 esac
 
-# ── Step 2: Check Node.js >= 18 ─────────────────────────────────────
+# ── Step 2: Check Node.js >= 20 ─────────────────────────────────────
 if ! command -v node &>/dev/null; then
   fail "Node.js is required but not installed. Install Node.js v${MIN_NODE_VERSION}+ from https://nodejs.org"
 fi

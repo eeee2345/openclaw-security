@@ -81,7 +81,7 @@ export default function The3AMStory() {
             ))}
           </div>
 
-          {/* LINE chat bubble mockup */}
+          {/* Chat bubble mockup */}
           <FadeInUp delay={0.8}>
             <div className="mt-6 p-4 bg-surface-1 border border-border rounded-xl">
               <div className="flex items-start gap-3">

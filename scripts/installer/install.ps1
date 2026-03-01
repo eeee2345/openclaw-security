@@ -14,7 +14,7 @@ $FallbackRepo = "https://github.com/eeee2345/Panguard-AI.git"
 # ── Install paths ────────────────────────────────────────────────────
 $InstallDir = Join-Path $env:USERPROFILE ".panguard\source"
 $BinDir = Join-Path $env:USERPROFILE ".panguard\bin"
-$MinNodeVersion = 18
+$MinNodeVersion = 20
 
 # ── Logging helpers ──────────────────────────────────────────────────
 function Write-Info  { param($msg) Write-Host "[INFO] $msg" -ForegroundColor Blue }
@@ -34,7 +34,7 @@ Write-Host ""
 $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
 Write-Info "Detected: Windows $arch"
 
-# ── Step 2: Check Node.js >= 18 ─────────────────────────────────────
+# ── Step 2: Check Node.js >= 20 ─────────────────────────────────────
 try {
     $nodeVersion = (node -v) -replace 'v', ''
     $nodeMajor = [int]($nodeVersion.Split('.')[0])
@@ -75,7 +75,11 @@ if (Test-Path (Join-Path $InstallDir ".git")) {
     Push-Location $InstallDir
     try {
         git fetch origin 2>$null
-        git reset --hard origin/main 2>$null
+        try {
+            git reset --hard origin/main 2>$null
+        } catch {
+            git reset --hard origin/master 2>$null
+        }
         Write-Ok "Repository updated"
     } catch {
         Write-Warn "git update failed, continuing with existing code"

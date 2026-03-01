@@ -24,8 +24,8 @@ const DEVELOPER_SCENARIOS: ScenarioStory[] = [
     beforeZh:
       '你的 VPS 正在被機器人的 SSH 暴力破解攻擊轟炸。你完全不知道，因為你從來不看 auth.log。',
     afterEn:
-      'Panguard AI detects 500 failed login attempts from China, automatically blocks the IP, and tells you on LINE.',
-    afterZh: 'Panguard AI 偵測到來自中國的 500 次登入失敗，自動封鎖 IP，並在 LINE 上告訴你。',
+      'Panguard AI detects 500 failed login attempts from China, automatically blocks the IP, and tells you on Telegram.',
+    afterZh: 'Panguard AI 偵測到來自中國的 500 次登入失敗，自動封鎖 IP，並在 Telegram 上告訴你。',
     notificationEn:
       "Someone was trying to guess your password to log in. Source: Hebei, China. 500 attempts, all failed. I've added this IP to the blocklist.",
     notificationZh:

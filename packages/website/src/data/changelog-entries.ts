@@ -32,10 +32,9 @@ export const changelogEntries: ChangelogEntry[] = [
   {
     version: '1.2.0',
     date: '2026-01-28',
-    title: 'LINE and Telegram Alert Channels',
-    description: 'Panguard Chat now supports LINE and Telegram in addition to Slack.',
+    title: 'Telegram Alert Channel and Digest Summaries',
+    description: 'Panguard Chat now supports Telegram in addition to Slack.',
     changes: [
-      { type: 'feature', text: 'LINE messaging integration for real-time alerts' },
       { type: 'feature', text: 'Telegram bot integration with rich formatting' },
       { type: 'improvement', text: 'Alert deduplication to prevent notification fatigue' },
       { type: 'improvement', text: 'Weekly digest summary messages' },

@@ -131,7 +131,7 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
     categoryKey: 'alertsIntegrations',
     rows: [
       { feature: 'Email alerts', community: false, solo: true, pro: true, business: true },
-      { feature: 'LINE / Telegram', community: false, solo: true, pro: true, business: true },
+      { feature: 'Telegram', community: false, solo: true, pro: true, business: true },
       { feature: 'Slack', community: false, solo: false, pro: true, business: true },
       { feature: 'Webhook / API', community: false, solo: false, pro: false, business: true },
       { feature: 'SIEM integration', community: false, solo: false, pro: false, business: true },

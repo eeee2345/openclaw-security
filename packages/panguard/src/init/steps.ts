@@ -254,14 +254,6 @@ export function getWizardSteps(): WizardStep[] {
       inputType: 'select',
       options: [
         {
-          value: 'line',
-          label: { en: 'LINE', 'zh-TW': 'LINE' },
-          description: {
-            en: 'Most popular in Taiwan',
-            'zh-TW': '\u53F0\u7063\u6700\u5E38\u7528\u7684\u901A\u8A0A\u8EDF\u9AD4',
-          },
-        },
-        {
           value: 'telegram',
           label: { en: 'Telegram', 'zh-TW': 'Telegram' },
           description: {

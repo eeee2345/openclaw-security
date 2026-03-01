@@ -54,12 +54,6 @@ const integrations: Integration[] = [
     status: 'Available',
   },
   {
-    name: 'LINE',
-    category: 'Communication',
-    description: 'Alert notifications via LINE messaging for Asia-Pacific teams.',
-    status: 'Available',
-  },
-  {
     name: 'Telegram',
     category: 'Communication',
     description: 'Bot-powered alerts with rich formatting and threat details.',

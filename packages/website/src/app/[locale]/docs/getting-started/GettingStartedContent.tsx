@@ -201,7 +201,7 @@ export default function GettingStartedContent() {
             <h2 className="text-xl font-bold text-text-primary mb-2">{t('step4Title')}</h2>
             <p className="text-text-secondary mb-6">{t('step4Desc')}</p>
             <CodeBlock
-              code={`panguard chat config\n# Follow the prompts to connect Slack, LINE, or Telegram`}
+              code={`panguard chat config\n# Follow the prompts to connect Slack or Telegram`}
               label="Terminal"
             />
           </FadeInUp>

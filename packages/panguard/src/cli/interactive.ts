@@ -86,8 +86,8 @@ const MENU_DEFS: MenuDef[] = [
   },
   {
     key: 'notify',
-    en: 'Notifications (LINE, Telegram, Slack)',
-    zh: '\u901A\u77E5\u7CFB\u7D71 (LINE, Telegram, Slack)',
+    en: 'Notifications (Telegram, Slack)',
+    zh: '\u901A\u77E5\u7CFB\u7D71 (Telegram, Slack)',
     tier: 'solo',
   },
   { key: 'trap', en: 'Honeypot system', zh: '\u871C\u7F50\u7CFB\u7D71', tier: 'solo' },

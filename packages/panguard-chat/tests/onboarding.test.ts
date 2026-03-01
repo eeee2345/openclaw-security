@@ -51,12 +51,6 @@ describe('SETUP_STEPS', () => {
 });
 
 describe('getChannelConfigSteps', () => {
-  it('should return LINE config steps', () => {
-    const steps = getChannelConfigSteps('line');
-    expect(steps.length).toBe(2);
-    expect(steps[0]!.id).toContain('line');
-  });
-
   it('should return Telegram config steps', () => {
     const steps = getChannelConfigSteps('telegram');
     expect(steps.length).toBe(2);

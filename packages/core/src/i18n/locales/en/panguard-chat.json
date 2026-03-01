@@ -13,7 +13,6 @@
     "channelNotFound": "No messaging channel found for type: {{channel}}"
   },
   "channel": {
-    "lineInit": "LINE channel initialized",
     "telegramInit": "Telegram channel initialized",
     "slackInit": "Slack channel initialized",
     "emailInit": "Email channel initialized",

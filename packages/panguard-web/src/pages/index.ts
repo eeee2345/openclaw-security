@@ -179,10 +179,10 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
     headlineEn: 'Your AI Security Co-pilot',
     headlineZh: '你的 AI 資安副駕駛',
     descriptionEn:
-      'Talks to you in plain language through LINE, Telegram, or Slack. No jargon, just clear answers.',
-    descriptionZh: '透過 LINE、Telegram 或 Slack 用人話跟你溝通。不講術語，只給清楚的答案。',
+      'Talks to you in plain language through Telegram or Slack. No jargon, just clear answers.',
+    descriptionZh: '透過 Telegram 或 Slack 用人話跟你溝通。不講術語，只給清楚的答案。',
     highlightsEn: [
-      'LINE / Telegram / Slack / Email / Webhook',
+      'Telegram / Slack / Email / Webhook',
       'Adapts language to your role (developer/boss/IT admin)',
       'Ask follow-up questions naturally',
       'Approve or reject AI recommendations via chat',
@@ -190,7 +190,7 @@ export const PRODUCT_FEATURES: ProductFeature[] = [
       '"All clear" notifications - peace of mind',
     ],
     highlightsZh: [
-      'LINE / Telegram / Slack / Email / Webhook',
+      'Telegram / Slack / Email / Webhook',
       '根據你的角色調整語氣（開發者/老闆/IT 管理員）',
       '自然地追問問題',
       '透過聊天確認或駁回 AI 的建議',

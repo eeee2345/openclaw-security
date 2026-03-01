@@ -44,7 +44,7 @@ const productConfigs = [
       'Automated threat response -- quarantine, block, isolate',
       'Sub-second detection with minimal resource overhead',
       'Cross-endpoint correlation for lateral movement detection',
-      'Alerts via Slack, LINE, Telegram, email, or webhook',
+      'Alerts via Slack, Telegram, email, or webhook',
       'Self-healing agent that auto-updates without downtime',
     ],
     href: '/product/guard',
@@ -54,12 +54,12 @@ const productConfigs = [
     icon: TerminalIcon,
     badgeColor: 'bg-status-safe/10 text-status-safe border-status-safe/20',
     description:
-      'Security alerts are useless if nobody understands them. Panguard Chat translates every detection, every log entry, and every recommendation into plain language. Ask it questions in natural English (or Chinese), get real-time explanations of what happened and what to do. Chat integrates into Slack, LINE, and Telegram so your team never has to leave their workflow.',
+      'Security alerts are useless if nobody understands them. Panguard Chat translates every detection, every log entry, and every recommendation into plain language. Ask it questions in natural English (or Chinese), get real-time explanations of what happened and what to do. Chat integrates into Slack and Telegram so your team never has to leave their workflow.',
     features: [
       'Natural language explanations of every security event',
       'Interactive Q&A -- ask follow-ups, request deeper analysis',
       'Multi-language support including English and Traditional Chinese',
-      'Slack, LINE, and Telegram integration',
+      'Slack and Telegram integration',
       'Context-aware: understands your infrastructure topology',
       'Suggested remediation steps with copy-paste commands',
     ],

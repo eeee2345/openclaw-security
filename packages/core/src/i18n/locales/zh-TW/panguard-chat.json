@@ -13,7 +13,6 @@
     "channelNotFound": "找不到 {{channel}} 類型的通訊管道"
   },
   "channel": {
-    "lineInit": "LINE 管道已初始化",
     "telegramInit": "Telegram 管道已初始化",
     "slackInit": "Slack 管道已初始化",
     "emailInit": "Email 管道已初始化",
