@@ -129,8 +129,14 @@ export class ManagerServer {
     const path = url.pathname;
     const method = req.method ?? 'GET';
 
-    // CORS headers - restrict to same-origin when API key is configured
-    const allowedOrigin = this.apiKey ? (req.headers.origin ?? '') : '*';
+    // CORS headers - use MANAGER_CORS_ORIGINS env or restrict to same-origin
+    const corsOrigins = process.env['MANAGER_CORS_ORIGINS']?.split(',') ?? [];
+    const requestOrigin = req.headers.origin ?? '';
+    const allowedOrigin = corsOrigins.includes(requestOrigin)
+      ? requestOrigin
+      : this.apiKey
+        ? requestOrigin
+        : '*';
     res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');

@@ -38,6 +38,7 @@ export const DEFAULT_GUARD_CONFIG: GuardConfig = {
   },
   watchdogEnabled: true,
   watchdogInterval: 60000,
+  threatCloudEndpoint: 'https://tc.panguard.ai/api',
 };
 
 /**

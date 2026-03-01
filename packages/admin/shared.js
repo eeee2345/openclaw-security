@@ -12,8 +12,11 @@ window.PG = (() => {
   }
 
   function getUser() {
-    try { return JSON.parse(localStorage.getItem('panguard_admin_user') || '{}'); }
-    catch { return {}; }
+    try {
+      return JSON.parse(localStorage.getItem('panguard_admin_user') || '{}');
+    } catch {
+      return {};
+    }
   }
 
   function logout() {
@@ -21,8 +24,10 @@ window.PG = (() => {
     if (token) {
       fetch(`${API}/api/auth/logout`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-      }).catch(() => { /* best-effort session invalidation */ });
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {
+        /* best-effort session invalidation */
+      });
     }
     localStorage.removeItem('panguard_admin_token');
     localStorage.removeItem('panguard_admin_user');
@@ -41,38 +46,50 @@ window.PG = (() => {
 
   async function apiFetch(path) {
     const res = await fetch(`${API}${path}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` },
+      headers: { Authorization: `Bearer ${getToken()}` },
     });
-    if (res.status === 401 || res.status === 403) { logout(); return null; }
+    if (res.status === 401 || res.status === 403) {
+      logout();
+      return null;
+    }
     return res.json();
   }
 
   async function apiPost(path, body) {
     const res = await fetch(`${API}${path}`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
-    if (res.status === 401 || res.status === 403) { logout(); return null; }
+    if (res.status === 401 || res.status === 403) {
+      logout();
+      return null;
+    }
     return res.json();
   }
 
   async function apiPatch(path, body) {
     const res = await fetch(`${API}${path}`, {
       method: 'PATCH',
-      headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
-    if (res.status === 401 || res.status === 403) { logout(); return null; }
+    if (res.status === 401 || res.status === 403) {
+      logout();
+      return null;
+    }
     return res.json();
   }
 
   async function apiDelete(path) {
     const res = await fetch(`${API}${path}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${getToken()}` },
+      headers: { Authorization: `Bearer ${getToken()}` },
     });
-    if (res.status === 401 || res.status === 403) { logout(); return null; }
+    if (res.status === 401 || res.status === 403) {
+      logout();
+      return null;
+    }
     return res.json();
   }
 
@@ -87,7 +104,9 @@ window.PG = (() => {
   function formatDate(d) {
     if (!d) return '-';
     return new Date(d + 'Z').toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   }
 
@@ -114,16 +133,19 @@ window.PG = (() => {
 
   const NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', href: '/admin', icon: 'barChart' },
+    { id: 'agents', label: 'Agents', href: '/admin/agents', icon: 'cpu' },
+    { id: 'events', label: 'Events', href: '/admin/events', icon: 'zap' },
     { id: 'users', label: 'Users', href: '/admin/users', icon: 'users' },
     { id: 'waitlist', label: 'Waitlist', href: '/admin/waitlist', icon: 'list' },
     { id: 'sessions', label: 'Sessions', href: '/admin/sessions', icon: 'key' },
     { id: 'audit', label: 'Audit Log', href: '/admin/audit', icon: 'fileText' },
     { id: 'usage', label: 'Usage', href: '/admin/usage', icon: 'activity' },
+    { id: 'settings', label: 'Settings', href: '/admin/settings', icon: 'settings' },
   ];
 
   function renderNav(activePage) {
     const user = getUser();
-    const navLinks = NAV_ITEMS.map(item => {
+    const navLinks = NAV_ITEMS.map((item) => {
       const isActive = item.id === activePage;
       const cls = isActive
         ? 'bg-sage/10 text-sage'
@@ -183,7 +205,8 @@ window.PG = (() => {
     let endPage = Math.min(p.totalPages, startPage + maxVisible - 1);
     if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
 
-    if (startPage > 1) buttons += `<button data-page="1" class="px-2 py-1 text-xs rounded border border-border text-text-secondary hover:border-sage">1</button>`;
+    if (startPage > 1)
+      buttons += `<button data-page="1" class="px-2 py-1 text-xs rounded border border-border text-text-secondary hover:border-sage">1</button>`;
     if (startPage > 2) buttons += `<span class="text-text-muted text-xs px-1">...</span>`;
 
     for (let i = startPage; i <= endPage; i++) {
@@ -191,8 +214,10 @@ window.PG = (() => {
       buttons += `<button data-page="${i}" class="px-2 py-1 text-xs rounded border ${isActive ? 'border-sage text-sage bg-sage/10' : 'border-border text-text-secondary hover:border-sage'}">${i}</button>`;
     }
 
-    if (endPage < p.totalPages - 1) buttons += `<span class="text-text-muted text-xs px-1">...</span>`;
-    if (endPage < p.totalPages) buttons += `<button data-page="${p.totalPages}" class="px-2 py-1 text-xs rounded border border-border text-text-secondary hover:border-sage">${p.totalPages}</button>`;
+    if (endPage < p.totalPages - 1)
+      buttons += `<span class="text-text-muted text-xs px-1">...</span>`;
+    if (endPage < p.totalPages)
+      buttons += `<button data-page="${p.totalPages}" class="px-2 py-1 text-xs rounded border border-border text-text-secondary hover:border-sage">${p.totalPages}</button>`;
 
     // Next
     buttons += `<button ${p.page >= p.totalPages ? 'disabled' : ''} data-page="${p.page + 1}"
@@ -202,7 +227,7 @@ window.PG = (() => {
     setTimeout(() => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.querySelectorAll('button[data-page]').forEach(btn => {
+      el.querySelectorAll('button[data-page]').forEach((btn) => {
         btn.addEventListener('click', () => {
           const pg = parseInt(btn.dataset.page);
           if (pg >= 1 && pg <= p.totalPages) onPageChange(pg);
@@ -278,9 +303,9 @@ window.PG = (() => {
           safe: '#2ED573',
           caution: '#FBBF24',
           danger: '#EF4444',
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   // ── Status Badges ────────────────────────────────────────────────
@@ -304,14 +329,16 @@ window.PG = (() => {
   // ── CSV Export ───────────────────────────────────────────────────
 
   function generateCsv(columns, rows) {
-    const header = columns.map(c => `"${c.label}"`).join(',');
-    const lines = rows.map(row =>
-      columns.map(c => {
-        const val = row[c.key];
-        if (val == null) return '""';
-        const str = String(val).replace(/"/g, '""');
-        return `"${str}"`;
-      }).join(',')
+    const header = columns.map((c) => `"${c.label}"`).join(',');
+    const lines = rows.map((row) =>
+      columns
+        .map((c) => {
+          const val = row[c.key];
+          if (val == null) return '""';
+          const str = String(val).replace(/"/g, '""');
+          return `"${str}"`;
+        })
+        .join(',')
     );
     return [header, ...lines].join('\n');
   }
@@ -337,26 +364,60 @@ window.PG = (() => {
     return renderPagination(p, onPageChange);
   }
 
+  // ── Manager API ────────────────────────────────────────────────
+  // ManagerServer runs on a separate port (default 8443) for agent management.
+  // Use MANAGER_URL to configure; falls back to same-origin /api/manager proxy.
+
+  const MANAGER_URL = window.MANAGER_URL || '';
+
+  async function managerFetch(path) {
+    try {
+      const url = MANAGER_URL ? `${MANAGER_URL}${path}` : `${API}/api/manager${path}`;
+      const headers = { Authorization: `Bearer ${getToken()}` };
+      const res = await fetch(url, { headers });
+      if (!res.ok) return null;
+      return res.json();
+    } catch {
+      return null;
+    }
+  }
+
   // ── Exports ──────────────────────────────────────────────────────
 
   return {
     // Auth
-    getToken, getUser, logout, requireAuth,
+    getToken,
+    getUser,
+    logout,
+    requireAuth,
     // API
-    apiFetch, apiPost, apiPatch, apiDelete,
+    apiFetch,
+    apiPost,
+    apiPatch,
+    apiDelete,
+    managerFetch,
     // Formatting
-    escapeHtml, formatDate, formatRelativeTime, formatNumber,
+    escapeHtml,
+    formatDate,
+    formatRelativeTime,
+    formatNumber,
     // Navigation
-    renderNav, NAV_ITEMS,
+    renderNav,
+    NAV_ITEMS,
     // Pagination
-    paginate, renderPagination, renderServerPagination,
+    paginate,
+    renderPagination,
+    renderServerPagination,
     // Toast
     showToast,
     // CSV
-    generateCsv, downloadCsv,
+    generateCsv,
+    downloadCsv,
     // Skeleton
     skeleton,
     // Config
-    TAILWIND_CONFIG, STATUS_BADGE, TIER_COLORS,
+    TAILWIND_CONFIG,
+    STATUS_BADGE,
+    TIER_COLORS,
   };
 })();

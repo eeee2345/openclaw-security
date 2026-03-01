@@ -81,6 +81,34 @@
       </div>
     </div>
 
+    <!-- Security Overview -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <a href="/admin/agents" class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2 block">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Active Agents</p>
+          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconAgents"></div>
+        </div>
+        <p id="kpiAgents" class="text-2xl font-bold">--</p>
+        <p id="kpiAgentsInfo" class="text-xs text-text-tertiary mt-1">Guard instances</p>
+      </a>
+      <a href="/admin/events" class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2 block">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Events Today</p>
+          <div class="w-8 h-8 rounded-lg bg-caution/10 flex items-center justify-center" id="kpiIconEvents"></div>
+        </div>
+        <p id="kpiEventsToday" class="text-2xl font-bold text-caution">--</p>
+        <p id="kpiEventsInfo" class="text-xs text-text-tertiary mt-1">security events</p>
+      </a>
+      <a href="/admin/settings" class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2 block">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs text-text-tertiary uppercase tracking-wider">Threat Cloud</p>
+          <div class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center" id="kpiIconThreatCloud"></div>
+        </div>
+        <p id="kpiThreatCloud" class="text-lg font-bold">--</p>
+        <p id="kpiThreatCloudInfo" class="text-xs text-text-tertiary mt-1">connection status</p>
+      </a>
+    </div>
+
     <!-- User Growth Chart + Recent Activity -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
       <!-- User Growth (30-day bar chart) -->
@@ -204,6 +232,9 @@
     document.getElementById('kpiIconSignups').innerHTML = Icons.trendingUp(16, '#2ED573');
     document.getElementById('kpiIconWaitlist').innerHTML = Icons.clock(16, '#FBBF24');
     document.getElementById('kpiIconSessions').innerHTML = Icons.key(16, '#8B9A8E');
+    document.getElementById('kpiIconAgents').innerHTML = Icons.cpu(16, '#8B9A8E');
+    document.getElementById('kpiIconEvents').innerHTML = Icons.zap(16, '#FBBF24');
+    document.getElementById('kpiIconThreatCloud').innerHTML = Icons.cloud(16, '#8B9A8E');
     document.getElementById('chartIcon').innerHTML = Icons.barChart(16, '#8B9A8E');
     document.getElementById('activityIcon').innerHTML = Icons.activity(16, '#8B9A8E');
     document.getElementById('tierIcon').innerHTML = Icons.users(16, '#8B9A8E');
@@ -218,10 +249,13 @@
 
     // ── Load Data ──
     async function loadDashboard() {
-      const [dashData, healthData, activityData] = await Promise.all([
+      const [dashData, healthData, activityData, agentData, eventData, settingsData] = await Promise.all([
         PG.apiFetch('/api/admin/dashboard'),
         PG.apiFetch('/health'),
         PG.apiFetch('/api/admin/activity?limit=15'),
+        PG.managerFetch('/api/agents'),
+        PG.managerFetch('/api/events?limit=5'),
+        PG.apiFetch('/api/admin/settings'),
       ]);
 
       if (!dashData || !dashData.ok) return;
@@ -239,6 +273,33 @@
       document.getElementById('kpiSessions').textContent = PG.formatNumber(sessions.active);
       document.getElementById('kpiSessionsInfo').textContent =
         `${sessions.total} total sessions`;
+
+      // Security cards
+      if (agentData && agentData.agents) {
+        const online = agentData.agents.filter(a => a.status === 'online').length;
+        document.getElementById('kpiAgents').textContent = PG.formatNumber(online);
+        document.getElementById('kpiAgentsInfo').textContent = `${agentData.agents.length} total registered`;
+      } else {
+        document.getElementById('kpiAgents').textContent = 'Offline';
+        document.getElementById('kpiAgentsInfo').textContent = 'Manager not reachable';
+      }
+
+      if (eventData) {
+        document.getElementById('kpiEventsToday').textContent = PG.formatNumber(eventData.total || 0);
+        document.getElementById('kpiEventsInfo').textContent = 'captured events';
+      } else {
+        document.getElementById('kpiEventsToday').textContent = 'Offline';
+        document.getElementById('kpiEventsInfo').textContent = 'Manager not reachable';
+      }
+
+      if (settingsData && settingsData.ok) {
+        const tc = settingsData.data.threatCloud;
+        document.getElementById('kpiThreatCloud').textContent = tc.endpoint ? 'Connected' : 'Offline';
+        document.getElementById('kpiThreatCloud').className = tc.endpoint
+          ? 'text-lg font-bold text-safe'
+          : 'text-lg font-bold text-text-muted';
+        document.getElementById('kpiThreatCloudInfo').textContent = tc.endpoint || 'Not configured';
+      }
 
       // Uptime
       if (healthData && healthData.ok) {

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panguard Admin - Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/admin/icons.js"></script>
+  <script src="/admin/shared.js"></script>
+  <script>tailwind.config = PG.TAILWIND_CONFIG;</script>
+  <style>
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fade-in 0.4s ease-out forwards; }
+    .config-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+    .config-dot.on { background: #2ED573; }
+    .config-dot.off { background: #EF4444; }
+  </style>
+</head>
+<body class="bg-surface-0 text-text-primary min-h-screen">
+  <div id="nav"></div>
+
+  <main class="max-w-4xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="mb-6 fade-in">
+      <h1 class="text-xl font-bold flex items-center gap-2">
+        <span id="pageIcon"></span>
+        System Settings
+      </h1>
+      <p class="text-sm text-text-tertiary mt-1">Environment configuration status (read-only)</p>
+    </div>
+
+    <!-- Settings Grid -->
+    <div class="space-y-5" id="settingsContainer">
+      <div class="text-center py-12 text-text-muted text-sm">Loading configuration...</div>
+    </div>
+  </main>
+
+  <script>
+    if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+    document.getElementById('nav').innerHTML = PG.renderNav('settings');
+    document.getElementById('pageIcon').innerHTML = Icons.settings(20, '#8B9A8E');
+
+    function renderStatus(configured) {
+      if (configured) {
+        return `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-safe/10 text-safe border border-safe/20">
+          ${Icons.dot(6, '#2ED573')} Configured
+        </span>`;
+      }
+      return `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-surface-2 text-text-muted border border-border">
+        ${Icons.dot(6, '#4A4540')} Not Set
+      </span>`;
+    }
+
+    function renderSection(title, icon, items) {
+      const rows = items.map(item =>
+        `<div class="flex items-center justify-between py-3 border-b border-border last:border-b-0">
+          <div>
+            <p class="text-sm font-medium">${PG.escapeHtml(item.label)}</p>
+            ${item.description ? `<p class="text-xs text-text-tertiary mt-0.5">${PG.escapeHtml(item.description)}</p>` : ''}
+          </div>
+          ${renderStatus(item.configured)}
+        </div>`
+      ).join('');
+
+      return `<div class="bg-surface-1 border border-border rounded-xl fade-in">
+        <div class="px-5 py-4 border-b border-border flex items-center gap-2">
+          ${icon}
+          <h3 class="text-sm font-semibold">${PG.escapeHtml(title)}</h3>
+        </div>
+        <div class="px-5">${rows}</div>
+      </div>`;
+    }
+
+    async function loadSettings() {
+      const data = await PG.apiFetch('/api/admin/settings');
+
+      if (!data || !data.ok) {
+        document.getElementById('settingsContainer').innerHTML =
+          '<div class="text-center py-12 text-text-muted text-sm">Failed to load settings</div>';
+        return;
+      }
+
+      const s = data.data;
+      let html = '';
+
+      // Authentication
+      html += renderSection('Authentication', Icons.key(16, '#8B9A8E'), [
+        { label: 'Google OAuth', configured: s.oauth?.google, description: 'GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET' },
+        { label: 'JWT Secret', configured: s.security?.jwtSecret, description: 'JWT_SECRET for token signing' },
+        { label: 'TOTP (2FA)', configured: s.security?.totpEnabled, description: 'Built-in TOTP support' },
+      ]);
+
+      // Email
+      html += renderSection('Email', Icons.mail(16, '#8B9A8E'), [
+        { label: 'Resend API', configured: s.email?.resend, description: 'RESEND_API_KEY for transactional emails' },
+        { label: 'SMTP Server', configured: s.email?.smtp, description: 'SMTP_HOST + SMTP_PORT + credentials' },
+      ]);
+
+      // Threat Cloud
+      html += renderSection('Threat Cloud', Icons.cloud(16, '#8B9A8E'), [
+        { label: 'Endpoint', configured: !!s.threatCloud?.endpoint, description: s.threatCloud?.endpoint || 'THREAT_CLOUD_ENDPOINT not set' },
+        { label: 'API Key', configured: s.threatCloud?.apiKey, description: 'TC_API_KEY for authenticated uploads' },
+      ]);
+
+      // Notifications
+      html += renderSection('Notification Channels', Icons.zap(16, '#8B9A8E'), [
+        { label: 'Telegram', configured: s.notifications?.telegram, description: 'TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID' },
+        { label: 'Slack', configured: s.notifications?.slack, description: 'SLACK_WEBHOOK_URL' },
+        { label: 'Email Alerts', configured: s.notifications?.email, description: 'Via Resend or SMTP' },
+      ]);
+
+      // Manager
+      html += renderSection('Manager Server', Icons.server(16, '#8B9A8E'), [
+        { label: 'API Key', configured: s.manager?.key, description: 'PANGUARD_MANAGER_KEY for agent auth' },
+        { label: 'CORS Origins', configured: !!s.manager?.corsOrigins, description: s.manager?.corsOrigins || 'MANAGER_CORS_ORIGINS not set' },
+      ]);
+
+      document.getElementById('settingsContainer').innerHTML = html;
+    }
+
+    loadSettings();
+  </script>
+</body>
+</html>

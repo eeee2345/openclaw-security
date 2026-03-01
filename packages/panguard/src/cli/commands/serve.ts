@@ -518,6 +518,40 @@ async function handleRequest(
       return;
     }
 
+    // /api/admin/settings (GET — environment config status)
+    if (pathname === '/api/admin/settings' && req.method === 'GET') {
+      sendJson(res, 200, {
+        ok: true,
+        data: {
+          oauth: {
+            google: !!process.env['GOOGLE_CLIENT_ID'],
+          },
+          email: {
+            resend: !!process.env['RESEND_API_KEY'],
+            smtp: !!process.env['SMTP_HOST'],
+          },
+          security: {
+            jwtSecret: !!process.env['JWT_SECRET'],
+            totpEnabled: true,
+          },
+          threatCloud: {
+            endpoint: process.env['THREAT_CLOUD_ENDPOINT'] || null,
+            apiKey: !!process.env['TC_API_KEY'],
+          },
+          notifications: {
+            telegram: !!process.env['TELEGRAM_BOT_TOKEN'],
+            slack: !!process.env['SLACK_WEBHOOK_URL'],
+            email: !!process.env['RESEND_API_KEY'] || !!process.env['SMTP_HOST'],
+          },
+          manager: {
+            key: !!process.env['PANGUARD_MANAGER_KEY'],
+            corsOrigins: process.env['MANAGER_CORS_ORIGINS'] || '',
+          },
+        },
+      });
+      return;
+    }
+
     // Admin static files
     if (adminDir && pathname.startsWith('/admin')) {
       serveStaticFile(req, res, adminDir, pathname);
