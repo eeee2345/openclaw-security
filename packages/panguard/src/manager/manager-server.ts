@@ -10,6 +10,8 @@
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomUUID } from 'node:crypto';
+import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 
 /** Registered agent info */
 export interface AgentInfo {
@@ -367,9 +369,59 @@ export class ManagerServer {
   }
 
   private handleGetRules(res: ServerResponse): void {
-    // Placeholder - return empty rules for now
-    // In production, this would serve latest Sigma/YARA rules
-    this.json(res, 200, { rules: [] });
+    const configDir = resolve(__dirname, '..', '..', '..', '..', 'config');
+    const sigmaDir = join(configDir, 'sigma-rules');
+    const yaraDir = join(configDir, 'yara-rules');
+
+    const sigmaRules = existsSync(sigmaDir) ? this.collectRuleFiles(sigmaDir, '.yml') : [];
+    const yaraRules = existsSync(yaraDir) ? this.collectRuleFiles(yaraDir, '.yar') : [];
+
+    this.json(res, 200, {
+      sigma: {
+        count: sigmaRules.length,
+        rules: sigmaRules,
+      },
+      yara: {
+        count: yaraRules.length,
+        rules: yaraRules,
+      },
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  /** Recursively collect rule files from a directory */
+  private collectRuleFiles(dir: string, ext: string): { name: string; path: string; sizeBytes: number }[] {
+    const results: { name: string; path: string; sizeBytes: number }[] = [];
+
+    const walk = (currentDir: string): void => {
+      let entries: string[];
+      try {
+        entries = readdirSync(currentDir);
+      } catch {
+        return;
+      }
+
+      for (const entry of entries) {
+        const fullPath = join(currentDir, entry);
+        try {
+          const stat = statSync(fullPath);
+          if (stat.isDirectory()) {
+            walk(fullPath);
+          } else if (entry.endsWith(ext)) {
+            results.push({
+              name: entry,
+              path: fullPath.replace(dir + '/', ''),
+              sizeBytes: stat.size,
+            });
+          }
+        } catch {
+          // skip unreadable files
+        }
+      }
+    };
+
+    walk(dir);
+    return results;
   }
 
   private handleListEvents(url: URL, res: ServerResponse): void {

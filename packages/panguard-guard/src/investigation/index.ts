@@ -26,6 +26,18 @@ const logger = createLogger('panguard-guard:investigation');
 /** Maximum investigation steps to prevent infinite loops / 最大調查步驟數以防止無限循環 */
 const MAX_STEPS = 8;
 
+/** Max events to keep in the sliding window / 滑動視窗保留的最大事件數 */
+const EVENT_BUFFER_SIZE = 500;
+
+/** Correlation time window in ms (10 minutes) / 關聯時間視窗（10 分鐘） */
+const CORRELATION_WINDOW_MS = 10 * 60 * 1000;
+
+/** Stored event for correlation / 儲存的事件用於關聯 */
+interface StoredEvent {
+  event: SecurityEvent;
+  receivedAt: number;
+}
+
 /**
  * Investigation Engine performs dynamic, multi-step reasoning about security events
  * 調查引擎對安全事件進行動態多步驟推理
@@ -33,8 +45,25 @@ const MAX_STEPS = 8;
 export class InvestigationEngine {
   private readonly baseline: EnvironmentBaseline;
 
+  /** Sliding window of recent events for correlation / 近期事件滑動視窗 */
+  private readonly eventBuffer: StoredEvent[] = [];
+
   constructor(baseline: EnvironmentBaseline) {
     this.baseline = baseline;
+  }
+
+  /**
+   * Feed an event into the correlation buffer.
+   * Call this for every event processed by the guard engine.
+   */
+  recordEvent(event: SecurityEvent): void {
+    const now = Date.now();
+    this.eventBuffer.push({ event, receivedAt: now });
+
+    // Trim old events beyond buffer size
+    while (this.eventBuffer.length > EVENT_BUFFER_SIZE) {
+      this.eventBuffer.shift();
+    }
   }
 
   /**
@@ -403,16 +432,103 @@ export class InvestigationEngine {
     };
   }
 
-  /** Check related events / 檢查相關事件 */
-  private checkRelatedEvents(_event: SecurityEvent): InvestigationResult {
-    // In a production system, this would query the event store
-    // 在生產系統中，這會查詢事件儲存庫
+  /** Check related events using the sliding window buffer / 使用滑動視窗緩衝區檢查相關事件 */
+  private checkRelatedEvents(event: SecurityEvent): InvestigationResult {
+    const now = Date.now();
+    const cutoff = now - CORRELATION_WINDOW_MS;
+
+    // Extract correlation keys from the current event
+    const eventIP =
+      (event.metadata?.['sourceIP'] as string) ??
+      (event.metadata?.['remoteAddress'] as string);
+    const eventUser =
+      (event.metadata?.['user'] as string) ??
+      (event.metadata?.['username'] as string);
+    const eventProcess = event.metadata?.['processName'] as string;
+
+    // Find related events in the time window (excluding the event itself)
+    const related: { event: SecurityEvent; reason: string }[] = [];
+
+    for (const stored of this.eventBuffer) {
+      if (stored.receivedAt < cutoff) continue;
+      if (stored.event.id === event.id) continue;
+
+      const storedIP =
+        (stored.event.metadata?.['sourceIP'] as string) ??
+        (stored.event.metadata?.['remoteAddress'] as string);
+      const storedUser =
+        (stored.event.metadata?.['user'] as string) ??
+        (stored.event.metadata?.['username'] as string);
+      const storedProcess = stored.event.metadata?.['processName'] as string;
+
+      // Same source IP
+      if (eventIP && storedIP && eventIP === storedIP) {
+        related.push({ event: stored.event, reason: `same_ip:${eventIP}` });
+        continue;
+      }
+
+      // Same user
+      if (eventUser && storedUser && eventUser === storedUser) {
+        related.push({ event: stored.event, reason: `same_user:${eventUser}` });
+        continue;
+      }
+
+      // Same process
+      if (eventProcess && storedProcess && eventProcess === storedProcess) {
+        related.push({ event: stored.event, reason: `same_process:${eventProcess}` });
+        continue;
+      }
+
+      // Same category (e.g. multiple auth failures)
+      if (event.category === stored.event.category && event.severity !== 'info') {
+        related.push({ event: stored.event, reason: `same_category:${event.category}` });
+      }
+    }
+
+    if (related.length === 0) {
+      return {
+        finding: 'No related events found in the last 10 minutes / 最近 10 分鐘內無相關事件',
+        riskContribution: 0,
+        needsAdditionalInvestigation: false,
+        data: { relatedCount: 0 },
+      };
+    }
+
+    // Count unique correlation reasons
+    const reasons = new Map<string, number>();
+    for (const r of related) {
+      const key = r.reason.split(':')[0]!;
+      reasons.set(key, (reasons.get(key) ?? 0) + 1);
+    }
+
+    // Risk scoring: more related events = higher risk
+    const count = related.length;
+    let risk: number;
+    if (count >= 10) risk = 80;
+    else if (count >= 5) risk = 60;
+    else if (count >= 3) risk = 40;
+    else risk = 20;
+
+    // Boost risk if multiple correlation types (e.g. same IP AND same user)
+    if (reasons.size >= 2) {
+      risk = Math.min(95, risk + 15);
+    }
+
+    const reasonSummary = Array.from(reasons.entries())
+      .map(([key, cnt]) => `${key}(${cnt})`)
+      .join(', ');
+
     return {
       finding:
-        'Related event analysis requires event store integration / ' +
-        '相關事件分析需要事件儲存庫整合',
-      riskContribution: 0,
-      needsAdditionalInvestigation: false,
+        `Found ${count} related event(s) within 10 min: ${reasonSummary} / ` +
+        `在 10 分鐘內找到 ${count} 個相關事件: ${reasonSummary}`,
+      riskContribution: risk,
+      needsAdditionalInvestigation: count >= 5,
+      data: {
+        relatedCount: count,
+        correlationTypes: Object.fromEntries(reasons),
+        sampleEventIds: related.slice(0, 5).map((r) => r.event.id),
+      },
     };
   }
 
