@@ -40,15 +40,31 @@ export function readBody(req: IncomingMessage): Promise<ReadBodyResult> {
     });
     req.on('end', () => {
       if (aborted) return;
+      const raw = Buffer.concat(chunks).toString('utf-8');
+      if (raw.length === 0) {
+        console.warn(
+          `[readBody] Empty body received for ${req.method} ${req.url} ` +
+            `(content-length: ${req.headers['content-length'] ?? 'none'}, ` +
+            `transfer-encoding: ${req.headers['transfer-encoding'] ?? 'none'})`
+        );
+        resolve({ ok: false, status: 400 });
+        return;
+      }
       try {
-        const raw = Buffer.concat(chunks).toString('utf-8');
         resolve({ ok: true, data: JSON.parse(raw) as Record<string, unknown> });
       } catch {
+        console.warn(
+          `[readBody] JSON parse failed for ${req.method} ${req.url} ` +
+            `(${raw.length} bytes, first 200 chars: ${raw.slice(0, 200)})`
+        );
         resolve({ ok: false, status: 400 });
       }
     });
-    req.on('error', () => {
-      if (!aborted) resolve({ ok: false, status: 400 });
+    req.on('error', (err) => {
+      if (!aborted) {
+        console.warn(`[readBody] Stream error for ${req.method} ${req.url}: ${err.message}`);
+        resolve({ ok: false, status: 400 });
+      }
     });
   });
 }
