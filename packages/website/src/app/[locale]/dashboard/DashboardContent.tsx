@@ -421,7 +421,6 @@ export default function DashboardContent() {
               transition={{ duration: 0.4, ease }}
             >
               <QuickStartGuide
-                token={token}
                 onDismiss={handleDismiss}
               />
             </motion.div>
@@ -486,10 +485,8 @@ export default function DashboardContent() {
 /* ── Quick Start Guide Section ── */
 
 function QuickStartGuide({
-  token,
   onDismiss,
 }: {
-  token: string | null;
   onDismiss: () => void;
 }) {
   const t = useTranslations('dashboard');

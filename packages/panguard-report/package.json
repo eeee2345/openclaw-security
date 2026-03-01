@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/panguard-report",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "description": "AI-powered security incident report generator / AI \u81ea\u52d5\u7522\u751f\u8cc7\u5b89\u4e8b\u4ef6\u5831\u544a",
   "main": "./dist/index.js",
