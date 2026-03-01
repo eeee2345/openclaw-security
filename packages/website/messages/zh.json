@@ -169,6 +169,48 @@
         "cost": "平均損失 $4.35M"
       }
     },
+    "notAntivirus": {
+      "overline": "常見誤解",
+      "title": "「裝防毒軟體不就好了？」",
+      "subtitle": "防毒軟體用特徵碼比對已知病毒。Panguard 是完全不同層次的工具 — 它監控行為、佈署誘餌、用 AI 抓住特徵碼漏掉的攻擊。",
+      "columns": {
+        "antivirus": "傳統防毒軟體",
+        "panguard": "Panguard"
+      },
+      "rows": {
+        "detection": {
+          "label": "偵測方式",
+          "antivirus": "病毒特徵碼比對",
+          "panguard": "Sigma/YARA 規則 + AI 研判"
+        },
+        "scope": {
+          "label": "監控範圍",
+          "antivirus": "檔案讀寫",
+          "panguard": "檔案、網路、日誌、系統行為"
+        },
+        "defense": {
+          "label": "主動防禦",
+          "antivirus": "無",
+          "panguard": "蜜罐誘捕攻擊者"
+        },
+        "intelligence": {
+          "label": "威脅情報",
+          "antivirus": "廠商單向推送更新",
+          "panguard": "社群共享（Threat Cloud）"
+        },
+        "response": {
+          "label": "事件回應",
+          "antivirus": "隔離檔案",
+          "panguard": "AI 研判 + 自動封鎖/通知/腳本"
+        },
+        "audience": {
+          "label": "適用對象",
+          "antivirus": "桌機電腦",
+          "panguard": "伺服器與雲端基礎設施"
+        }
+      },
+      "footnote": "這樣想：防毒軟體是門鎖。Panguard 是整棟大樓的保全系統 — 監視器、動態感測、假房間誘捕、還有 24/7 AI 警衛。"
+    },
     "threeRoads": {
       "title": "你一定想過這個問題。",
       "subtitle": "多數團隊會走三條路，其中兩條是死胡同。",
