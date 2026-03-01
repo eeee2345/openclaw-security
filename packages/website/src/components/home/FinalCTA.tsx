@@ -22,7 +22,7 @@ export default function FinalCTA() {
   };
 
   return (
-    <section className="bg-gradient-to-b from-[#0a0a0a] to-[#0d2614] px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#0a0a0a] to-[#0d2614] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-3xl mx-auto text-center">
         {/* Title */}
         <motion.h2
@@ -30,7 +30,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5, ease }}
-          className="text-4xl md:text-5xl font-bold text-text-primary"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary"
         >
           {t('title')}
         </motion.h2>
@@ -40,7 +40,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.4, delay: 0.15, ease }}
-          className="text-lg text-gray-400 mt-4 max-w-xl mx-auto"
+          className="text-base sm:text-lg text-gray-400 mt-4 max-w-xl mx-auto"
         >
           {t('subtitle')}
         </motion.p>

@@ -29,7 +29,7 @@ export default function The3AMStory() {
         <div ref={leftRef} className="stagger-group">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-3 h-3 rounded-full bg-status-danger" />
-            <h3 className="text-lg font-bold text-text-secondary">{t('leftTitle')}</h3>
+            <h3 className="text-base sm:text-lg font-bold text-text-secondary">{t('leftTitle')}</h3>
           </div>
 
           <div className="space-y-4">
@@ -39,7 +39,7 @@ export default function The3AMStory() {
                 className="animate-on-scroll flex gap-3 items-start"
                 style={{ transitionDelay: `${0.1 + i * 0.12}s` }}
               >
-                <div className="shrink-0 w-12 text-xs text-text-muted font-mono pt-0.5">
+                <div className="shrink-0 w-10 sm:w-12 text-xs text-text-muted font-mono pt-0.5">
                   {t(`${key}.time`)}
                 </div>
                 <div className="flex-1 bg-surface-1/50 border border-border rounded-lg p-3">
@@ -61,7 +61,7 @@ export default function The3AMStory() {
         <div ref={rightRef} className="stagger-group">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-3 h-3 rounded-full bg-status-safe" />
-            <h3 className="text-lg font-bold text-panguard-green">{t('rightTitle')}</h3>
+            <h3 className="text-base sm:text-lg font-bold text-panguard-green">{t('rightTitle')}</h3>
           </div>
 
           <div className="space-y-4">
@@ -71,7 +71,7 @@ export default function The3AMStory() {
                 className="animate-on-scroll flex gap-3 items-start"
                 style={{ transitionDelay: `${0.3 + i * 0.15}s` }}
               >
-                <div className="shrink-0 w-12 text-xs text-panguard-green font-mono pt-0.5">
+                <div className="shrink-0 w-10 sm:w-12 text-xs text-panguard-green font-mono pt-0.5">
                   {t(`${key}.time`)}
                 </div>
                 <div className="flex-1 bg-panguard-green/5 border border-panguard-green/20 rounded-lg p-3">

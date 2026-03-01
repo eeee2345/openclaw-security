@@ -24,7 +24,7 @@ export default function NumbersWall() {
   const t = useTranslations('home.numbersWall');
 
   return (
-    <section className="bg-[#0c0d0c] px-6 py-12 sm:py-16">
+    <section className="bg-[#0c0d0c] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <motion.div

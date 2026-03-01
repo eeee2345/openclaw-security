@@ -68,7 +68,7 @@ export default function Hero() {
       <div className="absolute left-0 right-0 pointer-events-none hero-scanline" />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 pt-20 pb-12 max-w-4xl mx-auto">
+      <div className="relative z-10 text-center px-4 sm:px-6 pt-20 pb-12 max-w-4xl mx-auto">
         {/* Brand Logo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -94,7 +94,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease }}
-          className="text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-text-primary"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-text-primary"
         >
           {t('title')}
         </motion.h1>
@@ -106,10 +106,10 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.3, ease }}
           className="mt-8 max-w-2xl mx-auto"
         >
-          <p className="text-xl text-gray-400 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 leading-relaxed">
             {t('subtitle')}
           </p>
-          <p className="text-lg font-semibold text-text-primary mt-4">
+          <p className="text-base sm:text-lg font-semibold text-text-primary mt-4">
             {t('boldLine')}
           </p>
         </motion.div>

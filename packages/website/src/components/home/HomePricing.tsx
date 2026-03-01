@@ -15,7 +15,7 @@ export default function HomePricing() {
   const t = useTranslations('home.homePricing');
 
   return (
-    <section id="pricing" className="bg-[#0a0a0a] px-6 py-12 sm:py-16">
+    <section id="pricing" className="bg-[#0a0a0a] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <motion.div
@@ -28,7 +28,7 @@ export default function HomePricing() {
           <p className="text-xs uppercase tracking-[0.15em] text-panguard-green/70 font-semibold mb-3">
             {t('overline')}
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
             {t('title')}
           </h2>
           <p className="text-lg text-gray-400 mt-3">{t('subtitle')}</p>

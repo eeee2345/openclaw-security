@@ -50,7 +50,7 @@ function Flywheel() {
       transition={{ duration: 0.6, ease }}
       className="mt-12 flex justify-center"
     >
-      <div className="relative w-full max-w-[320px] aspect-square sm:max-w-[400px]">
+      <div className="relative w-full max-w-[280px] aspect-square sm:max-w-[320px] md:max-w-[400px]">
         {/* Center text */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <p className="text-sm sm:text-base font-bold text-panguard-green text-center max-w-[140px] leading-snug">
@@ -150,7 +150,7 @@ export default function ThreatCloudSection() {
   const t = useTranslations('home.threatCloud');
 
   return (
-    <section className="bg-gradient-to-b from-[#0d2614] to-[#0a0a0a] px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#0d2614] to-[#0a0a0a] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         {/* Overline */}
         <motion.p

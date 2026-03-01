@@ -19,7 +19,7 @@ export default function ThreeRoads() {
   const t = useTranslations('home.threeRoads');
 
   return (
-    <section className="bg-[#0e0f0e] px-6 py-12 sm:py-16">
+    <section className="bg-[#0e0f0e] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <motion.div
@@ -95,15 +95,15 @@ export default function ThreeRoads() {
               <p className="text-xs text-gray-500 font-medium mb-2">{t(`rows.${key}.label`)}</p>
               <div className="grid grid-cols-3 gap-2 text-sm">
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-600 mb-1">{t('columns.diy')}</p>
+                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">{t('columns.diy')}</p>
                   <p className="text-gray-500"><CellValue value={t(`rows.${key}.diy`)} /></p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-600 mb-1">{t('columns.consultant')}</p>
+                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">{t('columns.consultant')}</p>
                   <p className="text-gray-500"><CellValue value={t(`rows.${key}.consultant`)} /></p>
                 </div>
                 <div className="text-center bg-[#6B8F71]/10 rounded-lg py-1">
-                  <p className="text-[10px] text-panguard-green mb-1">{t('columns.panguard')}</p>
+                  <p className="text-[11px] sm:text-xs text-panguard-green mb-1">{t('columns.panguard')}</p>
                   <p className="text-text-primary font-medium"><CellValue value={t(`rows.${key}.panguard`)} /></p>
                 </div>
               </div>

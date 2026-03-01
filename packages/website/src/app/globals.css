@@ -454,10 +454,6 @@ body {
   max-width: 640px;
 }
 
-:lang(zh) p {
-  max-width: 640px;
-}
-
 :lang(zh) .text-center p {
   margin-inline: auto;
 }
@@ -470,6 +466,22 @@ body {
 
 :lang(zh) p + p {
   margin-top: 0.75em;
+}
+
+/* Mobile: relax text-wrap and line-height for narrow screens */
+@media (max-width: 639px) {
+  :lang(zh) h1,
+  :lang(zh) h2,
+  :lang(zh) h3 {
+    text-wrap: auto;
+  }
+
+  :lang(zh) p,
+  :lang(zh) li,
+  :lang(zh) dd,
+  :lang(zh) span {
+    line-height: 1.75;
+  }
 }
 
 /* ─── Pulse Danger Animation ─── */

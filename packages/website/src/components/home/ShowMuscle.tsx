@@ -100,7 +100,7 @@ function FunnelSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease }}
-        className="text-3xl md:text-4xl font-bold text-text-primary"
+        className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary"
       >
         {t('title')}
       </motion.h3>
@@ -175,7 +175,7 @@ function ConfidenceSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease }}
-        className="text-3xl md:text-4xl font-bold text-text-primary"
+        className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary"
       >
         {t('title')}
       </motion.h3>
@@ -219,7 +219,7 @@ function ConfidenceSection() {
 
 export default function ShowMuscle() {
   return (
-    <section className="bg-gradient-to-b from-[#0a0a0a] via-[#081a0d] to-[#0d2614] px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#0a0a0a] via-[#081a0d] to-[#0d2614] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         <TeamSection />
         <FunnelSection />

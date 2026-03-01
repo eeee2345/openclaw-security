@@ -30,7 +30,7 @@ export default function SectionWrapper({
   return (
     <section
       id={id}
-      className={`${spacingClasses[spacing]} px-6 ${
+      className={`${spacingClasses[spacing]} px-4 sm:px-6 ${
         fadeBorder ? 'section-fade' : ''
       } ${bgClass} ${className}`}
     >

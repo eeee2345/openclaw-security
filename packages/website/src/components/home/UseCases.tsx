@@ -21,7 +21,7 @@ export default function UseCases() {
   }>;
 
   return (
-    <section id="use-cases" className="bg-[#0e0f0e] px-6 py-12 sm:py-16">
+    <section id="use-cases" className="bg-[#0e0f0e] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <motion.div
@@ -34,7 +34,7 @@ export default function UseCases() {
           <p className="text-xs uppercase tracking-[0.15em] text-panguard-green/70 font-semibold mb-3">
             {t('overline')}
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
             {t('title')}
           </h2>
         </motion.div>

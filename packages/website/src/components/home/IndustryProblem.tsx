@@ -11,7 +11,7 @@ export default function IndustryProblem() {
   const paragraphs = ['p1', 'p2', 'p3', 'p4'] as const;
 
   return (
-    <section className="bg-gradient-to-b from-[#0a0a0a] to-[#120808] px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#0a0a0a] to-[#120808] px-4 sm:px-6 py-12 sm:py-16">
       <div className="max-w-[1200px] mx-auto">
         <div className="max-w-3xl mx-auto">
           {/* Title */}
@@ -20,7 +20,7 @@ export default function IndustryProblem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.5, ease }}
-            className="text-4xl md:text-5xl font-bold text-text-primary"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary"
           >
             {t('title')}
           </motion.h2>
@@ -34,7 +34,7 @@ export default function IndustryProblem() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.5, delay: i * 0.15, ease }}
-                className="text-lg text-gray-400 leading-relaxed"
+                className="text-base sm:text-lg text-gray-400 leading-relaxed"
               >
                 {t(key)}
               </motion.p>
@@ -47,7 +47,7 @@ export default function IndustryProblem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.6, delay: 0.6, ease }}
-            className="mt-8 text-xl font-semibold text-panguard-red"
+            className="mt-8 text-lg sm:text-xl font-semibold text-panguard-red"
           >
             {t('emphasis')}
           </motion.p>
