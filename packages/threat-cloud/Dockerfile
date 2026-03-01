@@ -1,6 +1,5 @@
 # -------------------------------------------------------
 # Threat Cloud - Standalone Production Image
-# 威脅雲 - 獨立生產映像
 #
 # Build:  docker build -t threat-cloud .
 # Run:    docker run -p 8080:8080 -v tc-data:/data threat-cloud
@@ -28,7 +27,7 @@ RUN npx tsc -p tsconfig.standalone.json
 # Stage 2: Production
 FROM node:22-alpine
 
-RUN apk add --no-cache tini curl
+RUN apk add --no-cache tini curl su-exec
 
 # Non-root user
 RUN addgroup -S panguard && adduser -S panguard -G panguard
@@ -41,6 +40,10 @@ COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/package.json ./
 COPY --from=builder /build/scripts ./scripts
 
+# Entrypoint script (fixes volume permissions then drops to panguard user)
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
 # Data + backup directories
 RUN mkdir -p /data /backups && chown panguard:panguard /data /backups
 
@@ -52,10 +55,9 @@ ENV TC_HOST=0.0.0.0
 
 EXPOSE 8080
 
-USER panguard
-
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://127.0.0.1:${TC_PORT}/health || exit 1
 
+# Start as root, entrypoint fixes volume perms then drops to panguard
 ENTRYPOINT ["tini", "--"]
-CMD ["node", "dist/cli.js", "--port", "8080", "--host", "0.0.0.0", "--db", "/data/threat-cloud.db", "--backup-dir", "/backups"]
+CMD ["./entrypoint.sh"]
