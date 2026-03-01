@@ -139,14 +139,13 @@ function getOverallStatus(svcs: Service[]): ServiceStatus {
   return 'operational';
 }
 
+const LAST_MANUAL_REVIEW = '2026-02-20';
+
 function formatTimestamp(locale: string): string {
-  return new Date().toLocaleString(locale === 'zh' ? 'zh-TW' : 'en-US', {
+  return new Date(LAST_MANUAL_REVIEW).toLocaleDateString(locale === 'zh' ? 'zh-TW' : 'en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZoneName: 'short',
   });
 }
 
@@ -324,8 +323,9 @@ export default function StatusContent() {
 
       {/* ───────────── Disclaimer ───────────── */}
       <SectionWrapper spacing="tight">
-        <p className="text-center text-xs text-text-tertiary bg-surface-1 border border-border rounded-lg px-4 py-2 max-w-xl mx-auto">
-          Status data is manually updated. For real-time monitoring, contact{' '}
+        <p className="text-center text-sm text-text-secondary bg-surface-1 border border-border rounded-lg px-4 py-3 max-w-xl mx-auto">
+          Status data is manually verified and may not reflect real-time conditions.
+          For live monitoring or incident updates, contact{' '}
           <a href="mailto:support@panguard.ai" className="text-brand-sage hover:underline">
             support@panguard.ai
           </a>

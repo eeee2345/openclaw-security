@@ -98,7 +98,9 @@ export default function ResponsibleDisclosurePage() {
                 security@panguard.ai
               </a>
             </li>
-            <li>Encrypt sensitive reports using our PGP key (see Section 6 below)</li>
+            <li>
+              Encrypt sensitive reports using our PGP key (see Section 6 below)
+            </li>
             <li>
               Include a detailed description of the vulnerability, including steps to reproduce,
               affected systems, and potential impact
@@ -188,10 +190,15 @@ export default function ResponsibleDisclosurePage() {
           <h2 className="text-lg font-semibold text-text-primary mb-3">6. PGP Key</h2>
           <p>For encrypted communications, please use our PGP public key:</p>
           <div className="mt-3 p-4 bg-surface-1 border border-border rounded-lg font-mono text-xs text-text-tertiary">
-            <p>Fingerprint: [PGP key fingerprint will be published here]</p>
+            <p>Fingerprint: 3E43 B388 FABD 388A AA4E 4194 8AF3 95BA E359 C9EE</p>
             <p className="mt-2">
               The full public key is available at:{' '}
-              <span className="text-brand-sage">https://panguard.ai/.well-known/pgp-key.txt</span>
+              <a
+                href="/.well-known/pgp-key.txt"
+                className="text-brand-sage hover:text-brand-sage-light underline"
+              >
+                https://panguard.ai/.well-known/pgp-key.txt
+              </a>
             </p>
           </div>
         </section>

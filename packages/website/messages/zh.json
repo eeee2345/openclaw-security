@@ -137,7 +137,8 @@
     "cookiePolicy": "Cookie 政策",
     "dpa": "資料處理協議",
     "sla": "SLA",
-    "responsibleDisclosure": "漏洞揭露"
+    "responsibleDisclosure": "漏洞揭露",
+    "securityWhitepaper": "安全白皮書"
   },
   "home": {
     "hero": {
@@ -2841,7 +2842,33 @@
     "compliance": {
       "overline": "合規",
       "title": "我們遵循的框架。",
-      "subtitle": "合規不是勾選框的練習。它是最低標準。我們建構的是這些框架的精神，不只是字面。"
+      "subtitle": "合規不是勾選框的練習。它是最低標準。我們建構的是這些框架的精神，不只是字面。",
+      "frameworks": [
+        {
+          "badge": "SOC 2 Type II",
+          "status": "進行中",
+          "statusColor": "text-[#f59e0b]",
+          "description": "我們正在積極取得 SOC 2 Type II 認證，涵蓋安全性、可用性和機密性信任服務標準。審計由四大會計師事務所執行，預計 2026 年第三季完成。"
+        },
+        {
+          "badge": "ISO 27001",
+          "status": "規劃中",
+          "statusColor": "text-[#60a5fa]",
+          "description": "ISO 27001 認證已列入 2026 年路線圖。我們的資訊安全管理系統（ISMS）從一開始就按照 ISO 27001 標準建構，使認證成為正式化而非轉型。"
+        },
+        {
+          "badge": "GDPR",
+          "status": "合規",
+          "statusColor": "text-[#22c55e]",
+          "description": "Panguard 預設符合 GDPR 合規。資料最小化、目的限制和刪除權已內建於架構中。我們為所有客戶提供資料處理協議（DPA）。"
+        },
+        {
+          "badge": "台灣資通安全管理法",
+          "status": "合規",
+          "statusColor": "text-[#22c55e]",
+          "description": "針對受台灣資通安全管理法管轄的客戶，Panguard 的報告和稽核功能旨在滿足關鍵基礎設施供應商的法規要求。"
+        }
+      ]
     },
     "dataHandling": {
       "overline": "資料處理",
@@ -3647,5 +3674,12 @@
     "error": "出了點問題。請重試。",
     "emailPlaceholder": "you@company.com",
     "backHome": "返回首頁"
+  },
+  "cookieBanner": {
+    "ariaLabel": "Cookie 同意設定",
+    "message": "我們使用 Cookie 來改善您的體驗並分析網站使用情況。您可以接受所有 Cookie 或僅選擇必要的。",
+    "learnMore": "Cookie 政策",
+    "acceptAll": "全部接受",
+    "essentialOnly": "僅必要"
   }
 }

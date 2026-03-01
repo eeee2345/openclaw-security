@@ -42,6 +42,8 @@ export default function Footer() {
         { label: t('careers'), href: '/careers' },
         { label: t('blog'), href: '/blog' },
         { label: t('contact'), href: '/contact' },
+        { label: t('changelog'), href: '/changelog' },
+        { label: t('statusPage'), href: '/status' },
       ],
     },
     {
@@ -51,6 +53,7 @@ export default function Footer() {
         { label: 'GitHub', href: 'https://github.com/panguard-ai/panguard-ai', external: true },
         { label: t('openSource'), href: '/open-source' },
         { label: t('compliance'), href: '/compliance' },
+        { label: t('security'), href: '/security' },
       ],
     },
     {
@@ -58,6 +61,9 @@ export default function Footer() {
       links: [
         { label: t('privacyPolicy'), href: '/legal/privacy' },
         { label: t('termsOfService'), href: '/legal/terms' },
+        { label: t('cookiePolicy'), href: '/legal/cookies' },
+        { label: t('securityWhitepaper'), href: '/legal/security' },
+        { label: t('trustCenter'), href: '/trust' },
       ],
     },
   ];

@@ -137,7 +137,8 @@
     "cookiePolicy": "Cookie Policy",
     "dpa": "DPA",
     "sla": "SLA",
-    "responsibleDisclosure": "Responsible Disclosure"
+    "responsibleDisclosure": "Responsible Disclosure",
+    "securityWhitepaper": "Security Whitepaper"
   },
   "home": {
     "hero": {
@@ -2115,7 +2116,33 @@
     "compliance": {
       "overline": "Compliance",
       "title": "Frameworks we follow.",
-      "subtitle": "Compliance is not a checkbox exercise. It is the minimum bar. We build to the spirit of these frameworks, not just their letter."
+      "subtitle": "Compliance is not a checkbox exercise. It is the minimum bar. We build to the spirit of these frameworks, not just their letter.",
+      "frameworks": [
+        {
+          "badge": "SOC 2 Type II",
+          "status": "In Progress",
+          "statusColor": "text-[#f59e0b]",
+          "description": "We are actively pursuing SOC 2 Type II certification covering Security, Availability, and Confidentiality trust service criteria. Our audit is conducted by a Big Four firm. Expected completion: Q3 2026."
+        },
+        {
+          "badge": "ISO 27001",
+          "status": "Planned",
+          "statusColor": "text-[#60a5fa]",
+          "description": "ISO 27001 certification is on our roadmap for 2026. Our information security management system (ISMS) is being built to ISO 27001 standards from day one, making certification a formalization rather than a transformation."
+        },
+        {
+          "badge": "GDPR",
+          "status": "Compliant",
+          "statusColor": "text-[#22c55e]",
+          "description": "Panguard is designed for GDPR compliance by default. Data minimization, purpose limitation, and the right to erasure are built into the architecture. We offer Data Processing Agreements (DPA) to all customers."
+        },
+        {
+          "badge": "Taiwan Cybersecurity Management Act",
+          "status": "Compliant",
+          "statusColor": "text-[#22c55e]",
+          "description": "For customers operating under Taiwan's Cybersecurity Management Act, Panguard's reporting and audit capabilities are designed to meet regulatory requirements for critical infrastructure providers."
+        }
+      ]
     },
     "dataHandling": {
       "overline": "Data Handling",
@@ -3647,5 +3674,12 @@
     "error": "Something went wrong. Please try again.",
     "emailPlaceholder": "you@company.com",
     "backHome": "Back to Home"
+  },
+  "cookieBanner": {
+    "ariaLabel": "Cookie consent",
+    "message": "We use cookies to improve your experience and analyze site usage. You can accept all cookies or choose essential-only.",
+    "learnMore": "Cookie Policy",
+    "acceptAll": "Accept All",
+    "essentialOnly": "Essential Only"
   }
 }

@@ -192,6 +192,53 @@ export default function PrivacyPolicyPage({ params: { locale } }: { params: { lo
           </p>
         </section>
 
+        {/* 5b. California Privacy Rights (CCPA) */}
+        <section>
+          <h2 className="text-lg font-semibold text-text-primary mb-3">
+            5b. California Privacy Rights (CCPA)
+          </h2>
+          <p>
+            If you are a California resident, you have additional rights under the California
+            Consumer Privacy Act (CCPA) and the California Privacy Rights Act (CPRA):
+          </p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>
+              <strong className="text-text-primary">Right to Know:</strong> You have the right to
+              request that we disclose the categories and specific pieces of personal information we
+              have collected about you, the categories of sources, the business purposes for
+              collecting it, and the categories of third parties with whom we share it.
+            </li>
+            <li>
+              <strong className="text-text-primary">Right to Delete:</strong> You have the right to
+              request that we delete your personal information, subject to certain exceptions.
+            </li>
+            <li>
+              <strong className="text-text-primary">Right to Opt-Out of Sale:</strong> Panguard does
+              not sell personal information. We do not exchange personal data for monetary or other
+              valuable consideration.
+            </li>
+            <li>
+              <strong className="text-text-primary">Right to Non-Discrimination:</strong> You will
+              not receive discriminatory treatment for exercising any of your CCPA rights.
+            </li>
+            <li>
+              <strong className="text-text-primary">Right to Correct:</strong> You may request that
+              we correct inaccurate personal information that we maintain about you.
+            </li>
+          </ul>
+          <p className="mt-3">
+            To exercise your California privacy rights, please contact us at{' '}
+            <a
+              href="mailto:privacy@panguard.ai"
+              className="text-brand-sage hover:text-brand-sage-light underline"
+            >
+              privacy@panguard.ai
+            </a>
+            . We will verify your identity before processing your request and respond within 45
+            days. You may also designate an authorized agent to make a request on your behalf.
+          </p>
+        </section>
+
         {/* 6. Cookies */}
         <section>
           <h2 className="text-lg font-semibold text-text-primary mb-3">6. Cookies</h2>

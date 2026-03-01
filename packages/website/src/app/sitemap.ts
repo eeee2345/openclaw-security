@@ -49,6 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/legal/sla',
     '/legal/acceptable-use',
     '/legal/responsible-disclosure',
+    '/legal/security',
   ];
 
   const getFrequency = (path: string): 'weekly' | 'monthly' => {

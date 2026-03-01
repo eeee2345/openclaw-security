@@ -33,8 +33,10 @@ export default function SecurityWhitepaperPage() {
 
           <h3 className="text-base font-medium text-text-primary mt-4 mb-2">1.1 Infrastructure</h3>
           <p>
-            Panguard operates on SOC 2 Type II certified cloud infrastructure with multi-region
-            deployment across Asia-Pacific, North America, and Europe. Our infrastructure is
+            Panguard operates on enterprise-grade cloud infrastructure (hosted on providers that
+            maintain their own SOC 2 Type II certification) with multi-region deployment across
+            Asia-Pacific, North America, and Europe. Our own SOC 2 Type II certification is currently
+            in progress, with completion expected in Q3 2026. Our infrastructure is
             provisioned using infrastructure as code (IaC) with automated security scanning at every
             deployment stage. All production systems run on hardened, minimal operating system
             images with automatic patching enabled.
@@ -201,17 +203,23 @@ export default function SecurityWhitepaperPage() {
           <p>Panguard maintains the following compliance certifications and adherences:</p>
           <div className="mt-3 grid gap-3">
             <div className="p-3 bg-surface-1 border border-border rounded-lg">
-              <p className="font-medium text-text-primary">SOC 2 Type II</p>
+              <div className="flex items-center gap-2">
+                <p className="font-medium text-text-primary">SOC 2 Type II</p>
+                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#f59e0b]/10 text-[#f59e0b] border border-[#f59e0b]/20">In Progress</span>
+              </div>
               <p className="mt-1 text-text-tertiary">
-                Annual audit covering security, availability, and confidentiality trust service
-                criteria. Reports available to customers under NDA.
+                Audit in progress covering security, availability, and confidentiality trust service
+                criteria. Expected completion: Q3 2026. Reports will be available to customers under NDA upon completion.
               </p>
             </div>
             <div className="p-3 bg-surface-1 border border-border rounded-lg">
-              <p className="font-medium text-text-primary">ISO 27001</p>
+              <div className="flex items-center gap-2">
+                <p className="font-medium text-text-primary">ISO 27001</p>
+                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-text-muted/10 text-text-muted border border-border">Planned</span>
+              </div>
               <p className="mt-1 text-text-tertiary">
-                Certified information security management system (ISMS) with annual surveillance
-                audits and triennial recertification.
+                Information security management system (ISMS) certification planned following SOC 2
+                completion. Will include annual surveillance audits and triennial recertification.
               </p>
             </div>
             <div className="p-3 bg-surface-1 border border-border rounded-lg">
@@ -245,13 +253,14 @@ export default function SecurityWhitepaperPage() {
               mobile application attack surfaces, conducted by certified penetration testing firms
             </li>
             <li>
-              <strong className="text-text-primary">SOC 2 Type II Audit:</strong> Annual audit by an
-              independent CPA firm validating our security, availability, and confidentiality
-              controls
+              <strong className="text-text-primary">SOC 2 Type II Audit (In Progress):</strong>{' '}
+              Audit by an independent CPA firm to validate our security, availability, and
+              confidentiality controls is currently underway, with completion expected in Q3 2026
             </li>
             <li>
-              <strong className="text-text-primary">ISO 27001 Certification Audit:</strong> Regular
-              certification and surveillance audits by an accredited certification body
+              <strong className="text-text-primary">ISO 27001 Certification Audit (Planned):</strong>{' '}
+              Certification and surveillance audits by an accredited certification body are planned
+              following SOC 2 completion
             </li>
             <li>
               <strong className="text-text-primary">Code Security Review:</strong> Periodic

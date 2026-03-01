@@ -29,37 +29,13 @@ const practiceConfigs = [
   { key: 'item6' as const, icon: HistoryIcon },
 ];
 
-/* ─── Compliance Frameworks ─── */
-const compliance = [
-  {
-    badge: 'SOC 2 Type II',
-    status: 'In Progress',
-    statusColor: 'text-[#f59e0b]',
-    description:
-      'We are actively pursuing SOC 2 Type II certification covering Security, Availability, and Confidentiality trust service criteria. Our audit is conducted by a Big Four firm. Expected completion: Q3 2026.',
-  },
-  {
-    badge: 'ISO 27001',
-    status: 'Planned',
-    statusColor: 'text-[#60a5fa]',
-    description:
-      'ISO 27001 certification is on our roadmap for 2026. Our information security management system (ISMS) is being built to ISO 27001 standards from day one, making certification a formalization rather than a transformation.',
-  },
-  {
-    badge: 'GDPR',
-    status: 'Compliant',
-    statusColor: 'text-[#22c55e]',
-    description:
-      'Panguard is designed for GDPR compliance by default. Data minimization, purpose limitation, and the right to erasure are built into the architecture. We offer Data Processing Agreements (DPA) to all customers.',
-  },
-  {
-    badge: 'Taiwan Cybersecurity Management Act',
-    status: 'Compliant',
-    statusColor: 'text-[#22c55e]',
-    description:
-      "For customers operating under Taiwan's Cybersecurity Management Act, Panguard's reporting and audit capabilities are designed to meet regulatory requirements for critical infrastructure providers.",
-  },
-];
+/* ─── Compliance Framework type (data from i18n) ─── */
+interface ComplianceFramework {
+  badge: string;
+  status: string;
+  statusColor: string;
+  description: string;
+}
 
 /* ─── Data Flow Zone Config ─── */
 const dataFlowConfigs = [
@@ -139,7 +115,7 @@ export default function SecurityContent() {
           subtitle={t('compliance.subtitle')}
         />
         <div className="max-w-3xl mx-auto mt-14 space-y-4">
-          {compliance.map((c, i) => (
+          {(t.raw('compliance.frameworks') as ComplianceFramework[]).map((c, i) => (
             <FadeInUp key={c.badge} delay={i * 0.1}>
               <div className="bg-surface-2 rounded-xl border border-border p-6">
                 <div className="flex flex-wrap items-center gap-3 mb-3">

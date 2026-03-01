@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { Inter, JetBrains_Mono, Instrument_Serif, Noto_Sans_TC } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
+
+const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: false });
 
 const locales = ['en', 'zh'] as const;
 
@@ -175,6 +178,7 @@ export default async function LocaleLayout({
         </a>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>{children}</AuthProvider>
+          <CookieBanner />
         </NextIntlClientProvider>
       </body>
     </html>

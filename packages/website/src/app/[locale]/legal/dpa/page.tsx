@@ -197,9 +197,10 @@ export default function DPAPage() {
               logging of all access to systems containing Personal Data
             </li>
             <li>
-              <strong className="text-text-primary">Infrastructure Security:</strong> SOC 2 Type II
-              certified cloud infrastructure with physical security controls, redundancy, and
-              disaster recovery
+              <strong className="text-text-primary">Infrastructure Security:</strong> Enterprise-grade
+              cloud infrastructure (hosted on SOC 2 Type II certified providers) with physical
+              security controls, redundancy, and disaster recovery. Panguard&apos;s own SOC 2 Type
+              II certification is in progress
             </li>
             <li>
               <strong className="text-text-primary">Employee Training:</strong> Regular data
@@ -260,8 +261,9 @@ export default function DPAPage() {
             or following a data breach.
           </p>
           <p className="mt-2">
-            10.3 Panguard may satisfy audit requests by providing current SOC 2 Type II reports, ISO
-            27001 certification documentation, or equivalent third-party audit reports.
+            10.3 Panguard may satisfy audit requests by providing SOC 2 Type II reports (once
+            available upon completion of our ongoing certification), ISO 27001 certification
+            documentation (when obtained), or equivalent third-party audit reports.
           </p>
         </section>
 
