@@ -19,6 +19,7 @@ import {
   GlobalIcon,
   HistoryIcon,
   LockIcon,
+  MonitorIcon,
 } from '@/components/ui/BrandIcons';
 
 /* ─── Layer Config ─── */
@@ -26,6 +27,59 @@ const layerConfigs = [
   { key: 'layer1' as const, badgeColor: 'bg-brand-sage/10 text-brand-sage', mdClass: '' },
   { key: 'layer2' as const, badgeColor: 'bg-[#60a5fa]/10 text-[#60a5fa]', mdClass: 'md:max-w-[70%]' },
   { key: 'layer3' as const, badgeColor: 'bg-[#f59e0b]/10 text-[#f59e0b]', mdClass: 'md:max-w-[40%]' },
+];
+
+/* ─── Defense Stack Layers ─── */
+const defenseStackLayers = [
+  {
+    key: 'kernel' as const,
+    icon: TerminalIcon,
+    iconColor: 'text-[#ef4444]',
+    borderColor: 'border-[#ef4444]/20',
+    bgGlow: 'bg-[#ef4444]/5',
+    badgeBg: 'bg-[#ef4444]/10 text-[#ef4444]',
+  },
+  {
+    key: 'network' as const,
+    icon: NetworkIcon,
+    iconColor: 'text-[#f59e0b]',
+    borderColor: 'border-[#f59e0b]/20',
+    bgGlow: 'bg-[#f59e0b]/5',
+    badgeBg: 'bg-[#f59e0b]/10 text-[#f59e0b]',
+  },
+  {
+    key: 'filesystem' as const,
+    icon: LockIcon,
+    iconColor: 'text-[#60a5fa]',
+    borderColor: 'border-[#60a5fa]/20',
+    bgGlow: 'bg-[#60a5fa]/5',
+    badgeBg: 'bg-[#60a5fa]/10 text-[#60a5fa]',
+  },
+  {
+    key: 'logs' as const,
+    icon: AnalyticsIcon,
+    iconColor: 'text-[#a78bfa]',
+    borderColor: 'border-[#a78bfa]/20',
+    bgGlow: 'bg-[#a78bfa]/5',
+    badgeBg: 'bg-[#a78bfa]/10 text-[#a78bfa]',
+  },
+  {
+    key: 'ai' as const,
+    icon: SettingsIcon,
+    iconColor: 'text-brand-sage',
+    borderColor: 'border-brand-sage/20',
+    bgGlow: 'bg-brand-sage/5',
+    badgeBg: 'bg-brand-sage/10 text-brand-sage',
+  },
+];
+
+/* ─── Data Flow Pipeline Stages ─── */
+const dataFlowStages = [
+  { key: 'stage1' as const, icon: ScanIcon },
+  { key: 'stage2' as const, icon: SettingsIcon },
+  { key: 'stage3' as const, icon: NetworkIcon },
+  { key: 'stage4' as const, icon: AnalyticsIcon },
+  { key: 'stage5' as const, icon: AlertIcon },
 ];
 
 /* ─── Agent Icons ─── */
@@ -152,6 +206,167 @@ export default function TechnologyContent() {
               </div>
             </FadeInUp>
           ))}
+        </div>
+      </SectionWrapper>
+
+      {/* -- Defense Stack (5-Layer Architecture) -- */}
+      <SectionWrapper dark>
+        <SectionTitle
+          overline={t('defenseStack.overline')}
+          title={t('defenseStack.title')}
+          subtitle={t('defenseStack.subtitle')}
+        />
+
+        {/* Vertical stack visualization */}
+        <div className="max-w-4xl mx-auto mt-14 space-y-4">
+          {defenseStackLayers.map((layer, i) => (
+            <FadeInUp key={layer.key} delay={i * 0.08}>
+              <div
+                className={`relative bg-surface-2 rounded-xl border ${layer.borderColor} p-6 sm:p-8 hover:border-opacity-60 transition-all duration-300 group`}
+              >
+                {/* Layer connector line (not on first) */}
+                {i > 0 && (
+                  <div className="absolute -top-4 left-10 w-px h-4 bg-border" />
+                )}
+
+                {/* Header row */}
+                <div className="flex flex-wrap items-start gap-4 mb-4">
+                  <div className={`shrink-0 w-12 h-12 rounded-lg ${layer.bgGlow} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
+                    <layer.icon className={`w-6 h-6 ${layer.iconColor}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-3 mb-1">
+                      <span className={`${layer.badgeBg} text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full`}>
+                        {t(`defenseStack.${layer.key}.layer`)}
+                      </span>
+                      <h3 className="text-lg font-bold text-text-primary">
+                        {t(`defenseStack.${layer.key}.name`)}
+                      </h3>
+                    </div>
+                    <p className="text-sm font-mono text-brand-sage">
+                      {t(`defenseStack.${layer.key}.engine`)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className="text-sm text-text-secondary leading-relaxed mb-4">
+                  {t(`defenseStack.${layer.key}.desc`)}
+                </p>
+
+                {/* Technical details grid */}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="bg-surface-0/50 rounded-lg p-3 border border-border/50">
+                    <p className="text-[10px] uppercase tracking-wider text-text-tertiary font-semibold mb-1">
+                      Detects
+                    </p>
+                    <p className="text-xs text-text-secondary leading-relaxed">
+                      {t(`defenseStack.${layer.key}.detects`)}
+                    </p>
+                  </div>
+                  <div className="bg-surface-0/50 rounded-lg p-3 border border-border/50">
+                    <p className="text-[10px] uppercase tracking-wider text-text-tertiary font-semibold mb-1">
+                      Implementation
+                    </p>
+                    <p className="text-xs text-text-secondary leading-relaxed font-mono">
+                      {t(`defenseStack.${layer.key}.tech`)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </FadeInUp>
+          ))}
+        </div>
+
+        {/* Vertical flow indicator */}
+        <FadeInUp delay={0.5}>
+          <div className="flex items-center justify-center mt-8 gap-3">
+            <div className="h-px w-12 bg-border" />
+            <div className="flex items-center gap-2 text-text-tertiary">
+              <MonitorIcon className="w-4 h-4 text-brand-sage" />
+              <span className="text-xs font-medium">All layers feed into the unified event pipeline</span>
+            </div>
+            <div className="h-px w-12 bg-border" />
+          </div>
+        </FadeInUp>
+      </SectionWrapper>
+
+      {/* -- Data Flow Pipeline -- */}
+      <SectionWrapper>
+        <SectionTitle
+          overline={t('dataFlow.overline')}
+          title={t('dataFlow.title')}
+          subtitle={t('dataFlow.subtitle')}
+        />
+
+        {/* Pipeline stages */}
+        <div className="max-w-4xl mx-auto mt-14">
+          {/* Desktop: horizontal flow */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-3">
+            {dataFlowStages.map((stage, i) => (
+              <FadeInUp key={stage.key} delay={i * 0.08}>
+                <div className="relative">
+                  <div className="card-glow bg-surface-1 rounded-xl border border-border p-5 text-center hover:border-brand-sage/30 transition-all duration-300 h-full">
+                    {/* Step number */}
+                    <div className="w-8 h-8 rounded-full bg-brand-sage/10 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-sm font-bold text-brand-sage">{i + 1}</span>
+                    </div>
+                    <stage.icon className="w-5 h-5 text-brand-sage mx-auto mb-2" />
+                    <p className="text-sm font-bold text-text-primary mb-1.5">
+                      {t(`dataFlow.${stage.key}.name`)}
+                    </p>
+                    <p className="text-xs text-text-secondary leading-relaxed">
+                      {t(`dataFlow.${stage.key}.desc`)}
+                    </p>
+                  </div>
+                  {/* Arrow connector */}
+                  {i < 4 && (
+                    <div className="absolute top-1/2 -right-3 -translate-y-1/2 z-10">
+                      <ArrowRight className="w-4 h-4 text-brand-sage/40" />
+                    </div>
+                  )}
+                </div>
+              </FadeInUp>
+            ))}
+          </div>
+
+          {/* Mobile: vertical flow */}
+          <div className="lg:hidden space-y-3">
+            {dataFlowStages.map((stage, i) => (
+              <FadeInUp key={stage.key} delay={i * 0.08}>
+                <div className="card-glow bg-surface-1 rounded-xl border border-border p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-brand-sage/10 flex items-center justify-center">
+                        <span className="text-sm font-bold text-brand-sage">{i + 1}</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <stage.icon className="w-4 h-4 text-brand-sage shrink-0" />
+                        <p className="text-sm font-bold text-text-primary">
+                          {t(`dataFlow.${stage.key}.name`)}
+                        </p>
+                      </div>
+                      <p className="text-xs text-text-secondary leading-relaxed">
+                        {t(`dataFlow.${stage.key}.desc`)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </FadeInUp>
+            ))}
+          </div>
+
+          {/* Latency badge */}
+          <FadeInUp delay={0.5}>
+            <div className="flex justify-center mt-6">
+              <div className="inline-flex items-center gap-2 bg-brand-sage/10 text-brand-sage text-xs font-semibold px-4 py-2 rounded-full">
+                <ResponseIcon className="w-3.5 h-3.5" />
+                <span>End-to-end latency: &lt;200ms typical</span>
+              </div>
+            </div>
+          </FadeInUp>
         </div>
       </SectionWrapper>
 

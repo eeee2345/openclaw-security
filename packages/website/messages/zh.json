@@ -3191,6 +3191,76 @@
         "desc": "指標與警報"
       }
     },
+    "defenseStack": {
+      "overline": "多層防禦堆疊",
+      "title": "五層即時防禦。",
+      "subtitle": "每一層針對不同的攻擊面，使用經過實戰驗證的開源引擎。從核心系統呼叫到日誌關聯分析，每一層都將標準化事件輸入 AI 管線。",
+      "kernel": {
+        "layer": "第一層",
+        "name": "核心監控",
+        "engine": "Falco eBPF",
+        "desc": "透過 eBPF 探針直接掛鉤 Linux 核心系統呼叫。偵測容器逃逸、反向 shell、挖礦程序、憑證存取和異常檔案描述符 -- 無需核心模組，不影響系統效能。",
+        "detects": "容器逃逸、反向 shell、權限提升、可疑 exec() 呼叫鏈",
+        "tech": "eBPF tracepoints 在 sys_enter/sys_exit、Falco 規則編譯為 BPF 字節碼、<1ms 每事件延遲"
+      },
+      "network": {
+        "layer": "第二層",
+        "name": "網路入侵偵測",
+        "engine": "Suricata DPI",
+        "desc": "對所有網路介面進行深度封包檢測。Suricata 的 EVE JSON 輸出提供協定解碼警報 -- 包括 TLS 指紋辨識、DNS 異常偵測和 HTTP 負載分析 -- 直接輸入事件管線。",
+        "detects": "C2 信標通訊、資料外洩、橫向移動、漏洞利用負載、協定異常",
+        "tech": "多執行緒 pcap 分析、40+ 協定解碼器、ET Open + 自訂規則集、流量追蹤"
+      },
+      "filesystem": {
+        "layer": "第三層",
+        "name": "檔案系統掃描",
+        "engine": "YARA 引擎",
+        "desc": "即時存取和排程掃描檔案系統變更。YARA 規則比對位元組模式、PE 標頭和字串特徵，對抗已知惡意程式家族、Web Shell 和可疑腳本。",
+        "detects": "惡意程式二進位檔、Web Shell、勒索軟體投放器、混淆腳本、憑證竊取器",
+        "tech": "模式特徵比對、自訂 + 社群 YARA 規則集、inotify 觸發掃描"
+      },
+      "logs": {
+        "layer": "第四層",
+        "name": "日誌關聯分析",
+        "engine": "Sigma 規則",
+        "desc": "Sigma 偵測規則跨系統日誌、認證日誌、應用日誌和雲端稽核軌跡進行關聯。規則引擎支援時間關聯、聚合和多來源關聯查詢。",
+        "detects": "暴力攻擊、橫向移動鏈、持續性機制、政策違規",
+        "tech": "2,500+ 社群 Sigma 規則、熱重載、MITRE ATT&CK TTP 對應、自訂規則撰寫"
+      },
+      "ai": {
+        "layer": "第五層",
+        "name": "AI 關聯分析",
+        "engine": "LLM 推理",
+        "desc": "通過 1-4 層的事件由 AI 進行交叉關聯。模型權衡行為基線、威脅情報和時間模式，產出帶有信心分數的判決和完整攻擊敘事。",
+        "detects": "零日攻擊、APT 活動、新穎攻擊鏈、誤報降低",
+        "tech": "本地 Ollama + 雲端 LLM 備援、基線記憶 RAG、威脅情報豐富化、0-100 評分"
+      }
+    },
+    "dataFlow": {
+      "overline": "事件管線",
+      "title": "從原始信號到可執行警報。",
+      "subtitle": "每個安全事件經過五階段管線。資料被標準化、豐富化、關聯、評分和派發 -- 通常在 200ms 內完成。",
+      "stage1": {
+        "name": "擷取",
+        "desc": "來自 Falco、Suricata、YARA、檔案監控器和程序監控器的原始事件即時捕獲。"
+      },
+      "stage2": {
+        "name": "標準化",
+        "desc": "事件對應到統一架構，包含來源、嚴重性、類別和 MITRE ATT&CK 標籤。"
+      },
+      "stage3": {
+        "name": "關聯",
+        "desc": "Sigma 規則和 AI 將事件與基線行為和威脅情報進行交叉比對。"
+      },
+      "stage4": {
+        "name": "評分",
+        "desc": "每個關聯事件獲得 0-100 信心分數，決定自動回應閾值。"
+      },
+      "stage5": {
+        "name": "警報",
+        "desc": "判決觸發劇本執行並派發至 Slack、Telegram、Email 和儀表板。"
+      }
+    },
     "cta": {
       "title": "準備好看它實際運作了嗎？",
       "desc": "60 秒內執行免費安全掃描，或與我們團隊談談在你的基礎設施部署 Panguard。",
