@@ -263,7 +263,8 @@
       },
       "funnel": {
         "title": "90% of threats don't need AI.",
-        "desc": "The industry wants you to believe everything needs machine learning. Truth: 90% of attacks match known patterns. A rules engine catches them in under 50ms. AI only steps in for the rest. And if the cloud goes down? Local AI takes over. Your protection never drops to zero.",
+        "desc1": "The industry wants you to believe everything needs machine learning. Truth: 90% of attacks match known patterns. A rules engine catches them in under 50ms. AI only steps in for the rest.",
+        "desc2": "And if the cloud goes down? Local AI takes over. Your protection never drops to zero.",
         "layers": [
           {
             "pct": 90,
@@ -313,7 +314,8 @@
       "title": "The more people use it, the safer everyone gets.",
       "desc": "Every Panguard instance is a sensor. When it detects a new attack, it anonymously shares the pattern with Threat Cloud. Threat Cloud auto-generates new Sigma detection rules and pushes them to every Panguard user — worldwide.",
       "descHighlight": "You're not just protected. You're part of the shield.",
-      "privacy": "Only anonymized threat signatures leave your machine. Zero raw data. Zero telemetry. Encrypted in transit (TLS 1.3). Your logs, your code, your data — never leaves. You can turn off Threat Cloud anytime. Even Community tier works fully offline.",
+      "privacy1": "Only anonymized threat signatures leave your machine. Zero raw data. Zero telemetry. Encrypted in transit (TLS 1.3). Your logs, your code, your data — never leaves.",
+      "privacy2": "You can turn off Threat Cloud anytime. Even Community tier works fully offline.",
       "steps": [
         {
           "label": "Attack detected",
@@ -570,25 +572,25 @@
       "reports": {
         "0": {
           "name": "Taiwan Cyber Security Act",
-          "controls": "50 controls",
+          "controls": "10 controls",
           "price": "$299",
           "market": "Market rate: $10,000+"
         },
         "1": {
           "name": "ISO 27001",
-          "controls": "93 controls",
+          "controls": "30 controls",
           "price": "$499",
           "market": "Market rate: $15,000+"
         },
         "2": {
           "name": "SOC 2",
-          "controls": "64 controls",
+          "controls": "10 controls",
           "price": "$699",
           "market": "Market rate: $20,000+"
         },
         "3": {
           "name": "Bundle (All 3)",
-          "controls": "207 controls",
+          "controls": "50 controls",
           "price": "$999",
           "market": "Market rate: $30,000+",
           "badge": "SAVE 33%"
@@ -781,7 +783,7 @@
       "faq7q": "What happens to my data if I cancel?",
       "faq7a": "Your data remains accessible in read-only mode for 30 days after cancellation. During that window, you can export all reports, logs, and configurations. After 30 days, data is securely deleted in accordance with our data retention policy and GDPR requirements.",
       "faq8q": "How does the compliance report quality compare to a human consultant?",
-      "faq8a": "Panguard compliance reports cover all 93 controls in ISO 27001, automatically scanning your system configuration and assessing each control. Report format meets audit standards. However, we recommend using the report as a starting point, working with your internal team or external consultant to complete the final certification process."
+      "faq8a": "Panguard compliance reports evaluate 30 ISO 27001 controls, 10 SOC 2 controls, and 10 TCSA controls, automatically scanning your system configuration and assessing each control. Report format meets audit standards. However, we recommend using the report as a starting point, working with your internal team or external consultant to complete the final certification process."
     }
   },
   "scan": {
@@ -909,8 +911,8 @@
       },
       "featuresList": {
         "item1": {
-          "title": "6 Built-in Scanners",
-          "desc": "Password policy audit, unnecessary port detection, SSL certificate validation, scheduled task review, shared folder exposure check, and environment discovery. Each scanner runs independently and produces actionable findings."
+          "title": "7 Built-in Scanners",
+          "desc": "Password policy audit, unnecessary port detection, SSL certificate validation, scheduled task review, shared folder exposure check, environment discovery, and CVE vulnerability lookup. Each scanner runs independently and produces actionable findings."
         },
         "item2": {
           "title": "PDF Report with Compliance Mapping",
@@ -918,7 +920,7 @@
         },
         "item3": {
           "title": "Quick & Full Scan Modes",
-          "desc": "Quick scan hits the most critical checks in under 60 seconds. Full scan runs all 6 scanner modules for a comprehensive audit. Both modes produce a complete PDF report."
+          "desc": "Quick scan hits the most critical checks in under 60 seconds. Full scan runs all 7 scanner modules for a comprehensive audit. Both modes produce a complete PDF report."
         },
         "item4": {
           "title": "Open Port & Service Analysis",
@@ -997,19 +999,19 @@
         },
         "item3": {
           "title": "4 Notification Channels",
-          "desc": "Get alerts where you already are: Telegram, Slack, and Email. Each channel supports rich formatting with threat details, severity badges, and one-click remediation links."
+          "desc": "Get alerts where you already are: Telegram, Slack, Email, and Webhook. Each channel supports rich formatting with threat details, severity badges, and one-click remediation links."
         },
         "item4": {
-          "title": "Confidence Scoring",
-          "desc": "Every event receives a 0-100 confidence score. Scores above 85 trigger auto-response. 50-84 sends a notification. Below 50, the event is logged and fed into the learning system."
+          "title": "Investigation Engine",
+          "desc": "Built-in investigation engine with dynamic reasoning, event correlation across a sliding window (500 events, 10-minute window), and multi-tool analysis. Correlates events by IP, user, process, and category. Risk scoring with confidence-based escalation."
         },
         "item5": {
           "title": "Graceful Degradation",
           "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 926 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
-          "title": "7-Day Context Memory",
-          "desc": "Seven-day learning period builds a behavioral baseline for your specific system. After that, any deviation is flagged with context. The baseline continuously refines itself over time."
+          "title": "Integration Adapters",
+          "desc": "Pre-built adapters for Windows Defender, Syslog, and Wazuh. 7-day learning period builds a behavioral baseline for your system. Supports Linux, macOS, Windows, Docker, and Kubernetes."
         }
       },
       "install": {
@@ -1073,8 +1075,8 @@
           "desc": "Chat adapts its language based on who is reading. Developers get technical details with CLI commands. Business owners get plain summaries. IT admins get actionable steps. Set your role once, get the right level of detail every time."
         },
         "item5": {
-          "title": "Incident Walkthroughs",
-          "desc": "When a significant event occurs, Chat Agent walks you through what happened, why it matters, and what Panguard did about it. Built-in alert templates for common attacks like brute force, port scans, and malware detections."
+          "title": "13 Built-in Skills",
+          "desc": "Chat Agent has 13 skills across 6 categories: scan (quick scan, compliance scan), guard (status, block/unblock IP), trap (status, top attackers), report (generate, summary), system (health, config), and info (explain events, help). NLP matching routes your messages to the right skill automatically."
         },
         "item6": {
           "title": "Team Collaboration",
@@ -1226,8 +1228,8 @@
       },
       "featuresList": {
         "item1": {
-          "title": "3 Compliance Frameworks",
-          "desc": "ISO 27001 Annex A, SOC 2 Trust Service Criteria, and Taiwan Cyber Security Act (TCSA). Every finding is automatically mapped to relevant controls. Auditors see exactly which controls are satisfied and which need attention."
+          "title": "3 Compliance Frameworks, 50 Controls",
+          "desc": "ISO 27001 (30 controls), SOC 2 Trust Service Criteria (10 controls), and Taiwan Cyber Security Act (10 controls). Every finding is automatically mapped to relevant controls with real-time assessors running system checks. Auditors see exactly which controls are satisfied and which need attention."
         },
         "item2": {
           "title": "Bilingual Output",
@@ -1235,7 +1237,7 @@
         },
         "item3": {
           "title": "Audit-Ready Evidence",
-          "desc": "Reports include evidence packages: timestamped logs, configuration snapshots, response action records, and compliance control mappings. JSON + text summary formats for integration with your existing audit workflows. PDF export coming soon."
+          "desc": "Reports include evidence packages: timestamped logs, configuration snapshots, response action records, and compliance control mappings. JSON, text summary, and PDF formats for integration with your existing audit workflows."
         },
         "item4": {
           "title": "Cost Savings vs. Consultants",
@@ -1272,18 +1274,18 @@
         "desc": "Select the compliance framework you need, and Panguard generates a complete report mapped to every control. Coverage percentages show exactly where you stand. Gaps are highlighted with specific remediation guidance.",
         "iso27001": {
           "name": "ISO 27001 Gap Analysis",
-          "coverage": "94%",
-          "controls": "114"
+          "coverage": "100%",
+          "controls": "30"
         },
         "soc2": {
           "name": "SOC 2 Type II Evidence",
-          "coverage": "87%",
-          "controls": "64"
+          "coverage": "100%",
+          "controls": "10"
         },
         "tcsa": {
           "name": "Taiwan Cyber Security Act",
-          "coverage": "91%",
-          "controls": "38"
+          "coverage": "100%",
+          "controls": "10"
         },
         "executive": {
           "name": "Executive Security Summary",
@@ -1607,14 +1609,16 @@
   },
   "company": {
     "overline": "About Panguard AI",
-    "title": "Every funded AI security company protects Fortune 500. We give the other 400 million businesses and 70 million developers the AI security they've never had.",
+    "title": "Every funded AI security company protects Fortune 500.",
+    "titleLine2": "We give the other 400 million businesses and 70 million developers the AI security they've never had.",
     "mission": "Enterprise-grade security has been locked behind enterprise-grade budgets for decades. We are building the product that makes that statement obsolete.",
     "name": {
       "overline": "The Name",
       "title": "PANGUARD",
       "etymology": "Pan (Greek god of shepherds, meaning universal) + Guard",
       "desc1": "In Greek mythology, Pan was the god of the wild, shepherds, and flocks. He watched over everything that lived beyond the city walls -- the vulnerable, the unprotected, the overlooked.",
-      "desc2": "That is exactly what Panguard does. The Fortune 500 have walls, moats, and armies of security engineers. The solo developer, the five-person startup, the small business owner -- they have nothing. We are their shepherd. We are the guard that watches the wilderness."
+      "desc2a": "That is exactly what Panguard does. The Fortune 500 have walls, moats, and armies of security engineers. The solo developer, the five-person startup, the small business owner -- they have nothing.",
+      "desc2b": "We are their shepherd. We are the guard that watches the wilderness."
     },
     "quote": {
       "text": "You don't need to understand security. You just need to know someone is watching over you.",
@@ -1859,29 +1863,29 @@
       "iso27001": {
         "name": "ISO 27001",
         "fullName": "Information Security Management System",
-        "controls": "114",
-        "coverage": "94%",
+        "controls": "30",
+        "coverage": "100%",
         "whoNeeds": "Any company handling sensitive data, pursuing enterprise customers, or preparing for investment due diligence.",
         "whatItCovers": "Risk assessment, access control, cryptography, operations security, supplier relationships, incident management, and business continuity.",
-        "panguardDoes": "Automatically maps 107 of 114 Annex A controls to your live security telemetry. Generates gap analysis with specific remediation steps for the remaining controls."
+        "panguardDoes": "Evaluates 30 Annex A controls across organizational and technical themes against your live security telemetry. Generates gap analysis with specific remediation steps."
       },
       "soc2": {
         "name": "SOC 2 Type II",
         "fullName": "Trust Service Criteria",
-        "controls": "64",
-        "coverage": "87%",
+        "controls": "10",
+        "coverage": "100%",
         "whoNeeds": "SaaS companies selling to US enterprise customers. Required by most procurement teams and investors.",
         "whatItCovers": "Security, Availability, Processing Integrity, Confidentiality, and Privacy trust service criteria with continuous evidence collection.",
-        "panguardDoes": "Automates evidence collection for 56 of 64 controls. Generates audit-ready documentation packages including timestamped logs, configuration snapshots, and AI reasoning chains."
+        "panguardDoes": "Evaluates 10 trust service controls with automated evidence collection. Generates audit-ready documentation packages including timestamped logs, configuration snapshots, and AI reasoning chains."
       },
       "tcsa": {
         "name": "Taiwan Cyber Security Act",
         "fullName": "TCSA",
-        "controls": "38",
-        "coverage": "91%",
+        "controls": "10",
+        "coverage": "100%",
         "whoNeeds": "Government contractors, critical infrastructure providers, and any Taiwan-based organization subject to the Cyber Security Management Act.",
         "whatItCovers": "Security monitoring, incident reporting, infrastructure protection, risk assessment, and compliance reporting for government-regulated entities.",
-        "panguardDoes": "Full bilingual output (English + Traditional Chinese). Maps 35 of 38 controls automatically. Generates reports formatted for regulatory submission."
+        "panguardDoes": "Full bilingual output (English + Traditional Chinese). Evaluates 10 controls covering monitoring, incident reporting, and compliance. Reports formatted for regulatory submission."
       }
     },
     "taiwanMarket": {
@@ -2149,12 +2153,14 @@
       },
       "anonymization": {
         "title": "Anonymization Pipeline",
-        "desc": "Before any event data is sent to cloud AI or the collective intelligence network, it passes through a multi-stage anonymization pipeline. IP addresses are hashed, hostnames are replaced with generic identifiers, file paths are normalized, and user data is removed entirely. The pipeline is deterministic, so the same threat pattern always produces the same anonymized signature -- enabling correlation without exposing identity."
+        "desc1": "Before any event data is sent to cloud AI or the collective intelligence network, it passes through a multi-stage anonymization pipeline. IP addresses are hashed, hostnames are replaced with generic identifiers, file paths are normalized, and user data is removed entirely.",
+        "desc2": "The pipeline is deterministic, so the same threat pattern always produces the same anonymized signature -- enabling correlation without exposing identity."
       }
     },
     "disclosure": {
       "title": "Responsible Disclosure",
-      "desc": "Found a vulnerability in Panguard? We appreciate security researchers who help us keep our users safe. Please report any security issues through our responsible disclosure program. We commit to acknowledging reports within 24 hours and providing an initial assessment within 72 hours.",
+      "desc1": "Found a vulnerability in Panguard? We appreciate security researchers who help us keep our users safe. Please report any security issues through our responsible disclosure program.",
+      "desc2": "We commit to acknowledging reports within 24 hours and providing an initial assessment within 72 hours.",
       "cta1": "Disclosure Policy",
       "cta2": "security@panguard.ai"
     },
@@ -2571,7 +2577,7 @@
       "step8Title": "Step 8: Compliance Reports",
       "step8Desc": "Generate ISO 27001, SOC 2, or Taiwan Cyber Security Act compliance reports automatically. Requires Pro plan.",
       "step8Frameworks": "Supported frameworks: ISO 27001 Annex A, SOC 2 Trust Services Criteria, Taiwan TCSA (ISMS).",
-      "step8Note": "Reports can be generated in English or Traditional Chinese. PDF export coming soon.",
+      "step8Note": "Reports can be generated in English or Traditional Chinese with PDF export.",
       "step9Title": "More CLI Commands",
       "step9Desc": "Panguard has a full CLI toolkit. Here are the most useful commands beyond scan and guard.",
       "step9Whoami": "Check your account and subscription status:",
@@ -3268,7 +3274,9 @@
       "title": "Why Panguard Exists",
       "p1": "The original idea was simple: build an open-source security framework that enables active defense -- where AI agents protect AI agents. But as we researched the market, we noticed something.",
       "p2": "Every cybersecurity company that raised serious funding -- Wiz, CrowdStrike, SentinelOne -- they all serve the Fortune 500. Their minimum contracts start at five or six figures. Their products require dedicated security teams to operate.",
-      "p3": "And then we looked at the other side: 400 million small and medium businesses worldwide. Millions of independent developers shipping code every day. The vibe coding generation -- building with AI, deploying to production, moving faster than ever. None of them have security teams. Most can't afford a single security tool. Not because they don't care. Because the industry never built anything for them. That's when we decided: we're not building another security product for enterprises. We're building security infrastructure for everyone."
+      "p3a": "And then we looked at the other side: 400 million small and medium businesses worldwide. Millions of independent developers shipping code every day. The vibe coding generation -- building with AI, deploying to production, moving faster than ever.",
+      "p3b": "None of them have security teams. Most can't afford a single security tool. Not because they don't care. Because the industry never built anything for them.",
+      "p3c": "That's when we decided: we're not building another security product for enterprises. We're building security infrastructure for everyone."
     },
     "beliefs": {
       "overline": "WHAT WE BELIEVE",

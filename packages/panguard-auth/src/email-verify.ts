@@ -186,6 +186,118 @@ function sendSmtp(config: SmtpConfig, to: string, mime: string): Promise<void> {
   });
 }
 
+// ── Brand Email Layout ───────────────────────────────────────────────
+//
+// Dark theme matching panguard.ai visual identity:
+//   Surface-0: #1A1614  |  Surface-1: #1F1C19  |  Surface-2: #272320
+//   Sage:      #8B9A8E  |  Text:      #F5F1E8  |  Muted:    #706860
+//   Border:    #2E2A27
+//
+// Uses table layout for max email client compatibility.
+
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+
+function emailShell(content: string): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark">
+<style>body,table,td{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}table{border-collapse:collapse!important}img{-ms-interpolation-mode:bicubic}a{color:#8B9A8E}</style>
+</head>
+<body style="margin:0;padding:0;background-color:#111110;font-family:${FONT};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111110;">
+<tr><td align="center" style="padding:40px 16px;">
+<table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;">
+
+  <!-- Logo -->
+  <tr><td align="center" style="padding-bottom:32px;">
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+      <td style="font-family:${FONT};font-size:13px;font-weight:700;letter-spacing:3px;color:#F5F1E8;">PANGUARD</td>
+      <td style="padding:0 6px;">
+        <div style="width:18px;height:18px;border:2px solid #8B9A8E;border-radius:3px;transform:rotate(0deg);display:inline-block;vertical-align:middle;position:relative;">
+          <div style="width:8px;height:8px;background:#8B9A8E;border-radius:1px;position:absolute;top:3px;left:3px;"></div>
+        </div>
+      </td>
+      <td style="font-family:${FONT};font-size:13px;font-weight:700;letter-spacing:3px;color:#F5F1E8;">AI</td>
+    </tr></table>
+  </td></tr>
+
+  <!-- Card -->
+  <tr><td>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1A1614;border:1px solid #2E2A27;border-radius:12px;">
+      <tr><td style="padding:40px 36px;">
+        ${content}
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="padding-top:28px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td align="center" style="padding-bottom:16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+          <td style="padding:0 8px;"><a href="https://panguard.ai" style="color:#706860;font-family:${FONT};font-size:12px;text-decoration:none;">Website</a></td>
+          <td style="color:#2E2A27;font-size:12px;">|</td>
+          <td style="padding:0 8px;"><a href="https://github.com/panguard-ai/panguard-ai" style="color:#706860;font-family:${FONT};font-size:12px;text-decoration:none;">GitHub</a></td>
+          <td style="color:#2E2A27;font-size:12px;">|</td>
+          <td style="padding:0 8px;"><a href="https://x.com/panguard_ai" style="color:#706860;font-family:${FONT};font-size:12px;text-decoration:none;">Twitter</a></td>
+        </tr></table>
+      </td></tr>
+      <tr><td align="center" style="font-family:${FONT};font-size:11px;color:#4A4540;line-height:1.5;">
+        Panguard AI &mdash; AI-Powered Endpoint Security<br>
+        &copy; ${new Date().getFullYear()} Panguard AI. All rights reserved.
+      </td></tr>
+    </table>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+
+function sageButton(href: string, label: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+  <tr><td align="center" style="border-radius:24px;background-color:#8B9A8E;">
+    <a href="${href}" target="_blank" style="display:inline-block;padding:14px 32px;font-family:${FONT};font-size:14px;font-weight:600;color:#1A1614;text-decoration:none;border-radius:24px;letter-spacing:0.3px;">${label}</a>
+  </td></tr>
+</table>`;
+}
+
+function sageDivider(): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
+  <tr><td style="height:1px;background:linear-gradient(90deg,transparent,#2E2A27 20%,#2E2A27 80%,transparent);font-size:0;line-height:0;">&nbsp;</td></tr>
+</table>`;
+}
+
+function heading(text: string): string {
+  return `<h1 style="margin:0 0 6px;font-family:${FONT};font-size:22px;font-weight:700;color:#F5F1E8;letter-spacing:-0.3px;">${text}</h1>`;
+}
+
+function subheading(text: string): string {
+  return `<p style="margin:0 0 24px;font-family:${FONT};font-size:13px;color:#706860;letter-spacing:0.5px;">${text}</p>`;
+}
+
+function paragraph(text: string): string {
+  return `<p style="margin:0 0 16px;font-family:${FONT};font-size:14px;color:#A09890;line-height:1.7;">${text}</p>`;
+}
+
+function muted(text: string): string {
+  return `<p style="margin:16px 0 0;font-family:${FONT};font-size:12px;color:#4A4540;line-height:1.6;">${text}</p>`;
+}
+
+function featureRow(label: string, desc: string): string {
+  return `<tr>
+  <td style="padding:8px 12px 8px 0;vertical-align:top;width:20px;">
+    <div style="width:6px;height:6px;background:#8B9A8E;border-radius:50%;margin-top:6px;"></div>
+  </td>
+  <td style="padding:8px 0;">
+    <span style="font-family:${FONT};font-size:13px;font-weight:600;color:#F5F1E8;">${label}</span>
+    <span style="font-family:${FONT};font-size:13px;color:#706860;"> &mdash; ${desc}</span>
+  </td>
+</tr>`;
+}
+
 // ── Email Templates ─────────────────────────────────────────────────
 
 export async function sendVerificationEmail(
@@ -195,26 +307,19 @@ export async function sendVerificationEmail(
   baseUrl: string
 ): Promise<void> {
   const verifyLink = `${baseUrl}/api/waitlist/verify/${verifyToken}`;
-  const subject = 'Panguard AI - Verify your email';
-  const html = `
-    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-      <h2 style="color: #1A1614;">Welcome to Panguard AI</h2>
-      <p style="color: #4a4a4a; line-height: 1.6;">
-        Thank you for joining the Panguard AI waitlist. Please verify your email address
-        by clicking the link below:
-      </p>
-      <p style="text-align: center; margin: 24px 0;">
-        <a href="${verifyLink}"
-           style="background: #8B9A8E; color: #fff; padding: 12px 24px;
-                  text-decoration: none; border-radius: 6px; display: inline-block;">
-          Verify Email
-        </a>
-      </p>
-      <p style="color: #999; font-size: 12px;">
-        If you did not sign up, you can safely ignore this email.
-      </p>
+  const subject = 'Verify your email | Panguard AI';
+  const html = emailShell(`
+    ${heading('Verify your email')}
+    ${subheading('PANGUARD AI WAITLIST')}
+    ${paragraph('Thank you for joining the Panguard AI early access waitlist. To confirm your spot, please verify your email address.')}
+    ${sageDivider()}
+    <div style="text-align:center;padding:8px 0 8px;">
+      ${sageButton(verifyLink, 'Verify Email Address')}
     </div>
-  `;
+    ${sageDivider()}
+    ${muted('If you did not sign up for Panguard AI, you can safely ignore this email. This link expires in 24 hours.')}
+    ${muted(`<span style="color:#706860;word-break:break-all;">Can't click the button? Copy this link:<br><a href="${verifyLink}" style="color:#8B9A8E;text-decoration:underline;">${verifyLink}</a></span>`)}
+  `);
   await sendEmail(config, to, subject, html);
 }
 
@@ -228,29 +333,39 @@ export async function sendExpirationWarningEmail(
 ): Promise<void> {
   const renewLink = `${baseUrl}/pricing`;
   const daysLeft = Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (24 * 60 * 60 * 1000)));
-  const subject = `Panguard AI - Your ${tier} plan expires in ${daysLeft} day(s)`;
-  const html = `
-    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-      <h2 style="color: #1A1614;">Plan Expiring Soon</h2>
-      <p style="color: #4a4a4a; line-height: 1.6;">
-        Hi ${name || 'there'},<br><br>
-        Your Panguard AI <strong>${tier}</strong> plan will expire on
-        <strong>${new Date(expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>
-        (${daysLeft} day(s) remaining).
-      </p>
-      <p style="color: #4a4a4a; line-height: 1.6;">
-        After expiration, your account will be downgraded to the free tier.
-        Renew now to keep all your features.
-      </p>
-      <p style="text-align: center; margin: 24px 0;">
-        <a href="${renewLink}"
-           style="background: #8B9A8E; color: #fff; padding: 12px 24px;
-                  text-decoration: none; border-radius: 6px; display: inline-block;">
-          Renew Plan
-        </a>
-      </p>
+  const expiryDate = new Date(expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const subject = `Your ${tier} plan expires in ${daysLeft} day(s) | Panguard AI`;
+  const tierUpper = tier.charAt(0).toUpperCase() + tier.slice(1);
+  const html = emailShell(`
+    ${heading('Plan expiring soon')}
+    ${subheading('SUBSCRIPTION NOTICE')}
+    ${paragraph(`Hi ${name || 'there'},`)}
+    ${paragraph(`Your <strong style="color:#F5F1E8;">${tierUpper}</strong> plan will expire on <strong style="color:#F5F1E8;">${expiryDate}</strong>. That's <span style="color:#FBBF24;font-weight:600;">${daysLeft} day(s)</span> from now.`)}
+
+    <!-- Status box -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;background-color:#272320;border:1px solid #2E2A27;border-radius:8px;">
+      <tr><td style="padding:16px 20px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="font-family:${FONT};font-size:12px;color:#706860;letter-spacing:0.5px;">CURRENT PLAN</td>
+            <td align="right" style="font-family:${FONT};font-size:12px;color:#706860;letter-spacing:0.5px;">EXPIRES</td>
+          </tr>
+          <tr>
+            <td style="font-family:${FONT};font-size:16px;font-weight:700;color:#8B9A8E;padding-top:4px;">${tierUpper}</td>
+            <td align="right" style="font-family:${FONT};font-size:16px;font-weight:700;color:#FBBF24;padding-top:4px;">${expiryDate}</td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+
+    ${paragraph('After expiration, your account will be automatically downgraded to the Community (free) tier. You will lose access to paid features including AI analysis, advanced alerts, and reports.')}
+    ${sageDivider()}
+    <div style="text-align:center;padding:8px 0 8px;">
+      ${sageButton(renewLink, 'Renew Subscription')}
     </div>
-  `;
+    ${sageDivider()}
+    ${muted('Questions? Reply to this email or contact support@panguard.ai.')}
+  `);
   await sendEmail(config, to, subject, html);
 }
 
@@ -261,27 +376,28 @@ export async function sendResetEmail(
   baseUrl: string
 ): Promise<void> {
   const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
-  const subject = 'Panguard AI - Reset your password';
-  const html = `
-    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-      <h2 style="color: #1A1614;">Reset Your Password</h2>
-      <p style="color: #4a4a4a; line-height: 1.6;">
-        We received a request to reset the password for your Panguard AI account.
-        Click the link below to set a new password. This link expires in 1 hour.
-      </p>
-      <p style="text-align: center; margin: 24px 0;">
-        <a href="${resetLink}"
-           style="background: #8B9A8E; color: #fff; padding: 12px 24px;
-                  text-decoration: none; border-radius: 6px; display: inline-block;">
-          Reset Password
-        </a>
-      </p>
-      <p style="color: #999; font-size: 12px;">
-        If you did not request a password reset, you can safely ignore this email.
-        Your password will remain unchanged.
-      </p>
+  const subject = 'Reset your password | Panguard AI';
+  const html = emailShell(`
+    ${heading('Reset your password')}
+    ${subheading('SECURITY REQUEST')}
+    ${paragraph('We received a request to reset the password for your Panguard AI account. Click the button below to choose a new password.')}
+    ${sageDivider()}
+    <div style="text-align:center;padding:8px 0 8px;">
+      ${sageButton(resetLink, 'Reset Password')}
     </div>
-  `;
+    ${sageDivider()}
+
+    <!-- Security notice -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 0;background-color:#272320;border:1px solid #2E2A27;border-radius:8px;">
+      <tr><td style="padding:14px 18px;">
+        <p style="margin:0;font-family:${FONT};font-size:12px;color:#706860;line-height:1.6;">
+          This link expires in <strong style="color:#A09890;">1 hour</strong>. If you did not request a password reset, no action is needed &mdash; your password will remain unchanged. If you're concerned about your account security, please contact support@panguard.ai.
+        </p>
+      </td></tr>
+    </table>
+
+    ${muted(`<span style="color:#706860;word-break:break-all;">Can't click the button? Copy this link:<br><a href="${resetLink}" style="color:#8B9A8E;text-decoration:underline;">${resetLink}</a></span>`)}
+  `);
   await sendEmail(config, to, subject, html);
 }
 
@@ -292,22 +408,38 @@ export async function sendWelcomeEmail(
   baseUrl: string
 ): Promise<void> {
   const registerLink = `${baseUrl}/register`;
-  const subject = "Panguard AI - You're in!";
-  const html = `
-    <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-      <h2 style="color: #1A1614;">You're in, ${name || 'there'}!</h2>
-      <p style="color: #4a4a4a; line-height: 1.6;">
-        Your spot on the Panguard AI waitlist has been approved. You can now create
-        your account and start using the platform.
-      </p>
-      <p style="text-align: center; margin: 24px 0;">
-        <a href="${registerLink}"
-           style="background: #8B9A8E; color: #fff; padding: 12px 24px;
-                  text-decoration: none; border-radius: 6px; display: inline-block;">
-          Create Account
-        </a>
-      </p>
+  const docsLink = 'https://panguard.ai/docs/getting-started';
+  const subject = "You're in | Panguard AI";
+  const greeting = name ? `${name}, you're in` : "You're in";
+  const html = emailShell(`
+    ${heading(greeting)}
+    ${subheading('EARLY ACCESS APPROVED')}
+    ${paragraph('Your spot on the Panguard AI waitlist has been approved. Welcome to the next generation of endpoint security.')}
+    ${sageDivider()}
+
+    <!-- What you get -->
+    <p style="margin:0 0 12px;font-family:${FONT};font-size:11px;font-weight:600;color:#706860;letter-spacing:1.5px;">WHAT'S INCLUDED</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+      ${featureRow('Panguard Scan', 'Deep vulnerability scanning for your servers')}
+      ${featureRow('Panguard Guard', 'Real-time threat detection and auto-response')}
+      ${featureRow('AI Analysis', 'Multi-agent pipeline for intelligent threat assessment')}
+      ${featureRow('Auto-fix', 'One-click remediation for known vulnerabilities')}
+    </table>
+
+    ${sageDivider()}
+    <div style="text-align:center;padding:8px 0 8px;">
+      ${sageButton(registerLink, 'Create Your Account')}
     </div>
-  `;
+
+    <!-- Quick links -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
+      <tr><td align="center">
+        <a href="${docsLink}" style="font-family:${FONT};font-size:12px;color:#8B9A8E;text-decoration:underline;">Read the Getting Started guide</a>
+      </td></tr>
+    </table>
+
+    ${sageDivider()}
+    ${muted('Questions? Reply to this email or reach us at support@panguard.ai. We typically respond within 24 hours.')}
+  `);
   await sendEmail(config, to, subject, html);
 }
