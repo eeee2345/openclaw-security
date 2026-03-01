@@ -130,9 +130,9 @@ panguard report --framework iso27001
 
 | Framework | Controls | Languages |
 |-----------|----------|-----------|
-| Taiwan Cyber Security Act (TCSA) | 50 controls | EN + zh-TW |
-| ISO/IEC 27001:2022 | 93 controls | EN + zh-TW |
-| SOC 2 Trust Services | 64 controls | EN |
+| Taiwan Cyber Security Act (TCSA) | 10 controls | EN + zh-TW |
+| ISO/IEC 27001:2022 | 30 controls | EN + zh-TW |
+| SOC 2 Trust Services | 10 controls | EN |
 
 - Executive summary with security score
 - Control-by-control assessment

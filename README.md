@@ -230,9 +230,9 @@ panguard report --framework soc2          # SOC 2
 
 | Framework | Controls | Output |
 |-----------|----------|--------|
-| Taiwan Cyber Security Act (TCSA) | 50 controls | PDF + JSON, bilingual |
-| ISO/IEC 27001:2022 | 93 controls | PDF + JSON, bilingual |
-| SOC 2 Trust Services | 64 controls | PDF + JSON |
+| Taiwan Cyber Security Act (TCSA) | 10 controls | PDF + JSON, bilingual |
+| ISO/IEC 27001:2022 | 30 controls | PDF + JSON, bilingual |
+| SOC 2 Trust Services | 10 controls | PDF + JSON |
 
 Each report includes: executive summary, control-by-control assessment, evidence packages, remediation recommendations, and priority ranking.
 
