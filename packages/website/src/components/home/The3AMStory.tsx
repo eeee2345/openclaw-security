@@ -61,7 +61,7 @@ export default function The3AMStory() {
         <div ref={rightRef} className="stagger-group">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-3 h-3 rounded-full bg-status-safe" />
-            <h3 className="text-lg font-bold text-brand-sage">{t('rightTitle')}</h3>
+            <h3 className="text-lg font-bold text-panguard-green">{t('rightTitle')}</h3>
           </div>
 
           <div className="space-y-4">
@@ -71,10 +71,10 @@ export default function The3AMStory() {
                 className="animate-on-scroll flex gap-3 items-start"
                 style={{ transitionDelay: `${0.3 + i * 0.15}s` }}
               >
-                <div className="shrink-0 w-12 text-xs text-brand-sage font-mono pt-0.5">
+                <div className="shrink-0 w-12 text-xs text-panguard-green font-mono pt-0.5">
                   {t(`${key}.time`)}
                 </div>
-                <div className="flex-1 bg-brand-sage/5 border border-brand-sage/20 rounded-lg p-3">
+                <div className="flex-1 bg-panguard-green/5 border border-panguard-green/20 rounded-lg p-3">
                   <p className="text-sm text-text-primary">{t(`${key}.text`)}</p>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default function The3AMStory() {
           <FadeInUp delay={0.8}>
             <div className="mt-6 p-4 bg-surface-1 border border-border rounded-xl">
               <div className="flex items-start gap-3">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-brand-sage/20 flex items-center justify-center text-xs font-bold text-brand-sage">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-panguard-green/20 flex items-center justify-center text-xs font-bold text-panguard-green">
                   P
                 </div>
                 <div className="flex-1">
@@ -100,7 +100,7 @@ export default function The3AMStory() {
 
           {/* Still sleeping */}
           <FadeInUp delay={1.0}>
-            <p className="text-center text-lg font-bold text-brand-sage mt-6 animate-bounce" style={{ animationDuration: '3s' }}>
+            <p className="text-center text-lg font-bold text-panguard-green mt-6 animate-bounce" style={{ animationDuration: '3s' }}>
               {t('stillSleeping')}
             </p>
           </FadeInUp>

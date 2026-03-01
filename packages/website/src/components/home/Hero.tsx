@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Copy, Check, ArrowRight, CheckCircle } from 'lucide-react';
+import { Copy, Check, ArrowRight } from 'lucide-react';
 import { Link } from '@/navigation';
 import { useOS } from '@/hooks/useOS';
+import BrandLogo from '@/components/ui/BrandLogo';
+import { CheckIcon } from '@/components/ui/BrandIcons';
 
 function InstallBar() {
   const t = useTranslations('home.hero');
@@ -67,11 +69,21 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 pt-20 pb-12 max-w-4xl mx-auto">
+        {/* Brand Logo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease }}
+          className="mb-6"
+        >
+          <BrandLogo size={48} className="text-panguard-green mx-auto" />
+        </motion.div>
+
         {/* Tag */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease }}
+          transition={{ duration: 0.5, delay: 0.1, ease }}
           className="text-[11px] uppercase tracking-[0.2em] text-panguard-green font-semibold mb-6"
         >
           {t('eyebrow')}
@@ -147,7 +159,7 @@ export default function Hero() {
               key={key}
               className="inline-flex items-center gap-1.5 text-xs text-text-tertiary bg-surface-1/50 border border-border/50 rounded-full px-3 py-1.5"
             >
-              <CheckCircle className="w-3 h-3 text-panguard-green" />
+              <CheckIcon size={12} className="text-panguard-green" />
               {t(`badges.${key}`)}
             </span>
           ))}

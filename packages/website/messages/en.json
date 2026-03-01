@@ -36,6 +36,10 @@
     "pricing": "Pricing",
     "docs": "Docs",
     "useCases": "Use Cases",
+    "howItWorks": "How it Works",
+    "threatCloud": "Threat Cloud",
+    "about": "About",
+    "blog": "Blog",
     "startFreeScan": "Start Free Scan",
     "getStarted": "Get Started",
     "login": "Log In",
@@ -125,6 +129,7 @@
     "press": "Press",
     "partners": "Partners",
     "customers": "Customers",
+    "openSource": "Open Source",
     "trustCenter": "Trust Center",
     "security": "Security",
     "privacyPolicy": "Privacy Policy",
@@ -2884,6 +2889,312 @@
     "q3": "Q3 2026",
     "q3Label": "Public launch"
   },
+  "howItWorks": {
+    "overline": "HOW IT WORKS",
+    "title": "How Panguard",
+    "titleHighlight": "Protects You",
+    "subtitle": "Five layers of defense. Three tiers of AI. One command to deploy.",
+    "overview": {
+      "overline": "AT A GLANCE",
+      "title": "Security that thinks in layers",
+      "subtitle": "Each layer catches what the previous one misses. Together, they form a defense system that adapts to your environment.",
+      "stat1": { "value": "<50ms", "label": "Average detection time" },
+      "stat2": { "value": "90%", "label": "Threats caught by rules alone" },
+      "stat3": { "value": "7 days", "label": "To learn your normal" }
+    },
+    "layers": {
+      "overline": "FIVE DETECTION LAYERS",
+      "title": "Five layers that catch what others miss",
+      "subtitle": "From static analysis to contextual memory, each layer adds intelligence.",
+      "layer1": {
+        "badge": "Layer 1",
+        "name": "Environment Discovery",
+        "desc": "Automatically maps your infrastructure: OS, services, open ports, installed packages, running processes.",
+        "detail": "This is how Panguard learns what \"normal\" looks like for your specific environment."
+      },
+      "layer2": {
+        "badge": "Layer 2",
+        "name": "Rules Engine",
+        "desc": "3,158 Sigma rules + 425 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
+        "detail": "Catches 90% of known threats in under 50ms. No AI needed."
+      },
+      "layer3": {
+        "badge": "Layer 3",
+        "name": "Behavioral Baseline",
+        "desc": "7-day learning period. Panguard observes your system without acting, builds a model of normal behavior.",
+        "detail": "Switches to protection mode on day 8. No false positives from day one."
+      },
+      "layer4": {
+        "badge": "Layer 4",
+        "name": "AI Analysis",
+        "desc": "When rules can't explain a behavior, AI steps in. Local first (Ollama on your GPU, fully offline). Cloud only when needed.",
+        "detail": "Three-tier funnel: 90% rules / 7% local AI / 3% cloud AI. Cost: ~$0.008 per cloud analysis."
+      },
+      "layer5": {
+        "badge": "Layer 5",
+        "name": "Automated Response",
+        "desc": "6 response actions: block IP, kill process, quarantine file, alert, snapshot evidence, escalate.",
+        "detail": "Confidence > 90%: automatic. 70-90%: asks you first. < 70%: notifies only."
+      }
+    },
+    "aiFunnel": {
+      "overline": "AI FUNNEL",
+      "title": "Three tiers. Minimum cost. Maximum accuracy.",
+      "subtitle": "90% of threats don't need AI. We use rules first, AI second, cloud last.",
+      "tier1": {
+        "name": "Rules Engine",
+        "pct": "90%",
+        "items": "3,158 Sigma detection rules|425 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
+        "speed": "<50ms per event"
+      },
+      "tier2": {
+        "name": "Local AI",
+        "pct": "7%",
+        "items": "Ollama running on your machine|Runs on NVIDIA GPU for acceleration|Fully offline -- data never leaves|Handles ambiguous events rules can't classify",
+        "speed": "~2s per analysis"
+      },
+      "tier3": {
+        "name": "Cloud AI",
+        "pct": "3%",
+        "items": "Claude / OpenAI (configurable)|Only invoked when local AI is uncertain|Cost: ~$0.008 per analysis|Multi-step reasoning chains (up to 8 steps)",
+        "speed": "~5s per analysis"
+      }
+    },
+    "agentPipeline": {
+      "overline": "AGENT PIPELINE",
+      "title": "Four AI Agents. One Investigation Engine.",
+      "subtitle": "Each agent has a specialized role. Together, they form an autonomous security team.",
+      "detect": { "name": "DetectAgent", "desc": "Monitors 5 sources: network, processes, filesystem, system logs, normalized events." },
+      "analyze": { "name": "AnalyzeAgent", "desc": "Correlates alerts, determines severity, maps to MITRE ATT&CK framework." },
+      "respond": { "name": "RespondAgent", "desc": "Executes response based on confidence threshold. Auto, ask, or notify." },
+      "report": { "name": "ReportAgent", "desc": "Generates human-readable incident report, sends via LINE/Telegram/Slack/Email." },
+      "investigate": { "name": "InvestigationEngine", "desc": "Deep-dives complex incidents with up to 8-step reasoning chains." }
+    },
+    "response": {
+      "overline": "AUTOMATED RESPONSE",
+      "title": "Six actions. Three confidence levels.",
+      "subtitle": "Panguard doesn't just detect. It acts.",
+      "actions": [
+        { "name": "Block IP", "desc": "Cross-platform firewall rule with auto-unblock timer" },
+        { "name": "Kill Process", "desc": "SIGTERM then SIGKILL with process tree cleanup" },
+        { "name": "Quarantine File", "desc": "Isolate with SHA-256 hash and restore capability" },
+        { "name": "Alert", "desc": "Send to your channels in plain language" },
+        { "name": "Snapshot Evidence", "desc": "Forensic capture of the event context" },
+        { "name": "Escalate", "desc": "Notify team lead or external SOC" }
+      ],
+      "confidence": {
+        "high": { "threshold": "> 90%", "action": "Automatic execution" },
+        "medium": { "threshold": "70 - 90%", "action": "Asks you first via Chat" },
+        "low": { "threshold": "< 70%", "action": "Notifies only" }
+      }
+    },
+    "learning": {
+      "overline": "7-DAY LEARNING",
+      "title": "It watches before it acts.",
+      "subtitle": "No false positives from day one. Panguard learns your environment before making decisions.",
+      "phase1": { "days": "Day 1-3", "title": "Observation", "desc": "Process baseline, network patterns, file change patterns, user behavior." },
+      "phase2": { "days": "Day 4-7", "title": "Statistical Modeling", "desc": "Builds mean + standard deviation model. Identifies what's truly anomalous." },
+      "phase3": { "days": "Day 8+", "title": "Protection Mode", "desc": "Auto-transition to active protection. Continuous learning -- baseline evolves with your environment." }
+    },
+    "degradation": {
+      "overline": "GRACEFUL DEGRADATION",
+      "title": "Your protection never drops to zero.",
+      "subtitle": "Cloud down? Local AI takes over. Local AI down? Rules engine always runs.",
+      "level1": { "name": "Optimal", "desc": "All layers active. Cloud AI + Local AI + Rules Engine.", "color": "green" },
+      "level2": { "name": "Cloud Unavailable", "desc": "Local AI handles complex analysis. Rules engine catches known threats.", "color": "yellow" },
+      "level3": { "name": "LLM Offline", "desc": "Rules engine + behavioral baseline. Still catches 90% of threats.", "color": "yellow" },
+      "level4": { "name": "Emergency", "desc": "Rules engine only. Core protection always running.", "color": "red" }
+    },
+    "cta": {
+      "title": "Ready to see it in action?",
+      "desc": "One command. Free to start. No account needed.",
+      "primary": "Get Started",
+      "secondary": "Read the Technical Deep Dive"
+    }
+  },
+  "threatCloud": {
+    "overline": "THREAT CLOUD",
+    "title": "Security is a network problem.",
+    "titleHighlight": "We solved it with a network.",
+    "subtitle": "Traditional threat intelligence is generated by research teams. Threat Cloud is generated by every Panguard deployment -- automatically.",
+    "vision": {
+      "overline": "COLLECTIVE INTELLIGENCE",
+      "title": "The more users, the stronger the shield",
+      "desc1": "Every Panguard instance that detects a new attack pattern contributes anonymized intelligence to the collective network.",
+      "desc2": "Within minutes, every other Panguard deployment receives updated detection rules. An attack that hits one user once can never hit another user the same way."
+    },
+    "flow": {
+      "overline": "HOW IT WORKS",
+      "title": "From detection to protection in minutes",
+      "subtitle": "Five steps. Fully automated. Privacy-preserving.",
+      "step1": { "name": "Detection", "desc": "A Panguard instance detects a new attack pattern (e.g., novel SSH brute-force technique from a new IP range)." },
+      "step2": { "name": "Anonymization", "desc": "Raw data stripped. Only behavioral signatures remain: attack type, technique ID (MITRE), pattern hash, timestamp. No IPs, hostnames, or source code." },
+      "step3": { "name": "Encrypted Transit", "desc": "TLS 1.3 encrypted transmission to Threat Cloud API. Certificate pinning. No man-in-the-middle." },
+      "step4": { "name": "Correlation", "desc": "Threat Cloud correlates patterns from all deployments. Clusters related attacks into campaigns. Identifies IP reputation and technique trends." },
+      "step5": { "name": "Distribution", "desc": "Auto-generates new Sigma detection rules. Pushes to all Panguard instances within minutes. Every user is now protected." }
+    },
+    "privacy": {
+      "overline": "PRIVACY FIRST",
+      "title": "Privacy is not a feature. It's the architecture.",
+      "subtitle": "Your data never leaves. Only anonymized behavioral signatures do.",
+      "item1": { "title": "Zero Raw Data", "desc": "No log content, file content, source code, or personally identifiable information ever leaves your machine. Only anonymized behavioral signatures -- hashes, MITRE ATT&CK IDs, pattern fingerprints." },
+      "item2": { "title": "Encrypted in Transit", "desc": "All communication uses TLS 1.3 with certificate pinning. Even if intercepted, data is meaningless without the encryption key." },
+      "item3": { "title": "You're in Control", "desc": "Threat Cloud can be disabled anytime -- even on the free tier. Panguard works fully offline. Threat Cloud is opt-in value, not a requirement." }
+    },
+    "dataBoundary": {
+      "overline": "DATA BOUNDARY",
+      "title": "What leaves. What stays.",
+      "subtitle": "Complete transparency on what Threat Cloud collects.",
+      "shared": {
+        "title": "What Gets Shared",
+        "items": ["Attack pattern hash", "MITRE ATT&CK technique ID", "Behavioral signature fingerprint", "Anonymized timestamp", "Attack severity classification"]
+      },
+      "private": {
+        "title": "What Never Leaves",
+        "items": ["Raw log content", "File contents", "Source code", "IP addresses", "Hostnames", "User data", "Credentials", "Any PII"]
+      }
+    },
+    "flywheel": {
+      "overline": "NETWORK EFFECT",
+      "title": "A collective immune system",
+      "subtitle": "Every new installation strengthens the network. Every detected attack generates knowledge. Every generated rule protects everyone.",
+      "step1": { "name": "Install", "desc": "New Panguard deployment joins the network" },
+      "step2": { "name": "Detect", "desc": "Local engine catches a novel threat" },
+      "step3": { "name": "Share", "desc": "Anonymized pattern uploaded to Threat Cloud" },
+      "step4": { "name": "Protect", "desc": "New rule pushed to all deployments" },
+      "scale": {
+        "users10": "10 users: basic community rules",
+        "users1k": "1,000 users: cross-industry attack correlation",
+        "users100k": "100,000 users: predictive threat detection"
+      }
+    },
+    "api": {
+      "overline": "API ACCESS",
+      "title": "For Developers: Threat Cloud API",
+      "subtitle": "Integrate real-time threat intelligence into your own tools.",
+      "endpoints": [
+        { "name": "IoC Feed", "desc": "IP, domain, URL, file hash indicators" },
+        { "name": "IP Blocklist", "desc": "Updated every 5 minutes" },
+        { "name": "Sigma Rule Feed", "desc": "Auto-generated detection rules" },
+        { "name": "Campaign Timeline", "desc": "Active attack campaign tracking" },
+        { "name": "Geographic Heatmap", "desc": "Threat distribution by region" },
+        { "name": "MITRE ATT&CK Map", "desc": "Technique coverage visualization" }
+      ]
+    },
+    "cta": {
+      "title": "Join the network",
+      "desc": "Every installation makes everyone safer.",
+      "primary": "Get Started",
+      "secondary": "View API Documentation"
+    }
+  },
+  "about": {
+    "overline": "ABOUT PANGUARD AI",
+    "title": "We believe security is a right,",
+    "titleHighlight": "not a luxury.",
+    "oneLiner": "We're building the security infrastructure the other 99% of businesses deserve.",
+    "origin": {
+      "overline": "WHY PANGUARD EXISTS",
+      "title": "Why Panguard Exists",
+      "p1": "The original idea was simple: build an open-source security framework that enables active defense -- where AI agents protect AI agents. But as we researched the market, we noticed something.",
+      "p2": "Every cybersecurity company that raised serious funding -- Wiz, CrowdStrike, SentinelOne -- they all serve the Fortune 500. Their minimum contracts start at five or six figures. Their products require dedicated security teams to operate.",
+      "p3": "And then we looked at the other side: 400 million small and medium businesses worldwide. Millions of independent developers shipping code every day. The vibe coding generation -- building with AI, deploying to production, moving faster than ever. None of them have security teams. Most can't afford a single security tool. Not because they don't care. Because the industry never built anything for them. That's when we decided: we're not building another security product for enterprises. We're building security infrastructure for everyone."
+    },
+    "beliefs": {
+      "overline": "WHAT WE BELIEVE",
+      "title": "Four principles that guide everything",
+      "subtitle": "These aren't slogans. They're engineering decisions.",
+      "tenet1": { "title": "Security is a right, not a privilege", "desc": "A three-person startup deserves the same level of protection as a Fortune 500 company." },
+      "tenet2": { "title": "Open source breaks barriers", "desc": "Not by lowering prices -- by letting everyone participate. Every line of code can be audited. Every rule can be verified." },
+      "tenet3": { "title": "AI should be honest, not magical", "desc": "90% of threats don't need AI. We use rules first, AI second. When AI acts, it tells you its confidence level and shows its reasoning." },
+      "tenet4": { "title": "The network is the moat", "desc": "One user makes Panguard useful. A million users make it unstoppable. Every deployment strengthens the shield for everyone." }
+    },
+    "numbers": {
+      "overline": "BY THE NUMBERS",
+      "title": "Built with rigor",
+      "stats": [
+        { "value": "1,107", "label": "Tests passing" },
+        { "value": "3,158", "label": "Sigma rules" },
+        { "value": "425", "label": "YARA rules" },
+        { "value": "6", "label": "Products" },
+        { "value": "18", "label": "CLI commands" },
+        { "value": "50", "label": "Compliance controls" },
+        { "value": "8", "label": "Honeypot protocols" },
+        { "value": "MIT", "label": "License" }
+      ]
+    },
+    "taiwan": {
+      "overline": "BUILT IN TAIWAN",
+      "title": "From the heart of the AI ecosystem",
+      "desc1": "Panguard is built in Taiwan. In a region at the center of the global semiconductor and AI ecosystem, we're building security infrastructure that protects the world.",
+      "desc2": "Taiwan faces more nation-state cyberattacks per capita than almost any country on earth. We understand the threat landscape because we live in it."
+    },
+    "cta": {
+      "title": "Want to join the mission?",
+      "desc": "We're looking for people who believe security should be accessible to everyone.",
+      "primary": "View Open Roles",
+      "secondary": "Get in Touch"
+    }
+  },
+  "openSource": {
+    "overline": "OPEN SOURCE",
+    "title": "Security with",
+    "titleHighlight": "no black boxes.",
+    "subtitle": "Every detection rule can be audited. Every AI decision can be traced. Every response action can be verified.",
+    "why": {
+      "overline": "WHY OPEN SOURCE",
+      "title": "Transparency is the foundation of trust",
+      "subtitle": "We chose MIT because we believe security infrastructure should be as transparent as the threats it protects against.",
+      "reason1": { "title": "Full Auditability", "desc": "Every detection rule, every AI prompt, every response action is open for inspection. No vendor lock-in. No black boxes." },
+      "reason2": { "title": "Community-Driven", "desc": "Security researchers, developers, and organizations worldwide contribute rules, improve AI prompts, and share threat intelligence." },
+      "reason3": { "title": "No Trust Required", "desc": "Don't trust us -- verify. Read the code. Run the tests. Audit the rules. That's the whole point." }
+    },
+    "repos": {
+      "overline": "REPOSITORIES",
+      "title": "Explore the code",
+      "subtitle": "Everything is on GitHub. Clone it, fork it, contribute to it.",
+      "items": [
+        { "name": "panguard-ai", "desc": "Core platform: Scan, Guard, Chat, Trap, Report, Threat Cloud", "lang": "TypeScript", "stars": "Open Source" },
+        { "name": "panguard-rules", "desc": "3,158 Sigma detection rules + 425 YARA malware signatures", "lang": "YAML / Sigma", "stars": "Community" },
+        { "name": "panguard-docs", "desc": "Documentation, API reference, and getting started guides", "lang": "MDX", "stars": "Docs" }
+      ]
+    },
+    "contribute": {
+      "overline": "HOW TO CONTRIBUTE",
+      "title": "Five ways to make Panguard better",
+      "subtitle": "From reporting bugs to sharing threat intelligence -- every contribution matters.",
+      "items": [
+        { "title": "Report Vulnerabilities", "desc": "Found a security issue? Email security@panguard.ai for responsible disclosure." },
+        { "title": "Submit Detection Rules", "desc": "PR to the /rules directory. Sigma or YARA format. Community review process." },
+        { "title": "Improve AI Prompts", "desc": "PR to the /ai directory. Help our agents make better decisions." },
+        { "title": "Write Documentation", "desc": "PR to the /docs directory. Guides, tutorials, and API examples." },
+        { "title": "Share Threat Intelligence", "desc": "Just install Panguard. Your anonymized data automatically strengthens the network." }
+      ]
+    },
+    "roadmap": {
+      "overline": "ROADMAP",
+      "title": "Where we're headed",
+      "subtitle": "Our public roadmap. Transparent by default.",
+      "completed": {
+        "title": "Completed",
+        "items": ["Core platform (Scan + Guard + Chat + Trap + Report)", "Threat Cloud v1", "3,158 Sigma + 425 YARA rules", "1,107 automated tests"]
+      },
+      "inProgress": {
+        "title": "In Progress",
+        "items": ["Web dashboard UI", "Windows support", "Kubernetes integration"]
+      },
+      "planned": {
+        "title": "Planned",
+        "items": ["Mobile app (iOS/Android)", "Threat Cloud API v2", "Community marketplace for detection rules"]
+      }
+    },
+    "cta": {
+      "title": "Start contributing today",
+      "desc": "Clone the repo. Run the tests. Submit a PR.",
+      "primary": "View on GitHub",
+      "secondary": "Read the Docs"
+    }
+  },
   "metadata": {
     "home": {
       "title": "Panguard AI — Your AI Security Guard",
@@ -2972,6 +3283,22 @@
     "technology": {
       "title": "Technology",
       "description": "Security that thinks, not just scans. A three-layer AI defense funnel, five autonomous agents, and a context memory that learns your environment."
+    },
+    "howItWorks": {
+      "title": "How It Works — Panguard AI",
+      "description": "Five layers of defense, three tiers of AI, one command to deploy. Learn how Panguard protects your infrastructure from detection to automated response."
+    },
+    "threatCloud": {
+      "title": "Threat Cloud — Panguard AI",
+      "description": "Collective threat intelligence powered by every Panguard deployment. Privacy-preserving, real-time, and automatically distributed."
+    },
+    "about": {
+      "title": "About — Panguard AI",
+      "description": "We're building the security infrastructure the other 99% of businesses deserve. Built in Taiwan, open source, MIT licensed."
+    },
+    "openSource": {
+      "title": "Open Source — Panguard AI",
+      "description": "Security with no black boxes. Every detection rule can be audited. Every AI decision can be traced. MIT licensed."
     },
     "blog": {
       "title": "Blog",
