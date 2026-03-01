@@ -2465,6 +2465,76 @@
         "desc": "Metrics & alerting"
       }
     },
+    "defenseStack": {
+      "overline": "Multi-Layer Defense Stack",
+      "title": "Five layers of real-time defense.",
+      "subtitle": "Each layer instruments a different attack surface with battle-tested open-source engines. From kernel syscalls to log correlation, every layer feeds normalized events into the AI pipeline.",
+      "kernel": {
+        "layer": "Layer 1",
+        "name": "Kernel Monitoring",
+        "engine": "Falco eBPF",
+        "desc": "Hooks directly into Linux kernel syscalls via eBPF probes. Detects container escapes, reverse shells, cryptomining processes, credential access, and anomalous file descriptors -- all without kernel modules or system overhead.",
+        "detects": "Container escapes, reverse shells, privilege escalation, suspicious exec() chains",
+        "tech": "eBPF tracepoints on sys_enter/sys_exit, Falco rules compiled to BPF bytecode, <1ms per-event latency"
+      },
+      "network": {
+        "layer": "Layer 2",
+        "name": "Network IDS",
+        "engine": "Suricata DPI",
+        "desc": "Deep packet inspection on all network interfaces. Suricata's EVE JSON output feeds protocol-decoded alerts -- including TLS fingerprinting, DNS anomaly detection, and HTTP payload analysis -- directly into the event pipeline.",
+        "detects": "C2 beaconing, data exfiltration, lateral movement, exploit payloads, protocol anomalies",
+        "tech": "Multi-threaded pcap analysis, 40+ protocol decoders, ET Open + custom rulesets, flow tracking"
+      },
+      "filesystem": {
+        "layer": "Layer 3",
+        "name": "File System Scanning",
+        "engine": "YARA Engine",
+        "desc": "On-access and scheduled scanning of file system changes. YARA rules match byte patterns, PE headers, and string signatures against known malware families, web shells, and suspicious scripts.",
+        "detects": "Malware binaries, web shells, ransomware droppers, obfuscated scripts, credential harvesters",
+        "tech": "Pattern-based signature matching, custom + community YARA rulesets, inotify-triggered scanning"
+      },
+      "logs": {
+        "layer": "Layer 4",
+        "name": "Log Correlation",
+        "engine": "Sigma Rules",
+        "desc": "Sigma detection rules correlate events across system logs, auth logs, application logs, and cloud audit trails. The rule engine supports temporal correlation, aggregation, and multi-source joins.",
+        "detects": "Brute force attacks, lateral movement chains, persistence mechanisms, policy violations",
+        "tech": "2,500+ community Sigma rules, hot-reload, MITRE ATT&CK TTP mapping, custom rule authoring"
+      },
+      "ai": {
+        "layer": "Layer 5",
+        "name": "AI Correlation",
+        "engine": "LLM Reasoning",
+        "desc": "Events that pass through layers 1-4 are cross-correlated by AI. The model weighs behavioral baselines, threat intelligence feeds, and temporal patterns to produce a confidence-scored verdict with full attack narrative.",
+        "detects": "Zero-day attacks, APT campaigns, novel attack chains, false positive reduction",
+        "tech": "Local Ollama + Cloud LLM fallback, RAG over baseline memory, threat intel enrichment, 0-100 scoring"
+      }
+    },
+    "dataFlow": {
+      "overline": "Event Pipeline",
+      "title": "From raw signal to actionable alert.",
+      "subtitle": "Every security event traverses a five-stage pipeline. Data is normalized, enriched, correlated, scored, and dispatched -- typically in under 200ms.",
+      "stage1": {
+        "name": "Ingest",
+        "desc": "Raw events from Falco, Suricata, YARA, file watchers, and process monitors are captured in real-time."
+      },
+      "stage2": {
+        "name": "Normalize",
+        "desc": "Events are mapped to a unified schema with source, severity, category, and MITRE ATT&CK tags."
+      },
+      "stage3": {
+        "name": "Correlate",
+        "desc": "Sigma rules and AI cross-reference events against baseline behavior and threat intelligence feeds."
+      },
+      "stage4": {
+        "name": "Score",
+        "desc": "Each correlated event receives a 0-100 confidence score determining automated response thresholds."
+      },
+      "stage5": {
+        "name": "Alert",
+        "desc": "Verdicts trigger playbook execution and dispatch to Slack, Telegram, Email, and the dashboard."
+      }
+    },
     "cta": {
       "title": "Ready to see it in action?",
       "desc": "Run a free security scan in 60 seconds, or talk to our team about deploying Panguard in your infrastructure.",
