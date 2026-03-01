@@ -1,10 +1,14 @@
-import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import AccountSettings from './AccountSettings';
 
-export const metadata: Metadata = {
-  title: 'Account Settings | Panguard AI',
-  description: 'Manage your Panguard AI account settings.',
-};
+export async function generateMetadata({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
+  return {
+    title: t('accountSettings.title'),
+    description: t('accountSettings.description'),
+    robots: 'noindex',
+  };
+}
 
 export default function AccountSettingsPage() {
   return <AccountSettings />;

@@ -41,6 +41,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: 'metadata.home' });
 
   return {
+    metadataBase: new URL('https://panguard.ai'),
     title: {
       default: t('title'),
       template: `%s | Panguard AI`,
@@ -71,9 +72,9 @@ export async function generateMetadata({
       apple: '/apple-touch-icon.png',
     },
     alternates: {
-      canonical: `https://panguard.ai/${locale}`,
+      canonical: locale === 'en' ? 'https://panguard.ai' : `https://panguard.ai/${locale}`,
       languages: {
-        en: 'https://panguard.ai/en',
+        en: 'https://panguard.ai',
         'zh-TW': 'https://panguard.ai/zh',
       },
     },

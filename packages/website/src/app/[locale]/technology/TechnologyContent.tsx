@@ -183,9 +183,9 @@ export default function TechnologyContent() {
         {/* Flow arrows (desktop) */}
         <FadeInUp delay={0.4}>
           <div className="hidden lg:flex items-center justify-center gap-2 mt-6 text-text-muted">
-            {['Detect', 'Analyze', 'Respond', 'Report', 'Chat'].map((step, i) => (
+            {['detect', 'analyze', 'respond', 'report', 'chat'].map((step, i) => (
               <span key={step} className="flex items-center gap-2">
-                <span className="text-xs font-medium text-text-tertiary">{step}</span>
+                <span className="text-xs font-medium text-text-tertiary">{t(`agents.${step}.name`)}</span>
                 {i < 4 && <ArrowRight className="w-3.5 h-3.5 text-text-muted" />}
               </span>
             ))}

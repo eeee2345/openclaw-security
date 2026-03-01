@@ -1,10 +1,13 @@
-import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import LoginForm from './LoginForm';
 
-export const metadata: Metadata = {
-  title: 'Log In | Panguard AI',
-  description: 'Log in to your Panguard AI account.',
-};
+export async function generateMetadata({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
+  return {
+    title: t('login.title'),
+    description: t('login.description'),
+  };
+}
 
 export default function LoginPage() {
   return <LoginForm />;

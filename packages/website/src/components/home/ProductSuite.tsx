@@ -62,7 +62,7 @@ export default function ProductSuite() {
     <SectionWrapper dark>
       <SectionTitle overline={t('overline')} title={t('title')} subtitle={t('subtitle')} />
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-14">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-14">
         {products.map((p, i) => (
           <FadeInUp key={p.name} delay={i * 0.06}>
             <Link
