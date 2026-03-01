@@ -182,7 +182,7 @@ export default function SMBContent() {
               <h2 className="text-2xl font-bold text-text-primary mb-3">{t('cta.title')}</h2>
               <p className="text-text-secondary mb-6">{t('cta.desc')}</p>
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 Start Free Trial

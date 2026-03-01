@@ -248,7 +248,7 @@ export default function ProductOverviewContent() {
             <p className="text-text-secondary mt-4 leading-relaxed">{t('cta.subtitle')}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 {t('cta.cta1')}

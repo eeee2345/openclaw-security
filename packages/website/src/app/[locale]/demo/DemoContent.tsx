@@ -55,7 +55,7 @@ export default function DemoContent() {
                   <p className="text-sm text-text-tertiary">{t('selfGuided.comingSoonDesc')}</p>
                 </div>
                 <a
-                  href="/early-access"
+                  href="/docs/getting-started"
                   className="mt-6 block w-full text-center font-semibold rounded-full px-6 py-3 border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary transition-all duration-200"
                 >
                   {t('selfGuided.tryFreeScan')}

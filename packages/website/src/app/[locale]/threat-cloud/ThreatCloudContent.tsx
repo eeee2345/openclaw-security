@@ -244,6 +244,28 @@ export default function ThreatCloudContent() {
         </div>
       </SectionWrapper>
 
+      {/* ── Tier Note ── */}
+      <SectionWrapper dark>
+        <div className="max-w-2xl mx-auto">
+          <FadeInUp>
+            <div className="bg-brand-sage/5 border border-brand-sage/20 rounded-xl p-6">
+              <p className="text-sm font-bold text-brand-sage mb-2">{t('tierNote.title')}</p>
+              <p className="text-sm text-text-secondary leading-relaxed">{t('tierNote.desc')}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <div className="bg-surface-2/50 rounded-lg p-3">
+                  <p className="text-xs text-text-muted">{t('tierNote.freeLabel')}</p>
+                  <p className="text-sm font-semibold text-text-primary mt-1">{t('tierNote.freeDesc')}</p>
+                </div>
+                <div className="bg-surface-2/50 rounded-lg p-3">
+                  <p className="text-xs text-text-muted">{t('tierNote.paidLabel')}</p>
+                  <p className="text-sm font-semibold text-brand-sage mt-1">{t('tierNote.paidDesc')}</p>
+                </div>
+              </div>
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
       {/* ── CTA ── */}
       <SectionWrapper>
         <div className="text-center max-w-2xl mx-auto">
@@ -259,7 +281,7 @@ export default function ThreatCloudContent() {
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 {t('cta.primary')} <ArrowRight className="w-4 h-4" />

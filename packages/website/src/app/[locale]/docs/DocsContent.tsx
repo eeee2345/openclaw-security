@@ -184,7 +184,7 @@ export default function DocsContent() {
                 {t('contactSupport')}
               </Link>
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="border border-border text-text-secondary rounded-full px-6 py-2.5 text-sm font-medium hover:text-text-primary hover:border-text-muted transition-colors"
               >
                 {t('earlyAccess')}

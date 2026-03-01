@@ -71,7 +71,7 @@ export default function ComplianceContent() {
           <FadeInUp delay={0.2}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 {t('hero.cta1')}
@@ -325,7 +325,7 @@ export default function ComplianceContent() {
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 {t('cta.cta1')} <ArrowRight className="w-4 h-4" />

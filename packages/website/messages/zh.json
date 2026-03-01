@@ -1001,6 +1001,14 @@
         }
       ]
     },
+    "tierNote": {
+      "title": "免費版 vs 付費版",
+      "desc": "Threat Cloud 隨每個 Panguard 安裝自動啟用。免費版可完整接收威脅情報。多端點管理和進階 API 存取需要付費方案。",
+      "freeLabel": "免費版（Free Scan / Solo）",
+      "freeDesc": "單一端點，完整威脅情報接收，基礎 API",
+      "paidLabel": "Starter 方案以上",
+      "paidDesc": "多端點管理，集中儀表板，進階 API，跨端點關聯分析"
+    },
     "cta": {
       "title": "加入網路",
       "desc": "每一次安裝都讓所有人更安全。",
@@ -3405,10 +3413,22 @@
       "envDesc": "以下環境變數可以自訂 Panguard 的行為。全部都是選配的。",
       "envVar": "變數",
       "envPurpose": "用途",
-      "env1": { "var": "ANTHROPIC_API_KEY", "purpose": "啟用 Claude AI 分析（雲端，最智慧）" },
-      "env2": { "var": "OPENAI_API_KEY", "purpose": "啟用 OpenAI GPT 分析（雲端備選）" },
-      "env3": { "var": "PANGUARD_LLM_MODEL", "purpose": "覆寫 Ollama 模型名稱（預設：llama3）" },
-      "env4": { "var": "OLLAMA_API_ENDPOINT", "purpose": "覆寫 Ollama API 位址（預設：http://localhost:11434）" },
+      "env1": {
+        "var": "ANTHROPIC_API_KEY",
+        "purpose": "啟用 Claude AI 分析（雲端，最智慧）"
+      },
+      "env2": {
+        "var": "OPENAI_API_KEY",
+        "purpose": "啟用 OpenAI GPT 分析（雲端備選）"
+      },
+      "env3": {
+        "var": "PANGUARD_LLM_MODEL",
+        "purpose": "覆寫 Ollama 模型名稱（預設：llama3）"
+      },
+      "env4": {
+        "var": "OLLAMA_API_ENDPOINT",
+        "purpose": "覆寫 Ollama API 位址（預設：http://localhost:11434）"
+      },
       "backToGettingStarted": "快速入門",
       "goToDeployment": "多端點部署"
     },
@@ -3771,5 +3791,203 @@
     "learnMore": "Cookie 政策",
     "acceptAll": "全部接受",
     "essentialOnly": "僅必要"
+  },
+  "auth": {
+    "login": {
+      "title2FA": "雙重驗證",
+      "title": "歡迎回來",
+      "subtitle2FA": "請輸入驗證器應用程式中的 6 位數驗證碼",
+      "subtitle": "登入您的帳戶",
+      "forgotPasswordSentTitle": "請查看您的信箱",
+      "forgotPasswordSentMessage": "若 {email} 已有帳戶，我們已寄送密碼重設連結至該信箱。",
+      "backToLogin": "返回登入",
+      "emailLabel": "電子信箱",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "密碼",
+      "passwordPlaceholder": "請輸入密碼",
+      "hidePassword": "隱藏密碼",
+      "showPassword": "顯示密碼",
+      "authCodeLabel": "驗證碼",
+      "verifyButton": "驗證",
+      "loginButton": "登入",
+      "errorFallback": "登入失敗",
+      "errorEmailFirst": "請先輸入您的電子信箱",
+      "errorResetEmail": "寄送重設郵件失敗",
+      "forgotPassword": "忘記密碼？",
+      "createAccount": "建立帳戶",
+      "or": "或",
+      "continueWithGoogle": "使用 Google 繼續"
+    },
+    "register": {
+      "title": "建立您的帳戶",
+      "subtitle": "開始保護您的基礎設施",
+      "nameLabel": "姓名",
+      "namePlaceholder": "您的姓名",
+      "emailLabel": "電子信箱",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "密碼",
+      "passwordPlaceholder": "至少 8 個字元",
+      "errorPasswordLength": "密碼至少需要 8 個字元",
+      "createButton": "建立帳戶",
+      "errorFallback": "註冊失敗",
+      "successTitle": "帳戶已建立",
+      "successMessage": "請至信箱完成帳戶驗證，驗證後即可登入。",
+      "goToLogin": "前往登入",
+      "alreadyHaveAccount": "已有帳戶？",
+      "loginLink": "登入",
+      "legalPrefix": "建立帳戶即表示您同意我們的",
+      "termsLink": "服務條款",
+      "legalAnd": "及",
+      "privacyLink": "隱私權政策",
+      "hidePassword": "隱藏密碼",
+      "showPassword": "顯示密碼"
+    },
+    "resetPassword": {
+      "title": "設定新密碼",
+      "subtitle": "請設定一組高強度密碼",
+      "newPasswordLabel": "新密碼",
+      "newPasswordPlaceholder": "至少 8 個字元",
+      "confirmPasswordLabel": "確認密碼",
+      "confirmPasswordPlaceholder": "再次輸入密碼",
+      "errorPasswordLength": "密碼至少需要 8 個字元",
+      "errorPasswordMatch": "兩次輸入的密碼不一致",
+      "errorInvalidToken": "重設憑證無效或遺失",
+      "errorExpiredLink": "重設失敗，連結可能已過期。",
+      "errorNetwork": "網路錯誤",
+      "resetButton": "重設密碼",
+      "successTitle": "密碼已更新",
+      "successMessage": "您的密碼已成功重設，現在可以使用新密碼登入。",
+      "goToLogin": "前往登入",
+      "hidePassword": "隱藏密碼",
+      "showPassword": "顯示密碼"
+    }
+  },
+  "dashboard": {
+    "welcome": "歡迎回來，{name}",
+    "planLabel": "方案：",
+    "planExpires": "(到期日 {date})",
+    "quickActions": {
+      "installCLI": {
+        "title": "安裝 CLI",
+        "description": "開始進行資安掃描"
+      },
+      "accountSettings": {
+        "title": "帳戶設定",
+        "description": "雙重驗證、個人資料、安全性"
+      },
+      "billing": {
+        "title": "帳單管理",
+        "description": "管理訂閱方案"
+      },
+      "apiDocs": {
+        "title": "API 文件",
+        "description": "整合至您的工具鏈"
+      }
+    },
+    "usageHeading": "本月使用量",
+    "usageError": "無法載入使用量資料，請重新整理。",
+    "usageEmpty": "目前無使用量資料。",
+    "quickStartHeading": "快速開始",
+    "quickStartDescription": "安裝 Panguard CLI 以開始掃描您的基礎設施：",
+    "unlimited": "無限制",
+    "logOut": "登出",
+    "resources": {
+      "scan": "資安掃描",
+      "guard_endpoints": "守衛端點",
+      "reports": "合規報告",
+      "api_calls": "API 呼叫次數",
+      "notifications": "通知頻道",
+      "trap_instances": "蜜罐實例"
+    }
+  },
+  "accountSettings": {
+    "headerTitle": "帳戶設定",
+    "backToDashboard": "返回儀表板",
+    "profile": {
+      "sectionTitle": "個人資料",
+      "nameLabel": "姓名",
+      "emailLabel": "電子信箱",
+      "planLabel": "訂閱方案",
+      "memberSinceLabel": "加入日期"
+    },
+    "twoFA": {
+      "sectionTitle": "雙重驗證",
+      "statusEnabled": "雙重驗證已啟用",
+      "disableButton": "停用雙重驗證",
+      "qrInstruction": "請使用驗證器應用程式掃描 QR 碼，或手動輸入金鑰：",
+      "codeLabel": "輸入驗證器應用程式的 6 位數驗證碼：",
+      "verifyButton": "驗證",
+      "backupCodesInstruction": "請將這些備用驗證碼儲存於安全的地方：",
+      "description": "透過 TOTP 雙重驗證，為您的帳戶增加額外一層安全防護。",
+      "setupButton": "設定雙重驗證",
+      "errorCheckStatus": "無法確認雙重驗證狀態",
+      "errorSetupFailed": "啟動雙重驗證設定失敗",
+      "successEnabled": "雙重驗證已啟用",
+      "errorInvalidCode": "驗證碼無效",
+      "errorVerifyFailed": "驗證失敗",
+      "successDisabled": "雙重驗證已停用",
+      "errorDisableFailed": "停用雙重驗證失敗"
+    },
+    "exportData": {
+      "sectionTitle": "匯出資料",
+      "description": "以 JSON 格式下載您的所有資料（符合 GDPR 規範）。",
+      "exportButton": "匯出我的資料"
+    },
+    "deleteAccount": {
+      "sectionTitle": "刪除帳戶",
+      "description": "永久刪除您的帳戶及所有相關資料，此操作無法復原。",
+      "warning": "此操作將永久刪除您的帳戶、所有資料、工作階段及訂閱。",
+      "passwordLabel": "請輸入密碼以確認操作：",
+      "passwordPlaceholder": "請輸入密碼",
+      "cancelButton": "取消",
+      "confirmButton": "永久刪除",
+      "errorFailed": "刪除帳戶失敗",
+      "errorNetwork": "網路錯誤"
+    }
+  },
+  "billing": {
+    "headerTitle": "帳單管理",
+    "currentPlan": "目前方案",
+    "manageSubscription": "管理訂閱",
+    "errorLoading": "無法載入帳單資料，請重新整理。",
+    "freeTier": "免費方案 — 無訂閱",
+    "planIncludes": "方案包含",
+    "renewsOn": "續約日期：{date}",
+    "endsOn": "到期日期：{date}",
+    "upgradeHeading": "升級您的方案",
+    "upgradeDescription": "獲得更多掃描次數、端點及進階功能。",
+    "viewPlans": "查看方案",
+    "tierFeatures": {
+      "free": [
+        "每月 100 次掃描",
+        "1 個端點",
+        "1,000 次 API 呼叫"
+      ],
+      "solo": [
+        "無限次掃描",
+        "3 個端點",
+        "10,000 次 API 呼叫",
+        "1 個蜜罐"
+      ],
+      "pro": [
+        "無限次掃描",
+        "10 個端點",
+        "50,000 次 API 呼叫",
+        "5 份報告",
+        "3 個蜜罐"
+      ],
+      "business": [
+        "無限次掃描",
+        "25 個端點",
+        "無限次 API 呼叫",
+        "20 份報告",
+        "8 個蜜罐"
+      ],
+      "enterprise": [
+        "全功能無限制",
+        "優先技術支援",
+        "客製化 SLA"
+      ]
+    }
   }
 }

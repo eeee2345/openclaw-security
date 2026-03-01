@@ -2679,10 +2679,22 @@
       "envDesc": "The following environment variables customize Panguard's behavior. All are optional.",
       "envVar": "Variable",
       "envPurpose": "Purpose",
-      "env1": { "var": "ANTHROPIC_API_KEY", "purpose": "Enable Claude AI analysis (cloud, most capable)" },
-      "env2": { "var": "OPENAI_API_KEY", "purpose": "Enable OpenAI GPT analysis (cloud fallback)" },
-      "env3": { "var": "PANGUARD_LLM_MODEL", "purpose": "Override Ollama model name (default: llama3)" },
-      "env4": { "var": "OLLAMA_API_ENDPOINT", "purpose": "Override Ollama API endpoint (default: http://localhost:11434)" },
+      "env1": {
+        "var": "ANTHROPIC_API_KEY",
+        "purpose": "Enable Claude AI analysis (cloud, most capable)"
+      },
+      "env2": {
+        "var": "OPENAI_API_KEY",
+        "purpose": "Enable OpenAI GPT analysis (cloud fallback)"
+      },
+      "env3": {
+        "var": "PANGUARD_LLM_MODEL",
+        "purpose": "Override Ollama model name (default: llama3)"
+      },
+      "env4": {
+        "var": "OLLAMA_API_ENDPOINT",
+        "purpose": "Override Ollama API endpoint (default: http://localhost:11434)"
+      },
       "backToGettingStarted": "Getting Started",
       "goToDeployment": "Multi-Endpoint Deployment"
     },
@@ -3374,6 +3386,14 @@
         }
       ]
     },
+    "tierNote": {
+      "title": "Free vs Paid",
+      "desc": "Threat Cloud activates automatically with every Panguard installation. The free tier receives full threat intelligence. Multi-endpoint management and advanced API access require a paid plan.",
+      "freeLabel": "Free (Free Scan / Solo)",
+      "freeDesc": "Single endpoint, full threat intel feed, basic API",
+      "paidLabel": "Starter plan and above",
+      "paidDesc": "Multi-endpoint management, centralized dashboard, advanced API, cross-endpoint correlation"
+    },
     "cta": {
       "title": "Join the network",
       "desc": "Every installation makes everyone safer.",
@@ -3771,5 +3791,203 @@
     "learnMore": "Cookie Policy",
     "acceptAll": "Accept All",
     "essentialOnly": "Essential Only"
+  },
+  "auth": {
+    "login": {
+      "title2FA": "Two-Factor Authentication",
+      "title": "Welcome back",
+      "subtitle2FA": "Enter the 6-digit code from your authenticator app",
+      "subtitle": "Log in to your account",
+      "forgotPasswordSentTitle": "Check your email",
+      "forgotPasswordSentMessage": "If an account exists for {email}, we sent a password reset link.",
+      "backToLogin": "Back to login",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password",
+      "authCodeLabel": "Authentication Code",
+      "verifyButton": "Verify",
+      "loginButton": "Log In",
+      "errorFallback": "Login failed",
+      "errorEmailFirst": "Please enter your email first",
+      "errorResetEmail": "Failed to send reset email",
+      "forgotPassword": "Forgot password?",
+      "createAccount": "Create account",
+      "or": "or",
+      "continueWithGoogle": "Continue with Google"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Start protecting your infrastructure",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "errorPasswordLength": "Password must be at least 8 characters",
+      "createButton": "Create Account",
+      "errorFallback": "Registration failed",
+      "successTitle": "Account created",
+      "successMessage": "Check your email to verify your account, then log in.",
+      "goToLogin": "Go to Login",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "legalPrefix": "By creating an account, you agree to our",
+      "termsLink": "Terms",
+      "legalAnd": "and",
+      "privacyLink": "Privacy Policy",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password"
+    },
+    "resetPassword": {
+      "title": "Set new password",
+      "subtitle": "Choose a strong password",
+      "newPasswordLabel": "New Password",
+      "newPasswordPlaceholder": "At least 8 characters",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "errorPasswordLength": "Password must be at least 8 characters",
+      "errorPasswordMatch": "Passwords do not match",
+      "errorInvalidToken": "Invalid or missing reset token",
+      "errorExpiredLink": "Reset failed. The link may have expired.",
+      "errorNetwork": "Network error",
+      "resetButton": "Reset Password",
+      "successTitle": "Password updated",
+      "successMessage": "Your password has been reset. You can now log in.",
+      "goToLogin": "Go to Login",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome, {name}",
+    "planLabel": "Plan:",
+    "planExpires": "(expires {date})",
+    "quickActions": {
+      "installCLI": {
+        "title": "Install CLI",
+        "description": "Get started with scanning"
+      },
+      "accountSettings": {
+        "title": "Account Settings",
+        "description": "2FA, profile, security"
+      },
+      "billing": {
+        "title": "Billing",
+        "description": "Manage subscription"
+      },
+      "apiDocs": {
+        "title": "API Docs",
+        "description": "Integrate with your tools"
+      }
+    },
+    "usageHeading": "Usage This Month",
+    "usageError": "Unable to load usage data. Please refresh.",
+    "usageEmpty": "No usage data available.",
+    "quickStartHeading": "Quick Start",
+    "quickStartDescription": "Install the Panguard CLI to start scanning your infrastructure:",
+    "unlimited": "Unlimited",
+    "logOut": "Log out",
+    "resources": {
+      "scan": "Security Scans",
+      "guard_endpoints": "Guard Endpoints",
+      "reports": "Compliance Reports",
+      "api_calls": "API Calls",
+      "notifications": "Notification Channels",
+      "trap_instances": "Honeypot Instances"
+    }
+  },
+  "accountSettings": {
+    "headerTitle": "Account Settings",
+    "backToDashboard": "Back to dashboard",
+    "profile": {
+      "sectionTitle": "Profile",
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "planLabel": "Plan",
+      "memberSinceLabel": "Member since"
+    },
+    "twoFA": {
+      "sectionTitle": "Two-Factor Authentication",
+      "statusEnabled": "2FA is enabled",
+      "disableButton": "Disable 2FA",
+      "qrInstruction": "Scan this QR code with your authenticator app, or enter the secret manually:",
+      "codeLabel": "Enter the 6-digit code from your app:",
+      "verifyButton": "Verify",
+      "backupCodesInstruction": "Save these backup codes in a safe place:",
+      "description": "Add an extra layer of security to your account with TOTP-based two-factor authentication.",
+      "setupButton": "Set up 2FA",
+      "errorCheckStatus": "Unable to check 2FA status",
+      "errorSetupFailed": "Failed to start 2FA setup",
+      "successEnabled": "Two-factor authentication enabled",
+      "errorInvalidCode": "Invalid code",
+      "errorVerifyFailed": "Verification failed",
+      "successDisabled": "Two-factor authentication disabled",
+      "errorDisableFailed": "Failed to disable 2FA"
+    },
+    "exportData": {
+      "sectionTitle": "Export Data",
+      "description": "Download all your data in JSON format (GDPR compliant).",
+      "exportButton": "Export My Data"
+    },
+    "deleteAccount": {
+      "sectionTitle": "Delete Account",
+      "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+      "warning": "This will permanently delete your account, all data, sessions, and subscription.",
+      "passwordLabel": "Enter your password to confirm:",
+      "passwordPlaceholder": "Your password",
+      "cancelButton": "Cancel",
+      "confirmButton": "Permanently Delete",
+      "errorFailed": "Failed to delete account",
+      "errorNetwork": "Network error"
+    }
+  },
+  "billing": {
+    "headerTitle": "Billing",
+    "currentPlan": "Current Plan",
+    "manageSubscription": "Manage Subscription",
+    "errorLoading": "Unable to load billing data. Please refresh.",
+    "freeTier": "Free tier — no subscription",
+    "planIncludes": "Plan includes",
+    "renewsOn": "Renews on {date}",
+    "endsOn": "Ends on {date}",
+    "upgradeHeading": "Upgrade your plan",
+    "upgradeDescription": "Get more scans, endpoints, and advanced features.",
+    "viewPlans": "View Plans",
+    "tierFeatures": {
+      "free": [
+        "100 scans/month",
+        "1 endpoint",
+        "1,000 API calls"
+      ],
+      "solo": [
+        "Unlimited scans",
+        "3 endpoints",
+        "10,000 API calls",
+        "1 honeypot"
+      ],
+      "pro": [
+        "Unlimited scans",
+        "10 endpoints",
+        "50,000 API calls",
+        "5 reports",
+        "3 honeypots"
+      ],
+      "business": [
+        "Unlimited scans",
+        "25 endpoints",
+        "Unlimited API calls",
+        "20 reports",
+        "8 honeypots"
+      ],
+      "enterprise": [
+        "Everything unlimited",
+        "Priority support",
+        "Custom SLA"
+      ]
+    }
   }
 }
