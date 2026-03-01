@@ -2,7 +2,7 @@
   "common": {
     "getStarted": "立即開始",
     "signIn": "登入",
-    "startFreeTrial": "免費試用",
+    "startFreeTrial": "開始 30 天試用",
     "scanFree": "免費掃描",
     "contactSales": "聯繫業務",
     "requestDemo": "預約示範",
@@ -663,7 +663,7 @@
   "pricing": {
     "overline": "價格方案",
     "title": "簡單透明的定價",
-    "subtitle": "所有付費方案提供 30 天免費試用。無需信用卡。一行指令開始保護你的端點。",
+    "subtitle": "所有付費方案提供 30 天試用期。隨時可取消。一行指令開始保護你的端點。",
     "addonsOverline": "附加功能",
     "addonsTitle": "合規報告附加功能",
     "addonsSubtitle": "Starter 方案以上可用。為任何方案加入合規報告功能。",
@@ -1257,7 +1257,7 @@
     },
     "pricing": {
       "title": "價格方案",
-      "description": "AI 端點安全防護的透明定價。免費掃描、Solo 每月 $9、Starter 每月 $19、Team 每端點每月 $14、Business 每端點每月 $10、Enterprise 客製。30 天免費試用。"
+      "description": "AI 端點安全防護的透明定價。免費掃描、Solo 每月 $9、Pro 每月 $29、Business 每月 $79。所有付費方案享 30 天試用。"
     },
     "earlyAccess": {
       "title": "Pro 搶先體驗",
@@ -1265,7 +1265,7 @@
     },
     "scan": {
       "title": "免費安全掃描",
-      "description": "你的系統安全嗎？用 Panguard 的免費 AI 安全稽核在 60 秒內找出答案。無需安裝、無需信用卡。"
+      "description": "你的系統安全嗎？用 Panguard 的免費 AI 安全稽核在 60 秒內找出答案。無需安裝。"
     },
     "productOverview": {
       "title": "產品總覽",
@@ -1416,7 +1416,7 @@
     "hero": {
       "overline": "方案價格",
       "title": "簡單透明的定價",
-      "subtitle": "免費開始。隨需擴展。無需信用卡。"
+      "subtitle": "免費開始。隨需擴展。隨時可取消。"
     },
     "addons": {
       "overline": "合規報告加購",
@@ -1493,7 +1493,7 @@
           "Chat AI 助手",
           "7 天日誌保留"
         ],
-        "cta": "免費試用"
+        "cta": "開始 30 天試用"
       },
       "pro": {
         "name": "Pro 專業版",
@@ -1507,7 +1507,7 @@
           "合規報告加購",
           "優先支援"
         ],
-        "cta": "免費試用"
+        "cta": "開始 30 天試用"
       },
       "business": {
         "name": "Business 商業版",
@@ -1522,7 +1522,7 @@
           "專屬客戶經理",
           "90 天以上日誌保留"
         ],
-        "cta": "免費試用"
+        "cta": "開始 30 天試用"
       }
     },
     "comparison": {
@@ -1541,11 +1541,11 @@
       "pro": "Pro",
       "business": "Business"
     },
-    "allPaidPlansNote": "所有付費方案享 30 天免費試用及無條件退款保證。年繳省 20%。",
+    "allPaidPlansNote": "所有付費方案享 30 天試用期。需綁定信用卡。隨時可取消。年繳省 20%。",
     "betaDisclaimer": "功能與限制可能在測試期間調整。定量限制（掃描次數、端點數、報告、API 呼叫）已正式啟用。定性功能（偵測層級、日誌保留期、通知管道）為目標規格。",
     "faq": {
-      "faq1q": "免費試用如何運作？",
-      "faq1a": "註冊任何付費方案後，即可在 30 天內完整使用該方案所有功能，無需信用卡。試用結束後，可選擇訂閱或自動降級至 Community 社群版。不會遺失任何資料。",
+      "faq1q": "試用如何運作？",
+      "faq1a": "註冊任何付費方案時需綁定信用卡，即可在 30 天內完整使用該方案所有功能。試用期內隨時可取消，不會被收費。試用結束後自動開始訂閱扣款。",
       "faq2q": "可以隨時更換方案嗎？",
       "faq2a": "當然可以。升級後立即使用新功能，費用按比例計算。降級則在下個帳單週期生效。",
       "faq3q": "什麼算一台機器？",
@@ -1567,7 +1567,7 @@
       "overline": "免費安全掃描",
       "title": "你的系統安全嗎？",
       "titleHighlight": "60 秒找出答案。",
-      "subtitle": "免費。無需安裝。無需信用卡。"
+      "subtitle": "免費。無需安裝。"
     },
     "scanServer": {
       "title": "掃描我的伺服器",
@@ -1664,8 +1664,8 @@
       "capabilities": "核心能力",
       "cta": {
         "title": "準備好看它實際運作了嗎？",
-        "subtitle": "從免費 Panguard Scan 開始，查看你的風險概況。準備好後，升級解鎖 Guard、Chat、Trap 和 Report -- 全部享 30 天免費試用。",
-        "cta1": "免費試用",
+        "subtitle": "從免費 Panguard Scan 開始，查看你的風險概況。準備好後，升級解鎖 Guard、Chat、Trap 和 Report -- 全部享 30 天試用。",
+        "cta1": "開始 30 天試用",
         "cta2": "預約示範"
       }
     },
@@ -2190,7 +2190,7 @@
       },
       "cta": {
         "title": "一行指令保護你的技術棧",
-        "desc": "個人專案免費。無需信用卡。"
+        "desc": "免費版適用個人專案。付費方案需綁定信用卡。"
       }
     },
     "smb": {
@@ -2251,7 +2251,7 @@
       },
       "cta": {
         "title": "今天就保護你的企業",
-        "desc": "30 天免費試用。無需信用卡。"
+        "desc": "30 天試用。到期前可隨時取消。"
       }
     },
     "enterprise": {
@@ -3889,7 +3889,12 @@
     "usageError": "無法載入使用量資料，請重新整理。",
     "usageEmpty": "目前無使用量資料。",
     "quickStartHeading": "快速開始",
-    "quickStartDescription": "安裝 Panguard CLI 以開始掃描您的基礎設施：",
+    "quickStartDescription": "安裝 Panguard CLI，2 分鐘內完成首次安全掃描：",
+    "quickStart": {
+      "install": "安裝",
+      "login": "登入",
+      "scan": "掃描"
+    },
     "unlimited": "無限制",
     "logOut": "登出",
     "resources": {

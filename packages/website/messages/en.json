@@ -2,7 +2,7 @@
   "common": {
     "getStarted": "Get Started",
     "signIn": "Sign In",
-    "startFreeTrial": "Start Free Trial",
+    "startFreeTrial": "Start 30-Day Trial",
     "scanFree": "Scan Free",
     "contactSales": "Talk to Sales",
     "requestDemo": "Request a Demo",
@@ -663,7 +663,7 @@
   "pricing": {
     "overline": "Pricing",
     "title": "Simple, transparent pricing",
-    "subtitle": "30-day free trial on every paid plan. No credit card required. Start protecting your endpoints with one command.",
+    "subtitle": "30-day trial on every paid plan. Cancel anytime. Start protecting your endpoints with one command.",
     "addonsOverline": "Add-ons",
     "addonsTitle": "Compliance report add-ons",
     "addonsSubtitle": "Available on Starter plans and above. Add compliance reporting to any plan.",
@@ -684,13 +684,13 @@
     "faqSubtitle": "Everything you need to know about pricing and plans.",
     "enterpriseTitle": "Need a custom solution?",
     "enterpriseDesc": "For organizations with 500+ endpoints, dedicated compliance requirements, or custom deployment needs. White-glove onboarding, custom SLA, and a dedicated security engineer.",
-    "guarantee": "30-day money-back guarantee on all paid plans. No questions asked."
+    "guarantee": "30-day money-back guarantee on all paid plans."
   },
   "pricingPage": {
     "hero": {
       "overline": "Pricing",
       "title": "Simple, transparent pricing",
-      "subtitle": "Start free. Scale as you grow. No credit card required."
+      "subtitle": "Start free. Scale as you grow. Cancel anytime."
     },
     "addons": {
       "overline": "Compliance Add-ons",
@@ -737,7 +737,7 @@
       "ctaSales": "Talk to Sales",
       "ctaDemo": "Request a Demo"
     },
-    "guarantee": "30-day money-back guarantee on all paid plans. No questions asked.",
+    "guarantee": "30-day money-back guarantee on all paid plans.",
     "checkoutUnavailable": "Checkout is currently unavailable. Please try again later.",
     "connectionError": "Unable to connect. Please check your connection and try again.",
     "plans": {
@@ -767,7 +767,7 @@
           "Chat AI assistant",
           "7-day log retention"
         ],
-        "cta": "Start Free Trial"
+        "cta": "Start 30-Day Trial"
       },
       "pro": {
         "name": "Pro",
@@ -781,7 +781,7 @@
           "Compliance report access",
           "Priority support"
         ],
-        "cta": "Start Free Trial"
+        "cta": "Start 30-Day Trial"
       },
       "business": {
         "name": "Business",
@@ -796,7 +796,7 @@
           "Dedicated account manager",
           "90-day+ log retention"
         ],
-        "cta": "Start Free Trial"
+        "cta": "Start 30-Day Trial"
       }
     },
     "comparison": {
@@ -815,11 +815,11 @@
       "pro": "Pro",
       "business": "Business"
     },
-    "allPaidPlansNote": "All paid plans include 30-day free trial and money-back guarantee. Save 20% with annual billing.",
+    "allPaidPlansNote": "All paid plans include a 30-day trial period. Credit card required. Cancel anytime. Save 20% with annual billing.",
     "betaDisclaimer": "Feature availability and limits may evolve during the beta period. Quantitative limits (scans, endpoints, reports, API calls) are actively enforced. Qualitative features (detection layers, log retention, notification channels) represent target specifications.",
     "faq": {
-      "faq1q": "How does the free trial work?",
-      "faq1a": "When you sign up for any paid plan, you get full access to all features in that tier for 30 days -- no credit card required. At the end of the trial, you can choose to subscribe or your account will automatically downgrade to the Community tier. No data is lost.",
+      "faq1q": "How does the trial work?",
+      "faq1a": "When you sign up for any paid plan, you get full access to all features in that tier for 30 days. A credit card is required at signup. If you cancel before the trial ends, you will not be charged. Otherwise, your subscription automatically begins at the end of the trial period.",
       "faq2q": "Can I switch plans at any time?",
       "faq2a": "Absolutely. You can upgrade or downgrade your plan at any point. When upgrading, you get immediate access to the new features and we prorate the difference. When downgrading, the change takes effect at the start of your next billing cycle.",
       "faq3q": "What counts as a machine?",
@@ -841,7 +841,7 @@
       "overline": "Free Security Scan",
       "title": "How secure is your system?",
       "titleHighlight": "Find out in 60 seconds.",
-      "subtitle": "Free. No installation. No credit card."
+      "subtitle": "Free. No installation required."
     },
     "scanServer": {
       "title": "Scan My Server",
@@ -938,8 +938,8 @@
       "capabilities": "Key Capabilities",
       "cta": {
         "title": "Ready to see it all in action?",
-        "subtitle": "Start with a free Panguard Scan to see your risk profile. When you are ready, upgrade to unlock Guard, Chat, Trap, and Report -- all with a 30-day free trial.",
-        "cta1": "Start Free Trial",
+        "subtitle": "Start with a free Panguard Scan to see your risk profile. When you are ready, upgrade to unlock Guard, Chat, Trap, and Report -- all with a 30-day trial.",
+        "cta1": "Start 30-Day Trial",
         "cta2": "Request a Demo"
       }
     },
@@ -1464,7 +1464,7 @@
       },
       "cta": {
         "title": "Secure your stack with one command",
-        "desc": "Free for personal projects. No credit card required."
+        "desc": "Free tier for personal projects. Paid plans require a credit card."
       }
     },
     "smb": {
@@ -1525,7 +1525,7 @@
       },
       "cta": {
         "title": "Protect your business today",
-        "desc": "30-day free trial. No credit card required."
+        "desc": "30-day trial. Cancel anytime before being charged."
       }
     },
     "enterprise": {
@@ -3624,7 +3624,7 @@
     },
     "pricing": {
       "title": "Pricing",
-      "description": "Simple, transparent pricing for AI-powered endpoint security. Free Scan, Solo $9/mo, Starter $19/mo, Team $14/endpoint/mo, Business $10/endpoint/mo, Enterprise custom. 30-day free trial."
+      "description": "Simple, transparent pricing for AI-powered endpoint security. Free Scan, Solo $9/mo, Pro $29/mo, Business $79/mo. 30-day trial on all paid plans."
     },
     "earlyAccess": {
       "title": "Pro Early Access",
@@ -3632,7 +3632,7 @@
     },
     "scan": {
       "title": "Free Security Scan",
-      "description": "How secure is your system? Find out in 60 seconds with Panguard's free AI security audit. No installation, no credit card required."
+      "description": "How secure is your system? Find out in 60 seconds with Panguard's free AI security audit. No installation required."
     },
     "productOverview": {
       "title": "Product",
@@ -3907,7 +3907,12 @@
     "usageError": "Unable to load usage data. Please refresh.",
     "usageEmpty": "No usage data available.",
     "quickStartHeading": "Quick Start",
-    "quickStartDescription": "Install the Panguard CLI to start scanning your infrastructure:",
+    "quickStartDescription": "Install the Panguard CLI and run your first security scan in under 2 minutes:",
+    "quickStart": {
+      "install": "Install",
+      "login": "Login",
+      "scan": "Scan"
+    },
     "unlimited": "Unlimited",
     "logOut": "Log out",
     "resources": {
