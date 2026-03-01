@@ -56,7 +56,7 @@ const tabContent: Record<TabId, Line[]> = {
     { text: '$ panguard guard start', color: c.cmd },
     { text: 'Panguard Guard v2.1.0 -- Starting...', color: c.bright },
     { text: '' },
-    { text: '  Layer 1 (Sigma Rules)    LOADED  3,155 rules', color: c.ok },
+    { text: '  Layer 1 (Sigma Rules)    LOADED  3,149 rules', color: c.ok },
     { text: '  Layer 2 (Local AI)       READY   Ollama connected', color: c.ok },
     { text: '  Layer 3 (Cloud AI)       STANDBY', color: c.base },
     { text: '  Threat Cloud Upload      ENABLED', color: c.ok },

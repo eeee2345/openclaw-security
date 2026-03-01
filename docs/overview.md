@@ -71,7 +71,7 @@ panguard guard start
 
 - 4-agent AI pipeline: Detect -> Analyze -> Respond -> Report
 - 7-day learning period builds behavioral baseline
-- 3,155 Sigma rules + 926 YARA rules
+- 3,149 Sigma rules + 4,326 YARA rules
 - Real-time threat intelligence (ThreatFox / URLhaus / GreyNoise)
 - Auto-response: IP blocking, file quarantine, process termination
 - Investigation engine for root cause analysis
@@ -217,7 +217,7 @@ Cloud down? Local AI takes over. Local AI down? Rules engine keeps running. Prot
 | Runtime | Node.js 20+ |
 | Monorepo | pnpm 10 workspaces |
 | Testing | Vitest 3 (1,446 tests) |
-| Rules | Sigma (3,155) + YARA (926) + Suricata + Falco |
+| Rules | Sigma (3,149) + YARA (4,326) + Suricata + Falco |
 | AI | Ollama (local) + Claude / OpenAI (cloud) |
 | Auth | Google OAuth (PKCE) + scrypt hashing |
 | i18n | English + Traditional Chinese |

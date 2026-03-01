@@ -11,7 +11,7 @@ const lines = [
   { text: 'Downloading Panguard AI v2.1.0...', color: 'text-text-secondary', prefix: true },
   { text: 'Detecting environment... Ubuntu 24.04 LTS', color: 'text-text-secondary', prefix: true },
   { text: 'Installing security agents...', color: 'text-text-secondary', prefix: true },
-  { text: 'AI model loaded (Layer 1: 3,155 rules)', color: 'text-text-secondary', prefix: true },
+  { text: 'AI model loaded (Layer 1: 3,149 rules)', color: 'text-text-secondary', prefix: true },
   { text: 'Connected to Panguard Threat Cloud', color: 'text-text-secondary', prefix: true },
   { text: '', color: '' },
   {

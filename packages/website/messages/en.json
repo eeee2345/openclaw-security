@@ -1007,7 +1007,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,155 Sigma and 926 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,149 Sigma and 4,326 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "Integration Adapters",
@@ -2952,7 +2952,7 @@
       "layer2": {
         "badge": "Layer 2",
         "name": "Rules Engine",
-        "desc": "3,155 Sigma rules + 926 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
+        "desc": "3,149 Sigma rules + 4,326 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
         "detail": "Catches 90% of known threats in under 50ms. No AI needed."
       },
       "layer3": {
@@ -2981,7 +2981,7 @@
       "tier1": {
         "name": "Rules Engine",
         "pct": "90%",
-        "items": "3,155 Sigma detection rules|926 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
+        "items": "3,149 Sigma detection rules|4,326 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
         "speed": "<50ms per event"
       },
       "tier2": {
@@ -3308,11 +3308,11 @@
           "label": "Tests passing"
         },
         {
-          "value": "3,155",
+          "value": "3,149",
           "label": "Sigma rules"
         },
         {
-          "value": "926",
+          "value": "4,326",
           "label": "YARA rules"
         },
         {
@@ -3385,7 +3385,7 @@
         },
         {
           "name": "panguard-rules",
-          "desc": "3,155 Sigma detection rules + 926 YARA malware signatures",
+          "desc": "3,149 Sigma detection rules + 4,326 YARA malware signatures",
           "lang": "YAML / Sigma",
           "stars": "Community"
         },
@@ -3433,7 +3433,7 @@
         "items": [
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
-          "3,155 Sigma + 926 YARA rules",
+          "3,149 Sigma + 4,326 YARA rules",
           "1,446 automated tests"
         ]
       },
