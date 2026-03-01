@@ -43,7 +43,7 @@ export default function BrandLogo({
   bg?: string;
 }) {
   return (
-    <svg width={size} height={size} viewBox={BRAND_LOGO_VIEWBOX} fill="none" className={className}>
+    <svg width={size} height={size} viewBox={BRAND_LOGO_VIEWBOX} fill="none" className={className} aria-hidden="true">
       {BRAND_LOGO_PATHS.map((p, i) => (
         <path key={i} fill={p.role === 'fg' ? 'currentColor' : bg} d={p.d} />
       ))}

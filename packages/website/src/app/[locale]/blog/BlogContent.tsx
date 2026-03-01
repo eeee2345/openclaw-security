@@ -240,6 +240,7 @@ export default function BlogContent() {
               <input
                 type="email"
                 placeholder={t('digest.placeholder')}
+                aria-label="Email address"
                 value={nlEmail}
                 onChange={(e) => setNlEmail(e.target.value)}
                 className="w-full sm:flex-1 bg-surface-2 border border-border rounded-full px-5 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors"

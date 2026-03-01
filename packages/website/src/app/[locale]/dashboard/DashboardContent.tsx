@@ -94,7 +94,7 @@ export default function DashboardContent() {
                 router.push('/');
               }}
               className="text-text-tertiary hover:text-text-secondary transition-colors"
-              title="Log out"
+              aria-label="Log out"
             >
               <LogOut className="w-4 h-4" />
             </button>

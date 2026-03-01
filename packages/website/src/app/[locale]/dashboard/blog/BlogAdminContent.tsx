@@ -227,7 +227,7 @@ export default function BlogAdminContent() {
             <button
               onClick={() => { void logout(); router.push('/'); }}
               className="text-text-tertiary hover:text-text-secondary transition-colors"
-              title="Log out"
+              aria-label="Log out"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -306,14 +306,14 @@ export default function BlogAdminContent() {
                               <button
                                 onClick={() => openEditPost(post)}
                                 className="p-1.5 text-text-tertiary hover:text-brand-sage transition-colors rounded-lg hover:bg-surface-2"
-                                title="Edit"
+                                aria-label="Edit post"
                               >
                                 <Pencil className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => void handleDelete(post.slug)}
                                 className="p-1.5 text-text-tertiary hover:text-[#ef4444] transition-colors rounded-lg hover:bg-surface-2"
-                                title="Delete"
+                                aria-label="Delete post"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>

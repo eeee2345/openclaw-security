@@ -60,6 +60,7 @@ export default function WaitlistForm() {
                   if (error) setError('');
                 }}
                 placeholder={t('placeholder')}
+                aria-label="Email address"
                 className="flex-1 bg-surface-1 border border-border rounded-full px-5 py-3.5 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-sage transition-colors text-sm"
                 autoFocus
               />

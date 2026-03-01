@@ -132,6 +132,7 @@ export default function NavBar() {
 
   return (
     <nav
+      aria-label="Main navigation"
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-surface-0/80 backdrop-blur-xl border-b border-border'
@@ -176,7 +177,7 @@ export default function NavBar() {
                   navRouter.push('/');
                 }}
                 className="text-text-tertiary hover:text-text-secondary transition-colors"
-                title="Log out"
+                aria-label="Log out"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -211,7 +212,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 top-[66px] bg-surface-0/98 backdrop-blur-xl z-40 overflow-y-auto lg:hidden">
+        <div role="dialog" aria-label="Navigation menu" className="fixed inset-0 top-[66px] bg-surface-0/98 backdrop-blur-xl z-40 overflow-y-auto lg:hidden">
           <div className="p-6 space-y-1">
             <div className="flex justify-center mb-4">
               <LocaleSwitcher />
@@ -221,6 +222,7 @@ export default function NavBar() {
             <button
               onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
               className="flex items-center justify-between w-full py-2.5 text-sm text-text-secondary hover:text-text-primary"
+              aria-expanded={mobileProductsOpen}
             >
               {t('product')}
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileProductsOpen ? 'rotate-180' : ''}`} />

@@ -130,7 +130,7 @@ export default function ApiDocsPage() {
               {apiBaseUrl}
             </code>
           </p>
-          <p className="mt-2 text-sm text-[#706860]">
+          <p className="mt-2 text-sm text-[#9A918A]">
             All authenticated endpoints require a <code className="font-mono">Bearer</code> token in
             the <code className="font-mono">Authorization</code> header.
           </p>
@@ -153,7 +153,7 @@ export default function ApiDocsPage() {
                       {ep.method}
                     </span>
                     <code className="font-mono text-sm text-[#8B9A8E]">{ep.path}</code>
-                    <span className="ml-auto text-sm text-[#706860]">{ep.summary}</span>
+                    <span className="ml-auto text-sm text-[#9A918A]">{ep.summary}</span>
                   </div>
                 ))}
               </div>

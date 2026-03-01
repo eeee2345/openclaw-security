@@ -239,6 +239,8 @@ export default function PricingCards() {
           </span>
           <button
             onClick={() => setAnnual(!annual)}
+            role="switch"
+            aria-checked={annual}
             className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sage focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 ${
               annual ? 'bg-brand-sage' : 'bg-surface-3'
             }`}

@@ -194,7 +194,7 @@ export default function AccountSettings() {
       {/* Header */}
       <header className="border-b border-border bg-surface-1">
         <div className="max-w-3xl mx-auto px-6 h-14 flex items-center gap-4">
-          <Link href="/dashboard" className="text-text-tertiary hover:text-text-secondary">
+          <Link href="/dashboard" className="text-text-tertiary hover:text-text-secondary" aria-label="Back to dashboard">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <BrandLogo size={20} className="text-brand-sage" />
