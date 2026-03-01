@@ -141,7 +141,7 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "THE SECURITY REVOLUTION",
+      "eyebrow": "資安新革命",
       "title": "資安不再是特權。",
       "subtitle": "一行指令，每個開發者、每間小公司，都能擁有企業級防護。",
       "boldLine": "開源。AI 驅動。免費開始。",
@@ -309,7 +309,7 @@
       }
     },
     "threatCloud": {
-      "overline": "ONE MORE THING",
+      "overline": "還有一件事",
       "title": "越多人用，每個人都越安全。",
       "desc": "每一個 Panguard 實例都是一個感測器。當它偵測到新的攻擊，會匿名把攻擊模式分享給 Threat Cloud。Threat Cloud 自動產生新的 Sigma 規則，推送給全球每一個用戶。",
       "descHighlight": "你不只是被保護的人。你也是防護的一部分。",
