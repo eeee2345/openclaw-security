@@ -3,14 +3,14 @@
  * 安裝引導流程
  *
  * Guides users through setting up Panguard AI:
- * 1. Choose notification channel (LINE / Telegram / Slack / Email)
+ * 1. Choose notification channel (Telegram / Slack / Email)
  * 2. Configure channel credentials
  * 3. Set user type (developer / boss / IT admin)
  * 4. Set language preference
  * 5. Send test notification
  *
  * 引導用戶完成 Panguard AI 設定：
- * 1. 選擇通知管道
+ * 1. 選擇通知管道（Telegram / Slack / Email）
  * 2. 配置管道憑證
  * 3. 設定用戶類型
  * 4. 設定語言偏好
@@ -79,14 +79,6 @@ export const SETUP_STEPS: readonly SetupStep[] = [
     },
     inputType: 'select',
     options: [
-      {
-        value: 'line',
-        label: { 'zh-TW': 'LINE', en: 'LINE' },
-        description: {
-          'zh-TW': '適合個人開發者，台灣最常用的通訊軟體',
-          en: 'Best for individual developers, most popular messaging app in Taiwan',
-        },
-      },
       {
         value: 'telegram',
         label: { 'zh-TW': 'Telegram', en: 'Telegram' },
@@ -193,27 +185,6 @@ export const SETUP_STEPS: readonly SetupStep[] = [
 /** Get channel-specific configuration prompts / 取得管道專屬配置提示 */
 export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[] {
   switch (channel) {
-    case 'line':
-      return [
-        {
-          id: 'lineChannelAccessToken',
-          title: { 'zh-TW': 'LINE Channel Access Token', en: 'LINE Channel Access Token' },
-          description: {
-            'zh-TW': '在 LINE Developers Console 取得 Channel Access Token',
-            en: 'Get your Channel Access Token from LINE Developers Console',
-          },
-          inputType: 'text',
-        },
-        {
-          id: 'lineChannelSecret',
-          title: { 'zh-TW': 'LINE Channel Secret', en: 'LINE Channel Secret' },
-          description: {
-            'zh-TW': '在 LINE Developers Console 取得 Channel Secret',
-            en: 'Get your Channel Secret from LINE Developers Console',
-          },
-          inputType: 'text',
-        },
-      ];
     case 'telegram':
       return [
         {

@@ -1,6 +1,6 @@
 /**
- * Webhook Server for receiving messages from LINE/Telegram/Slack
- * Webhook 伺服器 - 接收來自 LINE/Telegram/Slack 的訊息
+ * Webhook Server for receiving messages from Telegram/Slack
+ * Webhook 伺服器 - 接收來自 Telegram/Slack 的訊息
  *
  * Provides a single HTTP endpoint that routes incoming webhooks
  * to the appropriate channel handler.
@@ -27,8 +27,6 @@ export interface WebhookServerConfig {
   handlers: Map<string, WebhookHandler>;
   /** Slack signing secret for verification / Slack 簽章密鑰 */
   slackSigningSecret?: string;
-  /** LINE channel secret for verification / LINE 頻道密鑰 */
-  lineChannelSecret?: string;
   /** Telegram bot secret for verification / Telegram 機器人密鑰 */
   telegramSecret?: string;
 }
@@ -91,7 +89,7 @@ export class WebhookServer {
 
     const url = req.url ?? '/';
 
-    // Route: /webhook/line, /webhook/telegram, /webhook/slack
+    // Route: /webhook/telegram, /webhook/slack
     const channelMatch = url.match(/^\/webhook\/(\w+)/);
     if (!channelMatch) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -109,15 +107,6 @@ export class WebhookServer {
       if (channel === 'slack' && this.config.slackSigningSecret) {
         if (!this.verifySlackSignature(body, headers, this.config.slackSigningSecret)) {
           logger.warn('Invalid Slack webhook signature');
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Invalid signature' }));
-          return;
-        }
-      }
-
-      if (channel === 'line' && this.config.lineChannelSecret) {
-        if (!this.verifyLineSignature(body, headers, this.config.lineChannelSecret)) {
-          logger.warn('Invalid LINE webhook signature');
           res.writeHead(401, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'Invalid signature' }));
           return;
@@ -198,15 +187,4 @@ export class WebhookServer {
     return signature === expected;
   }
 
-  private verifyLineSignature(
-    body: string,
-    headers: Record<string, string>,
-    secret: string
-  ): boolean {
-    const signature = headers['x-line-signature'];
-    if (!signature) return false;
-
-    const expected = createHmac('sha256', secret).update(body).digest('base64');
-    return signature === expected;
-  }
 }

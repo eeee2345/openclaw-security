@@ -4,7 +4,6 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { LineChannel } from '../src/channels/line.js';
 import { TelegramChannel } from '../src/channels/telegram.js';
 import { SlackChannel } from '../src/channels/slack.js';
 import { EmailChannel } from '../src/channels/email.js';
@@ -14,38 +13,6 @@ import { WebhookChannel } from '../src/channels/webhook.js';
 // Actual API calls require real credentials and are tested in integration tests.
 // 注意：這些是驗證管道建構和介面合規的單元測試。
 // 實際 API 呼叫需要真實憑證，在整合測試中測試。
-
-describe('LineChannel', () => {
-  it('should initialize with config', () => {
-    const channel = new LineChannel({
-      channelAccessToken: 'test-token',
-      channelSecret: 'test-secret',
-    });
-    expect(channel.channelType).toBe('line');
-  });
-
-  it('should register reply handler', () => {
-    const channel = new LineChannel({
-      channelAccessToken: 'test-token',
-      channelSecret: 'test-secret',
-    });
-    const handler = async (_userId: string, _text: string) => 'ok';
-    channel.onReply(handler);
-    // No error thrown = success
-  });
-
-  it('should handle sendMessage errors gracefully', async () => {
-    const channel = new LineChannel({
-      channelAccessToken: 'invalid-token',
-      channelSecret: 'test-secret',
-    });
-    // This will fail because the token is invalid, but should not throw
-    const result = await channel.sendMessage('user-1', { text: 'test' });
-    expect(result.success).toBe(false);
-    expect(result.channel).toBe('line');
-    expect(result.error).toBeDefined();
-  });
-});
 
 describe('TelegramChannel', () => {
   it('should initialize with config', () => {

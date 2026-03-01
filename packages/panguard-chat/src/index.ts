@@ -46,7 +46,6 @@ export type {
   WebhookConfig,
   ChatConfig,
   ChannelConfigs,
-  LineChannelConfig,
   TelegramChannelConfig,
   SlackChannelConfig,
   EmailChannelConfig,
@@ -70,7 +69,6 @@ export {
 // Messaging Channels / 通訊管道
 // ---------------------------------------------------------------------------
 
-export { LineChannel } from './channels/index.js';
 export { TelegramChannel } from './channels/index.js';
 export { SlackChannel } from './channels/index.js';
 export { EmailChannel } from './channels/index.js';
