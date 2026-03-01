@@ -92,9 +92,9 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build all packages
         run: pnpm run build
-      - name: Upload web build
+      - name: Upload website build
         uses: actions/upload-artifact@v4
         with:
-          name: web-build
-          path: packages/web/dist/
+          name: website-build
+          path: packages/website/.next/
           retention-days: 14
