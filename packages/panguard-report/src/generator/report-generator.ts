@@ -25,6 +25,7 @@ import {
   generateStatistics,
   generateRecommendations,
 } from '../mapper/index.js';
+import { runAssessment } from '../assessors/index.js';
 
 const logger = createLogger('panguard-report:generator');
 
@@ -92,6 +93,55 @@ export function generateComplianceReport(
     statistics,
     recommendations,
   };
+}
+
+/**
+ * Generate a compliance report with live system assessment.
+ * 使用即時系統評估產生合規報告。
+ *
+ * Runs platform-specific assessors (access control, firewall, encryption,
+ * monitoring, patching, incident response) and merges their findings
+ * with any user-supplied findings before evaluating controls.
+ */
+export async function generateComplianceReportWithAssessment(
+  framework: ComplianceFramework,
+  language: ReportLanguage,
+  options?: {
+    organizationName?: string;
+    periodStart?: Date;
+    periodEnd?: Date;
+    includeRecommendations?: boolean;
+    additionalFindings?: ComplianceFinding[];
+  }
+): Promise<ComplianceReportData> {
+  const controls = getFrameworkControls(framework);
+
+  // Collect unique categories from the framework's controls
+  const categories = [...new Set(controls.map((c) => c.category))];
+
+  logger.info(
+    `Running live assessment for ${framework} (${categories.length} categories) / ` +
+      `執行即時系統評估`
+  );
+
+  // Run assessors matched to the framework's control categories
+  const assessedFindings = await runAssessment(categories);
+
+  // Merge with any user-supplied findings
+  const allFindings = [...assessedFindings, ...(options?.additionalFindings ?? [])];
+
+  logger.info(
+    `Assessment complete: ${assessedFindings.length} findings from assessors, ` +
+      `${options?.additionalFindings?.length ?? 0} additional / ` +
+      `評估完成`
+  );
+
+  return generateComplianceReport(allFindings, framework, language, {
+    organizationName: options?.organizationName,
+    periodStart: options?.periodStart,
+    periodEnd: options?.periodEnd,
+    includeRecommendations: options?.includeRecommendations,
+  });
 }
 
 /**

@@ -16,6 +16,7 @@ import type {
 import { DEFAULT_REPORT_CONFIG } from '../types.js';
 import {
   generateComplianceReport,
+  generateComplianceReportWithAssessment,
   reportToJSON,
   generateSummaryText,
 } from '../generator/report-generator.js';
@@ -39,6 +40,8 @@ export interface ReportCliOptions {
   organizationName?: string;
   inputFile?: string;
   verbose?: boolean;
+  /** Run live system assessment / 執行即時系統評估 */
+  assess?: boolean;
 }
 
 /**
@@ -71,6 +74,8 @@ export function parseCliArgs(args: string[]): ReportCliOptions {
       i++;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
+    } else if (arg === '--assess') {
+      options.assess = true;
     }
   }
 
@@ -169,10 +174,12 @@ Options / 選項:
   --output-dir <path>  Output directory / 輸出目錄
   --org <name>         Organization name / 組織名稱
   --input <file>       Findings input file (JSON) / 發現輸入檔案 (JSON)
+  --assess             Run live system assessment / 執行即時系統評估
   --verbose, -v        Verbose output / 詳細輸出
 
 Examples / 範例:
-  panguard-report generate --framework tw_cyber_security_act --language zh-TW
+  panguard-report generate --framework tw_cyber_security_act --assess
+  panguard-report generate --framework iso27001 --org "ACME Corp" --assess
   panguard-report generate --framework iso27001 --org "ACME Corp" --input findings.json
   panguard-report list-frameworks
   panguard-report summary --input findings.json --framework soc2
@@ -253,13 +260,24 @@ export async function executeCli(args: string[]): Promise<void> {
       console.log(`Framework / 框架: ${framework}`);
       console.log(`Language / 語言: ${language}`);
 
-      const findings = await loadFindings(options.inputFile);
-      console.log(`Findings loaded / 已載入發現: ${findings.length}`);
-
-      const report = generateComplianceReport(findings, framework, language, {
-        organizationName: options.organizationName,
-        includeRecommendations: true,
-      });
+      let report;
+      if (options.assess) {
+        console.log('Running live system assessment... / 執行即時系統評估...');
+        const additionalFindings = options.inputFile ? await loadFindings(options.inputFile) : [];
+        report = await generateComplianceReportWithAssessment(framework, language, {
+          organizationName: options.organizationName,
+          includeRecommendations: true,
+          additionalFindings,
+        });
+        console.log(`Assessment findings / 評估發現: ${report.findings.length}`);
+      } else {
+        const findings = await loadFindings(options.inputFile);
+        console.log(`Findings loaded / 已載入發現: ${findings.length}`);
+        report = generateComplianceReport(findings, framework, language, {
+          organizationName: options.organizationName,
+          includeRecommendations: true,
+        });
+      }
 
       if (format === 'json') {
         const json = reportToJSON(report);

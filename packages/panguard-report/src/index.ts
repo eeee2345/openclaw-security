@@ -51,7 +51,24 @@ export {
 } from './mapper/index.js';
 
 // Generator
-export { generateComplianceReport, reportToJSON, generateSummaryText } from './generator/index.js';
+export {
+  generateComplianceReport,
+  generateComplianceReportWithAssessment,
+  reportToJSON,
+  generateSummaryText,
+} from './generator/index.js';
+
+// Assessors
+export {
+  assessAccessControl,
+  assessFirewallAndNetwork,
+  assessEncryption,
+  assessMonitoring,
+  assessPatching,
+  assessIncidentResponse,
+  runAssessment,
+  runFullAssessment,
+} from './assessors/index.js';
 
 // Templates
 export {

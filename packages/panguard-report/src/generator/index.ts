@@ -5,4 +5,9 @@
  * @module @panguard-ai/panguard-report/generator
  */
 
-export { generateComplianceReport, reportToJSON, generateSummaryText } from './report-generator.js';
+export {
+  generateComplianceReport,
+  generateComplianceReportWithAssessment,
+  reportToJSON,
+  generateSummaryText,
+} from './report-generator.js';
