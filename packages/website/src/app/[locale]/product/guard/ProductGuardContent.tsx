@@ -64,6 +64,10 @@ export default function ProductGuardContent() {
           </FadeInUp>
           <FadeInUp delay={0.15}>
             <div className="mt-10 max-w-3xl mx-auto bg-surface-1 rounded-xl border border-border shadow-2xl overflow-hidden">
+              {/* Example label */}
+              <div className="bg-surface-2/80 px-5 py-1.5 text-center border-b border-border">
+                <span className="text-[10px] text-text-muted uppercase tracking-wider">{t('dashboard.exampleLabel')}</span>
+              </div>
               {/* Dashboard header */}
               <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-surface-2">
                 <div className="flex items-center gap-2">
@@ -181,7 +185,7 @@ export default function ProductGuardContent() {
                 <span className="text-[#22c55e]">[OK]</span> Panguard Guard v1.0.0 installed
               </p>
               <p className="text-text-secondary">
-                <span className="text-[#22c55e]">[OK]</span> Rule engine loaded (3,149 Sigma + 4,326
+                <span className="text-[#22c55e]">[OK]</span> Rule engine loaded (3,149 Sigma + 5,895
                 YARA rules)
               </p>
               <p className="text-text-secondary">
@@ -206,8 +210,36 @@ export default function ProductGuardContent() {
         </div>
       </SectionWrapper>
 
-      {/* ── Use Cases ── */}
+      {/* ── Learning Period Note ── */}
       <SectionWrapper dark>
+        <div className="max-w-2xl mx-auto">
+          <FadeInUp>
+            <div className="bg-brand-sage/5 border border-brand-sage/20 rounded-xl p-6">
+              <p className="text-sm font-bold text-brand-sage mb-2">{t('learningPeriod.title')}</p>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {t('learningPeriod.desc')}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                <div className="text-center">
+                  <p className="text-xs text-text-muted">{t('learningPeriod.phase1Label')}</p>
+                  <p className="text-sm font-semibold text-text-primary mt-1">{t('learningPeriod.phase1')}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-text-muted">{t('learningPeriod.phase2Label')}</p>
+                  <p className="text-sm font-semibold text-text-primary mt-1">{t('learningPeriod.phase2')}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-text-muted">{t('learningPeriod.phase3Label')}</p>
+                  <p className="text-sm font-semibold text-brand-sage mt-1">{t('learningPeriod.phase3')}</p>
+                </div>
+              </div>
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
+      {/* ── Use Cases ── */}
+      <SectionWrapper>
         <SectionTitle overline={t('useCases.overline')} title={t('useCases.title')} />
         <div className="grid sm:grid-cols-3 gap-6 mt-14">
           {useCaseKeys.map((key, i) => {
@@ -241,7 +273,7 @@ export default function ProductGuardContent() {
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 {t('cta.cta1')} <ArrowRight className="w-4 h-4" />

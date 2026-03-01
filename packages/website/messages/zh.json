@@ -152,7 +152,7 @@
       "prereq": "需要 Node.js 20+ 和 git",
       "badges": {
         "mit": "MIT 開源授權",
-        "tests": "1,446 項測試通過",
+        "tests": "1,326 項測試通過",
         "taiwan": "台灣製造"
       }
     },
@@ -347,7 +347,7 @@
         "subtitle": "因為資安不該有門檻。",
         "desc": "MIT 授權，完整原始碼，零黑箱。每一行 code 都經得起檢驗。",
         "belief": "要真正打破資安壁壘，不是把價格壓低，而是讓所有人都能參與。",
-        "proof": "1,446 項測試 · TypeScript strict mode · MIT 授權——這不是業餘專案，這是基礎建設。"
+        "proof": "1,326 項測試 · TypeScript strict mode · MIT 授權——這不是業餘專案，這是基礎建設。"
       }
     },
     "the3amStory": {
@@ -502,7 +502,7 @@
         },
         "security": {
           "title": "安全優先",
-          "desc": "1,446 項測試通過。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
+          "desc": "1,326 項測試通過。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
         },
         "privacy": {
           "title": "隱私優先",
@@ -576,25 +576,25 @@
           "name": "資安法",
           "controls": "10 控制項",
           "price": "NT$8,970",
-          "market": "市場行情：NT$300,000+"
+          "market": "一般顧問費用：NT$300,000+"
         },
         "1": {
           "name": "ISO 27001",
           "controls": "30 控制項",
           "price": "NT$14,970",
-          "market": "市場行情：NT$450,000+"
+          "market": "一般顧問費用：NT$450,000+"
         },
         "2": {
           "name": "SOC 2",
           "controls": "10 控制項",
           "price": "NT$20,970",
-          "market": "市場行情：NT$600,000+"
+          "market": "一般顧問費用：NT$600,000+"
         },
         "3": {
           "name": "全部組合",
-          "controls": "50 控制項",
+          "controls": "216 控制項",
           "price": "NT$29,970",
-          "market": "市場行情：數百萬",
+          "market": "一般顧問費用：數百萬",
           "badge": "省 33%"
         }
       },
@@ -611,7 +611,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "技術文件",
       "badge1": "MIT 開源授權",
-      "badge2": "1,446 測試通過",
+      "badge2": "1,326 測試通過",
       "badge3": "台灣製造"
     }
   },
@@ -696,7 +696,7 @@
       "layer2": {
         "badge": "第二層",
         "name": "規則引擎",
-        "desc": "3,149 條 Sigma 規則 + 4,326 條 YARA 規則 + Suricata 網路 IDS + Falco eBPF 監控。",
+        "desc": "3,149 條 Sigma 規則 + 5,895 條 YARA 規則 + Suricata 網路 IDS + Falco eBPF 監控。",
         "detail": "50 毫秒內攔截 90% 已知威脅。不需要 AI。"
       },
       "layer3": {
@@ -725,7 +725,7 @@
       "tier1": {
         "name": "規則引擎",
         "pct": "90%",
-        "items": "3,149 條 Sigma 偵測規則|4,326 條 YARA 惡意程式特徵|Suricata 網路 IDS 規則|Falco eBPF 系統呼叫監控|行為基線偏差偵測",
+        "items": "3,149 條 Sigma 偵測規則|5,895 條 YARA 惡意程式特徵|Suricata 網路 IDS 規則|Falco eBPF 系統呼叫監控|行為基線偏差偵測",
         "speed": "每事件 <50ms"
       },
       "tier2": {
@@ -1048,7 +1048,7 @@
       "title": "嚴謹打造",
       "stats": [
         {
-          "value": "1,446",
+          "value": "1,326",
           "label": "測試通過"
         },
         {
@@ -1056,7 +1056,7 @@
           "label": "Sigma 規則"
         },
         {
-          "value": "4,326",
+          "value": "5,895",
           "label": "YARA 規則"
         },
         {
@@ -1129,7 +1129,7 @@
         },
         {
           "name": "panguard-rules",
-          "desc": "3,149 條 Sigma 偵測規則 + 4,326 條 YARA 惡意程式特徵",
+          "desc": "3,149 條 Sigma 偵測規則 + 5,895 條 YARA 惡意程式特徵",
           "lang": "YAML / Sigma",
           "stars": "社群"
         },
@@ -1177,8 +1177,8 @@
         "items": [
           "核心平台（Scan + Guard + Chat + Trap + Report）",
           "Threat Cloud v1",
-          "3,149 條 Sigma + 4,326 條 YARA 規則",
-          "1,446 個自動化測試"
+          "3,149 條 Sigma + 5,895 條 YARA 規則",
+          "1,326 個自動化測試"
         ]
       },
       "inProgress": {
@@ -1697,7 +1697,8 @@
         "threatsBlocked": "已攔截威脅",
         "activeEndpoints": "活躍端點",
         "uptime": "運行時間",
-        "recentEvents": "近期事件"
+        "recentEvents": "近期事件",
+        "exampleLabel": "範例儀表板"
       },
       "events": {
         "event1": "已阻擋來自 185.x.x.x 的 SSH 暴力破解",
@@ -1735,7 +1736,7 @@
         },
         "item5": {
           "title": "優雅降級",
-          "desc": "雲端 AI 斷線？本地 LLM（Ollama）接手。LLM 離線？3,149 條 Sigma 和 4,326 條 YARA 規則的規則引擎處理。Guard 永不停止保護，不受網路狀況影響。"
+          "desc": "雲端 AI 斷線？本地 LLM（Ollama）接手。LLM 離線？3,149 條 Sigma 和 5,895 條 YARA 規則的規則引擎處理。Guard 永不停止保護，不受網路狀況影響。"
         },
         "item6": {
           "title": "整合適配器",
@@ -1746,10 +1747,20 @@
         "overline": "安裝方式",
         "title": "一行指令。完成。"
       },
+      "learningPeriod": {
+        "title": "智慧學習期",
+        "desc": "Guard 安裝後會先花 7 天學習你的系統正常行為——哪些程序會跑、什麼流量是正常的、檔案什麼時候會變動。學習期間所有偵測都會記錄，但不會主動封鎖。7 天後自動切換為保護模式，開始主動回應威脅。",
+        "phase1Label": "第 1-7 天",
+        "phase1": "學習模式（偵測 + 記錄）",
+        "phase2Label": "第 7 天",
+        "phase2": "自動切換",
+        "phase3Label": "第 8 天起",
+        "phase3": "保護模式（偵測 + 封鎖）"
+      },
       "cta": {
         "title": "你的伺服器值得一個安全守衛。",
-        "desc": "加入搶先體驗計畫，成為最早在基礎設施上部署 Panguard Guard 的使用者。",
-        "cta1": "搶先體驗",
+        "desc": "立即安裝 Panguard Guard，為你的基礎設施部署 AI 防護。",
+        "cta1": "立即開始",
         "cta2": "閱讀架構文件"
       },
       "useCases": {
@@ -2069,10 +2080,15 @@
           "panguard": "即時更新"
         }
       },
+      "disclaimer": {
+        "title": "重要說明：差距分析工具，非認證服務",
+        "desc": "Panguard Report 是合規差距分析和證據收集工具。它生成的報告可以大幅加速你的合規準備流程，但不等同於正式的 ISO 27001 認證或 SOC 2 Type II 報告。正式認證仍需經由授權的第三方稽核機構完成。",
+        "workflow": "建議的工作流程：用 Panguard Report 持續監控合規狀態 → 在稽核季將報告提交給稽核師作為佐證 → 稽核師根據報告加速審查流程。"
+      },
       "cta": {
         "title": "免顧問費的合規。",
-        "desc": "加入搶先體驗計畫，在幾分鐘內生成你的第一份合規報告，而不是幾個月。",
-        "cta1": "搶先體驗",
+        "desc": "在幾分鐘內生成你的第一份合規報告，而不是幾個月。ISO 27001、SOC 2 和台灣資通安全管理法 -- 一個平台搞定。",
+        "cta1": "立即開始",
         "cta2": "我們的安全實踐",
         "trustLink": "查看我們的信任中心",
         "trustNote": "想看我們自己的合規狀態？"
@@ -2680,7 +2696,7 @@
       "soc2": {
         "name": "SOC 2 Type II",
         "status": "進行中",
-        "desc": "預計 2026 Q3。87% 控制已自動化。由四大會計師事務所進行稽核，涵蓋安全、可用性和保密性信任服務準則。"
+        "desc": "預計 2026 Q3。將由四大會計師事務所進行稽核，涵蓋安全、可用性和保密性信任服務準則。證據自動化進行中。"
       },
       "iso27001": {
         "name": "ISO 27001",
@@ -3185,11 +3201,11 @@
   "customers": {
     "overline": "使用案例情境",
     "title": "團隊如何使用 Panguard",
-    "subtitle": "基於新創團隊和擴展中團隊面臨的常見安全挑戰。這些情境說明 Panguard AI 如何解決實際的基礎設施、合規和威脅偵測問題。",
+    "subtitle": "基於常見安全挑戰的示範情境。這些展示潛在成果，非實際客戶結果。",
     "stats": {
       "stat1": {
         "value": "94%",
-        "label": "事件減少"
+        "label": "潛在事件減少"
       },
       "stat2": {
         "value": "14 天",
@@ -3304,7 +3320,7 @@
       "requirementsTitle": "系統需求",
       "req1": "Linux (Ubuntu 20.04+, Debian 11+, CentOS 8+) 或 macOS 12+，Windows 需 WSL2",
       "req2": "Node.js 20+ 和 git",
-      "req3": "最低 2 GB RAM，建議 4 GB。首次安裝約 3-5 分鐘（從 source 建置）",
+      "req3": "4 GB RAM（建議）+ 500 MB 磁碟空間。首次安裝約 3-5 分鐘（從 source 建置）",
       "step1Title": "步驟一：安裝 Panguard",
       "step1Desc": "一行指令安裝一切：CLI、規則引擎和本地 AI 模型。",
       "step1Note": "安裝程式會自動偵測你的作業系統和架構。預期輸出：",
@@ -3341,7 +3357,79 @@
       "step9Status": "查看 Guard 引擎狀態：",
       "nextTitle": "接下來呢？",
       "nextDesc": "瀏覽完整技術文件，自訂規則、整合 CI/CD 或設定合規報告。",
-      "nextDocs": "完整技術文件"
+      "nextDocs": "完整技術文件",
+      "checklistTitle": "完整部署 Checklist",
+      "checklistDesc": "按照以下步驟完成 Panguard 的完整部署。每一步都是獨立的，可以依你的需求選擇啟用。",
+      "cl1": {
+        "title": "1. 安全掃描 — 拿到安全評分",
+        "desc": "掃描你的系統，取得安全評分和弱點報告。快速模式約 30 秒，完整模式約 60 秒。",
+        "cmd": "panguard scan"
+      },
+      "cl2": {
+        "title": "2. 即時防護 — 啟動 Guard 守護程序",
+        "desc": "Guard 會 24/7 監控你的系統。前 7 天是學習模式（偵測 + 記錄），之後自動切換為保護模式（偵測 + 封鎖）。",
+        "cmd": "panguard guard start"
+      },
+      "cl3": {
+        "title": "3. 告警通知 — 設定 Telegram / Slack",
+        "desc": "收到威脅時即時通知你。支援 Telegram、Slack、Email 和 Webhook。",
+        "cmd": "panguard chat config"
+      },
+      "cl4": {
+        "title": "4. 蜜罐（選用）— 部署蜜罐陷阱",
+        "desc": "在你的伺服器上部署假的 SSH、HTTP、MySQL 等服務，捕捉攻擊者的行為和意圖。",
+        "cmd": "panguard trap start --services ssh,http"
+      },
+      "cl5": {
+        "title": "5. 合規報告（選用）— 產生合規報告",
+        "desc": "自動產生 ISO 27001、SOC 2 或台灣資安法合規報告。可作為稽核佐證。",
+        "cmd": "panguard report generate --framework iso27001"
+      }
+    },
+    "advancedSetup": {
+      "backToDocs": "< 返回技術文件",
+      "title": "進階設定",
+      "subtitle": "用可選的外部工具增強 Panguard 的偵測能力。所有工具都是選配的——Panguard 在沒有它們的情況下仍然完整運作。",
+      "degradeNote": "優雅降級架構",
+      "degradeDesc": "Panguard 的 AI 分析遵循三層降級策略：雲端 AI（Claude/OpenAI）> 本地 LLM（Ollama）> 規則引擎（Sigma + YARA）。每一層都是獨立的，即使全部外部工具離線，3,149 條 Sigma 規則和 5,895 條 YARA 規則仍然提供完整防護。",
+      "ollamaTitle": "Ollama — 本地 AI 分析",
+      "ollamaDesc": "安裝 Ollama 讓 Guard 在本地執行 AI 威脅分析，不需要雲端 API。適合離線環境或對資料隱私有要求的場景。",
+      "ollamaNote": "Panguard 會自動偵測 Ollama（預設 http://localhost:11434）。安裝後不需要額外設定。",
+      "falcoTitle": "Falco — eBPF 核心層監控",
+      "falcoDesc": "Falco 提供 Linux 核心層級的 syscall 監控。安裝後 Guard 會自動整合，讀取 Falco 的 JSON 告警。適合需要深層行為偵測的環境。",
+      "falcoNote": "僅限 Linux。Falco 需要 root 權限。Guard 會自動偵測 /var/log/falco/ 下的告警檔案。",
+      "suricataTitle": "Suricata — 網路流量分析",
+      "suricataDesc": "Suricata 是網路層 IDS/IPS，提供進階網路流量分析。安裝後 Guard 會自動讀取 Suricata 的 eve.json。",
+      "suricataNote": "僅限 Linux。Suricata 需要 root 權限。Guard 會自動偵測 /var/log/suricata/eve.json。",
+      "envTitle": "環境變數一覽",
+      "envDesc": "以下環境變數可以自訂 Panguard 的行為。全部都是選配的。",
+      "envVar": "變數",
+      "envPurpose": "用途",
+      "env1": { "var": "ANTHROPIC_API_KEY", "purpose": "啟用 Claude AI 分析（雲端，最智慧）" },
+      "env2": { "var": "OPENAI_API_KEY", "purpose": "啟用 OpenAI GPT 分析（雲端備選）" },
+      "env3": { "var": "PANGUARD_LLM_MODEL", "purpose": "覆寫 Ollama 模型名稱（預設：llama3）" },
+      "env4": { "var": "OLLAMA_API_ENDPOINT", "purpose": "覆寫 Ollama API 位址（預設：http://localhost:11434）" },
+      "backToGettingStarted": "快速入門",
+      "goToDeployment": "多端點部署"
+    },
+    "deployment": {
+      "backToDocs": "< 返回技術文件",
+      "title": "多端點部署指南",
+      "subtitle": "在多台伺服器上批次安裝和管理 Panguard。",
+      "sshTitle": "方法一：SSH 批次安裝",
+      "sshDesc": "最簡單的方式——用 SSH 迴圈逐台安裝。適合 5-20 台伺服器。",
+      "ansibleTitle": "方法二：Ansible Playbook",
+      "ansibleDesc": "用 Ansible 自動化部署。適合 20+ 台伺服器或需要冪等性的環境。",
+      "threatCloudTitle": "Threat Cloud 多端點整合",
+      "threatCloudDesc": "所有端點安裝後會自動上傳威脅情報到 Threat Cloud。在一台伺服器發現的威脅會自動保護所有其他伺服器。",
+      "threatCloudNote": "免費版支援單一端點。多端點管理需要 Starter 方案以上。",
+      "tipsTitle": "部署建議",
+      "tip1": "先在測試環境安裝，確認無衝突後再部署到生產環境",
+      "tip2": "Guard 的 7 天學習期在每台伺服器上獨立計算",
+      "tip3": "使用 panguard scan --json 收集各台掃描結果，匯總分析",
+      "tip4": "用 panguard chat config 設定統一的告警頻道（如一個 Slack channel）",
+      "backToGettingStarted": "快速入門",
+      "goToAdvancedSetup": "進階設定"
     }
   },
   "changelog": {
@@ -3599,6 +3687,7 @@
       "threatIntel": "威脅情報來源"
     },
     "operational": "正常運行",
+    "betaLabel": "Beta 測試中",
     "degradedLabel": "效能下降",
     "outageLabel": "中斷",
     "uptimeHistory": {

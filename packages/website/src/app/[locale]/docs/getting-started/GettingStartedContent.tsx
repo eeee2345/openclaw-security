@@ -152,7 +152,7 @@ export default function GettingStartedContent() {
             <TerminalOutput
               lines={[
                 '[OK] Panguard v1.0.0 installed',
-                '[OK] Rule engine loaded (3,149 Sigma + 4,326 YARA rules)',
+                '[OK] Rule engine loaded (3,149 Sigma + 5,895 YARA rules)',
                 '[OK] Local LLM ready (Ollama)',
                 '[OK] Monitoring started. Learning period: 7 days.',
               ]}
@@ -186,7 +186,7 @@ export default function GettingStartedContent() {
                 '[OK] Guard daemon started',
                 '[OK] Watching 12 network interfaces',
                 '[OK] Sigma rules: 3,149 loaded',
-                '[OK] YARA rules: 4,326 loaded',
+                '[OK] YARA rules: 5,895 loaded',
                 '[OK] Baseline learning: active (7 days)',
               ]}
             />
@@ -322,6 +322,28 @@ export default function GettingStartedContent() {
                 <p className="text-text-secondary text-sm mb-2">{t('step9Status')}</p>
                 <CodeBlock code="panguard guard status" label="Terminal" />
               </div>
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
+      {/* Deployment Checklist */}
+      <SectionWrapper>
+        <div className="max-w-3xl mx-auto">
+          <FadeInUp>
+            <h2 className="text-xl font-bold text-text-primary mb-2">{t('checklistTitle')}</h2>
+            <p className="text-text-secondary mb-6">{t('checklistDesc')}</p>
+            <div className="space-y-3">
+              {(['cl1', 'cl2', 'cl3', 'cl4', 'cl5'] as const).map((key) => (
+                <div key={key} className="flex items-start gap-3 bg-surface-1 border border-border rounded-xl p-4">
+                  <BrandCheck className="w-4 h-4 text-brand-sage shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">{t(`${key}.title`)}</p>
+                    <p className="text-xs text-text-secondary mt-1">{t(`${key}.desc`)}</p>
+                    <code className="text-xs text-brand-sage mt-1 block">{t(`${key}.cmd`)}</code>
+                  </div>
+                </div>
+              ))}
             </div>
           </FadeInUp>
         </div>

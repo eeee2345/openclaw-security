@@ -152,7 +152,7 @@
       "prereq": "Requires Node.js 20+ and git",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,446 Tests Passing",
+        "tests": "1,326 Tests Passing",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -347,7 +347,7 @@
         "subtitle": "Because security shouldn't have walls.",
         "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
         "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
-        "proof": "1,446 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+        "proof": "1,326 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
       }
     },
     "the3amStory": {
@@ -434,7 +434,7 @@
           "type": "Taiwan SMB",
           "detail": "30 employees, government bid",
           "pain": "Needed ISMS compliance. Consultants quoted $10,000 and 3 months.",
-          "result": "Panguard Report: $299, 60 seconds, 50 controls mapped.",
+          "result": "Panguard Report: $299, 60 seconds, 216 controls mapped.",
           "products": "REPORT (ISMS)",
           "cost": "$299",
           "saved": "Saved $9,700 and 3 months"
@@ -502,7 +502,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "1,446 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "1,326 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -576,25 +576,25 @@
           "name": "Taiwan Cyber Security Act",
           "controls": "10 controls",
           "price": "$299",
-          "market": "Market rate: $10,000+"
+          "market": "Typical consulting cost: $10,000+"
         },
         "1": {
           "name": "ISO 27001",
           "controls": "30 controls",
           "price": "$499",
-          "market": "Market rate: $15,000+"
+          "market": "Typical consulting cost: $15,000+"
         },
         "2": {
           "name": "SOC 2",
           "controls": "10 controls",
           "price": "$699",
-          "market": "Market rate: $20,000+"
+          "market": "Typical consulting cost: $20,000+"
         },
         "3": {
           "name": "Bundle (All 3)",
-          "controls": "50 controls",
+          "controls": "216 controls",
           "price": "$999",
-          "market": "Market rate: $30,000+",
+          "market": "Typical consulting cost: $30,000+",
           "badge": "SAVE 33%"
         }
       },
@@ -611,7 +611,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "badge1": "MIT Open Source",
-      "badge2": "1,446 Tests Passing",
+      "badge2": "1,326 Tests Passing",
       "badge3": "Built in Taiwan"
     }
   },
@@ -971,7 +971,8 @@
         "threatsBlocked": "Threats Blocked",
         "activeEndpoints": "Active Endpoints",
         "uptime": "Uptime",
-        "recentEvents": "Recent Events"
+        "recentEvents": "Recent Events",
+        "exampleLabel": "Example Dashboard"
       },
       "events": {
         "event1": "Blocked SSH brute force from 185.x.x.x",
@@ -1009,7 +1010,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,149 Sigma and 4,326 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,149 Sigma and 5,895 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "Integration Adapters",
@@ -1020,10 +1021,20 @@
         "overline": "Installation",
         "title": "One command. Done."
       },
+      "learningPeriod": {
+        "title": "Smart Learning Period",
+        "desc": "After installation, Guard spends 7 days learning your system's normal behavior -- which processes run, what traffic is normal, when files change. During the learning period, all detections are logged but nothing is blocked. After 7 days, Guard automatically switches to protection mode and begins actively responding to threats.",
+        "phase1Label": "Days 1-7",
+        "phase1": "Learning mode (detect + log)",
+        "phase2Label": "Day 7",
+        "phase2": "Auto-switch",
+        "phase3Label": "Day 8+",
+        "phase3": "Protection mode (detect + block)"
+      },
       "cta": {
         "title": "Your server deserves a security guard.",
-        "desc": "Join the early access program and be among the first to deploy Panguard Guard on your infrastructure.",
-        "cta1": "Get Early Access",
+        "desc": "Install Panguard Guard now and deploy AI-powered protection on your infrastructure.",
+        "cta1": "Get Started",
         "cta2": "Read the Architecture"
       },
       "useCases": {
@@ -1343,10 +1354,15 @@
           "panguard": "Real-time"
         }
       },
+      "disclaimer": {
+        "title": "Important: Gap Analysis Tool, Not a Certification Service",
+        "desc": "Panguard Report is a compliance gap analysis and evidence collection tool. The reports it generates can significantly accelerate your compliance preparation, but they are not equivalent to formal ISO 27001 certification or SOC 2 Type II reports. Formal certification must be completed by an authorized third-party auditor.",
+        "workflow": "Recommended workflow: Use Panguard Report to continuously monitor compliance status -> Submit reports to your auditor as supporting evidence during audit season -> Your auditor uses the reports to accelerate their review."
+      },
       "cta": {
         "title": "Compliance without the consultant bill.",
         "desc": "Generate your first compliance report in minutes, not months. ISO 27001, SOC 2, and Taiwan Cyber Security Act -- all from one platform.",
-        "cta1": "Get Early Access",
+        "cta1": "Get Started",
         "cta2": "See Panguard Report",
         "trustNote": "Want to see our own compliance status?",
         "trustLink": "Visit our Trust Center"
@@ -1954,7 +1970,7 @@
       "soc2": {
         "name": "SOC 2 Type II",
         "status": "In Progress",
-        "desc": "Expected Q3 2026. 87% of controls automated. Audit conducted by a Big Four firm covering Security, Availability, and Confidentiality trust service criteria."
+        "desc": "Expected Q3 2026. Audit to be conducted by a Big Four firm covering Security, Availability, and Confidentiality trust service criteria. Evidence automation in progress."
       },
       "iso27001": {
         "name": "ISO 27001",
@@ -2459,11 +2475,11 @@
   "customers": {
     "overline": "Use Case Scenarios",
     "title": "How Teams Use Panguard",
-    "subtitle": "Based on common security challenges faced by startups and scaling teams. These scenarios illustrate how Panguard AI solves real infrastructure, compliance, and threat detection problems.",
+    "subtitle": "Illustrative scenarios based on common security challenges. These demonstrate potential outcomes, not actual customer results.",
     "stats": {
       "stat1": {
         "value": "94%",
-        "label": "Reduction in incidents"
+        "label": "Potential incident reduction"
       },
       "stat2": {
         "value": "14 days",
@@ -2578,7 +2594,7 @@
       "requirementsTitle": "System Requirements",
       "req1": "Linux (Ubuntu 20.04+, Debian 11+, CentOS 8+) or macOS 12+. Windows requires WSL2",
       "req2": "Node.js 20+ and git",
-      "req3": "2 GB RAM minimum, 4 GB recommended. First install takes ~3-5 min (builds from source)",
+      "req3": "4 GB RAM recommended + 500 MB disk space. First install takes ~3-5 min (builds from source)",
       "step1Title": "Step 1: Install Panguard",
       "step1Desc": "One command installs everything: the CLI, rule engine, and local AI model.",
       "step1Note": "The installer auto-detects your OS and architecture. Expected output:",
@@ -2615,7 +2631,79 @@
       "step9Status": "Check Guard engine status:",
       "nextTitle": "What's Next?",
       "nextDesc": "Explore the full documentation to customize rules, integrate with CI/CD, or set up compliance reports.",
-      "nextDocs": "Full Documentation"
+      "nextDocs": "Full Documentation",
+      "checklistTitle": "Full Deployment Checklist",
+      "checklistDesc": "Follow these steps to fully deploy Panguard. Each step is independent -- enable only what you need.",
+      "cl1": {
+        "title": "1. Security Scan -- Get your security score",
+        "desc": "Scan your system for vulnerabilities and get a security score. Quick mode ~30s, full mode ~60s.",
+        "cmd": "panguard scan"
+      },
+      "cl2": {
+        "title": "2. Real-time Protection -- Start the Guard daemon",
+        "desc": "Guard monitors your system 24/7. First 7 days in learning mode (detect + log), then auto-switches to protection mode (detect + block).",
+        "cmd": "panguard guard start"
+      },
+      "cl3": {
+        "title": "3. Alert Notifications -- Set up Telegram / Slack",
+        "desc": "Get notified instantly when threats are detected. Supports Telegram, Slack, Email, and Webhook.",
+        "cmd": "panguard chat config"
+      },
+      "cl4": {
+        "title": "4. Honeypots (Optional) -- Deploy decoy services",
+        "desc": "Deploy fake SSH, HTTP, MySQL services on your server to capture attacker behavior and intent.",
+        "cmd": "panguard trap start --services ssh,http"
+      },
+      "cl5": {
+        "title": "5. Compliance Reports (Optional) -- Generate reports",
+        "desc": "Auto-generate ISO 27001, SOC 2, or Taiwan Cyber Security Act compliance reports. Use as audit evidence.",
+        "cmd": "panguard report generate --framework iso27001"
+      }
+    },
+    "advancedSetup": {
+      "backToDocs": "< Back to Docs",
+      "title": "Advanced Setup",
+      "subtitle": "Enhance Panguard's detection capabilities with optional external tools. All tools are optional -- Panguard works fully without them.",
+      "degradeNote": "Graceful Degradation Architecture",
+      "degradeDesc": "Panguard's AI analysis follows a three-tier degradation strategy: Cloud AI (Claude/OpenAI) > Local LLM (Ollama) > Rule Engine (Sigma + YARA). Each tier is independent. Even with all external tools offline, 3,149 Sigma rules and 5,895 YARA rules still provide full protection.",
+      "ollamaTitle": "Ollama -- Local AI Analysis",
+      "ollamaDesc": "Install Ollama to run AI threat analysis locally without cloud APIs. Ideal for air-gapped environments or data privacy requirements.",
+      "ollamaNote": "Panguard auto-detects Ollama (default http://localhost:11434). No additional configuration needed after install.",
+      "falcoTitle": "Falco -- eBPF Kernel Monitoring",
+      "falcoDesc": "Falco provides Linux kernel-level syscall monitoring. Once installed, Guard automatically integrates and reads Falco's JSON alerts. Ideal for deep behavioral detection.",
+      "falcoNote": "Linux only. Falco requires root. Guard auto-detects alert files under /var/log/falco/.",
+      "suricataTitle": "Suricata -- Network Traffic Analysis",
+      "suricataDesc": "Suricata is a network-layer IDS/IPS that provides advanced network traffic analysis. Once installed, Guard automatically reads Suricata's eve.json.",
+      "suricataNote": "Linux only. Suricata requires root. Guard auto-detects /var/log/suricata/eve.json.",
+      "envTitle": "Environment Variables Reference",
+      "envDesc": "The following environment variables customize Panguard's behavior. All are optional.",
+      "envVar": "Variable",
+      "envPurpose": "Purpose",
+      "env1": { "var": "ANTHROPIC_API_KEY", "purpose": "Enable Claude AI analysis (cloud, most capable)" },
+      "env2": { "var": "OPENAI_API_KEY", "purpose": "Enable OpenAI GPT analysis (cloud fallback)" },
+      "env3": { "var": "PANGUARD_LLM_MODEL", "purpose": "Override Ollama model name (default: llama3)" },
+      "env4": { "var": "OLLAMA_API_ENDPOINT", "purpose": "Override Ollama API endpoint (default: http://localhost:11434)" },
+      "backToGettingStarted": "Getting Started",
+      "goToDeployment": "Multi-Endpoint Deployment"
+    },
+    "deployment": {
+      "backToDocs": "< Back to Docs",
+      "title": "Multi-Endpoint Deployment Guide",
+      "subtitle": "Batch install and manage Panguard across multiple servers.",
+      "sshTitle": "Method 1: SSH Batch Install",
+      "sshDesc": "The simplest approach -- use an SSH loop to install on each server. Best for 5-20 servers.",
+      "ansibleTitle": "Method 2: Ansible Playbook",
+      "ansibleDesc": "Automate deployment with Ansible. Best for 20+ servers or environments requiring idempotency.",
+      "threatCloudTitle": "Threat Cloud Multi-Endpoint Integration",
+      "threatCloudDesc": "All endpoints automatically upload threat intelligence to Threat Cloud. A threat discovered on one server automatically protects all others.",
+      "threatCloudNote": "Free tier supports a single endpoint. Multi-endpoint management requires Starter plan or above.",
+      "tipsTitle": "Deployment Tips",
+      "tip1": "Install in a test environment first to verify no conflicts before deploying to production",
+      "tip2": "Guard's 7-day learning period runs independently on each server",
+      "tip3": "Use panguard scan --json to collect scan results from each server for centralized analysis",
+      "tip4": "Use panguard chat config to set up a unified alert channel (e.g., one Slack channel)",
+      "backToGettingStarted": "Getting Started",
+      "goToAdvancedSetup": "Advanced Setup"
     }
   },
   "changelog": {
@@ -2873,6 +2961,7 @@
       "threatIntel": "Threat Intelligence Feed"
     },
     "operational": "Operational",
+    "betaLabel": "Beta",
     "degradedLabel": "Degraded",
     "outageLabel": "Outage",
     "uptimeHistory": {
@@ -2980,7 +3069,7 @@
       "layer2": {
         "badge": "Layer 2",
         "name": "Rules Engine",
-        "desc": "3,149 Sigma rules + 4,326 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
+        "desc": "3,149 Sigma rules + 5,895 YARA rules + Suricata network IDS + Falco eBPF monitoring.",
         "detail": "Catches 90% of known threats in under 50ms. No AI needed."
       },
       "layer3": {
@@ -3009,7 +3098,7 @@
       "tier1": {
         "name": "Rules Engine",
         "pct": "90%",
-        "items": "3,149 Sigma detection rules|4,326 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
+        "items": "3,149 Sigma detection rules|5,895 YARA malware signatures|Suricata network IDS rules|Falco eBPF system call monitoring|Behavioral baseline deviations",
         "speed": "<50ms per event"
       },
       "tier2": {
@@ -3332,7 +3421,7 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "1,446",
+          "value": "1,326",
           "label": "Tests passing"
         },
         {
@@ -3340,7 +3429,7 @@
           "label": "Sigma rules"
         },
         {
-          "value": "4,326",
+          "value": "5,895",
           "label": "YARA rules"
         },
         {
@@ -3413,7 +3502,7 @@
         },
         {
           "name": "panguard-rules",
-          "desc": "3,149 Sigma detection rules + 4,326 YARA malware signatures",
+          "desc": "3,149 Sigma detection rules + 5,895 YARA malware signatures",
           "lang": "YAML / Sigma",
           "stars": "Community"
         },
@@ -3461,8 +3550,8 @@
         "items": [
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
-          "3,149 Sigma + 4,326 YARA rules",
-          "1,446 automated tests"
+          "3,149 Sigma + 5,895 YARA rules",
+          "1,326 automated tests"
         ]
       },
       "inProgress": {

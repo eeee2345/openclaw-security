@@ -5,7 +5,7 @@
  * @module @panguard-ai/panguard-auth/totp
  */
 
-import { createHmac, randomBytes } from 'node:crypto';
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
 const TOTP_PERIOD = 30; // seconds
 const TOTP_DIGITS = 6;
@@ -111,21 +111,37 @@ export function generateTotp(secret: string, timeStep?: number): string {
 }
 
 /**
- * Verify a TOTP code. Allows 1 time step drift in either direction.
+ * Verify a TOTP code using timing-safe comparison.
+ * Allows 1 time step drift in either direction.
+ * Optionally enforces replay protection via lastUsedStep.
+ *
+ * Returns the matched time step on success (for replay tracking), or -1 on failure.
  */
-export function verifyTotp(secret: string, code: string): boolean {
-  if (typeof code !== 'string' || code.length !== TOTP_DIGITS) return false;
+export function verifyTotp(
+  secret: string,
+  code: string,
+  lastUsedStep?: number
+): number {
+  if (typeof code !== 'string' || code.length !== TOTP_DIGITS) return -1;
 
   const currentStep = Math.floor(Date.now() / 1000 / TOTP_PERIOD);
 
   // Check current step and +/- 1 (window of 90 seconds total)
   for (let i = -1; i <= 1; i++) {
-    if (generateTotp(secret, currentStep + i) === code) {
-      return true;
+    const step = currentStep + i;
+
+    // Replay protection: reject codes from already-used time steps
+    if (lastUsedStep !== undefined && step <= lastUsedStep) continue;
+
+    const expected = generateTotp(secret, step);
+    const a = Buffer.from(expected, 'utf8');
+    const b = Buffer.from(code, 'utf8');
+    if (a.length === b.length && timingSafeEqual(a, b)) {
+      return step;
     }
   }
 
-  return false;
+  return -1;
 }
 
 /**

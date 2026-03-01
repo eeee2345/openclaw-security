@@ -10,7 +10,7 @@ import { CheckIcon, AlertIcon, MonitorIcon } from '@/components/ui/BrandIcons';
 
 /* ─── Types ─── */
 
-type ServiceStatus = 'operational' | 'degraded' | 'outage';
+type ServiceStatus = 'operational' | 'degraded' | 'outage' | 'beta';
 
 type IncidentStatus = 'resolved' | 'investigating' | 'monitoring';
 
@@ -28,62 +28,56 @@ interface Incident {
   description: string;
 }
 
-/* ─── Mock Data ─── */
-
-function generateUptimeHistory(degradedDays: number[]): ServiceStatus[] {
-  return Array.from({ length: 30 }, (_, i) =>
-    degradedDays.includes(i) ? 'degraded' : 'operational'
-  );
-}
+/* ─── Service Data ─── */
 
 const services: Service[] = [
   {
     name: 'Panguard Guard \u2014 Endpoint Protection',
-    status: 'operational',
-    uptime: 99.99,
-    uptimeHistory: generateUptimeHistory([]),
+    status: 'beta',
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'Panguard Scan \u2014 Security Audits',
-    status: 'operational',
-    uptime: 99.98,
-    uptimeHistory: generateUptimeHistory([4]),
+    status: 'beta',
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'Panguard Chat \u2014 AI Copilot',
-    status: 'operational',
-    uptime: 99.95,
-    uptimeHistory: generateUptimeHistory([7, 18]),
+    status: 'beta',
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'Panguard Trap \u2014 Honeypot System',
-    status: 'operational',
-    uptime: 99.97,
-    uptimeHistory: generateUptimeHistory([12]),
+    status: 'beta',
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'Panguard Report \u2014 Compliance Engine',
-    status: 'operational',
-    uptime: 99.99,
-    uptimeHistory: generateUptimeHistory([]),
+    status: 'beta',
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'Dashboard & Web App',
     status: 'operational',
-    uptime: 99.96,
-    uptimeHistory: generateUptimeHistory([20]),
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'API & Integrations',
     status: 'operational',
-    uptime: 99.98,
-    uptimeHistory: generateUptimeHistory([8]),
+    uptime: 0,
+    uptimeHistory: [],
   },
   {
     name: 'Threat Intelligence Feed',
-    status: 'operational',
-    uptime: 99.99,
-    uptimeHistory: generateUptimeHistory([]),
+    status: 'beta',
+    uptime: 0,
+    uptimeHistory: [],
   },
 ];
 
@@ -116,6 +110,10 @@ const statusConfig: Record<ServiceStatus, { dotClass: string; barClass: string }
   operational: {
     dotClass: 'bg-emerald-400',
     barClass: 'bg-brand-sage',
+  },
+  beta: {
+    dotClass: 'bg-blue-400',
+    barClass: 'bg-blue-400/60',
   },
   degraded: {
     dotClass: 'bg-amber-400',
@@ -215,9 +213,11 @@ function ServiceRow({
             <span className={`w-2 h-2 rounded-full ${cfg.dotClass}`} aria-hidden="true" />
             <span className="text-text-secondary text-sm hidden sm:inline">{statusLabel}</span>
           </div>
-          <span className="text-text-tertiary text-sm font-mono w-16 text-right">
-            {service.uptime.toFixed(2)}%
-          </span>
+          {service.uptime > 0 && (
+            <span className="text-text-tertiary text-sm font-mono w-16 text-right">
+              {service.uptime.toFixed(2)}%
+            </span>
+          )}
         </div>
       </div>
     </FadeInUp>
@@ -252,7 +252,7 @@ function UptimeChart({
         <div className="flex items-center justify-between mt-3">
           <span className="text-text-tertiary text-xs">{t('uptimeHistory.daysAgo')}</span>
           <span className="text-text-secondary text-xs font-medium">
-            {t('uptimeHistory.uptimeLabel')} {service.uptime.toFixed(2)}%
+            {service.uptime > 0 ? `${t('uptimeHistory.uptimeLabel')} ${service.uptime.toFixed(2)}%` : t('betaLabel')}
           </span>
           <span className="text-text-tertiary text-xs">{t('uptimeHistory.today')}</span>
         </div>
@@ -310,6 +310,7 @@ export default function StatusContent() {
 
   const statusLabels: Record<ServiceStatus, string> = {
     operational: t('operational'),
+    beta: t('betaLabel'),
     degraded: t('degradedLabel'),
     outage: t('outageLabel'),
   };
