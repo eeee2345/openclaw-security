@@ -9,3 +9,4 @@ export { TelegramChannel } from './telegram.js';
 export { SlackChannel } from './slack.js';
 export { EmailChannel } from './email.js';
 export { WebhookChannel } from './webhook.js';
+export { LINEChannel } from './line.js';

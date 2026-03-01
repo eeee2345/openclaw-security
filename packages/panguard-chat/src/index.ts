@@ -49,6 +49,7 @@ export type {
   TelegramChannelConfig,
   SlackChannelConfig,
   EmailChannelConfig,
+  LINEChannelConfig,
 } from './types.js';
 
 // ---------------------------------------------------------------------------
@@ -73,6 +74,7 @@ export { TelegramChannel } from './channels/index.js';
 export { SlackChannel } from './channels/index.js';
 export { EmailChannel } from './channels/index.js';
 export { WebhookChannel } from './channels/index.js';
+export { LINEChannel } from './channels/index.js';
 
 // ---------------------------------------------------------------------------
 // Templates / 模板

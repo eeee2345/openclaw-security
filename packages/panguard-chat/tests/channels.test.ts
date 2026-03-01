@@ -8,6 +8,7 @@ import { TelegramChannel } from '../src/channels/telegram.js';
 import { SlackChannel } from '../src/channels/slack.js';
 import { EmailChannel } from '../src/channels/email.js';
 import { WebhookChannel } from '../src/channels/webhook.js';
+import { LINEChannel } from '../src/channels/line.js';
 
 // Note: These are unit tests that verify channel construction and interface compliance.
 // Actual API calls require real credentials and are tested in integration tests.
@@ -76,6 +77,96 @@ describe('TelegramChannel', () => {
 
     const result = await channel.processUpdate({
       message: { chat: { id: 12345 }, text: 'Hello' },
+    });
+    expect(result).toBeNull();
+  });
+});
+
+describe('LINEChannel', () => {
+  it('should initialize with config', () => {
+    const channel = new LINEChannel({
+      channelAccessToken: 'test-access-token',
+      destinationUserId: 'U1234567890abcdef',
+    });
+    expect(channel.channelType).toBe('line');
+  });
+
+  it('should register reply handler', () => {
+    const channel = new LINEChannel({
+      channelAccessToken: 'test-access-token',
+      destinationUserId: 'U1234567890abcdef',
+    });
+    const handler = async (_userId: string, _text: string) => 'ok';
+    channel.onReply(handler);
+  });
+
+  it('should handle sendMessage errors gracefully', async () => {
+    const channel = new LINEChannel({
+      channelAccessToken: 'invalid-token',
+      destinationUserId: 'U1234567890abcdef',
+    });
+    const result = await channel.sendMessage('user-1', { text: 'test' });
+    expect(result.success).toBe(false);
+    expect(result.channel).toBe('line');
+  });
+
+  it('should process text message webhook event', async () => {
+    const channel = new LINEChannel({
+      channelAccessToken: 'test-token',
+      destinationUserId: 'U1234567890abcdef',
+    });
+
+    let receivedUserId = '';
+    let receivedText = '';
+    channel.onReply(async (userId, text) => {
+      receivedUserId = userId;
+      receivedText = text;
+      return 'response';
+    });
+
+    const result = await channel.processWebhook({
+      type: 'message',
+      source: { userId: 'U9876543210' },
+      message: { type: 'text', text: 'Hello' },
+    });
+
+    expect(result).toBe('response');
+    expect(receivedUserId).toBe('U9876543210');
+    expect(receivedText).toBe('Hello');
+  });
+
+  it('should process postback webhook event', async () => {
+    const channel = new LINEChannel({
+      channelAccessToken: 'test-token',
+      destinationUserId: 'U1234567890abcdef',
+    });
+
+    let receivedAction = '';
+    channel.onReply(async (_userId, text) => {
+      receivedAction = text;
+      return 'done';
+    });
+
+    const result = await channel.processWebhook({
+      type: 'postback',
+      source: { userId: 'U9876543210' },
+      postback: { data: 'action=block_source' },
+    });
+
+    expect(result).toBe('done');
+    expect(receivedAction).toBe('action=block_source');
+  });
+
+  it('should return null when no handler registered', async () => {
+    const channel = new LINEChannel({
+      channelAccessToken: 'test-token',
+      destinationUserId: 'U1234567890abcdef',
+    });
+
+    const result = await channel.processWebhook({
+      type: 'message',
+      source: { userId: 'U9876543210' },
+      message: { type: 'text', text: 'Hello' },
     });
     expect(result).toBeNull();
   });

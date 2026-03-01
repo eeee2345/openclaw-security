@@ -21,7 +21,7 @@ describe('SETUP_STEPS', () => {
   it('should have channel selection step', () => {
     const step = SETUP_STEPS.find((s) => s.id === 'channel');
     expect(step).toBeDefined();
-    expect(step!.options!.length).toBe(4);
+    expect(step!.options!.length).toBe(5);
   });
 
   it('should have user type step', () => {
