@@ -6,7 +6,6 @@ import { Copy, Check, Terminal, Monitor, Server } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import { Link } from '@/navigation';
-import { CheckIcon as BrandCheck } from '@/components/ui/BrandIcons';
 
 // ---------------------------------------------------------------------------
 // Types
