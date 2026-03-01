@@ -140,10 +140,10 @@ describe('Guidance Wizard', () => {
       expect(result.recommendedPlan).toBe('solo');
     });
 
-    it('should recommend team plan for small_business', () => {
+    it('should recommend pro plan for small_business', () => {
       const answers: GuidanceAnswers = { persona: 'small_business' };
       const result = generateGuidanceResult(answers);
-      expect(result.recommendedPlan).toBe('team');
+      expect(result.recommendedPlan).toBe('pro');
     });
 
     it('should recommend business plan for mid_enterprise', () => {
@@ -152,10 +152,10 @@ describe('Guidance Wizard', () => {
       expect(result.recommendedPlan).toBe('business');
     });
 
-    it('should recommend free plan when no persona', () => {
+    it('should recommend community plan when no persona', () => {
       const answers: GuidanceAnswers = {};
       const result = generateGuidanceResult(answers);
-      expect(result.recommendedPlan).toBe('free');
+      expect(result.recommendedPlan).toBe('community');
     });
 
     it('should always recommend Panguard Scan', () => {

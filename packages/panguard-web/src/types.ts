@@ -69,7 +69,7 @@ export interface ScenarioStory {
 // ---------------------------------------------------------------------------
 
 /** Pricing plan names / 方案名稱 */
-export type PricingPlan = 'free' | 'solo' | 'starter' | 'team' | 'business';
+export type PricingPlan = 'community' | 'solo' | 'pro' | 'business';
 
 /** Report add-on product / 報告加購產品 */
 export interface ReportAddon {

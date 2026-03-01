@@ -159,7 +159,7 @@ export const PERSONAS: Record<string, PersonaProfile> = {
       '一次勒索軟體攻擊就可能讓公司倒閉',
       '負擔不起企業級資安解決方案',
     ],
-    recommendedPlan: 'team',
+    recommendedPlan: 'pro',
     scenarios: SMALL_BIZ_SCENARIOS,
   },
 

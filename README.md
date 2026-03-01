@@ -77,7 +77,7 @@ Panguard uses a tiered approach that handles 90% of threats locally in under 50m
 
 ```
 Layer 1: Rules Engine (90% of threats)
-  3,149 Sigma rules + 4,326 YARA rules + Suricata
+  3,155 Sigma rules + 4,326 YARA rules + Suricata
   Speed: <50ms | Cost: $0
 
 Layer 2: Local AI (7% of threats)
@@ -307,7 +307,7 @@ panguard-ai/
     admin/              # Admin panel: users, sessions, audit, usage
   security-hardening/   # WebSocket security, credential storage, sandbox, RBAC
   config/
-    sigma-rules/        # 3,149 Sigma detection rules
+    sigma-rules/        # 3,155 Sigma detection rules
     yara-rules/         # 4,326 YARA malware detection rules
     suricata/           # Suricata IDS/IPS rules
     falco-rules/        # Falco runtime security rules

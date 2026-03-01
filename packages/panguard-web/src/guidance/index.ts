@@ -210,11 +210,11 @@ function determinePlan(persona: PersonaType | undefined): PricingPlan {
     case 'developer':
       return 'solo';
     case 'small_business':
-      return 'team';
+      return 'pro';
     case 'mid_enterprise':
       return 'business';
     default:
-      return 'free';
+      return 'community';
   }
 }
 
@@ -248,7 +248,7 @@ function determineProducts(answers: GuidanceAnswers): string[] {
 function generateInstallCommand(answers: GuidanceAnswers): string {
   const plan = determinePlan(answers.persona);
 
-  if (plan === 'free') {
+  if (plan === 'community') {
     return 'curl -fsSL https://get.panguard.ai | bash';
   }
 
@@ -318,7 +318,7 @@ export function generateGuidanceResult(
   const configSteps = generateConfigSteps(answers, language);
 
   let estimatedSetupTime: string;
-  if (recommendedPlan === 'free') {
+  if (recommendedPlan === 'community') {
     estimatedSetupTime = language === 'zh-TW' ? '60 秒' : '60 seconds';
   } else if (recommendedPlan === 'business') {
     estimatedSetupTime = language === 'zh-TW' ? '10 分鐘' : '10 minutes';

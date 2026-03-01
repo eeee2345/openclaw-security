@@ -25,8 +25,8 @@
   },
   "pricing": {
     "title": "各種規模都有方案",
-    "free": "免費版",
-    "starter": "入門版",
+    "community": "社群版",
+    "solo": "個人版",
     "pro": "專業版",
     "business": "企業版",
     "perMonth": "/月",

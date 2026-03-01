@@ -25,8 +25,8 @@
   },
   "pricing": {
     "title": "Plans for Every Size",
-    "free": "Free",
-    "starter": "Starter",
+    "community": "Community",
+    "solo": "Solo",
     "pro": "Pro",
     "business": "Business",
     "perMonth": "/month",

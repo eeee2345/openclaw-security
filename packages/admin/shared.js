@@ -350,11 +350,9 @@ window.PG = (() => {
   };
 
   const TIER_COLORS = {
-    free: 'text-text-secondary',
+    community: 'text-text-secondary',
     solo: 'text-caution',
-    starter: 'text-caution',
     pro: 'text-sage',
-    team: 'text-sage',
     business: 'text-sage-light',
     enterprise: 'text-danger',
   };

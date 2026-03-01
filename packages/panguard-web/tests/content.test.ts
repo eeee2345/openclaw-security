@@ -30,7 +30,7 @@ describe('Personas', () => {
     const biz = getPersona('small_business');
     expect(biz).toBeDefined();
     expect(biz!.type).toBe('small_business');
-    expect(biz!.recommendedPlan).toBe('team');
+    expect(biz!.recommendedPlan).toBe('pro');
   });
 
   it('should have mid_enterprise persona', () => {
@@ -92,28 +92,28 @@ describe('Personas', () => {
 });
 
 describe('Pricing Plans', () => {
-  it('should have 5 pricing plans', () => {
+  it('should have 4 pricing plans', () => {
     const all = getAllPricingPlans();
-    expect(all).toHaveLength(5);
+    expect(all).toHaveLength(4);
   });
 
-  it('should have free plan at $0', () => {
-    const free = getPricingPlan('free');
-    expect(free).toBeDefined();
-    expect(free!.priceUsd).toBe(0);
+  it('should have community plan at $0', () => {
+    const community = getPricingPlan('community');
+    expect(community).toBeDefined();
+    expect(community!.priceUsd).toBe(0);
   });
 
-  it('should have starter plan', () => {
-    const starter = getPricingPlan('starter');
-    expect(starter).toBeDefined();
-    expect(starter!.priceUsd).toBeGreaterThan(0);
-    expect(starter!.targetPersona).toBe('developer');
+  it('should have solo plan at $9', () => {
+    const solo = getPricingPlan('solo');
+    expect(solo).toBeDefined();
+    expect(solo!.priceUsd).toBe(9);
+    expect(solo!.targetPersona).toBe('developer');
   });
 
-  it('should have team plan highlighted', () => {
-    const team = getPricingPlan('team');
-    expect(team).toBeDefined();
-    expect(team!.highlighted).toBe(true);
+  it('should have pro plan highlighted', () => {
+    const pro = getPricingPlan('pro');
+    expect(pro).toBeDefined();
+    expect(pro!.highlighted).toBe(true);
   });
 
   it('should have business plan', () => {
@@ -161,9 +161,9 @@ describe('Pricing Plans', () => {
     expect(getRecommendedPlan('mid_enterprise')).toBeDefined();
   });
 
-  it('should recommend team plan for small_business (highlighted)', () => {
+  it('should recommend pro plan for small_business (highlighted)', () => {
     const rec = getRecommendedPlan('small_business');
     expect(rec).toBeDefined();
-    expect(rec!.plan).toBe('team');
+    expect(rec!.plan).toBe('pro');
   });
 });
