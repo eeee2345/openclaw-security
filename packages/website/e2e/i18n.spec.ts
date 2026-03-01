@@ -4,7 +4,7 @@ test.describe('Internationalization', () => {
   test('Chinese locale loads at /zh', async ({ page }) => {
     const res = await page.goto('/zh');
     expect(res?.status()).toBe(200);
-    await expect(page.locator('html')).toHaveAttribute('lang', 'zh');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-TW');
   });
 
   test('English locale loads at /', async ({ page }) => {
