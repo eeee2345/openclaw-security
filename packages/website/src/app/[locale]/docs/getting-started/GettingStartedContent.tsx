@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Copy, Check } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
@@ -9,6 +9,15 @@ import { Link } from '@/navigation';
 import { CheckIcon as BrandCheck } from '@/components/ui/BrandIcons';
 
 type Platform = 'unix' | 'windows';
+
+/** Auto-detect visitor OS and map to platform tab */
+function useDetectedPlatform(): Platform {
+  const [platform, setPlatform] = useState<Platform>('unix');
+  useEffect(() => {
+    if (/Win/.test(navigator.userAgent)) setPlatform('windows');
+  }, []);
+  return platform;
+}
 
 function CodeBlock({ code, label }: { code: string; label?: string }) {
   const [copied, setCopied] = useState(false);
@@ -90,7 +99,13 @@ function TerminalOutput({ lines }: { lines: string[] }) {
 
 export default function GettingStartedContent() {
   const t = useTranslations('docs.gettingStarted');
+  const detectedPlatform = useDetectedPlatform();
   const [platform, setPlatform] = useState<Platform>('unix');
+
+  // Sync with auto-detected OS on mount
+  useEffect(() => {
+    setPlatform(detectedPlatform);
+  }, [detectedPlatform]);
 
   const requirements = [t('req1'), t('req2'), t('req3')];
 
