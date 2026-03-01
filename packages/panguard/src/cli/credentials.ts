@@ -47,12 +47,7 @@ function decryptData(encryptedStr: string): string {
   return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString('utf8');
 }
 
-export type Tier =
-  | 'community'
-  | 'solo'
-  | 'pro'
-  | 'business'
-  | 'enterprise';
+export type Tier = 'community' | 'solo' | 'pro' | 'business' | 'enterprise';
 
 export const TIER_LEVEL: Record<Tier, number> = {
   community: 0,

@@ -13,9 +13,7 @@ import { c, banner } from '@panguard-ai/core';
 import { saveLlmConfig, loadLlmConfig, deleteLlmConfig } from '../credentials.js';
 
 export function configCommand(): Command {
-  const cmd = new Command('config').description(
-    'Manage local configuration / 管理本地設定'
-  );
+  const cmd = new Command('config').description('Manage local configuration / 管理本地設定');
 
   cmd
     .command('llm')
@@ -78,9 +76,7 @@ export function configCommand(): Command {
           console.log(
             `    ${c.dim('$')} panguard config llm --provider claude --api-key sk-ant-xxx`
           );
-          console.log(
-            `    ${c.dim('$')} panguard config llm --provider openai --api-key sk-xxx`
-          );
+          console.log(`    ${c.dim('$')} panguard config llm --provider openai --api-key sk-xxx`);
           console.log(`    ${c.dim('$')} panguard config llm --provider ollama`);
           console.log(`    ${c.dim('$')} panguard config llm --show`);
           console.log(`    ${c.dim('$')} panguard config llm --clear`);
@@ -122,9 +118,7 @@ export function configCommand(): Command {
         }
         console.log('');
         console.log(`  ${c.dim('Encrypted and stored at ~/.panguard/llm.enc')}`);
-        console.log(
-          `  ${c.dim('The Guard engine will use this configuration automatically.')}`
-        );
+        console.log(`  ${c.dim('The Guard engine will use this configuration automatically.')}`);
       }
     );
 

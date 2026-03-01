@@ -80,9 +80,7 @@ export function whoamiCommand(): Command {
           label: lang === 'zh-TW' ? '\u8A02\u95B1\u7B49\u7D1A' : 'Tier',
           value: tierDisplayName(creds.tier),
           status:
-            creds.tier === 'enterprise' ||
-            creds.tier === 'pro' ||
-            creds.tier === 'business'
+            creds.tier === 'enterprise' || creds.tier === 'pro' || creds.tier === 'business'
               ? 'safe'
               : undefined,
         },

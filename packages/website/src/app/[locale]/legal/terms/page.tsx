@@ -104,8 +104,8 @@ export default function TermsOfServicePage({ params: { locale } }: { params: { l
           <h2 className="text-lg font-semibold text-text-primary mb-3">5. Free Trial</h2>
           <p>
             Panguard offers a 14-day free trial of the Solo plan. During the trial period, you will
-            have access to the features of the Solo plan at no cost. At the end of the trial
-            period, your account will be automatically downgraded to the free Community tier unless you
+            have access to the features of the Solo plan at no cost. At the end of the trial period,
+            your account will be automatically downgraded to the free Community tier unless you
             subscribe to a paid plan. No credit card is required to initiate a free trial. Panguard
             reserves the right to modify or discontinue the free trial offer at any time.
           </p>

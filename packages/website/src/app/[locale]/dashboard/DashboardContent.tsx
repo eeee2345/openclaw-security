@@ -195,11 +195,7 @@ export default function DashboardContent() {
                     copyValue={`panguard login --token ${token}`}
                   />
                 )}
-                <QuickStartStep
-                  step={3}
-                  label={t('quickStart.scan')}
-                  command="panguard scan"
-                />
+                <QuickStartStep step={3} label={t('quickStart.scan')} command="panguard scan" />
               </div>
             </div>
           </div>

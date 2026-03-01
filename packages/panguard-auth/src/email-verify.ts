@@ -337,7 +337,8 @@ const i18n: Record<EmailLocale, EmailStrings> = {
     welcomeSubject: '您已通過審核 | Panguard AI',
     welcomeGreeting: (name) => (name ? `${name}，歡迎加入` : '歡迎加入'),
     welcomeOverline: '搶先體驗資格已通過',
-    welcomeBody: '您在 Panguard AI 候補名單上的名額已獲核准。立即建立帳號，即可開始 <strong style="color:#8B9A8E;">14 天免費試用</strong> Solo 方案 — 完整使用所有 Solo 功能，不需信用卡。',
+    welcomeBody:
+      '您在 Panguard AI 候補名單上的名額已獲核准。立即建立帳號，即可開始 <strong style="color:#8B9A8E;">14 天免費試用</strong> Solo 方案 — 完整使用所有 Solo 功能，不需信用卡。',
     welcomeIncluded: '包含功能',
     welcomeButton: '建立您的帳號',
     welcomeDocs: '閱讀快速入門指南',

@@ -55,7 +55,9 @@ export function serveCommand(): Command {
         errors.push('PANGUARD_BASE_URL not set in production — OAuth and email links will break');
       }
       if (isProd && !process.env['CORS_ALLOWED_ORIGINS']) {
-        errors.push('CORS_ALLOWED_ORIGINS not set in production — API will reject cross-origin requests');
+        errors.push(
+          'CORS_ALLOWED_ORIGINS not set in production — API will reject cross-origin requests'
+        );
       }
 
       // Warnings (non-fatal)

@@ -103,7 +103,9 @@ async function autoDetectLLM(): Promise<AnalyzeLLM | null> {
           const data = Buffer.from(parts[2]!, 'base64');
           const decipher = createDecipheriv('aes-256-gcm', key, iv);
           decipher.setAuthTag(authTag);
-          const decrypted = Buffer.concat([decipher.update(data), decipher.final()]).toString('utf8');
+          const decrypted = Buffer.concat([decipher.update(data), decipher.final()]).toString(
+            'utf8'
+          );
           const llmConfig = JSON.parse(decrypted) as {
             provider?: string;
             apiKey?: string;
