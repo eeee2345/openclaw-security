@@ -15,7 +15,7 @@ export default function ResourcesPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ResourcesContent />
       </main>
       <Footer />

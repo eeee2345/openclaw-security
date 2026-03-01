@@ -15,7 +15,7 @@ export default function OpenSourcePage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <OpenSourceContent />
       </main>
       <Footer />

@@ -21,7 +21,7 @@ export default function ContactContent() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         {/* ───────────── Hero ───────────── */}
         <section className="pt-24 pb-4 px-6 text-center">
           <FadeInUp>

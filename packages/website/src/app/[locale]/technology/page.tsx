@@ -15,7 +15,7 @@ export default function TechnologyPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <TechnologyContent />
       </main>
       <Footer />

@@ -15,7 +15,7 @@ export default function PartnersPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <PartnersContent />
       </main>
       <Footer />

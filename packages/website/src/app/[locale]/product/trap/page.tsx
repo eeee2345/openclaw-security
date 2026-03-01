@@ -15,7 +15,7 @@ export default function ProductTrapPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ProductTrapContent />
       </main>
       <Footer />

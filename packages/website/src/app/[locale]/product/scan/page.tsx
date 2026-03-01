@@ -15,7 +15,7 @@ export default function ProductScanPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ProductScanContent />
       </main>
       <Footer />

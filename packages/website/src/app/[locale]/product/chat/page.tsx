@@ -15,7 +15,7 @@ export default function ProductChatPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ProductChatContent />
       </main>
       <Footer />

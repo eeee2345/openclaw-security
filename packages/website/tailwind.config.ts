@@ -37,7 +37,7 @@ const config: Config = {
           primary: '#F5F1E8',
           secondary: '#A09890',
           tertiary: '#706860',
-          muted: '#4A4540',
+          muted: '#7A716B',
         },
         status: {
           safe: '#2ED573',

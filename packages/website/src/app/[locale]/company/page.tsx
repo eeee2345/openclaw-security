@@ -15,7 +15,7 @@ export default function CompanyPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <CompanyContent />
       </main>
       <Footer />

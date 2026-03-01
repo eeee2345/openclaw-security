@@ -15,7 +15,7 @@ export default function ProductGuardPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ProductGuardContent />
       </main>
       <Footer />

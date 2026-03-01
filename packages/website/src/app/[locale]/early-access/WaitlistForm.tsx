@@ -73,7 +73,7 @@ export default function WaitlistForm() {
               </button>
             </form>
 
-            {error && <p className="text-sm text-status-alert mt-3">{error}</p>}
+            {error && <p role="alert" className="text-sm text-status-alert mt-3">{error}</p>}
 
             {/* Checkmarks */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-6">

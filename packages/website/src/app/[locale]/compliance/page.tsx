@@ -15,7 +15,7 @@ export default function CompliancePage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ComplianceContent />
       </main>
       <Footer />

@@ -15,7 +15,7 @@ export default function ThreatCloudPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ThreatCloudContent />
       </main>
       <Footer />

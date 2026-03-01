@@ -15,7 +15,7 @@ export default function ProductReportPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ProductReportContent />
       </main>
       <Footer />

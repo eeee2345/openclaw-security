@@ -15,7 +15,7 @@ export default function CustomersPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <CustomersContent />
       </main>
       <Footer />

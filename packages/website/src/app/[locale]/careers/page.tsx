@@ -15,7 +15,7 @@ export default function CareersPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <CareersContent />
       </main>
       <Footer />

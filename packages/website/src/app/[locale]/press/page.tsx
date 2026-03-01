@@ -15,7 +15,7 @@ export default function PressPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <PressContent />
       </main>
       <Footer />

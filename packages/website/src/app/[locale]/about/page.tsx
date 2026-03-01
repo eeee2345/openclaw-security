@@ -15,7 +15,7 @@ export default function AboutPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <AboutContent />
       </main>
       <Footer />

@@ -60,6 +60,7 @@ type DropdownItem = { label: string; desc: string; href: string };
 function NavDropdown({ label, items }: { label: string; items: DropdownItem[] }) {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleEnter = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -70,9 +71,24 @@ function NavDropdown({ label, items }: { label: string; items: DropdownItem[] })
     closeTimer.current = setTimeout(() => setOpen(false), 150);
   };
 
+  const handleBlur = (e: React.FocusEvent) => {
+    if (!containerRef.current?.contains(e.relatedTarget as Node)) {
+      setOpen(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') setOpen(false);
+  };
+
   return (
-    <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
-      <button className="flex items-center gap-1 px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+    <div className="relative" ref={containerRef} onMouseEnter={handleEnter} onMouseLeave={handleLeave} onBlur={handleBlur} onKeyDown={handleKeyDown}>
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="true"
+        className="flex items-center gap-1 px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+      >
         {label}
         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -212,7 +228,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div role="dialog" aria-label="Navigation menu" className="fixed inset-0 top-[66px] bg-surface-0/98 backdrop-blur-xl z-40 overflow-y-auto lg:hidden">
+        <div role="dialog" aria-modal="true" aria-label="Navigation menu" className="fixed inset-0 top-[66px] bg-surface-0/98 backdrop-blur-xl z-40 overflow-y-auto lg:hidden">
           <div className="p-6 space-y-1">
             <div className="flex justify-center mb-4">
               <LocaleSwitcher />

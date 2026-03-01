@@ -15,7 +15,7 @@ export default function ChangelogPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ChangelogContent />
       </main>
       <Footer />

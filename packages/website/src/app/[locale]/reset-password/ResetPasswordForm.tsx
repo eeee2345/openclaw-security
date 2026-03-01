@@ -99,11 +99,12 @@ export default function ResetPasswordForm() {
         <div className="bg-surface-1 border border-border rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="reset-password" className="block text-sm font-medium text-text-secondary mb-1.5">
                 New Password
               </label>
               <div className="relative">
                 <input
+                  id="reset-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -124,10 +125,11 @@ export default function ResetPasswordForm() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="reset-confirm" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Confirm Password
               </label>
               <input
+                id="reset-confirm"
                 type="password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
@@ -139,7 +141,7 @@ export default function ResetPasswordForm() {
             </div>
 
             {error && (
-              <div className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger">
+              <div role="alert" className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger">
                 {error}
               </div>
             )}

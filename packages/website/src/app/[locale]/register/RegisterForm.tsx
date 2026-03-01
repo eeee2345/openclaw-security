@@ -80,8 +80,9 @@ export default function RegisterForm() {
         <div className="bg-surface-1 border border-border rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
+              <label htmlFor="register-name" className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
               <input
+                id="register-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -92,8 +93,9 @@ export default function RegisterForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">Email</label>
+              <label htmlFor="register-email" className="block text-sm font-medium text-text-secondary mb-1.5">Email</label>
               <input
+                id="register-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -104,11 +106,12 @@ export default function RegisterForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="register-password" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Password
               </label>
               <div className="relative">
                 <input
+                  id="register-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -130,7 +133,7 @@ export default function RegisterForm() {
             </div>
 
             {error && (
-              <div className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger">
+              <div role="alert" className="bg-status-danger/10 border border-status-danger/20 rounded-lg px-4 py-2.5 text-sm text-status-danger">
                 {error}
               </div>
             )}

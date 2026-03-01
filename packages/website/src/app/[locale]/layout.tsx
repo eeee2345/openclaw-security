@@ -110,11 +110,10 @@ const jsonLd = [
       'AI-powered endpoint security for developers and SMBs. One command to install. Zero configuration.',
     url: 'https://panguard.ai',
     offers: [
-      { '@type': 'Offer', price: '0', priceCurrency: 'USD', name: 'Free Scan' },
+      { '@type': 'Offer', price: '0', priceCurrency: 'USD', name: 'Community' },
       { '@type': 'Offer', price: '9', priceCurrency: 'USD', name: 'Solo' },
-      { '@type': 'Offer', price: '19', priceCurrency: 'USD', name: 'Starter' },
-      { '@type': 'Offer', price: '14', priceCurrency: 'USD', name: 'Team (per endpoint)' },
-      { '@type': 'Offer', price: '10', priceCurrency: 'USD', name: 'Business (per endpoint)' },
+      { '@type': 'Offer', price: '29', priceCurrency: 'USD', name: 'Pro' },
+      { '@type': 'Offer', price: '79', priceCurrency: 'USD', name: 'Business' },
     ],
     publisher: {
       '@type': 'Organization',
@@ -168,6 +167,12 @@ export default async function LocaleLayout({
         )}
       </head>
       <body className="font-sans antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-surface-1 focus:border focus:border-brand-sage focus:rounded-lg focus:px-4 focus:py-2 focus:text-text-primary focus:text-sm"
+        >
+          Skip to content
+        </a>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>{children}</AuthProvider>
         </NextIntlClientProvider>

@@ -15,7 +15,7 @@ export default function BlogPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <BlogContent />
       </main>
       <Footer />

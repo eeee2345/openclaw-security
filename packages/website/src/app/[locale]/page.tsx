@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic';
 import NavBar from '@/components/NavBar';
 import Hero from '@/components/home/Hero';
-import IndustryProblem from '@/components/home/IndustryProblem';
-import ThreeRoads from '@/components/home/ThreeRoads';
 import Footer from '@/components/Footer';
 
 // Below-the-fold sections loaded lazily to reduce initial bundle
+const IndustryProblem = dynamic(() => import('@/components/home/IndustryProblem'));
+const ThreeRoads = dynamic(() => import('@/components/home/ThreeRoads'));
 const Redefine = dynamic(() => import('@/components/home/Redefine'));
 const ShowMuscle = dynamic(() => import('@/components/home/ShowMuscle'));
 const ThreatCloudSection = dynamic(() => import('@/components/home/ThreatCloudSection'));
@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         {/* S1: Hero */}
         <Hero />
         {/* S2: Industry Problem */}

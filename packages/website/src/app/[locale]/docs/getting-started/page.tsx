@@ -17,7 +17,7 @@ export default function GettingStartedPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <GettingStartedContent />
       </main>
       <Footer />

@@ -15,7 +15,7 @@ export default function StatusPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <StatusContent />
       </main>
       <Footer />

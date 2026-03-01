@@ -39,7 +39,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <CaseStudyContent study={cs} />
       </main>
       <Footer />

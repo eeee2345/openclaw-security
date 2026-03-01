@@ -15,7 +15,7 @@ export default function ProductPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <ProductOverviewContent />
       </main>
       <Footer />

@@ -55,7 +55,7 @@ export default async function BlogPostPage({
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         {/* ───────────── Back Link ───────────── */}
         <section className="pt-24 pb-0 px-6">
           <div className="max-w-[800px] mx-auto">

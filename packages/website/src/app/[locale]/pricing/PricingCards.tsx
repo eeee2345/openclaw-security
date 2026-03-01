@@ -223,7 +223,7 @@ export default function PricingCards() {
     <>
       {/* Checkout error */}
       {checkoutError && (
-        <div className="max-w-xl mx-auto mb-6 bg-status-danger/10 border border-status-danger/20 rounded-xl px-5 py-3 flex items-center gap-3">
+        <div role="alert" className="max-w-xl mx-auto mb-6 bg-status-danger/10 border border-status-danger/20 rounded-xl px-5 py-3 flex items-center gap-3">
           <X className="w-4 h-4 text-status-danger shrink-0 cursor-pointer" onClick={() => setCheckoutError(null)} />
           <p className="text-sm text-status-danger">{checkoutError}</p>
         </div>

@@ -15,7 +15,7 @@ export default function TrustPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <TrustContent />
       </main>
       <Footer />

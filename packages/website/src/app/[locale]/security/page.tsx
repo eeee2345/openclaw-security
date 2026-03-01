@@ -15,7 +15,7 @@ export default function SecurityPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <SecurityContent />
       </main>
       <Footer />

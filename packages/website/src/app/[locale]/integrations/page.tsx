@@ -15,7 +15,7 @@ export default function IntegrationsPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <IntegrationsContent />
       </main>
       <Footer />

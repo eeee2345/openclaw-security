@@ -15,7 +15,7 @@ export default function HowItWorksPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <HowItWorksContent />
       </main>
       <Footer />

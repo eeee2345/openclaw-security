@@ -15,7 +15,7 @@ export default function DocsPage() {
   return (
     <>
       <NavBar />
-      <main>
+      <main id="main-content">
         <DocsContent />
       </main>
       <Footer />
