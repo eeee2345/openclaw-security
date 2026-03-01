@@ -22,12 +22,12 @@ const taiwanIcons = [GlobalIcon, EnterpriseIcon, TerminalIcon, TeamIcon];
 
 /* ─── Report Types ─── */
 const reportTypes = [
-  { name: 'ISO 27001 Gap Analysis', coverage: '94%', controls: 114, status: 'Ready' },
-  { name: 'SOC 2 Type II Evidence', coverage: '87%', controls: 64, status: 'Ready' },
-  { name: 'Taiwan Cyber Security Act', coverage: '91%', controls: 38, status: 'Ready' },
-  { name: 'Executive Security Summary', coverage: '100%', controls: null, status: 'Ready' },
-  { name: 'Incident Response Report', coverage: '100%', controls: null, status: 'Ready' },
-  { name: 'Bilingual Report (EN/zh-TW)', coverage: '100%', controls: null, status: 'Ready' },
+  { name: 'ISO 27001 Gap Analysis', controls: 114, status: 'Ready' },
+  { name: 'SOC 2 Type II Evidence', controls: 64, status: 'Ready' },
+  { name: 'Taiwan Cyber Security Act', controls: 38, status: 'Ready' },
+  { name: 'Executive Security Summary', controls: null, status: 'Ready' },
+  { name: 'Incident Response Report', controls: null, status: 'Ready' },
+  { name: 'Bilingual Report (EN/zh-TW)', controls: null, status: 'Ready' },
 ];
 
 /* ─── Cost Comparison ─── */
@@ -246,7 +246,7 @@ export default function ComplianceContent() {
                         </p>
                         {report.controls && (
                           <p className="text-[11px] text-text-muted">
-                            {report.controls} controls | {report.coverage} coverage
+                            {report.controls} controls
                           </p>
                         )}
                       </div>

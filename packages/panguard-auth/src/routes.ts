@@ -484,7 +484,8 @@ export function createAuthHandlers(config: AuthRouteConfig) {
 
       // Verify TOTP code
       if (typeof totpCode === 'string') {
-        if (!verifyTotp(totpSecret.encryptedSecret, totpCode)) {
+        const matchedStep = verifyTotp(totpSecret.encryptedSecret, totpCode, totpSecret.lastUsedStep);
+        if (matchedStep < 0) {
           logAuditEvent({
             level: 'warn',
             action: 'credential_access',
@@ -495,6 +496,7 @@ export function createAuthHandlers(config: AuthRouteConfig) {
           json(res, 401, { ok: false, error: 'Invalid two-factor code' });
           return;
         }
+        db.updateLastUsedStep(user.id, matchedStep);
       } else if (typeof backupCode === 'string') {
         // Verify backup code
         if (!db.consumeBackupCode(user.id, backupCode)) {
@@ -1054,10 +1056,12 @@ export function createAuthHandlers(config: AuthRouteConfig) {
       return;
     }
 
-    if (!verifyTotp(totpSecret.encryptedSecret, code)) {
+    const matchedStep = verifyTotp(totpSecret.encryptedSecret, code, totpSecret.lastUsedStep);
+    if (matchedStep < 0) {
       json(res, 401, { ok: false, error: 'Invalid TOTP code' });
       return;
     }
+    db.updateLastUsedStep(user.id, matchedStep);
 
     db.enableTotp(user.id);
 

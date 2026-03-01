@@ -236,6 +236,23 @@ export default function ProductReportContent() {
         </div>
       </SectionWrapper>
 
+      {/* ── Disclaimer ── */}
+      <SectionWrapper>
+        <div className="max-w-2xl mx-auto">
+          <FadeInUp>
+            <div className="bg-brand-sage/5 border border-brand-sage/20 rounded-xl p-6">
+              <p className="text-sm font-bold text-brand-sage mb-2">{t('disclaimer.title')}</p>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {t('disclaimer.desc')}
+              </p>
+              <p className="text-sm text-text-secondary leading-relaxed mt-3">
+                {t('disclaimer.workflow')}
+              </p>
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
       {/* ── CTA ── */}
       <SectionWrapper dark>
         <div className="text-center">
@@ -248,7 +265,7 @@ export default function ProductReportContent() {
           <FadeInUp delay={0.1}>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
               <Link
-                href="/early-access"
+                href="/docs/getting-started"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
                 {t('cta.cta1')} <ArrowRight className="w-4 h-4" />

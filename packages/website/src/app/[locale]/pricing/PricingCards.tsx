@@ -135,7 +135,7 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
       { feature: 'Telegram', community: false, solo: true, pro: true, business: true },
       { feature: 'Slack', community: false, solo: false, pro: true, business: true },
       { feature: 'Webhook / API', community: false, solo: false, pro: false, business: true },
-      { feature: 'SIEM integration', community: false, solo: false, pro: false, business: true },
+      { feature: 'SIEM integration', community: false, solo: false, pro: false, business: 'Roadmap' },
     ],
   },
   {
@@ -143,7 +143,7 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
     rows: [
       { feature: 'Community support', community: true, solo: true, pro: true, business: true },
       { feature: 'Priority support', community: false, solo: false, pro: true, business: true },
-      { feature: 'Dedicated manager', community: false, solo: false, pro: false, business: true },
+      { feature: 'Dedicated manager', community: false, solo: false, pro: false, business: 'Roadmap' },
       {
         feature: 'Log retention',
         community: 'Session only',
@@ -151,8 +151,8 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
         pro: '30 days',
         business: '90 days+',
       },
-      { feature: 'SSO & RBAC', community: false, solo: false, pro: false, business: true },
-      { feature: 'On-premise option', community: false, solo: false, pro: false, business: true },
+      { feature: 'SSO & RBAC', community: false, solo: false, pro: false, business: 'Roadmap' },
+      { feature: 'On-premise option', community: false, solo: false, pro: false, business: 'Roadmap' },
       {
         feature: 'Machines',
         community: '1',

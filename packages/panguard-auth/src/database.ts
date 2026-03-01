@@ -16,7 +16,9 @@ import type {
   ActivityItem,
   AuditLogFilter,
 } from './types.js';
+import { timingSafeEqual } from 'node:crypto';
 import { hashToken } from './auth.js';
+import { encryptSecret, decryptSecret, isEncrypted } from './crypto.js';
 
 export class AuthDB {
   private readonly db: Database.Database;
@@ -171,6 +173,13 @@ export class AuthDB {
     // Migration: add suspended column to users
     try {
       this.db.exec(`ALTER TABLE users ADD COLUMN suspended INTEGER DEFAULT 0`);
+    } catch {
+      // Column already exists — ignore
+    }
+
+    // Migration: add last_used_step to totp_secrets (replay protection)
+    try {
+      this.db.exec(`ALTER TABLE totp_secrets ADD COLUMN last_used_step INTEGER DEFAULT 0`);
     } catch {
       // Column already exists — ignore
     }
@@ -945,7 +954,8 @@ export class AuthDB {
   /**
    * Store TOTP secret and backup codes for a user.
    */
-  saveTotpSecret(userId: number, encryptedSecret: string, backupCodes: string): void {
+  saveTotpSecret(userId: number, secret: string, backupCodes: string): void {
+    const encrypted = encryptSecret(secret);
     this.db
       .prepare(
         `INSERT INTO totp_secrets (user_id, encrypted_secret, backup_codes, enabled)
@@ -956,7 +966,7 @@ export class AuthDB {
            enabled = 0,
            updated_at = datetime('now')`
       )
-      .run(userId, encryptedSecret, backupCodes);
+      .run(userId, encrypted, backupCodes);
   }
 
   /**
@@ -966,6 +976,15 @@ export class AuthDB {
     this.db
       .prepare("UPDATE totp_secrets SET enabled = 1, updated_at = datetime('now') WHERE user_id = ?")
       .run(userId);
+  }
+
+  /**
+   * Update the last used TOTP time step (for replay protection).
+   */
+  updateLastUsedStep(userId: number, step: number): void {
+    this.db
+      .prepare("UPDATE totp_secrets SET last_used_step = ?, updated_at = datetime('now') WHERE user_id = ?")
+      .run(step, userId);
   }
 
   /**
@@ -979,14 +998,24 @@ export class AuthDB {
    * Get TOTP secret for a user.
    */
   getTotpSecret(userId: number): TotpSecret | undefined {
-    return this.db
+    const row = this.db
       .prepare(
         `SELECT id, user_id as userId, encrypted_secret as encryptedSecret,
                 backup_codes as backupCodes, enabled,
+                COALESCE(last_used_step, 0) as lastUsedStep,
                 created_at as createdAt, updated_at as updatedAt
          FROM totp_secrets WHERE user_id = ?`
       )
       .get(userId) as TotpSecret | undefined;
+
+    if (row && row.encryptedSecret) {
+      // Decrypt the secret (supports both legacy plaintext and encrypted format)
+      row.encryptedSecret = isEncrypted(row.encryptedSecret)
+        ? decryptSecret(row.encryptedSecret)
+        : row.encryptedSecret;
+    }
+
+    return row;
   }
 
   /**
@@ -997,7 +1026,12 @@ export class AuthDB {
     if (!secret) return false;
 
     const codes: string[] = JSON.parse(secret.backupCodes);
-    const index = codes.indexOf(code);
+    // Timing-safe comparison to prevent side-channel attacks
+    const index = codes.findIndex((c) => {
+      const a = Buffer.from(c, 'utf8');
+      const b = Buffer.from(code, 'utf8');
+      return a.length === b.length && timingSafeEqual(a, b);
+    });
     if (index === -1) return false;
 
     const remaining = [...codes.slice(0, index), ...codes.slice(index + 1)];
@@ -1250,6 +1284,7 @@ export interface TotpSecret {
   encryptedSecret: string;
   backupCodes: string;
   enabled: number;
+  lastUsedStep: number;
   createdAt: string;
   updatedAt: string;
 }
