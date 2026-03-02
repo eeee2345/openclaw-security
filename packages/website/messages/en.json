@@ -4121,7 +4121,7 @@
     "upgradeDescription": "Get more scans, endpoints, and advanced features.",
     "viewPlans": "View Plans",
     "tierFeatures": {
-      "free": ["100 scans/month", "1 endpoint", "1,000 API calls"],
+      "community": ["100 scans/month", "1 endpoint", "1,000 API calls"],
       "solo": ["Unlimited scans", "3 endpoints", "10,000 API calls", "1 honeypot"],
       "pro": ["Unlimited scans", "10 endpoints", "50,000 API calls", "5 reports", "3 honeypots"],
       "business": [
