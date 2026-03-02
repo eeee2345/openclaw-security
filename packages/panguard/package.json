@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/panguard",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "Panguard AI - Unified security CLI",
   "main": "./dist/index.js",
