@@ -78,6 +78,7 @@ interface MenuDef {
 const MENU_DEFS: MenuDef[] = [
   { key: 'scan', en: 'Security scan', zh: '\u5B89\u5168\u6383\u63CF', tier: 'community' },
   { key: 'guard', en: 'Real-time protection', zh: '\u5373\u6642\u9632\u8B77', tier: 'community' },
+  { key: 'hardening', en: 'Security hardening', zh: '\u5B89\u5168\u52A0\u56FA', tier: 'community' },
   {
     key: 'threat-cloud',
     en: 'Threat intelligence API',
@@ -97,7 +98,11 @@ const MENU_DEFS: MenuDef[] = [
     zh: '\u5408\u898F\u5831\u544A (ISO 27001, SOC 2)',
     tier: 'business',
   },
+  { key: 'manager', en: 'Distributed manager', zh: '\u5206\u6563\u5F0F\u7BA1\u7406', tier: 'business' },
   { key: '__sep__', en: '', zh: '', tier: '' },
+  { key: 'status', en: 'System status', zh: '\u7CFB\u7D71\u72C0\u614B', tier: 'community' },
+  { key: 'login', en: 'Account login', zh: '\u5E33\u865F\u767B\u5165', tier: 'community' },
+  { key: 'config', en: 'Settings', zh: '\u8A2D\u5B9A\u7BA1\u7406', tier: 'community' },
   { key: 'setup', en: 'Initial configuration', zh: '\u521D\u59CB\u8A2D\u5B9A', tier: 'community' },
   { key: 'demo', en: 'Feature demo', zh: '\u529F\u80FD\u5C55\u793A', tier: 'community' },
   { key: 'upgrade', en: 'Upgrade plan', zh: '\u5347\u7D1A\u65B9\u6848', tier: 'community' },
@@ -256,6 +261,21 @@ async function dispatch(key: string): Promise<void> {
       break;
     case 'upgrade':
       await actionUpgrade();
+      break;
+    case 'hardening':
+      await actionHardening();
+      break;
+    case 'manager':
+      await actionManager();
+      break;
+    case 'status':
+      await actionStatus();
+      break;
+    case 'login':
+      await actionLogin();
+      break;
+    case 'config':
+      await actionConfig();
       break;
   }
 }
@@ -1027,4 +1047,111 @@ async function actionUpgrade(): Promise<void> {
   const { upgradeCommand } = await import('./commands/upgrade.js');
   const cmd = upgradeCommand();
   await cmd.parseAsync(['upgrade', '--lang', currentLang], { from: 'user' });
+}
+
+// ---------------------------------------------------------------------------
+// 9. Security Hardening
+// ---------------------------------------------------------------------------
+
+async function actionHardening(): Promise<void> {
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u5B89\u5168\u52A0\u56FA' : 'Security Hardening']);
+  const title = currentLang === 'zh-TW' ? '\u5B89\u5168\u52A0\u56FA' : 'Security Hardening';
+  console.log(`  ${theme.brandBold(title)}`);
+  console.log('');
+
+  const items: MenuItem[] = [
+    { key: '1', label: currentLang === 'zh-TW' ? '\u57F7\u884C\u52A0\u56FA\u6383\u63CF' : 'Run hardening audit' },
+    { key: '2', label: currentLang === 'zh-TW' ? '\u81EA\u52D5\u4FEE\u5FA9' : 'Auto-fix issues' },
+    { key: '3', label: currentLang === 'zh-TW' ? '\u67E5\u770B\u5831\u544A' : 'View report' },
+  ];
+
+  renderCompactMenu(currentLang === 'zh-TW' ? '\u5B89\u5168\u52A0\u56FA' : 'Hardening', items);
+  const choice = await waitForCompactChoice(items, currentLang);
+  if (!choice) return;
+
+  console.log('');
+  const { hardeningCommand } = await import('./commands/hardening.js');
+  const cmd = hardeningCommand();
+
+  switch (choice.key) {
+    case '1':
+      await cmd.parseAsync(['hardening', 'audit'], { from: 'user' });
+      break;
+    case '2':
+      await cmd.parseAsync(['hardening', 'fix'], { from: 'user' });
+      break;
+    case '3':
+      await cmd.parseAsync(['hardening', 'report'], { from: 'user' });
+      break;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 10. Distributed Manager
+// ---------------------------------------------------------------------------
+
+async function actionManager(): Promise<void> {
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u5206\u6563\u5F0F\u7BA1\u7406' : 'Manager']);
+  const title = currentLang === 'zh-TW' ? '\u5206\u6563\u5F0F\u7BA1\u7406' : 'Distributed Manager';
+  console.log(`  ${theme.brandBold(title)}`);
+  console.log('');
+
+  const items: MenuItem[] = [
+    { key: '1', label: currentLang === 'zh-TW' ? '\u67E5\u770B Agent \u72C0\u614B' : 'Agent status' },
+    { key: '2', label: currentLang === 'zh-TW' ? '\u5A01\u8105\u7E3D\u89BD' : 'Threat overview' },
+    { key: '3', label: currentLang === 'zh-TW' ? '\u653F\u7B56\u7BA1\u7406' : 'Policy management' },
+  ];
+
+  renderCompactMenu(currentLang === 'zh-TW' ? '\u7BA1\u7406\u7BC0\u9EDE' : 'Manager Node', items);
+  const choice = await waitForCompactChoice(items, currentLang);
+  if (!choice) return;
+
+  console.log('');
+  const { managerCommand } = await import('./commands/manager.js');
+  const cmd = managerCommand();
+
+  switch (choice.key) {
+    case '1':
+      await cmd.parseAsync(['manager', 'agents'], { from: 'user' });
+      break;
+    case '2':
+      await cmd.parseAsync(['manager', 'threats'], { from: 'user' });
+      break;
+    case '3':
+      await cmd.parseAsync(['manager', 'policies'], { from: 'user' });
+      break;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 11. System Status
+// ---------------------------------------------------------------------------
+
+async function actionStatus(): Promise<void> {
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u7CFB\u7D71\u72C0\u614B' : 'Status']);
+  const { statusCommand } = await import('./commands/status.js');
+  const cmd = statusCommand();
+  await cmd.parseAsync(['status'], { from: 'user' });
+}
+
+// ---------------------------------------------------------------------------
+// 12. Account Login
+// ---------------------------------------------------------------------------
+
+async function actionLogin(): Promise<void> {
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u5E33\u865F\u767B\u5165' : 'Login']);
+  const { loginCommand } = await import('./commands/login.js');
+  const cmd = loginCommand();
+  await cmd.parseAsync(['login'], { from: 'user' });
+}
+
+// ---------------------------------------------------------------------------
+// 13. Settings
+// ---------------------------------------------------------------------------
+
+async function actionConfig(): Promise<void> {
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u8A2D\u5B9A\u7BA1\u7406' : 'Settings']);
+  const { configCommand } = await import('./commands/config.js');
+  const cmd = configCommand();
+  await cmd.parseAsync(['config'], { from: 'user' });
 }
