@@ -83,7 +83,7 @@ export default function BillingContent() {
   const tierDisplay = tier.charAt(0).toUpperCase() + tier.slice(1);
   const features =
     (t.raw(`tierFeatures.${tier}`) as string[] | undefined) ??
-    (t.raw('tierFeatures.free') as string[]);
+    (t.raw('tierFeatures.community') as string[]);
   const sub = billing?.subscription;
   const statusColor =
     sub?.status === 'active'
@@ -113,7 +113,7 @@ export default function BillingContent() {
               <CreditCard className="w-5 h-5 text-brand-sage" />
               {t('currentPlan')}
             </h2>
-            {tier !== 'free' && sub && (
+            {tier !== 'community' && sub && (
               <button
                 onClick={openPortal}
                 disabled={portalLoading}
@@ -154,7 +154,7 @@ export default function BillingContent() {
                   {t('endsOn', { date: new Date(sub.endsAt).toLocaleDateString() })}
                 </p>
               )}
-              {!sub && tier === 'free' && (
+              {!sub && tier === 'community' && (
                 <p className="text-sm text-text-tertiary">{t('freeTier')}</p>
               )}
 
@@ -176,7 +176,7 @@ export default function BillingContent() {
         </div>
 
         {/* Upgrade CTA */}
-        {tier === 'free' && (
+        {tier === 'community' && (
           <div className="bg-brand-sage-wash border border-brand-sage/20 rounded-xl p-6">
             <h3 className="font-semibold text-text-primary mb-2">{t('upgradeHeading')}</h3>
             <p className="text-sm text-text-secondary mb-4">{t('upgradeDescription')}</p>
