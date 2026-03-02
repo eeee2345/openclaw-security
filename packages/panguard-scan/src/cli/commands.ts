@@ -24,6 +24,7 @@ import {
 } from '@panguard-ai/core';
 import { runScan } from '../scanners/index.js';
 import { generatePdfReport } from '../report/index.js';
+import { PANGUARD_SCAN_VERSION } from '../index.js';
 import type { ScanConfig } from '../scanners/types.js';
 
 const logger = createLogger('panguard-scan:cli');
@@ -41,7 +42,7 @@ export async function executeScan(config: ScanConfig): Promise<void> {
   await initI18n(config.lang);
 
   // Banner
-  console.log(banner());
+  console.log(banner(PANGUARD_SCAN_VERSION));
 
   const mode =
     config.depth === 'quick' ? t('panguard-scan:cli.quickMode') : t('panguard-scan:cli.fullMode');

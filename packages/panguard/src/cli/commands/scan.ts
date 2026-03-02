@@ -20,6 +20,7 @@ import {
   setLogLevel,
 } from '@panguard-ai/core';
 import { runScan, runRemoteScan } from '@panguard-ai/panguard-scan';
+import { PANGUARD_VERSION } from '../../index.js';
 import { requireAuth } from '../auth-guard.js';
 
 export function scanCommand(): Command {
@@ -67,7 +68,7 @@ export function scanCommand(): Command {
                       ? 'D'
                       : 'F';
             const output = {
-              version: '0.5.0',
+              version: PANGUARD_VERSION,
               timestamp: result.scannedAt,
               target: options.target,
               risk_score: result.riskScore,
@@ -99,7 +100,7 @@ export function scanCommand(): Command {
           }
 
           // Human-friendly remote scan output
-          console.log(banner());
+          console.log(banner(PANGUARD_VERSION));
           console.log(`  ${symbols.scan} Remote Scan: ${c.bold(options.target)}`);
           console.log('');
           const sp = spinner(`Scanning ${options.target}...`);
@@ -172,7 +173,7 @@ export function scanCommand(): Command {
                     : 'F';
 
           const output = {
-            version: '0.5.0',
+            version: PANGUARD_VERSION,
             timestamp: result.scannedAt,
             target: 'localhost',
             risk_score: result.riskScore,
@@ -209,7 +210,7 @@ export function scanCommand(): Command {
           setLogLevel('silent');
         }
 
-        console.log(banner());
+        console.log(banner(PANGUARD_VERSION));
         const mode = options.quick ? 'Quick Scan' : 'Full Scan';
         console.log(`  ${symbols.scan} ${mode}`);
         console.log('');

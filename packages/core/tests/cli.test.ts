@@ -140,13 +140,13 @@ describe('banner (Brand Logo)', () => {
     expect(plain).toContain('AI');
   });
 
-  it('should include version', () => {
-    const plain = stripAnsi(banner());
-    expect(plain).toContain('v0.5.0');
+  it('should include version when provided', () => {
+    const plain = stripAnsi(banner('1.2.3'));
+    expect(plain).toContain('v1.2.3');
   });
 
   it('should have multiple lines', () => {
-    expect(banner().split('\n').length).toBeGreaterThanOrEqual(4);
+    expect(banner('0.1.0').split('\n').length).toBeGreaterThanOrEqual(3);
   });
 });
 

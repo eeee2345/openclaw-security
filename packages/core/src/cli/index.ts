@@ -182,56 +182,28 @@ export function colorGrade(grade: string): string {
  * Panguard AI CLI banner — matching brand mockup v1
  * Logo format: PANGUARD [shield] AI (per brand spec)
  */
-export function banner(): string {
+export function banner(version?: string): string {
+  const ver = version ? `v${version}` : '';
   if (!isColorSupported()) {
-    return ['', '  PANGUARD [#] AI  v0.5.0', '  AI-Powered Security Platform', ''].join('\n');
+    return ['', `  PANGUARD [#] AI  ${ver}`, '  AI-Powered Security Platform', ''].join('\n');
   }
 
-  const shieldArt = [
-    `${palette.sage}       _____`,
-    `      /     \\`,
-    `     /  ___  \\`,
-    `    |  /   \\  |`,
-    `    | | ${palette.safe}${BOLD}[${RESET}${palette.safe}${BOLD}✓${RESET}${palette.sage}| | |`,
-    `    |  \\___/  |`,
-    `     \\       /`,
-    `      \\_____/${RESET}`,
-  ];
-
-  const titleLines = [
+  return [
     '',
-    `  ${BOLD}${palette.cream}PANGUARD ${palette.sage}[▣]${palette.cream} AI${RESET}  ${palette.dim}v0.5.0${RESET}`,
+    `  ${BOLD}${palette.cream}PANGUARD ${palette.sage}[▣]${palette.cream} AI${RESET}  ${palette.dim}${ver}${RESET}`,
     `  ${palette.dim}AI-Powered Security Platform${RESET}`,
     '',
-  ];
-
-  // Combine shield art (right) with title (left)
-  const combined: string[] = [];
-  const maxLines = Math.max(shieldArt.length, titleLines.length);
-  for (let i = 0; i < maxLines; i++) {
-    const title = titleLines[i] ?? '';
-    const shield = shieldArt[i] ?? '';
-    if (i < titleLines.length && i < shieldArt.length) {
-      const titleWidth = stripAnsi(title).length;
-      const pad = Math.max(0, 35 - titleWidth);
-      combined.push(title + ' '.repeat(pad) + shield);
-    } else if (i < titleLines.length) {
-      combined.push(title);
-    } else {
-      combined.push(' '.repeat(35) + shield);
-    }
-  }
-
-  return combined.join('\n');
+  ].join('\n');
 }
 
 /** Compact header line */
-export function header(subtitle: string = ''): string {
+export function header(subtitle: string = '', version?: string): string {
+  const ver = version ? `  ${c.dim(`v${version}`)}` : '';
   const lines: string[] = [];
   if (isColorSupported()) {
-    lines.push(`  ${BOLD}${palette.cream}PANGUARD ${palette.sage}[▣]${palette.cream} AI${RESET}`);
+    lines.push(`  ${BOLD}${palette.cream}PANGUARD ${palette.sage}[▣]${palette.cream} AI${RESET}${ver}`);
   } else {
-    lines.push('  PANGUARD [#] AI');
+    lines.push(`  PANGUARD [#] AI${ver}`);
   }
   if (subtitle) {
     lines.push(`  ${c.dim(subtitle)}`);

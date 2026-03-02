@@ -54,8 +54,8 @@ describe('PanguardScan index exports', () => {
    * Verify the published version string matches the expected value.
    * 驗證發佈的版本字串符合預期值。
    */
-  it('PANGUARD_SCAN_VERSION should be 0.1.0', () => {
-    expect(PANGUARD_SCAN_VERSION).toBe('0.1.0');
+  it('PANGUARD_SCAN_VERSION should be a semver string', () => {
+    expect(PANGUARD_SCAN_VERSION).toMatch(/^\d+\.\d+\.\d+/);
   });
 
   /**

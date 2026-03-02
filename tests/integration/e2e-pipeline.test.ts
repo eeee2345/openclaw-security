@@ -74,13 +74,14 @@ import type { GuidanceAnswers } from '@panguard-ai/panguard-web';
 describe('End-to-End Platform Pipeline', () => {
   describe('Version Consistency', () => {
     it('should have version constants for all packages', () => {
-      expect(CORE_VERSION).toBe('0.1.0');
-      expect(PANGUARD_SCAN_VERSION).toBe('0.1.0');
-      expect(PANGUARD_GUARD_VERSION).toBe('0.1.0');
-      expect(PANGUARD_CHAT_VERSION).toBe('0.1.0');
-      expect(PANGUARD_TRAP_VERSION).toBe('0.1.0');
-      expect(PANGUARD_REPORT_VERSION).toBe('0.1.0');
-      expect(PANGUARD_WEB_VERSION).toBe('0.1.0');
+      const semver = /^\d+\.\d+\.\d+/;
+      expect(CORE_VERSION).toMatch(semver);
+      expect(PANGUARD_SCAN_VERSION).toMatch(semver);
+      expect(PANGUARD_GUARD_VERSION).toMatch(semver);
+      expect(PANGUARD_CHAT_VERSION).toMatch(semver);
+      expect(PANGUARD_TRAP_VERSION).toMatch(semver);
+      expect(PANGUARD_REPORT_VERSION).toMatch(semver);
+      expect(PANGUARD_WEB_VERSION).toMatch(semver);
     });
   });
 
@@ -459,7 +460,7 @@ describe('End-to-End Platform Pipeline', () => {
 
       expect(versions).toHaveLength(7);
       for (const v of versions) {
-        expect(v).toBe('0.1.0');
+        expect(v).toMatch(/^\d+\.\d+\.\d+/);
       }
     });
 

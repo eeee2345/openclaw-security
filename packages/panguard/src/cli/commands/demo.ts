@@ -15,6 +15,7 @@ import {
   formatDuration,
 } from '@panguard-ai/core';
 import { runScan } from '@panguard-ai/panguard-scan';
+import { PANGUARD_VERSION } from '../../index.js';
 import { generateComplianceReport, generateSummaryText } from '@panguard-ai/panguard-report';
 
 export function demoCommand(): Command {
@@ -22,7 +23,7 @@ export function demoCommand(): Command {
     .description('Run an automated demo sequence / 執行自動化展示')
     .option('--lang <language>', 'Language: en or zh-TW / 語言', 'en')
     .action(async (_opts: { lang: string }) => {
-      console.log(banner());
+      console.log(banner(PANGUARD_VERSION));
       console.log(`  ${symbols.info} ${c.bold('Panguard AI - Automated Demo')}`);
       console.log(`  ${c.dim('Running through all security modules...')}`);
       console.log('');

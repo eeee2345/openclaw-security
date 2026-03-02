@@ -29,8 +29,11 @@ import { installService, uninstallService } from '../daemon/index.js';
 import { generateTestLicenseKey } from '../license/index.js';
 import { generateInstallScript } from '../install/index.js';
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
 /** CLI version / CLI 版本 */
-export const CLI_VERSION = '0.5.0';
+export const CLI_VERSION: string = _pkg.version;
 
 /**
  * Parse and execute CLI commands / 解析並執行 CLI 命令
@@ -85,7 +88,7 @@ async function commandStart(dataDir: string, verbose = false): Promise<void> {
     setLogLevel('silent');
   }
 
-  console.log(banner());
+  console.log(banner(CLI_VERSION));
 
   const pidFile = new PidFile(dataDir);
   if (pidFile.isRunning()) {
@@ -269,7 +272,7 @@ function commandConfig(dataDir: string): void {
 
 /** Print help message / 列印幫助訊息 */
 function printHelp(): void {
-  console.log(banner());
+  console.log(banner(CLI_VERSION));
 
   console.log(`  ${c.bold('Usage:')} panguard-guard <command> [options]`);
   console.log('');

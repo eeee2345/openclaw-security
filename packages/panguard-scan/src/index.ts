@@ -8,8 +8,11 @@
  * @module @panguard-ai/panguard-scan
  */
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
 /** PanguardScan version / PanguardScan 版本 */
-export const PANGUARD_SCAN_VERSION = '0.1.0';
+export const PANGUARD_SCAN_VERSION: string = _pkg.version;
 
 /** PanguardScan product name / PanguardScan 產品名稱 */
 export const CLAWSCAN_NAME = 'PanguardScan';

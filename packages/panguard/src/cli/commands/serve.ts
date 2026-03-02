@@ -11,6 +11,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { c, banner } from '@panguard-ai/core';
+import { PANGUARD_VERSION } from '../../index.js';
 import {
   AuthDB,
   createAuthHandlers,
@@ -38,7 +39,7 @@ export function serveCommand(): Command {
       const port = parseInt(options.port, 10);
       const host = options.host;
 
-      console.log(banner());
+      console.log(banner(PANGUARD_VERSION));
       console.log(`  ${c.sage('Panguard Serve')} - Unified Server Gateway`);
       console.log('');
 

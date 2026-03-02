@@ -76,7 +76,7 @@ export function tierLabel(requiredTier: Tier | string, userTier?: Tier | string)
   const userLevel = TIER_LEVEL[userTier as Tier] ?? 0;
   const requiredLevel = TIER_LEVEL[requiredTier as Tier] ?? 0;
   if (userLevel >= requiredLevel) return colorFn(name);
-  return colorFn(name) + ' ' + c.dim('\uD83D\uDD12');
+  return colorFn(name) + ' ' + c.dim('[locked]');
 }
 
 /** Render the brand logo in sage green */
