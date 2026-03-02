@@ -13,6 +13,8 @@ import {
   statusPanel,
   divider,
   spinner,
+  guardSpinner,
+  setLogLevel,
   WizardEngine,
   promptConfirm,
 } from '@panguard-ai/core';
@@ -190,6 +192,9 @@ export async function runInitWizard(
     return null;
   }
 
+  // Suppress JSON logs during config write and scan
+  setLogLevel('silent');
+
   // Write config
   const sp = spinner(lang === 'zh-TW' ? '\u5BEB\u5165\u914D\u7F6E...' : 'Writing configuration...');
   const configPath = writeConfig(config);
@@ -214,7 +219,7 @@ export async function runInitWizard(
 
   if (runScan) {
     console.log('');
-    const scanSp = spinner(lang === 'zh-TW' ? '\u6383\u63CF\u4E2D...' : 'Scanning...');
+    const scanSp = guardSpinner(lang === 'zh-TW' ? '\u6383\u63CF\u4E2D...' : 'Scanning...');
     try {
       const { runScan: execScan } = await import('@panguard-ai/panguard-scan');
       const result = await execScan({ depth: 'quick', lang });
