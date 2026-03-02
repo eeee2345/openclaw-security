@@ -103,7 +103,7 @@ export function usageSuccess(items = MOCK_USAGE) {
 // --- Billing responses ---
 
 export function billingStatusFree() {
-  return { ok: true, data: { tier: 'free', status: null, renewsAt: null } };
+  return { ok: true, data: { tier: 'community', status: null, renewsAt: null } };
 }
 
 export function billingStatusPro() {

@@ -52,7 +52,7 @@ test.describe('Dashboard', () => {
     const logoutBtn = page.locator('button[aria-label="Log out"], button:has-text("Logout"), button:has-text("Log out")').first();
     if (await logoutBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
       await logoutBtn.click();
-      await page.waitForURL('**/', { timeout: 10000 });
+      await page.waitForURL('**/login**', { timeout: 10000 });
     }
   });
 
