@@ -237,12 +237,13 @@ const SPINNER_FRAMES = isColorSupported()
   : ['|', '/', '-', '\\'];
 
 /**
- * Trilobite defense animation — curls into a ball when threatened.
- * }≡{ open → )≡( sensing → )●( curling → (●) full defense → uncurl
+ * Trilobite defense animation — side view curling into a ball.
+ * /◉≡≡\ relaxed → /◉≡\ alert → (◉) curling → (●) full defense
+ * / \ = dome shell profile, ◉ = compound eye, ≡ = body segments
  */
 const GUARD_FRAMES = isColorSupported()
-  ? ['}≡{', '}≡{', ')≡(', ')●(', '(●)', '(●)', ')●(', ')≡(']
-  : ['}={', ')=(', '(o)', ')=('];
+  ? ['/◉≡≡\\', '/◉≡≡\\', '/◉≡\\', '(◉)', '(●)', '(●)', '(◉)', '/◉≡\\']
+  : ['/o==\\', '/o=\\', '(o)', '(*)', '(*)', '(o)', '/o=\\', '/o==\\'];
 
 export class Spinner {
   private frameIndex = 0;
@@ -265,7 +266,7 @@ export class Spinner {
     process.stdout.write('\x1b[?25l'); // Hide cursor
     this.timer = setInterval(() => {
       const frame = this.frames[this.frameIndex % this.frames.length];
-      process.stdout.write(`\r  ${palette.sage}${frame}${RESET} ${this.message}`);
+      process.stdout.write(`\r\x1b[K  ${palette.sage}${frame}${RESET} ${this.message}`);
       this.frameIndex++;
     }, this.interval);
     this.timer.unref();

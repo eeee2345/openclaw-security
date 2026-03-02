@@ -8,7 +8,7 @@
  * @module @panguard-ai/core/cli/wizard
  */
 
-import { c, symbols } from './index.js';
+import { c, symbols, guardSpinner } from './index.js';
 import { promptSelect, promptText, promptConfirm } from './prompts.js';
 import type { SelectOption } from './prompts.js';
 
@@ -198,14 +198,13 @@ export class WizardEngine {
     console.log(`  ${c.dim(step.description[this.lang])}`);
     console.log('');
 
-    // Run auto-detection
+    // Run auto-detection with trilobite defense animation
     const detecting = this.lang === 'zh-TW' ? '\u5075\u6E2C\u4E2D...' : 'Detecting...';
-    process.stdout.write(`  ${c.sage('\u2022')} ${detecting}`);
+    const sp = guardSpinner(detecting);
 
     try {
       const detected = await step.autoDetect();
-      process.stdout.write(`\r\x1b[K`);
-      console.log(`  ${symbols.pass} ${detected}`);
+      sp.succeed(detected);
       console.log('');
 
       // Confirm the auto-detected value
@@ -228,10 +227,7 @@ export class WizardEngine {
       });
       return manual;
     } catch {
-      process.stdout.write(`\r\x1b[K`);
-      console.log(
-        `  ${symbols.warn} ${this.lang === 'zh-TW' ? '\u5075\u6E2C\u5931\u6557' : 'Detection failed'}`
-      );
+      sp.warn(this.lang === 'zh-TW' ? '\u5075\u6E2C\u5931\u6557' : 'Detection failed');
 
       const manual = await promptText({
         title: step.title,
