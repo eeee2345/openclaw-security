@@ -28,6 +28,7 @@ import type {
   AiPreference,
   ProtectionLevel,
 } from './types.js';
+import { PANGUARD_VERSION } from '../index.js';
 
 /**
  * Run the full init wizard.
@@ -38,7 +39,7 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
 
   // ── Welcome screen ──────────────────────────────────────────
   console.clear();
-  console.log(banner());
+  console.log(banner(PANGUARD_VERSION));
   console.log('');
   console.log(
     box(

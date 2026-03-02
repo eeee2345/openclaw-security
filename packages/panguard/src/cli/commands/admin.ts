@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { c, banner } from '@panguard-ai/core';
+import { PANGUARD_VERSION } from '../../index.js';
 import { AuthDB, hashPassword } from '@panguard-ai/panguard-auth';
 
 function prompt(rl: ReturnType<typeof createInterface>, question: string): Promise<string> {
@@ -27,7 +28,7 @@ export function adminCommand(): Command {
     .description('Create initial admin account / 建立初始管理員帳號')
     .option('--db <path>', 'Database path', join(homedir(), '.panguard', 'auth.db'))
     .action(async (options: { db: string }) => {
-      console.log(banner());
+      console.log(banner(PANGUARD_VERSION));
       console.log(`  ${c.sage('Admin Init')} - Create admin account`);
       console.log('');
 

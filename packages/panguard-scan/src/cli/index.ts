@@ -88,7 +88,7 @@ program
           // print a simple summary
           const { banner, scoreDisplay, symbols, c, formatDuration } =
             await import('@panguard-ai/core');
-          console.log(banner());
+          console.log(banner(PANGUARD_SCAN_VERSION));
           console.log(`  ${symbols.scan} Remote Scan: ${c.bold(options.target)}`);
           console.log(scoreDisplay(safetyScore, grade));
           console.log(

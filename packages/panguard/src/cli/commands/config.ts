@@ -10,6 +10,7 @@
 
 import { Command } from 'commander';
 import { c, banner } from '@panguard-ai/core';
+import { PANGUARD_VERSION } from '../../index.js';
 import { saveLlmConfig, loadLlmConfig, deleteLlmConfig } from '../credentials.js';
 
 export function configCommand(): Command {
@@ -33,7 +34,7 @@ export function configCommand(): Command {
         show?: boolean;
         clear?: boolean;
       }) => {
-        console.log(banner());
+        console.log(banner(PANGUARD_VERSION));
 
         if (options.show) {
           const config = loadLlmConfig();
