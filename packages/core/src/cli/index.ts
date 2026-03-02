@@ -236,13 +236,25 @@ const SPINNER_FRAMES = isColorSupported()
   ? ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
   : ['|', '/', '-', '\\'];
 
+/**
+ * Trilobite defense animation — curls into a ball when threatened.
+ * }≡{ open → )≡( sensing → )●( curling → (●) full defense → uncurl
+ */
+const GUARD_FRAMES = isColorSupported()
+  ? ['}≡{', '}≡{', ')≡(', ')●(', '(●)', '(●)', ')●(', ')≡(']
+  : ['}={', ')=(', '(o)', ')=('];
+
 export class Spinner {
   private frameIndex = 0;
   private timer: ReturnType<typeof setInterval> | null = null;
   private message: string;
+  private frames: readonly string[];
+  private interval: number;
 
-  constructor(message: string) {
+  constructor(message: string, frames?: readonly string[], interval?: number) {
     this.message = message;
+    this.frames = frames ?? SPINNER_FRAMES;
+    this.interval = interval ?? 80;
   }
 
   start(): this {
@@ -252,10 +264,10 @@ export class Spinner {
     }
     process.stdout.write('\x1b[?25l'); // Hide cursor
     this.timer = setInterval(() => {
-      const frame = SPINNER_FRAMES[this.frameIndex % SPINNER_FRAMES.length];
+      const frame = this.frames[this.frameIndex % this.frames.length];
       process.stdout.write(`\r  ${palette.sage}${frame}${RESET} ${this.message}`);
       this.frameIndex++;
-    }, 80);
+    }, this.interval);
     this.timer.unref();
     return this;
   }
@@ -300,6 +312,11 @@ export class Spinner {
 /** Create and start a spinner */
 export function spinner(message: string): Spinner {
   return new Spinner(message).start();
+}
+
+/** Create and start a trilobite defense spinner (curling animation at 120ms) */
+export function guardSpinner(message: string): Spinner {
+  return new Spinner(message, GUARD_FRAMES, 120).start();
 }
 
 // ============================================================

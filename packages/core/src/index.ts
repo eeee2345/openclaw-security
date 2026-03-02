@@ -182,6 +182,7 @@ export {
   colorGrade,
   Spinner,
   spinner,
+  guardSpinner,
   ProgressBar,
   progressBar,
   table,
