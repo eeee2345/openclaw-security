@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
+import { buildAlternates } from '@/lib/seo';
 
 const CookieBanner = dynamic(() => import('@/components/CookieBanner'), { ssr: false });
 
@@ -47,7 +48,7 @@ export async function generateMetadata({
     metadataBase: new URL('https://panguard.ai'),
     title: {
       default: 'Panguard AI',
-      template: 'Panguard AI',
+      template: '%s | Panguard AI',
     },
     description: t('description'),
     openGraph: {
@@ -76,12 +77,12 @@ export async function generateMetadata({
       ],
       apple: '/apple-touch-icon.png',
     },
-    alternates: {
-      canonical: locale === 'en' ? 'https://panguard.ai' : `https://panguard.ai/${locale}`,
-      languages: {
-        en: 'https://panguard.ai',
-        'zh-TW': 'https://panguard.ai/zh',
-      },
+    alternates: buildAlternates('/', locale),
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+        : undefined,
     },
   };
 }
@@ -93,6 +94,18 @@ const jsonLd = [
     name: 'Panguard AI',
     url: 'https://panguard.ai',
     logo: 'https://panguard.ai/favicon.png',
+    description:
+      'AI-powered endpoint security for developers and SMBs. Automated threat detection, compliance reporting, and incident response.',
+    foundingDate: '2024',
+    knowsAbout: [
+      'endpoint security',
+      'intrusion detection',
+      'cybersecurity',
+      'YARA rules',
+      'Sigma rules',
+      'AI threat detection',
+      'compliance automation',
+    ],
     sameAs: [
       'https://github.com/panguard-ai/panguard-ai',
       'https://x.com/panguard_ai',
@@ -109,7 +122,7 @@ const jsonLd = [
     '@type': 'SoftwareApplication',
     name: 'Panguard AI',
     applicationCategory: 'SecurityApplication',
-    operatingSystem: 'Linux, macOS',
+    operatingSystem: 'Linux, macOS, Windows',
     description:
       'AI-powered endpoint security for developers and SMBs. One command to install. Zero configuration.',
     url: 'https://panguard.ai',
@@ -123,6 +136,17 @@ const jsonLd = [
       '@type': 'Organization',
       name: 'Panguard AI, Inc.',
       url: 'https://panguard.ai',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: 'https://panguard.ai',
+    name: 'Panguard AI',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://panguard.ai/blog?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
     },
   },
 ];

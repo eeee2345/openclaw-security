@@ -6,6 +6,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('resetPassword.title'),
     description: t('resetPassword.description'),
+    robots: { index: false, follow: false },
   };
 }
 

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import ChangelogContent from './ChangelogContent';
@@ -8,6 +9,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('changelog.title'),
     description: t('changelog.description'),
+    alternates: buildAlternates('/changelog', params.locale),
   };
 }
 

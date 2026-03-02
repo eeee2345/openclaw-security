@@ -3,6 +3,7 @@ import { LEGAL_LAST_UPDATED } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Data Processing Agreement',
+  description: 'Panguard AI Data Processing Agreement. GDPR-compliant data handling terms for enterprise customers.',
 };
 
 export default function DPAPage() {

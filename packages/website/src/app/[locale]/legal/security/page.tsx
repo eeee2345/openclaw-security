@@ -3,6 +3,7 @@ import { LEGAL_LAST_UPDATED } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Security Whitepaper',
+  description: 'Panguard AI security whitepaper. Our infrastructure security practices, encryption standards, and compliance certifications.',
 };
 
 export default function SecurityWhitepaperPage() {

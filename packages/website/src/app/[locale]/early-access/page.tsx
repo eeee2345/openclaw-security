@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import FadeInUp from '@/components/FadeInUp';
@@ -10,6 +11,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('earlyAccess.title'),
     description: t('earlyAccess.description'),
+    alternates: buildAlternates('/early-access', params.locale),
   };
 }
 

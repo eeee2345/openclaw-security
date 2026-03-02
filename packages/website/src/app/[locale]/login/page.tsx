@@ -6,6 +6,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('login.title'),
     description: t('login.description'),
+    robots: { index: false, follow: false },
   };
 }
 

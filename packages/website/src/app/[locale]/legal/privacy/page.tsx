@@ -8,6 +8,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return {
     title: locale === 'zh' ? '隱私權政策' : 'Privacy Policy',
+    description: 'Panguard AI Privacy Policy. How we collect, use, and protect your personal data.',
   };
 }
 

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import TechnologyContent from './TechnologyContent';
@@ -8,6 +9,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('technology.title'),
     description: t('technology.description'),
+    alternates: buildAlternates('/technology', params.locale),
   };
 }
 

@@ -8,6 +8,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return {
     title: locale === 'zh' ? '服務條款' : 'Terms of Service',
+    description: 'Panguard AI Terms of Service. Usage terms, intellectual property, and liability.',
   };
 }
 

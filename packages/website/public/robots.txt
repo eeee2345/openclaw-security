@@ -1,4 +1,32 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /admin
+Disallow: /zh/dashboard
+Disallow: /zh/account
+Disallow: /zh/login
+Disallow: /zh/register
+Disallow: /zh/reset-password
+Disallow: /zh/admin
+
+# AI search engine crawlers — explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
 
 Sitemap: https://panguard.ai/sitemap.xml

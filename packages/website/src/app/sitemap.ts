@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { blogPosts } from '@/data/blog-posts';
+import { caseStudies } from '@/data/case-studies';
 
 const locales = ['en', 'zh'] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://panguard.ai';
-  const now = new Date().toISOString();
+  // Use a stable date for static pages instead of current build time
+  const stableDate = '2026-03-01T00:00:00Z';
 
   const pages = [
     '/',
@@ -33,6 +35,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/blog',
     '/docs',
     '/docs/api',
+    '/docs/getting-started',
+    '/docs/deployment',
+    '/docs/advanced-setup',
     '/compliance',
     '/customers',
     '/careers',
@@ -75,7 +80,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticEntries = locales.flatMap((locale) =>
     pages.map((path) => ({
       url: localeUrl(locale, path),
-      lastModified: now,
+      lastModified: stableDate,
       changeFrequency: getFrequency(path),
       priority: getPriority(path),
       alternates: {
@@ -100,5 +105,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   );
 
-  return [...staticEntries, ...blogEntries];
+  const caseStudyEntries = locales.flatMap((locale) =>
+    caseStudies.map((cs) => ({
+      url: localeUrl(locale, `/customers/${cs.slug}`),
+      lastModified: stableDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+      alternates: {
+        languages: Object.fromEntries(
+          locales.map((l) => [l === 'zh' ? 'zh-TW' : l, localeUrl(l, `/customers/${cs.slug}`)])
+        ),
+      },
+    }))
+  );
+
+  return [...staticEntries, ...blogEntries, ...caseStudyEntries];
 }
