@@ -36,8 +36,8 @@ export const FEATURE_TIER: Record<string, Tier> = {
   demo: 'community',
   notifications: 'solo',
   notify: 'solo',
-  trap: 'solo',
-  report: 'business',
+  trap: 'pro',
+  report: 'pro',
 };
 
 /**

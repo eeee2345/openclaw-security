@@ -38,7 +38,7 @@ export interface UsageSummary {
 /** Quota limits per tier. -1 means unlimited. */
 const TIER_QUOTAS: Record<string, Record<MeterableResource, number>> = {
   community: {
-    scan: 100,
+    scan: -1,
     guard_endpoints: 1,
     reports: 0,
     api_calls: 1000,
@@ -51,7 +51,7 @@ const TIER_QUOTAS: Record<string, Record<MeterableResource, number>> = {
     reports: 0,
     api_calls: 10000,
     notifications: 1,
-    trap_instances: 1,
+    trap_instances: 0,
   },
   pro: {
     scan: -1,

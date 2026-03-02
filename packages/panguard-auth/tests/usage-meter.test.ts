@@ -37,12 +37,13 @@ describe('Usage Meter', () => {
 
   describe('checkQuota', () => {
     it('should allow usage under limit', () => {
-      const result = checkQuota(db, 1, 'free', 'scan');
+      // Community tier: scan is unlimited (-1), use api_calls (1000) for limit test
+      const result = checkQuota(db, 1, 'community', 'api_calls');
       expect(result.allowed).toBe(true);
       expect(result.current).toBe(0);
-      expect(result.limit).toBe(100);
-      expect(result.remaining).toBe(100);
-      expect(result.resource).toBe('scan');
+      expect(result.limit).toBe(1000);
+      expect(result.remaining).toBe(1000);
+      expect(result.resource).toBe('api_calls');
     });
 
     it('should report unlimited for -1 limits', () => {
@@ -53,24 +54,24 @@ describe('Usage Meter', () => {
     });
 
     it('should deny when at limit', () => {
-      // Free tier has 100 scans
-      for (let i = 0; i < 100; i++) {
-        recordUsage(db, 1, 'scan', 1);
+      // Community tier has 1000 api_calls/month
+      for (let i = 0; i < 1000; i++) {
+        recordUsage(db, 1, 'api_calls', 1);
       }
-      const result = checkQuota(db, 1, 'free', 'scan');
+      const result = checkQuota(db, 1, 'community', 'api_calls');
       expect(result.allowed).toBe(false);
-      expect(result.current).toBe(100);
+      expect(result.current).toBe(1000);
       expect(result.remaining).toBe(0);
     });
 
-    it('should use free tier quotas for unknown tiers', () => {
-      const result = checkQuota(db, 1, 'unknown_tier', 'scan');
-      expect(result.limit).toBe(100); // free tier limit
+    it('should use community tier quotas for unknown tiers', () => {
+      const result = checkQuota(db, 1, 'unknown_tier', 'api_calls');
+      expect(result.limit).toBe(1000); // community tier limit
     });
 
     it('should track guard_endpoints as lifetime resource', () => {
       setUsage(db, 1, 'guard_endpoints', 1);
-      const result = checkQuota(db, 1, 'free', 'guard_endpoints');
+      const result = checkQuota(db, 1, 'community', 'guard_endpoints');
       expect(result.current).toBe(1);
       expect(result.limit).toBe(1);
       expect(result.remaining).toBe(0);
@@ -82,19 +83,19 @@ describe('Usage Meter', () => {
     it('should increment usage count', () => {
       recordUsage(db, 1, 'scan', 1);
       recordUsage(db, 1, 'scan', 1);
-      const result = checkQuota(db, 1, 'free', 'scan');
+      const result = checkQuota(db, 1, 'community', 'scan');
       expect(result.current).toBe(2);
     });
 
     it('should support bulk recording', () => {
       recordUsage(db, 1, 'api_calls', 50);
-      const result = checkQuota(db, 1, 'free', 'api_calls');
+      const result = checkQuota(db, 1, 'community', 'api_calls');
       expect(result.current).toBe(50);
     });
 
     it('should default count to 1', () => {
       recordUsage(db, 1, 'scan');
-      const result = checkQuota(db, 1, 'free', 'scan');
+      const result = checkQuota(db, 1, 'community', 'scan');
       expect(result.current).toBe(1);
     });
   });
@@ -116,7 +117,7 @@ describe('Usage Meter', () => {
 
   describe('getUsageSummary', () => {
     it('should return summaries for all resources', () => {
-      const summary = getUsageSummary(db, 1, 'free');
+      const summary = getUsageSummary(db, 1, 'community');
       expect(summary.length).toBe(6); // 6 meterable resources
       const resources = summary.map((s) => s.resource);
       expect(resources).toContain('scan');
@@ -128,21 +129,19 @@ describe('Usage Meter', () => {
     });
 
     it('should compute percentage correctly', () => {
-      recordUsage(db, 1, 'scan', 50);
-      const summary = getUsageSummary(db, 1, 'free');
-      const scan = summary.find((s) => s.resource === 'scan')!;
-      expect(scan.current).toBe(50);
-      expect(scan.limit).toBe(100);
-      expect(scan.percentage).toBe(50);
+      recordUsage(db, 1, 'api_calls', 500);
+      const summary = getUsageSummary(db, 1, 'community');
+      const apiCalls = summary.find((s) => s.resource === 'api_calls')!;
+      expect(apiCalls.current).toBe(500);
+      expect(apiCalls.limit).toBe(1000);
+      expect(apiCalls.percentage).toBe(50);
     });
 
     it('should cap percentage at 100', () => {
-      for (let i = 0; i < 150; i++) {
-        recordUsage(db, 1, 'scan', 1);
-      }
-      const summary = getUsageSummary(db, 1, 'free');
-      const scan = summary.find((s) => s.resource === 'scan')!;
-      expect(scan.percentage).toBe(100);
+      recordUsage(db, 1, 'api_calls', 1500);
+      const summary = getUsageSummary(db, 1, 'community');
+      const apiCalls = summary.find((s) => s.resource === 'api_calls')!;
+      expect(apiCalls.percentage).toBe(100);
     });
 
     it('should show 0% for unlimited resources', () => {
@@ -155,7 +154,7 @@ describe('Usage Meter', () => {
     it('should show 100% when usage > 0 and limit is 0', () => {
       // Free tier has reports = 0
       recordUsage(db, 1, 'reports', 1);
-      const summary = getUsageSummary(db, 1, 'free');
+      const summary = getUsageSummary(db, 1, 'community');
       const reports = summary.find((s) => s.resource === 'reports')!;
       expect(reports.percentage).toBe(100);
     });
@@ -163,31 +162,33 @@ describe('Usage Meter', () => {
 
   describe('getQuotaLimits', () => {
     it('should return limits for known tiers', () => {
-      const free = getQuotaLimits('free');
-      expect(free.scan).toBe(100);
-      expect(free.guard_endpoints).toBe(1);
+      const community = getQuotaLimits('community');
+      expect(community.scan).toBe(-1); // unlimited
+      expect(community.guard_endpoints).toBe(1);
+      expect(community.api_calls).toBe(1000);
 
       const business = getQuotaLimits('business');
       expect(business.scan).toBe(-1);
       expect(business.api_calls).toBe(-1);
     });
 
-    it('should return free limits for unknown tier', () => {
+    it('should return community limits for unknown tier', () => {
       const limits = getQuotaLimits('nonexistent');
-      expect(limits.scan).toBe(100);
+      expect(limits.scan).toBe(-1); // community = unlimited scan
+      expect(limits.api_calls).toBe(1000);
     });
 
     it('should return a copy (not mutable reference)', () => {
-      const a = getQuotaLimits('free');
-      const b = getQuotaLimits('free');
-      a.scan = 999;
-      expect(b.scan).toBe(100);
+      const a = getQuotaLimits('community');
+      const b = getQuotaLimits('community');
+      a.api_calls = 999;
+      expect(b.api_calls).toBe(1000);
     });
   });
 
   describe('tier quota definitions', () => {
     it('should have increasing limits per tier', () => {
-      const tiers = ['free', 'solo', 'pro', 'business', 'enterprise'];
+      const tiers = ['community', 'solo', 'pro', 'business', 'enterprise'];
       for (let i = 1; i < tiers.length; i++) {
         const prev = getQuotaLimits(tiers[i - 1]!);
         const curr = getQuotaLimits(tiers[i]!);

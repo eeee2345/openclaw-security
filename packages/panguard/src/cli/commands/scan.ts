@@ -41,8 +41,8 @@ export function scanCommand(): Command {
         json: boolean;
         target?: string;
       }) => {
-        // Auth: quick scan = community, full scan = solo, remote scan = solo
-        const tier = options.target ? 'solo' : options.quick ? 'community' : 'solo';
+        // Auth: local scan = community (free), remote scan = solo
+        const tier = options.target ? 'solo' : 'community';
         const check = requireAuth(tier);
         if (!check.authenticated || !check.authorized) {
           const { withAuth } = await import('../auth-guard.js');
