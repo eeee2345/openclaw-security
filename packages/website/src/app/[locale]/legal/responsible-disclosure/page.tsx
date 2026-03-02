@@ -3,6 +3,7 @@ import { LEGAL_LAST_UPDATED } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Vulnerability Disclosure Policy',
+  description: 'Report security vulnerabilities to Panguard AI. Our responsible disclosure program and bug bounty guidelines.',
 };
 
 export default function ResponsibleDisclosurePage() {

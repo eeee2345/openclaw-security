@@ -1,0 +1,52 @@
+# Panguard AI
+
+> AI-powered endpoint security for developers and SMBs. One command installs
+> a lightweight agent that monitors your servers 24/7 with behavioral AI,
+> 3,155 Sigma rules, and 5,895 YARA signatures.
+
+## Product
+
+- [Product Overview](https://panguard.ai/product): Full product suite — five AI-powered security tools on one platform
+- [Panguard Scan](https://panguard.ai/product/scan): Free 60-second AI security audit. No installation required
+- [Panguard Guard](https://panguard.ai/product/guard): 24/7 real-time threat detection agent with behavioral AI
+- [Panguard Chat](https://panguard.ai/product/chat): AI security copilot for plain-language threat investigation
+- [Panguard Trap](https://panguard.ai/product/trap): Intelligent honeypots for attacker deception and intelligence
+- [Panguard Report](https://panguard.ai/product/report): Automated compliance reports for ISO 27001, SOC 2, TCSA
+
+## Pricing
+
+- [Pricing](https://panguard.ai/pricing): Community (free), Solo ($9/mo), Pro ($29/mo), Business ($79/mo)
+
+## Solutions
+
+- [For Developers](https://panguard.ai/solutions/developers): Enterprise security with developer simplicity
+- [For Small Business](https://panguard.ai/solutions/smb): Big company security on a small company budget
+- [For Mid-size Companies](https://panguard.ai/solutions/enterprise): Scale security without scaling complexity
+
+## Technology
+
+- [How It Works](https://panguard.ai/how-it-works): Five layers of defense, three tiers of AI
+- [Technology](https://panguard.ai/technology): Detection engine architecture and AI models
+- [Threat Cloud](https://panguard.ai/threat-cloud): Collective threat intelligence network
+- [Integrations](https://panguard.ai/integrations): Slack, Teams, PagerDuty, Splunk, and more
+
+## Documentation
+
+- [Getting Started](https://panguard.ai/docs/getting-started): Install Panguard in 60 seconds
+- [API Reference](https://panguard.ai/docs/api): REST API and webhook documentation
+- [Deployment Guide](https://panguard.ai/docs/deployment): Multi-endpoint production deployment
+- [Advanced Setup](https://panguard.ai/docs/advanced-setup): Ollama, Falco, Suricata integration
+
+## Compliance
+
+- [Compliance](https://panguard.ai/compliance): Taiwan TCSA, ISO 27001, SOC 2 automation
+- [Security](https://panguard.ai/security): Our own security practices and responsible disclosure
+- [Trust Center](https://panguard.ai/trust): Security certifications and audit reports
+
+## Company
+
+- [About](https://panguard.ai/about): Mission — security for the other 99% of businesses
+- [Open Source](https://panguard.ai/open-source): MIT-licensed core components
+- [Blog](https://panguard.ai/blog): Engineering, threat intelligence, and product updates
+- [Customers](https://panguard.ai/customers): Case studies and use case scenarios
+- [Contact](https://panguard.ai/contact): Sales and support

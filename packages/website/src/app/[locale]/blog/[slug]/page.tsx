@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import { Link } from '@/navigation';
 import { ArrowLeft, Clock, User, Calendar } from 'lucide-react';
 import NavBar from '@/components/NavBar';
@@ -20,9 +21,28 @@ export async function generateMetadata({ params }: { params: { slug: string; loc
   if (!post) {
     return { title: t('blog.title'), description: t('blog.description') };
   }
+  const url = `https://panguard.ai/blog/${params.slug}`;
   return {
     title: `${post.title} | Panguard AI Blog`,
     description: post.excerpt,
+    alternates: buildAlternates(`/blog/${params.slug}`, params.locale),
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      description: post.excerpt,
+      url,
+      siteName: 'Panguard AI',
+      publishedTime: `${post.date}T00:00:00Z`,
+      authors: [post.author],
+      section: post.category,
+      images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: ['/og-image.png'],
+    },
   };
 }
 
@@ -52,8 +72,30 @@ export default async function BlogPostPage({
     notFound();
   }
 
+  const blogPostJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: `${post.date}T00:00:00Z`,
+    dateModified: `${post.date}T00:00:00Z`,
+    author: { '@type': 'Organization', name: 'Panguard AI' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Panguard AI',
+      logo: { '@type': 'ImageObject', url: 'https://panguard.ai/favicon.png' },
+    },
+    url: `https://panguard.ai/blog/${post.slug}`,
+    image: 'https://panguard.ai/og-image.png',
+    articleSection: post.category,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostJsonLd) }}
+      />
       <NavBar />
       <main id="main-content">
         {/* ───────────── Back Link ───────────── */}
@@ -73,7 +115,7 @@ export default async function BlogPostPage({
 
         {/* ───────────── Post Header ───────────── */}
         <SectionWrapper spacing="default">
-          <div className="max-w-[800px] mx-auto">
+          <article className="max-w-[800px] mx-auto">
             <FadeInUp>
               <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-brand-sage/10 text-brand-sage">
                 {post.category}
@@ -94,7 +136,7 @@ export default async function BlogPostPage({
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />
-                  {formatDate(post.date, params.locale)}
+                  <time dateTime={post.date}>{formatDate(post.date, params.locale)}</time>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Clock className="w-4 h-4" />
@@ -188,7 +230,7 @@ export default async function BlogPostPage({
                 </div>
               </FadeInUp>
             )}
-          </div>
+          </article>
         </SectionWrapper>
       </main>
       <Footer />

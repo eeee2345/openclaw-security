@@ -3,6 +3,7 @@ import { LEGAL_LAST_UPDATED } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Acceptable Use Policy',
+  description: 'Panguard AI Acceptable Use Policy. Guidelines for proper use of our security platform.',
 };
 
 export default function AcceptableUsePolicyPage() {

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import FadeInUp from '@/components/FadeInUp';
@@ -14,14 +15,34 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('pricing.title'),
     description: t('pricing.description'),
+    alternates: buildAlternates('/pricing', params.locale),
   };
 }
+
+const faqKeys = ['faq1', 'faq2', 'faq3', 'faq4', 'faq5', 'faq6', 'faq7', 'faq8'] as const;
 
 export default async function PricingPage() {
   const t = await getTranslations('pricingPage');
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqKeys.map((key) => ({
+      '@type': 'Question',
+      name: t(`faq.${key}q`),
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: t(`faq.${key}a`),
+      },
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <NavBar />
       <main id="main-content">
         {/* Hero */}

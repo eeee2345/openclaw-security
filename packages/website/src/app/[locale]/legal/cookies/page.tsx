@@ -3,6 +3,7 @@ import { LEGAL_LAST_UPDATED } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
+  description: 'How Panguard AI uses cookies and similar technologies. Manage your cookie preferences.',
 };
 
 export default function CookiePolicyPage() {

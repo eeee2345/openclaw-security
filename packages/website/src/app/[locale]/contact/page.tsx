@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import ContactContent from './ContactContent';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
@@ -6,6 +7,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('contact.title'),
     description: t('contact.description'),
+    alternates: buildAlternates('/contact', params.locale),
   };
 }
 

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: `${cs.company} - ${cs.headline} | Panguard AI`,
     description: cs.excerpt,
+    alternates: buildAlternates(`/customers/${slug}`, locale),
   };
 }
 

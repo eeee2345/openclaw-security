@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import IntegrationsContent from './IntegrationsContent';
@@ -8,6 +9,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   return {
     title: t('integrations.title'),
     description: t('integrations.description'),
+    alternates: buildAlternates('/integrations', params.locale),
   };
 }
 
