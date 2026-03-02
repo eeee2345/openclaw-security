@@ -17,24 +17,30 @@ import {
   promptConfirm,
 } from '@panguard-ai/core';
 import type { WizardAnswers as CoreWizardAnswers } from '@panguard-ai/core';
-import { getWizardSteps } from './steps.js';
-import { hasExistingConfig, getEnvironmentInfo } from './environment.js';
-import { buildPanguardConfig, writeConfig } from './config-writer.js';
+import { getWizardSteps, getQuickSteps } from './steps.js';
+import { hasExistingConfig, getEnvironmentInfo, getEnhancedEnvironment } from './environment.js';
+import { buildPanguardConfig, buildQuickConfig, writeConfig } from './config-writer.js';
 import type {
   WizardAnswers,
+  PanguardConfig,
   Lang,
   OrgSize,
   DeployEnv,
   AiPreference,
   ProtectionLevel,
+  UsageProfile,
 } from './types.js';
 import { PANGUARD_VERSION } from '../index.js';
 
 /**
- * Run the full init wizard.
+ * Run the init wizard.
+ * Default: quick 3-step flow. Pass advanced=true for full 10-step wizard.
  * Returns the path to the generated config, or null if cancelled.
  */
-export async function runInitWizard(langOverride?: string): Promise<string | null> {
+export async function runInitWizard(
+  langOverride?: string,
+  advanced = false
+): Promise<string | null> {
   const initialLang: Lang = langOverride === 'en' ? 'en' : 'zh-TW';
 
   // ── Welcome screen ──────────────────────────────────────────
@@ -48,9 +54,13 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
           ? 'Panguard AI Setup Wizard / \u8A2D\u5B9A\u7CBE\u9748'
           : 'Panguard AI Setup Wizard',
         '',
-        initialLang === 'zh-TW'
-          ? '\u901A\u904E\u5E7E\u500B\u554F\u984C\u4E86\u89E3\u4F60\u7684\u74B0\u5883\uFF0C\u81EA\u52D5\u914D\u7F6E\u6240\u6709\u5B89\u5168\u6A21\u7D44\u3002'
-          : 'A few questions to understand your environment and auto-configure all security modules.',
+        advanced
+          ? initialLang === 'zh-TW'
+            ? '\u901A\u904E\u5E7E\u500B\u554F\u984C\u4E86\u89E3\u4F60\u7684\u74B0\u5883\uFF0C\u81EA\u52D5\u914D\u7F6E\u6240\u6709\u5B89\u5168\u6A21\u7D44\u3002'
+            : 'A few questions to understand your environment and auto-configure all security modules.'
+          : initialLang === 'zh-TW'
+            ? '\u5FEB\u901F\u8A2D\u5B9A\uFF1A\u9078\u64C7\u8A9E\u8A00\u548C\u4F7F\u7528\u60C5\u5883\uFF0C\u5176\u4ED6\u5168\u90E8\u81EA\u52D5\u5075\u6E2C\u3002'
+            : 'Quick setup: pick your language and usage profile, we auto-detect the rest.',
       ].join('\n'),
       { borderColor: c.sage }
     )
@@ -77,7 +87,7 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
   }
 
   // ── Run wizard steps ────────────────────────────────────────
-  const steps = getWizardSteps();
+  const steps = advanced ? getWizardSteps() : getQuickSteps();
   const engine = new WizardEngine(steps, initialLang);
   const rawAnswers = await engine.run();
 
@@ -88,17 +98,24 @@ export async function runInitWizard(langOverride?: string): Promise<string | nul
     return null;
   }
 
-  // ── Parse raw answers into typed structure ──────────────────
+  // ── Build config from answers ─────────────────────────────
   const lang = engine.getLang();
-  const envInfo = getEnvironmentInfo();
-  const answers = parseAnswers(rawAnswers, envInfo);
+
+  let config: PanguardConfig;
+  if (advanced) {
+    const envInfo = getEnvironmentInfo();
+    const answers = parseAnswers(rawAnswers, envInfo);
+    config = buildPanguardConfig(answers);
+  } else {
+    const profile = (rawAnswers['usageProfile'] as UsageProfile) ?? 'personal';
+    const env = getEnhancedEnvironment();
+    config = buildQuickConfig(profile, lang, env);
+  }
 
   // ── Show configuration summary ──────────────────────────────
   console.log('');
   console.log(divider(lang === 'zh-TW' ? '\u914D\u7F6E\u6458\u8981' : 'Configuration Summary'));
   console.log('');
-
-  const config = buildPanguardConfig(answers);
 
   const summaryItems = [
     {

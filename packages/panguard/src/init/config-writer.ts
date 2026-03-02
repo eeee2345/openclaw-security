@@ -9,7 +9,15 @@ import { mkdirSync, writeFileSync, chmodSync, readFileSync } from 'node:fs';
 import * as os from 'node:os';
 import { join } from 'node:path';
 import { createLogger } from '@panguard-ai/core';
-import type { WizardAnswers, PanguardConfig, ProtectionLevel, AiPreference } from './types.js';
+import type {
+  WizardAnswers,
+  PanguardConfig,
+  ProtectionLevel,
+  AiPreference,
+  UsageProfile,
+  EnhancedEnvironment,
+  Lang,
+} from './types.js';
 
 const logger = createLogger('panguard:init:config');
 
@@ -83,8 +91,15 @@ export function writeConfig(config: PanguardConfig): string {
   const configDir = join(os.homedir(), '.panguard');
   const configPath = join(configDir, 'config.json');
 
-  // Create directory
-  mkdirSync(configDir, { recursive: true });
+  // Create directory with restricted permissions (owner-only on Unix)
+  mkdirSync(configDir, { recursive: true, mode: 0o700 });
+
+  // Enforce directory permissions even if directory pre-existed
+  try {
+    chmodSync(configDir, 0o700);
+  } catch {
+    // Windows doesn't support chmod the same way
+  }
 
   // Write config with restricted permissions
   const json = JSON.stringify(config, null, 2);
@@ -103,16 +118,170 @@ export function writeConfig(config: PanguardConfig): string {
 
 /**
  * Read config from ~/.panguard/config.json
+ * Validates schema before returning.
  */
 export function readConfig(): PanguardConfig | null {
   const configPath = join(os.homedir(), '.panguard', 'config.json');
   try {
     const json = readFileSync(configPath, 'utf-8');
-    return JSON.parse(json) as PanguardConfig;
-  } catch {
+    const parsed: unknown = JSON.parse(json);
+    if (!validateConfigSchema(parsed)) {
+      logger.warn('Config file has invalid schema, ignoring');
+      return null;
+    }
+    return parsed as PanguardConfig;
+  } catch (err) {
+    if (err instanceof Error && (err as NodeJS.ErrnoException).code !== 'ENOENT') {
+      logger.warn(`Failed to read config: ${err.message}`);
+    }
     return null;
   }
 }
+
+const VALID_PROTECTION_LEVELS = ['aggressive', 'balanced', 'learning'];
+const VALID_DEPLOY_TYPES = ['cloud', 'on-prem', 'hybrid'];
+
+/**
+ * Validate that an object matches the PanguardConfig schema.
+ * Checks top-level structure and critical nested fields.
+ */
+export function validateConfigSchema(obj: unknown): boolean {
+  if (!obj || typeof obj !== 'object') return false;
+  const c = obj as Record<string, unknown>;
+
+  // Top-level required fields
+  if (typeof c['version'] !== 'string') return false;
+  if (!c['meta'] || typeof c['meta'] !== 'object') return false;
+  if (!c['organization'] || typeof c['organization'] !== 'object') return false;
+  if (!c['environment'] || typeof c['environment'] !== 'object') return false;
+  if (!c['security'] || typeof c['security'] !== 'object') return false;
+
+  // Validate critical nested fields
+  const org = c['organization'] as Record<string, unknown>;
+  if (typeof org['name'] !== 'string') return false;
+
+  const env = c['environment'] as Record<string, unknown>;
+  if (typeof env['deployType'] === 'string' && !VALID_DEPLOY_TYPES.includes(env['deployType'])) {
+    return false;
+  }
+
+  const sec = c['security'] as Record<string, unknown>;
+  if (
+    typeof sec['protectionLevel'] === 'string' &&
+    !VALID_PROTECTION_LEVELS.includes(sec['protectionLevel'])
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Build a PanguardConfig from a quick-setup usage profile.
+ * Maps the profile + auto-detected environment to a full config.
+ */
+export function buildQuickConfig(
+  profile: UsageProfile,
+  lang: Lang,
+  env: EnhancedEnvironment
+): PanguardConfig {
+  const profileDefaults = PROFILE_DEFAULTS[profile];
+  const goals = expandGoals('all');
+  const modules = deriveModules(goals);
+  const guardPolicy = deriveGuardPolicy(profileDefaults.protectionLevel);
+  const trapServices = deriveTrapServices(goals);
+
+  return {
+    version: '1.0.0',
+    meta: {
+      createdAt: new Date().toISOString(),
+      language: lang,
+    },
+    organization: {
+      name:
+        profile === 'personal'
+          ? env.hostname.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 64)
+          : profile === 'team'
+            ? 'My Team'
+            : 'Enterprise',
+      size: profileDefaults.orgSize,
+      industry: 'tech',
+    },
+    environment: {
+      os: env.os,
+      hostname: env.hostname,
+      arch: env.arch,
+      deployType: profileDefaults.deployType,
+      serverCount: profile === 'enterprise' ? 10 : 1,
+    },
+    security: {
+      goals,
+      compliance: profileDefaults.compliance,
+      protectionLevel: profileDefaults.protectionLevel,
+    },
+    guard: {
+      mode: guardPolicy.mode,
+      learningDays: guardPolicy.learningDays,
+      actionPolicy: {
+        autoRespond: guardPolicy.autoRespond,
+        notifyAndWait: guardPolicy.notifyAndWait,
+      },
+      monitors: {
+        logMonitor: true,
+        networkMonitor: true,
+        processMonitor: true,
+        fileMonitor: true,
+      },
+    },
+    ai: {
+      preference: profileDefaults.aiPreference,
+      provider: deriveAiProvider(profileDefaults.aiPreference),
+    },
+    notifications: {
+      channel: 'none',
+      config: {},
+    },
+    trap: {
+      enabled: true,
+      services: trapServices,
+    },
+    modules,
+  };
+}
+
+/** Profile-to-settings mapping. */
+const PROFILE_DEFAULTS: Record<
+  UsageProfile,
+  {
+    orgSize: PanguardConfig['organization']['size'];
+    deployType: PanguardConfig['environment']['deployType'];
+    protectionLevel: ProtectionLevel;
+    aiPreference: AiPreference;
+    compliance: string[];
+  }
+> = {
+  personal: {
+    orgSize: 'individual',
+    deployType: 'cloud',
+    protectionLevel: 'balanced',
+    aiPreference: 'cloud_ai',
+    compliance: [],
+  },
+  team: {
+    orgSize: 'small',
+    deployType: 'cloud',
+    protectionLevel: 'balanced',
+    aiPreference: 'cloud_ai',
+    compliance: [],
+  },
+  enterprise: {
+    orgSize: 'large',
+    deployType: 'hybrid',
+    protectionLevel: 'learning',
+    aiPreference: 'cloud_ai',
+    compliance: ['iso27001', 'soc2'],
+  },
+};
 
 // ── Helper functions ────────────────────────────────────────
 
@@ -143,10 +312,11 @@ function deriveGuardPolicy(level: ProtectionLevel): {
   switch (level) {
     case 'aggressive':
       return { mode: 'protection', learningDays: 3, autoRespond: 60, notifyAndWait: 30 };
-    case 'balanced':
-      return { mode: 'learning', learningDays: 7, autoRespond: 85, notifyAndWait: 50 };
     case 'learning':
       return { mode: 'learning', learningDays: 14, autoRespond: 100, notifyAndWait: 100 };
+    case 'balanced':
+    default:
+      return { mode: 'learning', learningDays: 7, autoRespond: 85, notifyAndWait: 50 };
   }
 }
 

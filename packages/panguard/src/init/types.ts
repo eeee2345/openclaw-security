@@ -11,6 +11,21 @@ export type DeployEnv = 'cloud' | 'on-prem' | 'hybrid';
 export type AiPreference = 'cloud_ai' | 'local_ai' | 'rules_only';
 export type ProtectionLevel = 'aggressive' | 'balanced' | 'learning';
 
+/** Quick setup profile (maps to all detailed settings automatically). */
+export type UsageProfile = 'personal' | 'team' | 'enterprise';
+
+/** Enhanced environment info from auto-detection. */
+export interface EnhancedEnvironment {
+  os: string;
+  hostname: string;
+  arch: string;
+  platform: string;
+  totalMemGB: number;
+  openPorts: number[];
+  securityTools: string[];
+  hasDocker: boolean;
+}
+
 /**
  * Answers collected from the setup wizard.
  */

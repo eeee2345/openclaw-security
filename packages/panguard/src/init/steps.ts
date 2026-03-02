@@ -8,7 +8,7 @@
  */
 
 import type { WizardStep } from '@panguard-ai/core';
-import { detectEnvironment } from './environment.js';
+import { detectEnvironment, detectEnvironmentEnhanced } from './environment.js';
 
 /**
  * All wizard steps in order.
@@ -371,6 +371,94 @@ export function getWizardSteps(): WizardStep[] {
           },
         },
       ],
+    },
+  ];
+}
+
+/**
+ * Quick setup steps (3 steps only).
+ * Used by default; --advanced uses getWizardSteps().
+ */
+export function getQuickSteps(): WizardStep[] {
+  return [
+    // ── Step 1: Language (reused from full wizard) ───────────
+    {
+      id: 'language',
+      title: { en: 'Language / \u8A9E\u8A00', 'zh-TW': '\u8A9E\u8A00 / Language' },
+      description: {
+        en: 'Choose your preferred language / \u9078\u64C7\u4F60\u504F\u597D\u7684\u8A9E\u8A00',
+        'zh-TW':
+          '\u9078\u64C7\u4F60\u504F\u597D\u7684\u8A9E\u8A00 / Choose your preferred language',
+      },
+      inputType: 'select',
+      options: [
+        {
+          value: 'zh-TW',
+          label: { en: '\u7E41\u9AD4\u4E2D\u6587', 'zh-TW': '\u7E41\u9AD4\u4E2D\u6587' },
+        },
+        { value: 'en', label: { en: 'English', 'zh-TW': 'English' } },
+      ],
+    },
+
+    // ── Step 2: Usage Profile ───────────────────────────────
+    {
+      id: 'usageProfile',
+      title: {
+        en: 'How will you use Panguard?',
+        'zh-TW': '\u4F60\u5982\u4F55\u4F7F\u7528 Panguard\uFF1F',
+      },
+      description: {
+        en: 'We will auto-configure everything based on your choice',
+        'zh-TW': '\u6211\u5011\u6703\u6839\u64DA\u4F60\u7684\u9078\u64C7\u81EA\u52D5\u914D\u7F6E\u6240\u6709\u8A2D\u5B9A',
+      },
+      inputType: 'select',
+      options: [
+        {
+          value: 'personal',
+          label: {
+            en: 'Personal device (Recommended)',
+            'zh-TW': '\u500B\u4EBA\u88DD\u7F6E (\u63A8\u85A6)',
+          },
+          description: {
+            en: 'Protect your laptop, desktop, or personal server',
+            'zh-TW': '\u4FDD\u8B77\u4F60\u7684\u7B46\u96FB\u3001\u684C\u6A5F\u6216\u500B\u4EBA\u4F3A\u670D\u5668',
+          },
+        },
+        {
+          value: 'team',
+          label: {
+            en: 'Small team server',
+            'zh-TW': '\u5C0F\u578B\u5718\u968A\u4F3A\u670D\u5668',
+          },
+          description: {
+            en: 'Cloud VPS or office server for a small team',
+            'zh-TW': '\u96F2\u7AEF VPS \u6216\u5C0F\u578B\u5718\u968A\u8FA6\u516C\u5BA4\u4F3A\u670D\u5668',
+          },
+        },
+        {
+          value: 'enterprise',
+          label: {
+            en: 'Enterprise infrastructure',
+            'zh-TW': '\u4F01\u696D\u57FA\u790E\u8A2D\u65BD',
+          },
+          description: {
+            en: 'Multi-server environment with compliance needs',
+            'zh-TW': '\u591A\u4F3A\u670D\u5668\u74B0\u5883\uFF0C\u9700\u8981\u5408\u898F',
+          },
+        },
+      ],
+    },
+
+    // ── Step 3: Environment auto-detect ─────────────────────
+    {
+      id: 'environment_os',
+      title: { en: 'System Environment', 'zh-TW': '\u7CFB\u7D71\u74B0\u5883' },
+      description: {
+        en: 'Auto-detecting your system...',
+        'zh-TW': '\u6B63\u5728\u81EA\u52D5\u5075\u6E2C\u4F60\u7684\u7CFB\u7D71...',
+      },
+      inputType: 'auto',
+      autoDetect: detectEnvironmentEnhanced,
     },
   ];
 }

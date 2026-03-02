@@ -6,14 +6,22 @@
  */
 
 export { runInitWizard } from './wizard-runner.js';
-export { buildPanguardConfig, writeConfig, readConfig } from './config-writer.js';
+export {
+  buildPanguardConfig,
+  buildQuickConfig,
+  writeConfig,
+  readConfig,
+  validateConfigSchema,
+} from './config-writer.js';
 export {
   detectEnvironment,
+  detectEnvironmentEnhanced,
   hasExistingConfig,
   getConfigDir,
   getEnvironmentInfo,
+  getEnhancedEnvironment,
 } from './environment.js';
-export { getWizardSteps } from './steps.js';
+export { getWizardSteps, getQuickSteps } from './steps.js';
 export type {
   WizardAnswers,
   PanguardConfig,
@@ -22,4 +30,6 @@ export type {
   AiPreference,
   ProtectionLevel,
   Lang,
+  UsageProfile,
+  EnhancedEnvironment,
 } from './types.js';
