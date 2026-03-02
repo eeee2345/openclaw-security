@@ -149,10 +149,10 @@
       "getStarted": "Get Started",
       "github": "GitHub",
       "copied": "Copied!",
-      "prereq": "Requires Node.js 20+ and git",
+      "prereq": "",
       "badges": {
         "mit": "MIT Open Source",
-        "tests": "1,333 Tests Passing",
+        "tests": "1,420 Tests Passing",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -392,7 +392,7 @@
         "subtitle": "Because security shouldn't have walls.",
         "desc": "MIT licensed. Full source code. Zero black boxes. Every line can be audited, verified, improved.",
         "belief": "We believe breaking the security barrier isn't about lowering prices — it's about letting everyone participate.",
-        "proof": "1,333 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
+        "proof": "1,420 tests. TypeScript strict mode. MIT license. This is not a side project. This is infrastructure."
       }
     },
     "the3amStory": {
@@ -547,7 +547,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "1,333 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "1,420 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -656,7 +656,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "Documentation",
       "badge1": "MIT Open Source",
-      "badge2": "1,333 Tests Passing",
+      "badge2": "1,420 Tests Passing",
       "badge3": "Built in Taiwan"
     }
   },
@@ -808,6 +808,42 @@
       "productsIncluded": "Products Included",
       "alertsIntegrations": "Alerts & Integrations",
       "supportInfra": "Support & Infrastructure"
+    },
+    "comparisonFeatures": {
+      "Panguard Scan": "Panguard Scan",
+      "Guard detection": "Guard detection",
+      "Auto-block attacks": "Auto-block attacks",
+      "Auto-fix vulnerabilities": "Auto-fix vulnerabilities",
+      "AI analysis": "AI analysis",
+      "Panguard Chat": "Panguard Chat",
+      "Panguard Report": "Panguard Report",
+      "Panguard Trap": "Panguard Trap",
+      "Email alerts": "Email alerts",
+      "Telegram": "Telegram",
+      "Slack": "Slack",
+      "Webhook / API": "Webhook / API",
+      "SIEM integration": "SIEM integration",
+      "Community support": "Community support",
+      "Priority support": "Priority support",
+      "Dedicated manager": "Dedicated manager",
+      "Log retention": "Log retention",
+      "SSO & RBAC": "SSO & RBAC",
+      "On-premise option": "On-premise option",
+      "Machines": "Machines"
+    },
+    "comparisonValues": {
+      "Full": "Full",
+      "Full + custom": "Full + custom",
+      "Known patterns": "Known patterns",
+      "All threats": "All threats",
+      "Manual guide": "Manual guide",
+      "One-click": "One-click",
+      "Custom models": "Custom models",
+      "Basic": "Basic",
+      "Advanced": "Advanced",
+      "Advanced + API": "Advanced + API",
+      "Session only": "Session only",
+      "Roadmap": "Roadmap"
     },
     "tierLabels": {
       "community": "Community",
@@ -3548,7 +3584,7 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "1,333",
+          "value": "1,420",
           "label": "Tests passing"
         },
         {
@@ -3564,11 +3600,11 @@
           "label": "Products"
         },
         {
-          "value": "18",
+          "value": "25",
           "label": "CLI commands"
         },
         {
-          "value": "50",
+          "value": "216",
           "label": "Compliance controls"
         },
         {
@@ -3678,7 +3714,7 @@
           "Core platform (Scan + Guard + Chat + Trap + Report)",
           "Threat Cloud v1",
           "3,155 Sigma + 5,895 YARA rules",
-          "1,333 automated tests"
+          "1,420 automated tests"
         ]
       },
       "inProgress": {

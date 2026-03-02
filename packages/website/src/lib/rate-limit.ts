@@ -7,6 +7,10 @@
  * rate limit is per-instance, not global. For production traffic at scale,
  * replace with a shared store (Redis / Upstash) or use platform-level
  * rate limiting (Vercel WAF, Cloudflare Rate Limiting).
+ *
+ * RECOMMENDED: For Vercel deployment, enable Vercel WAF rate limiting
+ * or use Upstash Redis (@upstash/ratelimit) for cross-instance enforcement.
+ * Current implementation is sufficient for low-traffic beta.
  */
 
 interface RateLimitEntry {

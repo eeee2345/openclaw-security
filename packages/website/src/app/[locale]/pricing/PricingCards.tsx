@@ -412,19 +412,30 @@ export default function PricingCards() {
                           {t(`comparisonCategories.${cat.categoryKey}`)}
                         </td>
                       </tr>
-                      {cat.rows.map((row) => (
+                      {cat.rows.map((row) => {
+                        const featureLabel = t.has(`comparisonFeatures.${row.feature}`)
+                          ? t(`comparisonFeatures.${row.feature}`)
+                          : row.feature;
+                        return (
                         <tr key={row.feature} className="border-b border-border/50">
-                          <td className="py-3 pr-4 text-sm text-text-secondary">{row.feature}</td>
-                          {tierKeys.map((key) => (
+                          <td className="py-3 pr-4 text-sm text-text-secondary">{featureLabel}</td>
+                          {tierKeys.map((key) => {
+                            const raw = row[key];
+                            const val = typeof raw === 'string' && t.has(`comparisonValues.${raw}`)
+                              ? t(`comparisonValues.${raw}`)
+                              : raw;
+                            return (
                             <td
                               key={key}
                               className={`py-3 text-center ${key === 'pro' ? 'bg-brand-sage/[0.03]' : ''}`}
                             >
-                              <ComparisonCell value={row[key]} />
+                              <ComparisonCell value={val} />
                             </td>
-                          ))}
+                            );
+                          })}
                         </tr>
-                      ))}
+                        );
+                      })}
                     </Fragment>
                   ))}
                 </tbody>

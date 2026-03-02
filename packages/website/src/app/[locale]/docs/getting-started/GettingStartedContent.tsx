@@ -6,6 +6,7 @@ import { Copy, Check, Terminal, Monitor, Server } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import { Link } from '@/navigation';
+import { STATS } from '@/lib/stats';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -307,7 +308,7 @@ export default function GettingStartedContent() {
               <TerminalOutput
                 lines={[
                   '[OK] Panguard v1.1.0 installed',
-                  '[OK] Rule engine loaded (3,155 Sigma + 5,895 YARA rules)',
+                  `[OK] Rule engine loaded (${STATS.sigmaRules.toLocaleString()} Sigma + ${STATS.yaraRules.toLocaleString()} YARA rules)`,
                   '[OK] Monitoring started. Learning period: 7 days.',
                 ]}
               />

@@ -109,7 +109,7 @@ export const changelogEntries: ChangelogEntry[] = [
       { type: 'feature', text: 'Panguard Report: auto-generated compliance reports' },
       {
         type: 'feature',
-        text: '3,155+ Sigma detection rules (45 Panguard original + 3,110 SigmaHQ community)',
+        text: '3,155+ Sigma detection rules and 5,895 YARA signatures',
       },
       { type: 'feature', text: 'Context memory learning system' },
     ],

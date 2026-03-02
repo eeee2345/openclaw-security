@@ -139,6 +139,8 @@ export function createAuthRoutes(ctx: RouteContext) {
 
     const user = db.getUserByEmail(email);
     if (!user) {
+      // Dummy hash to prevent timing-based user enumeration
+      await hashPassword('timing-safe-dummy');
       json(res, 401, { ok: false, error: 'Invalid email or password' });
       return;
     }

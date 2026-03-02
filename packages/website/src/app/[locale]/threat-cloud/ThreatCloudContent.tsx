@@ -291,7 +291,7 @@ export default function ThreatCloudContent() {
             </h2>
             <p className="text-text-secondary mt-4 mb-8">{t('cta.desc')}</p>
             <code className="block text-sm bg-black/50 text-brand-sage px-6 py-3 rounded-lg mb-8 inline-block font-mono">
-              $ npm install -g @panguard-ai/panguard
+              $ curl -fsSL https://get.panguard.ai | bash
             </code>
           </FadeInUp>
           <FadeInUp delay={0.1}>

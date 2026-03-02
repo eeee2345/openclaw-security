@@ -149,10 +149,10 @@
       "getStarted": "立即開始",
       "github": "GitHub",
       "copied": "已複製!",
-      "prereq": "需要 Node.js 20+ 和 git",
+      "prereq": "",
       "badges": {
         "mit": "MIT 開源授權",
-        "tests": "1,333 項測試通過",
+        "tests": "1,420 項測試通過",
         "taiwan": "台灣製造"
       }
     },
@@ -392,7 +392,7 @@
         "subtitle": "因為資安不該有門檻。",
         "desc": "MIT 授權，完整原始碼，零黑箱。每一行 code 都經得起檢驗。",
         "belief": "要真正打破資安壁壘，不是把價格壓低，而是讓所有人都能參與。",
-        "proof": "1,333 項測試 · TypeScript strict mode · MIT 授權——這不是業餘專案，這是基礎建設。"
+        "proof": "1,420 項測試 · TypeScript strict mode · MIT 授權——這不是業餘專案，這是基礎建設。"
       }
     },
     "the3amStory": {
@@ -547,7 +547,7 @@
         },
         "security": {
           "title": "安全優先",
-          "desc": "1,333 項測試通過。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
+          "desc": "1,420 項測試通過。Strict TypeScript。ESLint 安全插件。憑證加密儲存。沙箱執行。"
         },
         "privacy": {
           "title": "隱私優先",
@@ -656,7 +656,7 @@
       "btnGithub": "GitHub",
       "btnDocs": "技術文件",
       "badge1": "MIT 開源授權",
-      "badge2": "1,333 測試通過",
+      "badge2": "1,420 測試通過",
       "badge3": "台灣製造"
     }
   },
@@ -1101,7 +1101,7 @@
       "title": "嚴謹打造",
       "stats": [
         {
-          "value": "1,333",
+          "value": "1,420",
           "label": "測試通過"
         },
         {
@@ -1117,11 +1117,11 @@
           "label": "產品"
         },
         {
-          "value": "18",
+          "value": "25",
           "label": "CLI 指令"
         },
         {
-          "value": "50",
+          "value": "216",
           "label": "合規控制項"
         },
         {
@@ -1231,7 +1231,7 @@
           "核心平台（Scan + Guard + Chat + Trap + Report）",
           "Threat Cloud v1",
           "3,155條 Sigma + 5,895 條 YARA 規則",
-          "1,333 個自動化測試"
+          "1,420 個自動化測試"
         ]
       },
       "inProgress": {
@@ -1534,6 +1534,42 @@
       "productsIncluded": "包含產品",
       "alertsIntegrations": "通知與整合",
       "supportInfra": "支援與基礎設施"
+    },
+    "comparisonFeatures": {
+      "Panguard Scan": "Panguard Scan",
+      "Guard detection": "Guard 偵測",
+      "Auto-block attacks": "自動封鎖攻擊",
+      "Auto-fix vulnerabilities": "自動修復漏洞",
+      "AI analysis": "AI 分析",
+      "Panguard Chat": "Panguard Chat",
+      "Panguard Report": "Panguard Report",
+      "Panguard Trap": "Panguard Trap",
+      "Email alerts": "Email 通知",
+      "Telegram": "Telegram",
+      "Slack": "Slack",
+      "Webhook / API": "Webhook / API",
+      "SIEM integration": "SIEM 整合",
+      "Community support": "社群支援",
+      "Priority support": "優先支援",
+      "Dedicated manager": "專屬客戶經理",
+      "Log retention": "日誌保留",
+      "SSO & RBAC": "SSO & RBAC",
+      "On-premise option": "本地部署選項",
+      "Machines": "機器數"
+    },
+    "comparisonValues": {
+      "Full": "完整",
+      "Full + custom": "完整 + 客製",
+      "Known patterns": "已知模式",
+      "All threats": "所有威脅",
+      "Manual guide": "手動指南",
+      "One-click": "一鍵修復",
+      "Custom models": "客製模型",
+      "Basic": "基礎",
+      "Advanced": "進階",
+      "Advanced + API": "進階 + API",
+      "Session only": "僅當次",
+      "Roadmap": "規劃中"
     },
     "tierLabels": {
       "community": "Community",
@@ -3282,6 +3318,52 @@
       "success": "已訂閱。你將在 {email} 收到每週摘要。",
       "error": "出了點問題。請重試。",
       "note": "獲取每週安全洞察直送你的收件匣。隨時退訂。"
+    },
+    "posts": {
+      "why-99-percent-businesses-have-zero-security": {
+        "title": "為什麼 99% 的企業毫無資安防護——以及我們正在做什麼",
+        "excerpt": "每一家資安公司都在服務 Fortune 500。四億中小企業什麼都沒有。我們正在打造他們應得的安全基礎建設。"
+      },
+      "vibe-coding-security-gap": {
+        "title": "Vibe Coding 的資安缺口：當 AI 寫程式時，誰在守護伺服器？",
+        "excerpt": "AI 程式工具爆發性成長，開發者部署速度前所未有。但伺服器的曝露風險也前所未有。速度與安全之間的差距正在擴大。"
+      },
+      "90-percent-threats-dont-need-ai": {
+        "title": "90% 的威脅不需要 AI：為什麼我們打造規則優先的安全引擎",
+        "excerpt": "AI 是行銷利器。但大多數安全事件透過確定性規則就能在毫秒內解決。我們解釋為何 Panguard 採用三層漏斗架構，而非純 AI 方案。"
+      },
+      "ai-powered-threat-detection-vs-rules": {
+        "title": "AI 威脅偵測 vs. 規則系統：為何結合兩者最佳",
+        "excerpt": "純規則系統無法發現零日攻擊。純 AI 系統太昂貴且太慢。Panguard 的三層漏斗結合了兩者的優勢。"
+      },
+      "true-cost-data-breach-small-business": {
+        "title": "2026 年中小企業資料外洩的真實成本",
+        "excerpt": "中小企業資料外洩的平均成本已達 490 萬美元。本文拆解那些看不見的隱藏成本。"
+      },
+      "introducing-panguard-scan": {
+        "title": "Panguard Scan 正式推出：免費 60 秒安全掃描",
+        "excerpt": "一條指令，60 秒完成全面安全審計。MIT 授權，永久免費。每台伺服器都值得一次基線安全評估。"
+      },
+      "honeypot-intelligence-panguard-trap": {
+        "title": "蜜罐情報：Panguard Trap 如何從攻擊者身上學習",
+        "excerpt": "Panguard Trap 部署 8 種真實協議蜜罐。每一次入侵嘗試都會被分析、分類，並回饋至整個防禦網路。"
+      },
+      "soc2-compliance-startups-guide": {
+        "title": "新創公司的 SOC 2 合規實戰指南",
+        "excerpt": "SOC 2 合規不該花三個月和六位數的顧問費。了解 Panguard Report 如何讓合規流程自動化。"
+      },
+      "lateral-movement-detection": {
+        "title": "橫向移動偵測：Panguard Guard 如何阻擋攻擊者",
+        "excerpt": "攻擊者突破邊界只是開始。真正的危險在於他們在你的網路中橫向移動。Panguard Guard 能在不到 3 分鐘內偵測到。"
+      },
+      "security-speaks-human-design-philosophy": {
+        "title": "讓安全說人話：Panguard Chat 的設計哲學",
+        "excerpt": "安全警報如果沒人看得懂就毫無用處。了解我們如何將每一條偵測和日誌翻譯成人類語言。"
+      },
+      "open-source-scan-engine": {
+        "title": "開源安全：為什麼我們公開掃描引擎原始碼",
+        "excerpt": "安全基礎建設不該是黑箱。了解我們為何選擇 MIT 授權完整公開原始碼。"
+      }
     }
   },
   "blogPost": {

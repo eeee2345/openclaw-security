@@ -3,3 +3,6 @@
 export const LEGAL_LAST_UPDATED = 'February 2026';
 
 export const GITHUB_URL = 'https://github.com/panguard-ai/panguard-ai';
+
+/** Re-export marketing statistics from dedicated module */
+export { STATS } from './stats';

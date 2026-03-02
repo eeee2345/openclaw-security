@@ -13,6 +13,7 @@ import {
   NetworkIcon,
   LockIcon,
 } from '@/components/ui/BrandIcons';
+import { STATS } from '@/lib/stats';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -26,7 +27,16 @@ const statIcons = [
   NetworkIcon,
   LockIcon,
 ];
-const statValues = [3155, 5895, 216, 1333, 3, 6, 8, 'MIT'];
+const statValues: (number | string)[] = [
+  STATS.sigmaRules,
+  STATS.yaraRules,
+  STATS.complianceControls,
+  STATS.testsPassing,
+  STATS.detectionLayers,
+  STATS.responseActions,
+  STATS.honeypotProtocols,
+  STATS.license,
+];
 const statKeys = [
   'sigmaRules',
   'yaraRules',

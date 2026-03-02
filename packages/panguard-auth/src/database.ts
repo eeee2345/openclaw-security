@@ -227,6 +227,8 @@ export class AuthDB {
       .get(id) as WaitlistEntry | undefined;
   }
 
+  // TODO: Consider hashing verify_token before storage for defense-in-depth.
+  // Current risk is low: tokens expire in 24h and only toggle waitlist.verified.
   verifyWaitlistToken(token: string): WaitlistEntry | undefined {
     const entry = this.db
       .prepare(

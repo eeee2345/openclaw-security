@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   hashPassword,
   verifyPassword,
+  needsRehash,
   generateSessionToken,
   generateVerifyToken,
   sessionExpiry,
@@ -12,10 +13,33 @@ describe('Auth utilities', () => {
     it('should hash and verify a password', async () => {
       const hash = await hashPassword('mySecret123');
       expect(hash).toContain(':');
-      expect(hash.split(':').length).toBe(2);
+      // v2 format: "v2:salt:hash" (3 parts)
+      expect(hash).toMatch(/^v2:[0-9a-f]+:[0-9a-f]+$/);
+      expect(hash.split(':').length).toBe(3);
 
       const valid = await verifyPassword('mySecret123', hash);
       expect(valid).toBe(true);
+    });
+
+    it('should verify legacy v1 format (salt:hash)', async () => {
+      // Simulate a legacy v1 hash (N=16384) by creating one manually
+      const { scrypt, randomBytes } = await import('node:crypto');
+      const salt = randomBytes(16).toString('hex');
+      const legacyHash = await new Promise<string>((resolve, reject) => {
+        scrypt('legacyPass', salt, 64, { N: 16384, r: 8, p: 1 }, (err, derived) => {
+          if (err) return reject(err);
+          resolve(`${salt}:${derived.toString('hex')}`);
+        });
+      });
+
+      expect(await verifyPassword('legacyPass', legacyHash)).toBe(true);
+      expect(await verifyPassword('wrongPass', legacyHash)).toBe(false);
+      expect(needsRehash(legacyHash)).toBe(true);
+    });
+
+    it('should report v2 hashes as not needing rehash', async () => {
+      const hash = await hashPassword('newPass');
+      expect(needsRehash(hash)).toBe(false);
     });
 
     it('should reject wrong password', async () => {

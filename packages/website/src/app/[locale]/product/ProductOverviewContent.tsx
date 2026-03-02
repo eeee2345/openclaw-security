@@ -13,6 +13,7 @@ import {
 import BrandLogo from '@/components/ui/BrandLogo';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
+import { STATS } from '@/lib/stats';
 
 /* ────────────────────────────  Product config  ──────────────────────── */
 
@@ -38,7 +39,7 @@ const productConfigs = [
     icon: ShieldIcon,
     badgeColor: 'bg-status-safe/10 text-status-safe border-status-safe/20',
     description:
-      'Panguard Guard is the always-on AI agent that monitors your endpoints 24/7. A 4-agent pipeline (Detect, Analyze, Respond, Report) with Chat notifications processes events through 3,155 Sigma rules and 5,895 YARA signatures, with local LLM and cloud AI fallback. Three response modules auto-block IPs, kill processes, and quarantine files. An investigation engine correlates events across a sliding window for deep threat analysis.',
+      `Panguard Guard is the always-on AI agent that monitors your endpoints 24/7. A 4-agent pipeline (Detect, Analyze, Respond, Report) with Chat notifications processes events through ${STATS.sigmaRules.toLocaleString()} Sigma rules and ${STATS.yaraRules.toLocaleString()} YARA signatures, with local LLM and cloud AI fallback. Three response modules auto-block IPs, kill processes, and quarantine files. An investigation engine correlates events across a sliding window for deep threat analysis.`,
     features: [
       '4-agent AI pipeline: Detect, Analyze, Respond, Report + Chat notifications',
       '3 auto-response modules: IP Blocker, Process Killer, File Quarantine',
@@ -70,9 +71,9 @@ const productConfigs = [
     icon: NetworkIcon,
     badgeColor: 'bg-status-caution/10 text-status-caution border-status-caution/20',
     description:
-      'Panguard Trap deploys 8 realistic protocol honeypots: SSH (full SSH-2.0), HTTP, MySQL (wire protocol), Redis (RESP), SMB (SMB2/NTLMSSP), RDP (X.224/CredSSP), FTP, and Telnet. Each captures credentials, commands, and attacker techniques with MITRE ATT&CK mapping. Intelligence feeds back into Guard and Threat Cloud automatically.',
+      `Panguard Trap deploys ${STATS.honeypotProtocols} realistic protocol honeypots: SSH (full SSH-2.0), HTTP, MySQL (wire protocol), Redis (RESP), SMB (SMB2/NTLMSSP), RDP (X.224/CredSSP), FTP, and Telnet. Each captures credentials, commands, and attacker techniques with MITRE ATT&CK mapping. Intelligence feeds back into Guard and Threat Cloud automatically.`,
     features: [
-      '8 real protocol honeypots: SSH, HTTP, MySQL, Redis, SMB, RDP, FTP, Telnet',
+      `${STATS.honeypotProtocols} real protocol honeypots: SSH, HTTP, MySQL, Redis, SMB, RDP, FTP, Telnet`,
       'Binary protocol handlers: MySQL wire, Redis RESP, SMB2/NTLMSSP, RDP X.224',
       'Attacker profiling: skill level, intent, tool signatures',
       'MITRE ATT&CK technique detection per session',
@@ -89,7 +90,7 @@ const productConfigs = [
       'Generating compliance documentation used to take weeks and expensive consultants. Panguard Report evaluates your security posture against 3 frameworks: ISO 27001 (30 controls), SOC 2 (10 controls), and Taiwan Cyber Security Act (10 controls). Real-time assessors run system checks and generate audit-ready PDF reports with evidence, bilingual output (EN/zh-TW), and remediation guidance.',
     features: [
       'Auto-generated ISO 27001, SOC 2, and Taiwan TCSA reports',
-      'Real-time assessors: 50 controls across 3 frameworks',
+      `Real-time assessors: ${STATS.complianceControls} controls across 3 frameworks`,
       'PDF export with cover page, executive summary, and findings',
       'Bilingual output: English and Traditional Chinese',
       'Evidence packages: logs, config snapshots, response records',

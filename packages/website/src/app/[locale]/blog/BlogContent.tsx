@@ -33,6 +33,15 @@ function CategoryBadge({ category }: { category: string }) {
 
 /* ════════════════════════  Blog Content  ═══════════════════════ */
 
+/** Get locale-aware title/excerpt for a blog post */
+function getLocalizedPost(post: BlogPost, t: ReturnType<typeof useTranslations>, locale: string) {
+  if (locale !== 'zh') return post;
+  const slug = post.slug;
+  const title = t.has(`posts.${slug}.title`) ? t(`posts.${slug}.title`) : post.title;
+  const excerpt = t.has(`posts.${slug}.excerpt`) ? t(`posts.${slug}.excerpt`) : post.excerpt;
+  return { ...post, title, excerpt };
+}
+
 export default function BlogContent() {
   const t = useTranslations('blog');
   const tc = useTranslations('common');
@@ -63,7 +72,7 @@ export default function BlogContent() {
     void loadDynamic();
   }, []);
 
-  const featuredPost = allPosts[0];
+  const featuredPost = getLocalizedPost(allPosts[0], t, locale);
   const remainingPosts = allPosts.slice(1);
 
   const filteredPosts =
@@ -154,7 +163,9 @@ export default function BlogContent() {
           </FadeInUp>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
-            {filteredPosts.map((post, i) => (
+            {filteredPosts.map((rawPost, i) => {
+              const post = getLocalizedPost(rawPost, t, locale);
+              return (
               <FadeInUp key={post.slug} delay={i * 0.06}>
                 <Link
                   href={`/blog/${post.slug}`}
@@ -195,7 +206,8 @@ export default function BlogContent() {
                   </div>
                 </Link>
               </FadeInUp>
-            ))}
+            );
+            })}
           </div>
         )}
       </SectionWrapper>

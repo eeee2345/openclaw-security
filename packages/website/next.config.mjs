@@ -41,9 +41,11 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()',
           },
           {
-            // NOTE: unsafe-inline is required for script-src because layout.tsx uses
-            // dangerouslySetInnerHTML for JSON-LD and js-ready class toggle.
-            // To remove it, implement Next.js middleware nonce injection.
+            // SECURITY NOTE: unsafe-inline in script-src is required because layout.tsx
+            // uses dangerouslySetInnerHTML for JSON-LD structured data and js-ready
+            // class toggle. This weakens XSS protection but is a known Next.js limitation.
+            // TODO: Implement nonce-based CSP via Next.js middleware when stable.
+            // See: https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy
             // style-src unsafe-inline is required by Next.js CSS-in-JS.
             key: 'Content-Security-Policy',
             value: [
