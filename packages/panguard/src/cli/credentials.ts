@@ -47,15 +47,9 @@ function decryptData(encryptedStr: string): string {
   return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString('utf8');
 }
 
-export type Tier = 'community' | 'solo' | 'pro' | 'business' | 'enterprise';
-
-export const TIER_LEVEL: Record<Tier, number> = {
-  community: 0,
-  solo: 1,
-  pro: 2,
-  business: 3,
-  enterprise: 5,
-};
+// Import tier definitions from core (and re-export for backward compatibility)
+import { type Tier, TIER_LEVEL } from '@panguard-ai/core';
+export { type Tier, TIER_LEVEL };
 
 export interface StoredCredentials {
   /** Session token (Bearer token for API calls) */

@@ -14,10 +14,15 @@
 // Main orchestrator / 主協調器
 export { Manager } from './manager.js';
 
+// HTTP Server / HTTP 伺服器
+export { ManagerServer } from './server.js';
+
 // Components / 元件
 export { AgentRegistry } from './agent-registry.js';
 export { ThreatAggregator } from './threat-aggregator.js';
 export { PolicyEngine } from './policy-engine.js';
+export { DashboardRelay } from './dashboard-relay.js';
+export type { DashboardRelayConfig } from './dashboard-relay.js';
 
 // Utilities / 工具函式
 export {
@@ -46,11 +51,16 @@ export type {
   ManagerConfig,
   AgentOverview,
   ManagerOverview,
+  AgentPushResult,
   PolicyBroadcastResult,
 } from './types.js';
 
 // Constants / 常數
 export { DEFAULT_MANAGER_CONFIG } from './types.js';
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
+
 /** Manager package version / Manager 套件版本 */
-export const MANAGER_VERSION = '0.2.0';
+export const MANAGER_VERSION: string = _pkg.version;

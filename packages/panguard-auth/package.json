@@ -22,6 +22,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
+    "@panguard-ai/core": "workspace:*",
     "@panguard-ai/security-hardening": "workspace:*",
     "better-sqlite3": "^11.0.0"
   },

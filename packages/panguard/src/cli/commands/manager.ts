@@ -4,6 +4,7 @@
  */
 
 import { Command } from 'commander';
+import { c, symbols } from '@panguard-ai/core';
 
 export function managerCommand(): Command {
   const cmd = new Command('manager').description(
@@ -17,8 +18,12 @@ export function managerCommand(): Command {
     .option('--api-key <key>', 'API key for management endpoints / 管理端點 API 金鑰')
     .action(async (opts: { port: string; apiKey?: string }) => {
       const port = parseInt(opts.port, 10);
-      const { ManagerServer } = await import('../../manager/manager-server.js');
-      const server = new ManagerServer(port, opts.apiKey);
+      const { ManagerServer, DEFAULT_MANAGER_CONFIG } = await import('@panguard-ai/manager');
+      const server = new ManagerServer({
+        ...DEFAULT_MANAGER_CONFIG,
+        port,
+        authToken: opts.apiKey ?? process.env['PANGUARD_MANAGER_KEY'] ?? '',
+      });
 
       // Handle graceful shutdown
       const shutdown = async () => {
@@ -30,7 +35,7 @@ export function managerCommand(): Command {
       process.on('SIGTERM', () => void shutdown());
 
       await server.start();
-      console.log(`[Panguard Manager] Dashboard: http://localhost:${port}/dashboard`);
+      console.log(`[Panguard Manager] Health: http://localhost:${port}/health`);
       console.log('[Panguard Manager] API: http://localhost:' + port + '/api/agents');
       console.log('[Panguard Manager] Press Ctrl+C to stop');
     });
@@ -46,63 +51,67 @@ export function managerCommand(): Command {
         if (opts.apiKey) headers['Authorization'] = `Bearer ${opts.apiKey}`;
         const res = await fetch(`${opts.url}/api/agents`, { headers });
         if (!res.ok) {
-          console.error(`Error: HTTP ${res.status}`);
-          process.exit(1);
+          console.error(`  ${symbols.fail} ${c.critical(`HTTP ${res.status}`)}`);
+          process.exitCode = 1;
+          return;
         }
-        const data = (await res.json()) as {
-          agents: Array<{
+        const json = (await res.json()) as {
+          ok?: boolean;
+          data?: Array<{
+            agentId: string;
+            hostname: string;
+            status: string;
+            lastHeartbeat: string;
+            threatCount: number;
+          }>;
+          // Legacy inline format (deprecated)
+          agents?: Array<{
             id: string;
             hostname: string;
-            ip?: string;
             status: string;
-            os: string;
-            mode: string;
-            eventsProcessed: number;
-            threatsDetected: number;
-            lastSeen: string;
           }>;
-          total: number;
+          total?: number;
         };
 
-        if (data.agents.length === 0) {
+        // Support both production ({ ok, data }) and legacy ({ agents, total }) formats
+        const agents = json.data ?? json.agents ?? [];
+
+        if (agents.length === 0) {
           console.log('No agents registered.');
           return;
         }
 
-        console.log(`\nRegistered Agents (${data.total}):\n`);
+        console.log(`\nRegistered Agents (${agents.length}):\n`);
         console.log(
-          'ID'.padEnd(16) +
-            'Hostname'.padEnd(20) +
-            'IP'.padEnd(16) +
-            'Status'.padEnd(10) +
-            'OS'.padEnd(20) +
-            'Mode'.padEnd(12) +
-            'Events'.padEnd(10) +
+          'ID'.padEnd(20) +
+            'Hostname'.padEnd(24) +
+            'Status'.padEnd(12) +
             'Threats'.padEnd(10) +
-            'Last Seen'
+            'Last Heartbeat'
         );
-        console.log('-'.repeat(130));
+        console.log('-'.repeat(90));
 
-        for (const agent of data.agents) {
+        for (const agent of agents) {
+          const id = ('agentId' in agent ? agent.agentId : (agent as { id: string }).id) ?? '-';
+          const status = agent.status ?? '-';
           const statusSymbol =
-            agent.status === 'online' ? '[OK]' : agent.status === 'stale' ? '[!!]' : '[--]';
+            status === 'online' ? '[OK]' : status === 'stale' ? '[!!]' : '[--]';
+          const threats = 'threatCount' in agent ? String(agent.threatCount) : '-';
+          const lastSeen = ('lastHeartbeat' in agent ? agent.lastHeartbeat : '') ?? '-';
+
           console.log(
-            agent.id.padEnd(16) +
-              agent.hostname.padEnd(20) +
-              (agent.ip ?? '-').padEnd(16) +
-              `${statusSymbol} ${agent.status}`.padEnd(10) +
-              agent.os.slice(0, 18).padEnd(20) +
-              agent.mode.padEnd(12) +
-              String(agent.eventsProcessed).padEnd(10) +
-              String(agent.threatsDetected).padEnd(10) +
-              agent.lastSeen
+            id.padEnd(20) +
+              agent.hostname.padEnd(24) +
+              `${statusSymbol} ${status}`.padEnd(12) +
+              threats.padEnd(10) +
+              lastSeen
           );
         }
       } catch (err: unknown) {
-        console.error(
-          `Failed to connect to manager: ${err instanceof Error ? err.message : String(err)}`
-        );
-        process.exit(1);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(`  ${symbols.fail} ${c.critical(`Failed to connect to manager: ${msg}`)}`);
+        process.exitCode = 1;
+        return;
       }
     });
 
@@ -119,17 +128,18 @@ export function managerCommand(): Command {
 
         if (!res.ok) {
           const data = (await res.json()) as { error?: string };
-          console.error(`Error: ${data.error ?? `HTTP ${res.status}`}`);
-          process.exit(1);
+          console.error(`  ${symbols.fail} ${c.critical(data.error ?? `HTTP ${res.status}`)}`);
+          process.exitCode = 1;
+          return;
         }
 
         const data = (await res.json()) as { message?: string };
         console.log(data.message ?? 'Scan command queued');
       } catch (err: unknown) {
-        console.error(
-          `Failed to connect to manager: ${err instanceof Error ? err.message : String(err)}`
-        );
-        process.exit(1);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(`  ${symbols.fail} ${c.critical(`Failed to connect to manager: ${msg}`)}`);
+        process.exitCode = 1;
+        return;
       }
     });
 

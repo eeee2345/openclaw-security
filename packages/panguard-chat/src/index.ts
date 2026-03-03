@@ -11,8 +11,12 @@
  * @module @panguard-ai/panguard-chat
  */
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
+
 /** Package version / 套件版本 */
-export const PANGUARD_CHAT_VERSION = '0.1.0';
+export const PANGUARD_CHAT_VERSION: string = _pkg.version;
 export const CLAWCHAT_NAME = 'PanguardChat';
 
 // ---------------------------------------------------------------------------
@@ -50,6 +54,7 @@ export type {
   SlackChannelConfig,
   EmailChannelConfig,
   LINEChannelConfig,
+  DiscordChannelConfig,
 } from './types.js';
 
 // ---------------------------------------------------------------------------
@@ -75,6 +80,7 @@ export { SlackChannel } from './channels/index.js';
 export { EmailChannel } from './channels/index.js';
 export { WebhookChannel } from './channels/index.js';
 export { LINEChannel } from './channels/index.js';
+export { DiscordChannel } from './channels/index.js';
 
 // ---------------------------------------------------------------------------
 // Templates / 模板

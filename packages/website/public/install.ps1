@@ -1,27 +1,32 @@
 # Panguard AI Installer for Windows
 # Usage: irm https://get.panguard.ai/windows | iex
-#        or: powershell -ExecutionPolicy Bypass -File install.ps1
+# If blocked by execution policy, run:
+#   powershell -ExecutionPolicy Bypass -Command "irm https://get.panguard.ai/windows | iex"
+# Or set for current user: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 #
-# Downloads a prebuilt binary from GitHub Releases.
-# Falls back to source build if no prebuilt binary is available.
+# Installation order:
+#   1. Try prebuilt binary from GitHub Releases
+#   2. Fall back to npm global install
+#   3. Fall back to source build (git clone or zip archive)
 
 $ErrorActionPreference = "Stop"
 
 # ── Repository & Release URLs ────────────────────────────────────
-$RepoUrl = "https://github.com/panguard-ai/panguard-ai.git"
-$FallbackRepo = "https://github.com/eeee2345/Panguard-AI.git"
+$RepoUrl     = "https://github.com/panguard-ai/panguard-ai"
+$FallbackUrl = "https://github.com/panguard-ai/panguard-ai/archive/refs/heads/main.zip"
 $ReleaseBase = "https://github.com/panguard-ai/panguard-ai/releases"
 
 # ── Install paths ────────────────────────────────────────────────
-$InstallDir = Join-Path $env:USERPROFILE ".panguard"
-$BinDir = Join-Path $InstallDir "bin"
+$InstallDir  = Join-Path $env:USERPROFILE ".panguard"
+$BinDir      = Join-Path $InstallDir "bin"
 $MinNodeVersion = 20
 
 # ── Logging helpers ──────────────────────────────────────────────
-function Write-Info  { param($msg) Write-Host "[INFO] $msg" -ForegroundColor Blue }
-function Write-Ok    { param($msg) Write-Host "[ OK ] $msg" -ForegroundColor Green }
-function Write-Warn  { param($msg) Write-Host "[WARN] $msg" -ForegroundColor Yellow }
-function Write-Fail  { param($msg) Write-Host "[FAIL] $msg" -ForegroundColor Red; exit 1 }
+function Write-Info { param($msg) Write-Host "[INFO] $msg" -ForegroundColor Blue }
+function Write-Ok   { param($msg) Write-Host "[ OK ] $msg" -ForegroundColor Green }
+function Write-Warn { param($msg) Write-Host "[WARN] $msg" -ForegroundColor Yellow }
+function Write-Fail { param($msg) Write-Host "[FAIL] $msg" -ForegroundColor Red; exit 1 }
+function Write-Step { param($msg) Write-Host "[STEP] $msg" -ForegroundColor Cyan }
 
 # ── Header ───────────────────────────────────────────────────────
 Write-Host ""
@@ -35,44 +40,144 @@ Write-Host ""
 $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
 Write-Info "Detected: Windows $arch"
 
-# Windows builds use npm install (no prebuilt tarball yet)
-# For future: win-x64 tarball support
-$Platform = "win-x64"
+$SkipBinaryDownload = $false
+
+switch ($arch) {
+    "X64"   { $Platform = "win-x64" }
+    "Arm64" {
+        $Platform = "win-arm64"
+        Write-Warn "Windows ARM64 detected. Prebuilt binary may not be available."
+        $SkipBinaryDownload = $true
+    }
+    default { Write-Fail "Unsupported architecture: $arch. Panguard supports x64 and arm64." }
+}
 
 # ── Step 2: Check Node.js >= 20 ─────────────────────────────────
 try {
-    $nodeVersion = (node -v) -replace 'v', ''
-    $nodeMajor = [int]($nodeVersion.Split('.')[0])
-    if ($nodeMajor -lt $MinNodeVersion) {
-        Write-Fail "Node.js v${MinNodeVersion}+ is required. Current version: v$nodeVersion. Please upgrade at https://nodejs.org"
+    $nodeOutput = (node -v 2>$null)
+    if (-not $nodeOutput) { throw "node not found" }
+    if ($nodeOutput -match '^v?(\d+)') {
+        $nodeMajor = [int]$matches[1]
+    } else {
+        throw "Could not parse Node.js version: $nodeOutput"
     }
-    Write-Ok "Node.js v$nodeVersion"
+    if ($nodeMajor -lt $MinNodeVersion) {
+        Write-Fail "Node.js v${MinNodeVersion}+ is required. Current: $nodeOutput. Install: winget install OpenJS.NodeJS.LTS"
+    }
+    Write-Ok "Node.js $nodeOutput"
 } catch {
-    Write-Fail "Node.js is required but not installed. Install Node.js v${MinNodeVersion}+ from https://nodejs.org or run: winget install OpenJS.NodeJS.LTS"
+    Write-Fail "Node.js is required but not installed. Install: winget install OpenJS.NodeJS.LTS`nOr download from https://nodejs.org"
 }
 
-# ── Step 3: Try npm global install (preferred for Windows) ───────
+# ── Step 3: Backup existing installation if present ─────────────
+if (Test-Path "$InstallDir\bin\panguard.cmd") {
+    try {
+        $existingVer = & "$InstallDir\bin\panguard.cmd" --version 2>$null
+        Write-Info "Existing installation found: v$existingVer. Creating backup..."
+        $backupDir = "$InstallDir.backup.$(Get-Date -Format 'yyyyMMddHHmmss')"
+        Move-Item $InstallDir $backupDir
+    } catch {
+        Write-Warn "Could not backup existing installation"
+    }
+}
+
+# ── Step 4: Try prebuilt binary from GitHub Releases ─────────────
+$BinaryInstalled = $false
+
+if (-not $SkipBinaryDownload) {
+    $version = if ($env:PANGUARD_VERSION) { $env:PANGUARD_VERSION } else { "latest" }
+
+    if ($version -eq "latest") {
+        $downloadUrl  = "$ReleaseBase/latest/download/panguard-${Platform}.zip"
+        $checksumUrl  = "$ReleaseBase/latest/download/SHA256SUMS.txt"
+    } else {
+        $downloadUrl  = "$ReleaseBase/download/${version}/panguard-${Platform}.zip"
+        $checksumUrl  = "$ReleaseBase/download/${version}/SHA256SUMS.txt"
+    }
+
+    Write-Info "Downloading prebuilt binary for ${Platform}..."
+    Write-Info "URL: $downloadUrl"
+
+    $tmpZip = Join-Path $env:TEMP "panguard-$Platform-$(Get-Date -Format 'yyyyMMddHHmmss').zip"
+    $tmpChecksums = Join-Path $env:TEMP "panguard-SHA256SUMS-$(Get-Date -Format 'yyyyMMddHHmmss').txt"
+
+    try {
+        $response = Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpZip -UseBasicParsing -PassThru
+        if ($response.StatusCode -ge 400) {
+            throw "HTTP $($response.StatusCode)"
+        }
+
+        # Verify the zip is non-empty
+        $fileInfo = Get-Item $tmpZip
+        if ($fileInfo.Length -eq 0) {
+            throw "Downloaded file is empty"
+        }
+
+        # Attempt checksum verification
+        try {
+            Invoke-WebRequest -Uri $checksumUrl -OutFile $tmpChecksums -UseBasicParsing
+            $expectedName = "panguard-${Platform}.zip"
+            $checksumLine = (Get-Content $tmpChecksums | Where-Object { $_ -match $expectedName }) | Select-Object -First 1
+            if ($checksumLine) {
+                $expectedHash = ($checksumLine -split '\s+')[0]
+                $actualHash = (Get-FileHash -Path $tmpZip -Algorithm SHA256).Hash.ToLower()
+                if ($actualHash -eq $expectedHash.ToLower()) {
+                    Write-Ok "Checksum verified"
+                } else {
+                    throw "Checksum mismatch. Expected: $expectedHash Got: $actualHash"
+                }
+            } else {
+                Write-Warn "No checksum entry for $expectedName. Skipping verification."
+            }
+        } catch {
+            if ($_.Exception.Message -match "Checksum mismatch") {
+                throw $_
+            }
+            Write-Warn "SHA256SUMS.txt not available. Skipping checksum verification."
+        }
+
+        # Extract
+        if (-not (Test-Path $InstallDir)) {
+            New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
+        }
+        Expand-Archive -Path $tmpZip -DestinationPath $InstallDir -Force
+        $BinaryInstalled = $true
+        Write-Ok "Prebuilt binary installed to $InstallDir"
+    } catch {
+        Write-Warn "Prebuilt binary not available for ${Platform}: $($_.Exception.Message)"
+        Write-Info "Falling back to npm install..."
+    } finally {
+        Remove-Item -Force $tmpZip -ErrorAction SilentlyContinue
+        Remove-Item -Force $tmpChecksums -ErrorAction SilentlyContinue
+    }
+}
+
+# ── Step 5: Fall back to npm global install ──────────────────────
 $NpmInstalled = $false
 
-Write-Info "Installing Panguard AI via npm..."
-try {
-    npm install -g @panguard-ai/panguard 2>$null
-    $NpmInstalled = $true
-    Write-Ok "Panguard AI installed via npm"
-} catch {
-    Write-Warn "npm install failed. Trying source build..."
+if (-not $BinaryInstalled) {
+    Write-Info "Installing Panguard AI via npm..."
+    try {
+        npm install -g @panguard-ai/panguard 2>$null
+        $NpmInstalled = $true
+        Write-Ok "Panguard AI installed via npm"
+    } catch {
+        Write-Warn "npm global install failed. Trying source build..."
+    }
 }
 
-# ── Step 4 (Fallback): Source build ──────────────────────────────
-if (-not $NpmInstalled) {
+# ── Step 6 (Fallback): Source build ──────────────────────────────
+if ((-not $BinaryInstalled) -and (-not $NpmInstalled)) {
     $SourceDir = Join-Path $InstallDir "source"
 
     # Check git
+    $GitAvailable = $false
     try {
         $gitVersion = (git --version) -replace 'git version ', ''
         Write-Ok "git $gitVersion"
+        $GitAvailable = $true
     } catch {
-        Write-Fail "git is required for source build. Install git from https://git-scm.com"
+        Write-Warn "git not found. Will use zip download fallback."
     }
 
     # Check pnpm
@@ -90,47 +195,74 @@ if (-not $NpmInstalled) {
         }
     }
 
-    # Clone or update repository
-    if (Test-Path (Join-Path $SourceDir ".git")) {
-        Write-Info "Existing source found. Updating..."
-        Push-Location $SourceDir
-        try {
-            git fetch origin 2>$null
-            git reset --hard origin/main 2>$null
-            Write-Ok "Repository updated"
-        } catch {
-            Write-Warn "git update failed, continuing with existing code"
-        }
-        Pop-Location
-    } else {
-        if (Test-Path $SourceDir) {
-            Remove-Item -Recurse -Force $SourceDir
-        }
+    # Obtain source: git clone or zip fallback
+    $SourceObtained = $false
 
-        $parentDir = Split-Path $SourceDir -Parent
-        if (-not (Test-Path $parentDir)) {
-            New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
-        }
-
-        Write-Info "Cloning from $RepoUrl..."
-        $cloned = $false
-        try {
-            git clone --depth 1 $RepoUrl $SourceDir 2>$null
-            $cloned = $true
-        } catch {}
-
-        if (-not $cloned) {
-            Write-Warn "Primary repository not available, trying fallback..."
+    if ($GitAvailable) {
+        if (Test-Path (Join-Path $SourceDir ".git")) {
+            Write-Info "Existing source found. Updating..."
+            Push-Location $SourceDir
             try {
-                git clone --depth 1 $FallbackRepo $SourceDir 2>$null
-                $cloned = $true
-            } catch {}
-        }
+                git fetch origin 2>$null
+                git reset --hard origin/main 2>$null
+                Write-Ok "Repository updated"
+                $SourceObtained = $true
+            } catch {
+                Write-Warn "git update failed, continuing with existing code"
+                $SourceObtained = $true
+            }
+            Pop-Location
+        } else {
+            if (Test-Path $SourceDir) {
+                Remove-Item -Recurse -Force $SourceDir
+            }
 
-        if (-not $cloned) {
-            Write-Fail "Could not clone repository. Check your internet connection and try again."
+            $parentDir = Split-Path $SourceDir -Parent
+            if (-not (Test-Path $parentDir)) {
+                New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+            }
+
+            Write-Info "Cloning from $RepoUrl..."
+            try {
+                git clone --depth 1 "${RepoUrl}.git" $SourceDir 2>$null
+                $SourceObtained = $true
+                Write-Ok "Repository cloned to $SourceDir"
+            } catch {
+                Write-Warn "git clone failed. Trying zip archive fallback..."
+            }
         }
-        Write-Ok "Repository cloned to $SourceDir"
+    }
+
+    if (-not $SourceObtained) {
+        Write-Info "Downloading source archive from $FallbackUrl..."
+        $zipPath = Join-Path $env:TEMP "panguard-ai-main.zip"
+        $extractPath = Join-Path $env:TEMP "panguard-ai-main"
+        try {
+            Invoke-WebRequest -Uri $FallbackUrl -OutFile $zipPath -UseBasicParsing
+            if (Test-Path $extractPath) {
+                Remove-Item -Recurse -Force $extractPath
+            }
+            Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
+            $innerDir = Join-Path $extractPath "panguard-ai-main"
+            if (-not (Test-Path $innerDir)) {
+                $innerDir = $extractPath
+            }
+            $parentDir = Split-Path $SourceDir -Parent
+            if (-not (Test-Path $parentDir)) {
+                New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+            }
+            if (Test-Path $SourceDir) {
+                Remove-Item -Recurse -Force $SourceDir
+            }
+            Move-Item $innerDir $SourceDir
+            $SourceObtained = $true
+            Write-Ok "Source archive extracted to $SourceDir"
+        } catch {
+            Write-Fail "Could not obtain source code. Check your internet connection and try again."
+        } finally {
+            Remove-Item -Force $zipPath -ErrorAction SilentlyContinue
+            Remove-Item -Recurse -Force $extractPath -ErrorAction SilentlyContinue
+        }
     }
 
     # Build
@@ -140,27 +272,40 @@ if (-not $NpmInstalled) {
     try {
         pnpm install --frozen-lockfile 2>$null
     } catch {
-        try { pnpm install } catch { Write-Fail "Failed to install dependencies" }
+        try { pnpm install } catch {
+            Pop-Location
+            Write-Fail "Failed to install dependencies"
+        }
     }
     Write-Ok "Dependencies installed"
 
     Write-Info "Building project..."
-    try { pnpm build } catch { Write-Fail "Build failed. Please report this issue at $RepoUrl/issues" }
+    try { pnpm build } catch {
+        Pop-Location
+        Write-Fail "Build failed. Please report this issue at $RepoUrl/issues"
+    }
     Write-Ok "Build complete"
 
     Pop-Location
 
-    # Create bin wrapper
+    # Create bin wrapper (relative paths)
     if (-not (Test-Path $BinDir)) {
         New-Item -ItemType Directory -Path $BinDir -Force | Out-Null
     }
 
     $wrapperPath = Join-Path $BinDir "panguard.cmd"
-    $jsEntry = Join-Path $SourceDir "packages\panguard\dist\cli\index.js"
-    @"
+    $wrapperContent = @"
 @echo off
-node "$jsEntry" %*
-"@ | Set-Content -Path $wrapperPath -Encoding ASCII
+setlocal
+set "SCRIPT_DIR=%~dp0"
+set "JS_ENTRY=%SCRIPT_DIR%..\source\packages\panguard\dist\cli\index.js"
+if not exist "%JS_ENTRY%" (
+    echo Error: panguard installation appears corrupted.
+    exit /b 1
+)
+node "%JS_ENTRY%" %*
+"@
+    Set-Content -Path $wrapperPath -Value $wrapperContent -Encoding ASCII
 
     # Add to user PATH if not already present
     $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
@@ -174,15 +319,36 @@ node "$jsEntry" %*
     }
 }
 
-# ── Step 5: Verify installation ──────────────────────────────────
+# ── Step 7: Verify installation ──────────────────────────────────
 Write-Host ""
-Write-Info "Verifying installation..."
+Write-Step "Verifying installation..."
 
+# Try global command first, then local wrapper
+$verified = $false
 try {
-    panguard --help 2>$null | Out-Null
-    Write-Ok "panguard CLI is working"
-} catch {
-    Write-Warn "panguard exists but --help failed. The build may be incomplete."
+    $version = (panguard --version 2>$null)
+    if ($version) {
+        Write-Ok "panguard v$version installed and verified"
+        $verified = $true
+    }
+} catch {}
+
+if (-not $verified) {
+    $localCmd = Join-Path $BinDir "panguard.cmd"
+    if (Test-Path $localCmd) {
+        try {
+            $version = (& $localCmd --version 2>$null)
+            if ($version) {
+                Write-Ok "panguard v$version installed and verified (via local path)"
+                Write-Warn "Restart your terminal for the 'panguard' command to be available globally."
+                $verified = $true
+            }
+        } catch {}
+    }
+}
+
+if (-not $verified) {
+    Write-Fail "Installation verification failed. panguard cannot execute.`nCheck Node.js installation and PATH."
 }
 
 # ── Quick Start Guide ────────────────────────────────────────────

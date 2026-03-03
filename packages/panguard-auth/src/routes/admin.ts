@@ -11,6 +11,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { authenticateRequest, requireAdmin } from '../middleware.js';
 import { logAuditEvent } from '@panguard-ai/security-hardening';
+import { TIERS, isValidTier } from '@panguard-ai/core';
 import { getUsageSummary, getQuotaLimits, currentPeriod } from '../usage-meter.js';
 import type { MeterableResource } from '../usage-meter.js';
 import type { RouteContext } from './shared.js';
@@ -58,11 +59,10 @@ export function createAdminRoutes(ctx: RouteContext) {
     }
 
     const { tier } = result.data;
-    const validTiers = ['community', 'solo', 'pro', 'business', 'enterprise'];
-    if (typeof tier !== 'string' || !validTiers.includes(tier)) {
+    if (typeof tier !== 'string' || !isValidTier(tier)) {
       json(res, 400, {
         ok: false,
-        error: `Invalid tier. Must be one of: ${validTiers.join(', ')}`,
+        error: `Invalid tier. Must be one of: ${TIERS.join(', ')}`,
       });
       return;
     }
@@ -522,11 +522,10 @@ export function createAdminRoutes(ctx: RouteContext) {
       return;
     }
 
-    const validTiers = ['community', 'solo', 'pro', 'business', 'enterprise'];
     const validRoles = ['user', 'admin'];
 
-    if (action === 'change_tier' && (!value || !validTiers.includes(value))) {
-      json(res, 400, { ok: false, error: `value must be one of: ${validTiers.join(', ')}` });
+    if (action === 'change_tier' && (!value || !isValidTier(value))) {
+      json(res, 400, { ok: false, error: `value must be one of: ${TIERS.join(', ')}` });
       return;
     }
     if (action === 'change_role' && (!value || !validRoles.includes(value))) {

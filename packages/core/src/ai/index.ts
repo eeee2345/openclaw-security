@@ -40,8 +40,12 @@ import { OllamaProvider } from './ollama-provider.js';
 import { ClaudeProvider } from './claude-provider.js';
 import { OpenAIProvider } from './openai-provider.js';
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** AI module version / AI 模組版本 */
-export const AI_VERSION = '0.1.0';
+export const AI_VERSION: string = _pkg.version;
 
 /**
  * Create an LLM provider instance based on configuration

@@ -6,6 +6,7 @@
  */
 
 import type { AuthDB } from './database.js';
+import type { Tier } from '@panguard-ai/core';
 
 /**
  * Resource types that can be metered.
@@ -36,7 +37,7 @@ export interface UsageSummary {
 }
 
 /** Quota limits per tier. -1 means unlimited. */
-const TIER_QUOTAS: Record<string, Record<MeterableResource, number>> = {
+const TIER_QUOTAS: Record<Tier, Record<MeterableResource, number>> = {
   community: {
     scan: -1,
     guard_endpoints: 1,
@@ -104,7 +105,7 @@ export function checkQuota(
   tier: string,
   resource: MeterableResource
 ): QuotaCheck {
-  const quotas = TIER_QUOTAS[tier] ?? TIER_QUOTAS['community']!;
+  const quotas = TIER_QUOTAS[tier as Tier] ?? TIER_QUOTAS['community'];
   const limit = quotas[resource] ?? 0;
   const period = getPeriod(resource);
   const current = db.getUsage(userId, resource, period);
@@ -153,7 +154,7 @@ export function setUsage(
  * Get usage summary for all resources for a user.
  */
 export function getUsageSummary(db: AuthDB, userId: number, tier: string): UsageSummary[] {
-  const quotas = TIER_QUOTAS[tier] ?? TIER_QUOTAS['community']!;
+  const quotas = TIER_QUOTAS[tier as Tier] ?? TIER_QUOTAS['community'];
   const resources = Object.keys(quotas) as MeterableResource[];
 
   return resources.map((resource) => {
@@ -177,5 +178,5 @@ export function getUsageSummary(db: AuthDB, userId: number, tier: string): Usage
  * Get quota limits for a tier (for display purposes).
  */
 export function getQuotaLimits(tier: string): Record<MeterableResource, number> {
-  return { ...(TIER_QUOTAS[tier] ?? TIER_QUOTAS['community']!) };
+  return { ...(TIER_QUOTAS[tier as Tier] ?? TIER_QUOTAS['community']) };
 }

@@ -12,7 +12,11 @@
  * @module @panguard-ai/panguard-web
  */
 
-export const PANGUARD_WEB_VERSION = '0.1.0';
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
+
+export const PANGUARD_WEB_VERSION: string = _pkg.version;
 export const PANGUARD_WEB_NAME = 'Panguard Web';
 
 // Types

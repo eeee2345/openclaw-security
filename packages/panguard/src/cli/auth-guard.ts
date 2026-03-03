@@ -8,15 +8,15 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
-import { c, symbols, box } from '@panguard-ai/core';
+import { c, symbols, box, FEATURE_TIER as _CORE_FEATURE_TIER, isTierAtLeast, TIER_LEVEL } from '@panguard-ai/core';
+import type { Tier } from '@panguard-ai/core';
 import {
   loadCredentials,
   saveCredentials,
   isTokenExpired,
   tierDisplayName,
-  TIER_LEVEL,
 } from './credentials.js';
-import type { StoredCredentials, Tier } from './credentials.js';
+import type { StoredCredentials } from './credentials.js';
 
 export type RequiredTier = Tier;
 
@@ -26,19 +26,9 @@ export interface AuthCheckResult {
   credentials: StoredCredentials | null;
 }
 
-/* ── Feature → Tier mapping ── */
+/* ── Feature → Tier mapping (re-exported from core) ── */
 
-export const FEATURE_TIER: Record<string, Tier> = {
-  setup: 'community',
-  scan: 'community',
-  guard: 'community',
-  'threat-cloud': 'community',
-  demo: 'community',
-  notifications: 'solo',
-  notify: 'solo',
-  trap: 'pro',
-  report: 'pro',
-};
+export const FEATURE_TIER: Readonly<Record<string, Tier>> = _CORE_FEATURE_TIER;
 
 /**
  * Check if the current CLI user is authenticated and has the required tier.
@@ -55,12 +45,9 @@ export function requireAuth(requiredTier: RequiredTier = 'community'): AuthCheck
     return { authenticated: false, authorized: false, credentials: null };
   }
 
-  const userLevel = TIER_LEVEL[creds.tier] ?? 0;
-  const requiredLevel = TIER_LEVEL[requiredTier] ?? 0;
-
   return {
     authenticated: true,
-    authorized: userLevel >= requiredLevel,
+    authorized: isTierAtLeast(creds.tier, requiredTier),
     credentials: creds,
   };
 }
@@ -251,7 +238,7 @@ export function getLicense(): { tier: Tier; email?: string } {
  */
 export function checkAccess(requiredTier: Tier): boolean {
   const { tier } = getLicense();
-  return (TIER_LEVEL[tier] ?? 0) >= (TIER_LEVEL[requiredTier] ?? 0);
+  return isTierAtLeast(tier, requiredTier);
 }
 
 /**

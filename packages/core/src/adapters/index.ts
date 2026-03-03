@@ -11,8 +11,12 @@
  * @module @panguard-ai/core/adapters
  */
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** Adapters module version / 對接器模組版本 */
-export const ADAPTERS_VERSION = '0.1.0';
+export const ADAPTERS_VERSION: string = _pkg.version;
 
 // Types / 型別
 export type { AdapterConfig, AdapterAlert, SecurityAdapter } from './types.js';

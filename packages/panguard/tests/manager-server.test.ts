@@ -1,18 +1,31 @@
 /**
- * ManagerServer unit tests
- * ManagerServer 單元測試
+ * ManagerServer integration tests
+ * Uses the production @panguard-ai/manager ManagerServer
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { ManagerServer } from '../src/manager/manager-server.js';
+import { ManagerServer, DEFAULT_MANAGER_CONFIG } from '@panguard-ai/manager';
+import type { ManagerConfig } from '@panguard-ai/manager';
 
 // Use a random high port to avoid conflicts
 const TEST_PORT = 19843;
+const TEST_AUTH_TOKEN = 'test-auth-token-12345';
 let server: ManagerServer;
 
-describe('ManagerServer', () => {
+const config: ManagerConfig = {
+  ...DEFAULT_MANAGER_CONFIG,
+  port: TEST_PORT,
+  authToken: TEST_AUTH_TOKEN,
+};
+
+const authHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${TEST_AUTH_TOKEN}`,
+};
+
+describe('ManagerServer (production)', () => {
   beforeAll(async () => {
-    server = new ManagerServer(TEST_PORT);
+    server = new ManagerServer(config);
     await server.start();
   });
 
@@ -20,16 +33,27 @@ describe('ManagerServer', () => {
     await server.stop();
   });
 
-  it('should start and listen on the configured port', () => {
-    expect(server.getPort()).toBe(TEST_PORT);
+  it('should start and respond to health check', async () => {
+    const res = await fetch(`http://localhost:${TEST_PORT}/health`);
+    expect(res.status).toBe(200);
+
+    const data = (await res.json()) as { ok: boolean; data: { status: string } };
+    expect(data.ok).toBe(true);
+    expect(data.data.status).toBe('healthy');
+  });
+
+  it('should reject unauthenticated requests', async () => {
+    const res = await fetch(`http://localhost:${TEST_PORT}/api/agents`);
+    expect(res.status).toBe(401);
   });
 
   it('should register an agent', async () => {
     const res = await fetch(`http://localhost:${TEST_PORT}/api/agents/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         hostname: 'test-host',
+        endpoint: 'http://localhost:9999',
         os: 'Linux 6.1',
         arch: 'x64',
         version: '1.0.0',
@@ -38,52 +62,59 @@ describe('ManagerServer', () => {
     });
 
     expect(res.status).toBe(201);
-    const data = (await res.json()) as { agentId: string; token: string };
-    expect(data.agentId).toMatch(/^agent-/);
-    expect(data.token).toBeDefined();
-    expect(typeof data.token).toBe('string');
+    const data = (await res.json()) as {
+      ok: boolean;
+      data: { agentId: string; hostname: string };
+    };
+    expect(data.ok).toBe(true);
+    expect(data.data.agentId).toBeDefined();
+    expect(data.data.hostname).toBe('test-host');
   });
 
   it('should list registered agents', async () => {
-    const res = await fetch(`http://localhost:${TEST_PORT}/api/agents`);
+    const res = await fetch(`http://localhost:${TEST_PORT}/api/agents`, {
+      headers: { Authorization: `Bearer ${TEST_AUTH_TOKEN}` },
+    });
     expect(res.status).toBe(200);
 
-    const data = (await res.json()) as {
-      agents: Array<{ id: string; hostname: string }>;
-      total: number;
-    };
-    expect(data.total).toBeGreaterThanOrEqual(1);
-    expect(data.agents[0]!.hostname).toBe('test-host');
+    const data = (await res.json()) as { ok: boolean; data: unknown[] };
+    expect(data.ok).toBe(true);
+    expect(Array.isArray(data.data)).toBe(true);
   });
 
-  it('should accept heartbeat with valid token', async () => {
+  it('should accept heartbeat', async () => {
     // Register first
     const regRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         hostname: 'heartbeat-test',
+        endpoint: 'http://localhost:9998',
         os: 'Darwin 24.0',
         arch: 'arm64',
         version: '1.0.0',
       }),
     });
-    const { agentId, token } = (await regRes.json()) as { agentId: string; token: string };
+    const regData = (await regRes.json()) as {
+      ok: boolean;
+      data: { agentId: string };
+    };
+    const agentId = regData.data.agentId;
 
     // Send heartbeat
     const hbRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/${agentId}/heartbeat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders,
       body: JSON.stringify({
+        agentId,
+        timestamp: new Date().toISOString(),
+        cpuUsage: 15.5,
+        memUsage: 42.3,
+        activeMonitors: 3,
+        threatCount: 0,
         eventsProcessed: 42,
-        threatsDetected: 3,
-        actionsExecuted: 1,
         mode: 'protection',
         uptime: 60000,
-        memoryUsageMB: 128.5,
       }),
     });
 
@@ -92,133 +123,116 @@ describe('ManagerServer', () => {
     expect(data.ok).toBe(true);
   });
 
-  it('should reject heartbeat with invalid token', async () => {
+  it('should accept threat reports', async () => {
     // Register first
     const regRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        hostname: 'auth-test',
-        os: 'Linux',
-        arch: 'x64',
-        version: '1.0.0',
-      }),
-    });
-    const { agentId } = (await regRes.json()) as { agentId: string };
-
-    // Send heartbeat with wrong token
-    const hbRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/${agentId}/heartbeat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer wrong-token',
-      },
-      body: JSON.stringify({
-        eventsProcessed: 0,
-        threatsDetected: 0,
-        actionsExecuted: 0,
-        mode: 'learning',
-        uptime: 0,
-        memoryUsageMB: 0,
-      }),
-    });
-
-    expect(hbRes.status).toBe(401);
-  });
-
-  it('should accept event reports', async () => {
-    // Register first
-    const regRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
         hostname: 'event-test',
+        endpoint: 'http://localhost:9997',
         os: 'Linux',
         arch: 'x64',
         version: '1.0.0',
       }),
     });
-    const { agentId, token } = (await regRes.json()) as { agentId: string; token: string };
+    const regData = (await regRes.json()) as {
+      ok: boolean;
+      data: { agentId: string };
+    };
+    const agentId = regData.data.agentId;
 
-    // Report event
+    // Report threat
     const eventRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/${agentId}/events`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders,
       body: JSON.stringify({
-        event: { id: 'test-event-1', source: 'network', severity: 'high' },
-        verdict: { conclusion: 'malicious', confidence: 92, action: 'block_ip' },
+        agentId,
+        threats: [
+          {
+            event: {
+              id: 'test-event-1',
+              type: 'file_modified',
+              source: 'network',
+              severity: 'high',
+              timestamp: new Date().toISOString(),
+              metadata: {},
+            },
+            verdict: { conclusion: 'malicious', confidence: 92, action: 'block_ip' },
+          },
+        ],
+        reportedAt: new Date().toISOString(),
       }),
     });
 
     expect(eventRes.status).toBe(200);
+    const data = (await eventRes.json()) as { ok: boolean };
+    expect(data.ok).toBe(true);
   });
 
-  it('should list events', async () => {
-    const res = await fetch(`http://localhost:${TEST_PORT}/api/events`);
+  it('should provide overview data', async () => {
+    const res = await fetch(`http://localhost:${TEST_PORT}/api/overview`, {
+      headers: { Authorization: `Bearer ${TEST_AUTH_TOKEN}` },
+    });
     expect(res.status).toBe(200);
 
-    const data = (await res.json()) as { events: unknown[]; total: number };
-    expect(data.total).toBeGreaterThanOrEqual(1);
+    const data = (await res.json()) as {
+      ok: boolean;
+      data: { totalAgents: number; onlineAgents: number };
+    };
+    expect(data.ok).toBe(true);
+    expect(data.data.totalAgents).toBeGreaterThanOrEqual(1);
   });
 
-  it('should serve dashboard HTML', async () => {
-    const res = await fetch(`http://localhost:${TEST_PORT}/dashboard`);
+  it('should provide threat summary', async () => {
+    const res = await fetch(`http://localhost:${TEST_PORT}/api/threats/summary`, {
+      headers: { Authorization: `Bearer ${TEST_AUTH_TOKEN}` },
+    });
     expect(res.status).toBe(200);
-    expect(res.headers.get('content-type')).toContain('text/html');
 
-    const html = await res.text();
-    expect(html).toContain('Panguard Manager Dashboard');
-    expect(html).toContain('Agents');
+    const data = (await res.json()) as {
+      ok: boolean;
+      data: { totalThreats: number };
+    };
+    expect(data.ok).toBe(true);
+    expect(typeof data.data.totalThreats).toBe('number');
   });
 
-  it('should return 404 for unknown routes', async () => {
-    const res = await fetch(`http://localhost:${TEST_PORT}/api/nonexistent`);
-    expect(res.status).toBe(404);
-  });
-
-  it('should queue scan command for agent', async () => {
-    // Register first
+  it('should deregister an agent', async () => {
+    // Register
     const regRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders,
       body: JSON.stringify({
-        hostname: 'scan-test',
+        hostname: 'delete-test',
+        endpoint: 'http://localhost:9996',
         os: 'Linux',
         arch: 'x64',
         version: '1.0.0',
       }),
     });
-    const { agentId, token } = (await regRes.json()) as { agentId: string; token: string };
+    const regData = (await regRes.json()) as {
+      ok: boolean;
+      data: { agentId: string };
+    };
+    const agentId = regData.data.agentId;
 
-    // Queue scan
-    const scanRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/${agentId}/scan`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+    // Deregister
+    const delRes = await fetch(`http://localhost:${TEST_PORT}/api/agents/${agentId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${TEST_AUTH_TOKEN}` },
     });
+    expect(delRes.status).toBe(200);
 
-    expect(scanRes.status).toBe(200);
-    const data = (await scanRes.json()) as { ok: boolean; message: string };
+    const data = (await delRes.json()) as { ok: boolean; data: { removed: boolean } };
     expect(data.ok).toBe(true);
-    expect(data.message).toContain('Scan queued');
+    expect(data.data.removed).toBe(true);
   });
 
-  it('should return rules endpoint', async () => {
-    const res = await fetch(`http://localhost:${TEST_PORT}/api/rules/latest`);
-    expect(res.status).toBe(200);
-
-    const data = (await res.json()) as {
-      sigma: { count: number; rules: unknown[] };
-      yara: { count: number; rules: unknown[] };
-      updatedAt: string;
-    };
-    expect(Array.isArray(data.sigma.rules)).toBe(true);
-    expect(Array.isArray(data.yara.rules)).toBe(true);
-    expect(typeof data.updatedAt).toBe('string');
+  it('should return 404 for unknown routes', async () => {
+    const res = await fetch(`http://localhost:${TEST_PORT}/api/nonexistent`, {
+      headers: { Authorization: `Bearer ${TEST_AUTH_TOKEN}` },
+    });
+    expect(res.status).toBe(404);
   });
 });
