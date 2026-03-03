@@ -25,7 +25,8 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@panguard-ai/core": "workspace:*"
+    "@panguard-ai/core": "workspace:*",
+    "pdfkit": "^0.15.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

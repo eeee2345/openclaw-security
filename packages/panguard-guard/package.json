@@ -26,9 +26,12 @@
   },
   "dependencies": {
     "@panguard-ai/core": "workspace:*",
-    "@panguard-ai/security-hardening": "workspace:*"
+    "@panguard-ai/panguard-trap": "workspace:*",
+    "@panguard-ai/security-hardening": "workspace:*",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.14.0",
     "typescript": "~5.7.3"
   }

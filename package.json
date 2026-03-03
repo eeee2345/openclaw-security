@@ -29,6 +29,7 @@
     "cli": "node packages/panguard/dist/cli/index.js",
     "website:dev": "pnpm --filter @panguard-ai/website dev",
     "website:build": "pnpm --filter @panguard-ai/website build",
+    "test:installer": "vitest run tests/installer",
     "website:start": "pnpm --filter @panguard-ai/website start"
   },
   "devDependencies": {
@@ -51,5 +52,8 @@
       "esbuild",
       "better-sqlite3"
     ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1"
   }
 }

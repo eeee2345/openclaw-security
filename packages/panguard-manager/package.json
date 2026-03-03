@@ -21,9 +21,11 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@panguard-ai/core": "workspace:*"
+    "@panguard-ai/core": "workspace:*",
+    "better-sqlite3": "^11.0.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.8",
     "@types/node": "^22.14.0",
     "typescript": "~5.7.3"
   }
