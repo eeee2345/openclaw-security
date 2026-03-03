@@ -5,7 +5,7 @@
     "outDir": "./dist",
     "composite": true
   },
-  "references": [{ "path": "../core" }, { "path": "../../security-hardening" }],
+  "references": [{ "path": "../core" }, { "path": "../panguard-trap" }, { "path": "../../security-hardening" }],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests"]
 }

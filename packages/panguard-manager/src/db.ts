@@ -469,6 +469,7 @@ export class ManagerDB {
     return {
       agentId: row.agent_id,
       hostname: row.hostname,
+      endpoint: '',
       platform: {
         os: row.os,
         arch: row.arch,

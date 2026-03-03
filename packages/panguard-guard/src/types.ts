@@ -280,16 +280,35 @@ export interface EmailConfig {
   to: string[];
 }
 
+/** Webhook config / Webhook 配置 */
+export interface WebhookConfig {
+  url: string;
+  secret?: string;
+}
+
+/** Webhook notify config alias / Webhook 通知配置別名 */
+export type WebhookNotifyConfig = WebhookConfig;
+
+/** LINE Notify config / LINE Notify 配置 */
+export interface LineConfig {
+  accessToken: string;
+}
+
+/** LINE Notify config alias / LINE Notify 配置別名 */
+export type LineNotifyConfig = LineConfig;
+
 /** Notification config combining all channels / 通知配置（所有通道） */
 export interface NotificationConfig {
   telegram?: TelegramConfig;
   slack?: SlackConfig;
   email?: EmailConfig;
+  webhook?: WebhookConfig;
+  line?: LineConfig;
 }
 
 /** Notification result / 通知結果 */
 export interface NotificationResult {
-  channel: 'telegram' | 'slack' | 'email';
+  channel: 'telegram' | 'slack' | 'email' | 'line' | 'webhook';
   success: boolean;
   error?: string;
 }

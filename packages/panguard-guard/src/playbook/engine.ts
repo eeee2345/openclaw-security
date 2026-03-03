@@ -58,8 +58,8 @@ export function parseDuration(duration: string): number {
     throw new Error(`Invalid duration string: "${duration}"`);
   }
 
-  const value = parseInt(match[1], 10);
-  const unit = match[2];
+  const value = parseInt(match[1]!, 10);
+  const unit = match[2]!;
 
   switch (unit) {
     case 's':

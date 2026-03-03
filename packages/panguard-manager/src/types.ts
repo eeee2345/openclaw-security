@@ -29,6 +29,7 @@ export interface AgentRegistration {
   readonly registeredAt: string;
   readonly lastHeartbeat: string;
   readonly status: AgentStatus;
+  readonly organizationId?: string;
 }
 
 /** Incoming registration request from a Guard agent / 來自 Guard 代理的登錄請求 */
@@ -83,6 +84,7 @@ export interface AggregatedThreat {
   readonly sourceHostname: string;
   readonly receivedAt: string;
   readonly correlatedWith: readonly string[];
+  readonly organizationId?: string;
 }
 
 /** Correlation match indicating related threats / 表示相關威脅的關聯比對 */
@@ -123,6 +125,7 @@ export interface PolicyUpdate {
   readonly rules: readonly PolicyRule[];
   readonly updatedAt: string;
   readonly appliedTo: readonly string[];
+  readonly organizationId?: string;
 }
 
 // ===== Manager Configuration =====

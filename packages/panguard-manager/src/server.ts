@@ -381,71 +381,12 @@ export class ManagerServer {
     this.sendJson(res, 200, { ok: true, data: agent });
   }
 
-  private handleListAgents(req: IncomingMessage, res: ServerResponse): void {
-    const url = req.url ?? '/';
-    const params = new URL(url, 'http://localhost').searchParams;
-    const orgId = params.get('org_id');
-
-    if (orgId) {
-      const db = this.manager.getDB();
-      if (db) {
-        const agents = db.getAgentsByOrg(orgId);
-        this.sendJson(res, 200, { ok: true, data: agents });
-        return;
-      }
-    }
-
+  private handleListAgents(_req: IncomingMessage, res: ServerResponse): void {
     const overview = this.manager.getOverview();
     this.sendJson(res, 200, { ok: true, data: overview.agents });
   }
 
-  private handleOverview(req: IncomingMessage, res: ServerResponse): void {
-    const url = req.url ?? '/';
-    const params = new URL(url, 'http://localhost').searchParams;
-    const orgId = params.get('org_id');
-
-    if (orgId) {
-      const db = this.manager.getDB();
-      if (db) {
-        const agents = db.getAgentsByOrg(orgId);
-        const threats = db.getThreatsByOrg(orgId);
-        const policy = db.getActivePolicyForOrg(orgId);
-
-        const onlineCount = agents.filter((a) => a.status === 'online').length;
-        const staleCount = agents.filter((a) => a.status === 'stale').length;
-        const offlineCount = agents.filter((a) => a.status === 'offline').length;
-
-        this.sendJson(res, 200, {
-          ok: true,
-          data: {
-            totalAgents: agents.length,
-            onlineAgents: onlineCount,
-            staleAgents: staleCount,
-            offlineAgents: offlineCount,
-            agents: agents.map((a) => ({
-              agentId: a.agentId,
-              hostname: a.hostname,
-              status: a.status,
-              lastHeartbeat: a.lastHeartbeat,
-              threatCount: threats.filter((t) => t.sourceAgentId === a.agentId).length,
-            })),
-            threatSummary: {
-              totalThreats: threats.length,
-              criticalCount: threats.filter((t) => t.originalThreat.event.severity === 'critical').length,
-              highCount: threats.filter((t) => t.originalThreat.event.severity === 'high').length,
-              suspiciousCount: threats.filter((t) => t.originalThreat.verdict.conclusion === 'suspicious').length,
-              uniqueAttackers: 0,
-              affectedAgents: new Set(threats.map((t) => t.sourceAgentId)).size,
-              correlatedGroups: 0,
-            },
-            activePolicyVersion: policy?.version ?? 0,
-            uptimeMs: this.manager.isRunning() ? Date.now() - this.manager.getStartTime() : 0,
-          },
-        });
-        return;
-      }
-    }
-
+  private handleOverview(_req: IncomingMessage, res: ServerResponse): void {
     const overview = this.manager.getOverview();
     this.sendJson(res, 200, { ok: true, data: overview });
   }
@@ -459,17 +400,7 @@ export class ManagerServer {
     const url = req.url ?? '/';
     const params = new URL(url, 'http://localhost').searchParams;
     const sinceParam = params.get('since');
-    const orgId = params.get('org_id');
     const since = sinceParam ? new Date(sinceParam) : new Date(Date.now() - 3_600_000); // default 1h
-
-    if (orgId) {
-      const db = this.manager.getDB();
-      if (db) {
-        const threats = db.getThreatsByOrg(orgId);
-        this.sendJson(res, 200, { ok: true, data: threats });
-        return;
-      }
-    }
 
     const threats = this.manager.getRecentThreats(since);
     this.sendJson(res, 200, { ok: true, data: threats });
