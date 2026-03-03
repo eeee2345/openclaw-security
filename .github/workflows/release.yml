@@ -64,7 +64,7 @@ jobs:
       - name: Deploy standalone package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: pnpm deploy --filter=@panguard-ai/panguard --prod C:\panguard-release
+        run: pnpm deploy --filter=@panguard-ai/panguard --prod D:\panguard-release
 
       - name: Copy config (detection rules) (Unix)
         if: runner.os != 'Windows'
@@ -75,7 +75,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Copy-Item -Recurse config\ C:\panguard-release\config\
+          Copy-Item -Recurse config\ D:\panguard-release\config\
 
       - name: Create launcher script (Unix)
         if: runner.os != 'Windows'
@@ -92,8 +92,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path C:\panguard-release\bin
-          Set-Content -Path C:\panguard-release\bin\panguard.cmd -Value "@echo off`r`nnode ""%~dp0..\dist\cli\index.js"" %*"
+          New-Item -ItemType Directory -Force -Path D:\panguard-release\bin
+          Set-Content -Path D:\panguard-release\bin\panguard.cmd -Value "@echo off`r`nnode ""%~dp0..\dist\cli\index.js"" %*"
 
       - name: Create tarball (Unix)
         if: runner.os != 'Windows'
@@ -105,7 +105,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Compress-Archive -Path C:\panguard-release\* -DestinationPath C:\panguard-${{ matrix.platform }}.zip
+          Compress-Archive -Path D:\panguard-release\* -DestinationPath D:\panguard-${{ matrix.platform }}.zip
 
       - name: Upload artifact (Unix)
         if: runner.os != 'Windows'
@@ -119,7 +119,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: panguard-${{ matrix.platform }}
-          path: C:\panguard-${{ matrix.platform }}.zip
+          path: D:\panguard-${{ matrix.platform }}.zip
 
   release:
     name: Create GitHub Release
@@ -174,6 +174,7 @@ jobs:
   npm-publish:
     name: Publish to npm
     needs: release
+    if: always() && needs.release.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
