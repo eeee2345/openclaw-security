@@ -146,13 +146,14 @@ export type {
 } from './scoring/index.js';
 
 // AI / LLM interface / AI/LLM 介面
-export { AI_VERSION, createLLM } from './ai/index.js';
+export { AI_VERSION, createLLM, FunnelRouter } from './ai/index.js';
 export type {
   LLMConfig,
   LLMProvider,
   LLMProviderType,
   AnalysisResult,
   ThreatClassification,
+  FunnelRouterConfig,
 } from './ai/index.js';
 
 // Adapters / 對接器
@@ -173,6 +174,16 @@ export type {
   SecurityAdapter,
   SyslogAlertCallback,
 } from './adapters/index.js';
+
+// Tiers / 訂閱等級
+export {
+  TIERS,
+  TIER_LEVEL,
+  FEATURE_TIER,
+  isTierAtLeast,
+  isValidTier,
+} from './tiers/index.js';
+export type { Tier } from './tiers/index.js';
 
 // CLI utilities / CLI 工具
 export {
@@ -215,5 +226,9 @@ export type {
   WizardAnswers,
 } from './cli/index.js';
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
+
 /** Core package version / 核心套件版本 */
-export const CORE_VERSION = '0.1.0';
+export const CORE_VERSION: string = _pkg.version;

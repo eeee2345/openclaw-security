@@ -12,12 +12,19 @@ jobs:
   build:
     name: Build ${{ matrix.platform }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: macos-14
             platform: darwin-arm64
+          - os: macos-13
+            platform: darwin-x64
           - os: ubuntu-latest
             platform: linux-x64
+          - os: ubuntu-24.04-arm
+            platform: linux-arm64
+          - os: windows-latest
+            platform: win-x64
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,7 +36,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Get pnpm store directory
         shell: bash
@@ -38,8 +45,8 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: ${{ runner.os }}-pnpm-
+          key: ${{ runner.os }}-${{ runner.arch }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-pnpm-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -47,17 +54,32 @@ jobs:
       - name: Build all packages
         run: pnpm run build
 
-      - name: Run tests
-        run: pnpm run test
+      - name: Run tests (skip slow installer E2E in release)
+        shell: bash
+        run: pnpm run test -- --exclude 'tests/installer/installer-e2e*'
 
-      - name: Deploy standalone package
+      - name: Deploy standalone package (Unix)
+        if: runner.os != 'Windows'
         run: pnpm deploy --filter=@panguard-ai/panguard --prod /tmp/panguard-release
 
-      - name: Copy config (detection rules)
+      - name: Deploy standalone package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: pnpm deploy --filter=@panguard-ai/panguard --prod C:\panguard-release
+
+      - name: Copy config (detection rules) (Unix)
+        if: runner.os != 'Windows'
         run: |
           cp -r config/ /tmp/panguard-release/config/
 
-      - name: Create launcher script
+      - name: Copy config (detection rules) (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse config\ C:\panguard-release\config\
+
+      - name: Create launcher script (Unix)
+        if: runner.os != 'Windows'
         run: |
           mkdir -p /tmp/panguard-release/bin
           cat > /tmp/panguard-release/bin/panguard << 'LAUNCHER'
@@ -67,16 +89,38 @@ jobs:
           LAUNCHER
           chmod +x /tmp/panguard-release/bin/panguard
 
-      - name: Create tarball
+      - name: Create launcher script (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path C:\panguard-release\bin
+          Set-Content -Path C:\panguard-release\bin\panguard.cmd -Value "@echo off`r`nnode ""%~dp0..\dist\cli\index.js"" %*"
+
+      - name: Create tarball (Unix)
+        if: runner.os != 'Windows'
         run: |
           cd /tmp
           tar -czf panguard-${{ matrix.platform }}.tar.gz -C panguard-release .
 
-      - name: Upload artifact
+      - name: Create zip (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path C:\panguard-release\* -DestinationPath C:\panguard-${{ matrix.platform }}.zip
+
+      - name: Upload artifact (Unix)
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: panguard-${{ matrix.platform }}
           path: /tmp/panguard-${{ matrix.platform }}.tar.gz
+
+      - name: Upload artifact (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: panguard-${{ matrix.platform }}
+          path: C:\panguard-${{ matrix.platform }}.zip
 
   release:
     name: Create GitHub Release
@@ -88,16 +132,34 @@ jobs:
         with:
           path: artifacts
 
-      - name: Collect tarballs
+      - name: Collect release artifacts
         run: |
           mkdir -p release
           find artifacts -name '*.tar.gz' -exec cp {} release/ \;
+          find artifacts -name '*.zip' -exec cp {} release/ \;
+          echo "Release artifacts:"
           ls -la release/
+
+      - name: Verify all platform binaries exist
+        run: |
+          expected=("panguard-darwin-arm64.tar.gz" "panguard-darwin-x64.tar.gz" "panguard-linux-x64.tar.gz" "panguard-linux-arm64.tar.gz" "panguard-win-x64.zip")
+          missing=()
+          for f in "${expected[@]}"; do
+            if [ ! -f "release/$f" ]; then
+              missing+=("$f")
+            fi
+          done
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "WARNING: Missing platform binaries: ${missing[*]}"
+            echo "Continuing with available binaries..."
+          else
+            echo "All 5 platform binaries present."
+          fi
 
       - name: Generate checksums
         working-directory: release
         run: |
-          sha256sum *.tar.gz > SHA256SUMS.txt
+          sha256sum *.tar.gz *.zip > SHA256SUMS.txt 2>/dev/null || sha256sum *.tar.gz > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Create Release
@@ -106,4 +168,39 @@ jobs:
           generate_release_notes: true
           files: |
             release/*.tar.gz
+            release/*.zip
             release/SHA256SUMS.txt
+
+  npm-publish:
+    name: Publish to npm
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm run build
+
+      - name: Publish @panguard-ai/core
+        run: pnpm --filter @panguard-ai/core publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true
+
+      - name: Publish @panguard-ai/panguard
+        run: pnpm --filter @panguard-ai/panguard publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true

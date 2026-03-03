@@ -7,9 +7,8 @@
  * @module @panguard-ai/panguard/cli/theme
  */
 
-import { c, stripAnsi, visLen } from '@panguard-ai/core';
-import type { Tier } from './credentials.js';
-import { TIER_LEVEL } from './credentials.js';
+import { c, stripAnsi, visLen, TIER_LEVEL } from '@panguard-ai/core';
+import type { Tier } from '@panguard-ai/core';
 
 // ── Brand ASCII Block Letter Logo ─────────────────────────────────────
 // Half-block character style for modern terminal rendering.

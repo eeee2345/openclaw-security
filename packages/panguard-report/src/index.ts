@@ -10,7 +10,11 @@
  * @module @panguard-ai/panguard-report
  */
 
-export const PANGUARD_REPORT_VERSION = '0.1.0';
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
+
+export const PANGUARD_REPORT_VERSION: string = _pkg.version;
 export const CLAWREPORT_NAME = 'PanguardReport';
 
 // Types
@@ -56,7 +60,9 @@ export {
   generateComplianceReportWithAssessment,
   reportToJSON,
   generateSummaryText,
+  generatePDFReport,
 } from './generator/index.js';
+export type { PDFReportOptions } from './generator/index.js';
 
 // Assessors
 export {

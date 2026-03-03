@@ -19,8 +19,12 @@ import { loadRulesRecursive, watchRulesDirectory } from './rule-loader.js';
 
 const logger = createLogger('rule-engine');
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** Rules module version / 規則模組版本 */
-export const RULES_VERSION = '0.1.0';
+export const RULES_VERSION: string = _pkg.version;
 
 /**
  * Sigma rule engine for loading, managing, and matching security rules

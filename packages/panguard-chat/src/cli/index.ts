@@ -26,8 +26,12 @@ import type {
 import { ChatAgent } from '../agent/chat-agent.js';
 import { WebhookChannel } from '../channels/webhook.js';
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** CLI version / CLI 版本 */
-export const CLI_VERSION = '0.1.0';
+export const CLI_VERSION: string = _pkg.version;
 
 /**
  * Parse and execute CLI commands / 解析並執行 CLI 命令
@@ -107,7 +111,52 @@ async function commandSetup(args: string[]): Promise<void> {
         ? `配置: 管道=${channel}, 用戶類型=${userType}, 語言=${lang}`
         : `Config: channel=${channel}, userType=${userType}, language=${lang}`
     );
+
+    // Collect channel-specific config from args
+    const token = extractOption(args, '--token');
+    const chatId = extractOption(args, '--chat-id');
+    const url = extractOption(args, '--url');
+    const webhookUrl = extractOption(args, '--webhook-url');
+
+    const channels: ChatConfig['channels'] = {
+      ...(channel === 'telegram' && token && chatId
+        ? { telegram: { botToken: token, chatId } }
+        : {}),
+      ...(channel === 'slack' && (url || webhookUrl)
+        ? { slack: { botToken: '', signingSecret: '', defaultChannel: url || webhookUrl || '' } }
+        : {}),
+      ...(channel === 'webhook' && (url || webhookUrl)
+        ? { webhook: { endpoint: url || webhookUrl || '', secret: '', authMethod: 'bearer_token' as const } }
+        : {}),
+    };
+
+    // Save configuration to disk
+    const config: ChatConfig = {
+      userProfile: {
+        type: userType,
+        language: lang,
+        notificationChannel: channel,
+        preferences: {
+          criticalAlerts: true,
+          dailySummary: true,
+          weeklySummary: true,
+          peacefulReport: true,
+        },
+      },
+      channels,
+      maxFollowUpTokens: 2000,
+    };
+
+    const configPath = process.env['PANGUARD_CHAT_CONFIG'] ?? CONFIG_FILE;
+    mkdirSync(CONFIG_DIR, { recursive: true });
+    writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
+
     console.log('');
+    console.log(
+      lang === 'zh-TW'
+        ? `配置已儲存至 ${configPath}`
+        : `Configuration saved to ${configPath}`
+    );
     console.log(getWelcomeMessage(lang));
   }
 }
