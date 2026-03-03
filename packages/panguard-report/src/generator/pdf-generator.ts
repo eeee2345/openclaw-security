@@ -395,7 +395,7 @@ function renderExecutiveSummary(
   const headingFont = selectFont(hasCjk, 'heading');
   const es = reportData.executiveSummary;
 
-  let y = LAYOUT.margin;
+  let y: number = LAYOUT.margin;
 
   // Section title
   doc
@@ -522,7 +522,7 @@ function renderFindingsTable(
   const font = selectFont(hasCjk, 'body');
   const headingFont = selectFont(hasCjk, 'heading');
 
-  let y = LAYOUT.margin;
+  let y: number = LAYOUT.margin;
 
   // Section title
   doc
@@ -608,7 +608,6 @@ function renderFindingsTable(
       });
     y += doc.heightOfString(finding.description, {
       width: LAYOUT.contentWidth - 20,
-      fontSize: 9,
     });
     y += 12;
 
@@ -643,7 +642,7 @@ function renderComplianceMatrix(
   const font = selectFont(hasCjk, 'body');
   const headingFont = selectFont(hasCjk, 'heading');
 
-  let y = LAYOUT.margin;
+  let y: number = LAYOUT.margin;
 
   // Section title
   doc
