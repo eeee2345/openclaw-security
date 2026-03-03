@@ -160,15 +160,15 @@ export function parseLLMResponse(raw: string): InvestigationStep[] {
     if (
       typeof item !== 'object' ||
       item === null ||
-      typeof (item as Record<string, unknown>).tool !== 'string'
+      typeof (item as Record<string, unknown>)['tool'] !== 'string'
     ) {
       continue;
     }
 
-    const toolName = (item as Record<string, unknown>).tool as string;
+    const toolName = (item as Record<string, unknown>)['tool'] as string;
     const reason =
-      typeof (item as Record<string, unknown>).reason === 'string'
-        ? ((item as Record<string, unknown>).reason as string)
+      typeof (item as Record<string, unknown>)['reason'] === 'string'
+        ? ((item as Record<string, unknown>)['reason'] as string)
         : `LLM selected ${toolName}`;
 
     // Skip invalid or duplicate tool names / 跳過無效或重複的工具名稱

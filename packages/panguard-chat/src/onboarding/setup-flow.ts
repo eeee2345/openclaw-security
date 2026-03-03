@@ -354,6 +354,27 @@ export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[
           inputType: 'text',
         },
       ];
+    case 'discord':
+      return [
+        {
+          id: 'discordWebhookUrl',
+          title: { 'zh-TW': 'Discord Webhook URL', en: 'Discord Webhook URL' },
+          description: {
+            'zh-TW': '在 Discord 頻道設定中建立 Webhook 並複製 URL',
+            en: 'Create a Webhook in your Discord channel settings and copy the URL',
+          },
+          inputType: 'text',
+        },
+        {
+          id: 'discordUsername',
+          title: { 'zh-TW': 'Bot 顯示名稱（選填）', en: 'Bot Display Name (optional)' },
+          description: {
+            'zh-TW': 'Webhook 訊息顯示的名稱，留空使用預設值',
+            en: 'Name shown on webhook messages, leave blank for default',
+          },
+          inputType: 'text',
+        },
+      ];
     default: {
       const _exhaustive: never = channel;
       return [];

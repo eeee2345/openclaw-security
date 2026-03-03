@@ -245,7 +245,7 @@ const SLACK_BOT_TOKEN = '${'xo' + 'xb'}-1234567890-1234567890-abcdefghijklmnop';
   it('should detect Stripe live secret key (sk_live_ prefix)', async () => {
     tmpDir = await createTempDir({
       'payment.ts': `
-const stripe = new Stripe('sk_test_FAKEFAKEFAKEFAKEFAKEFAKE00000');
+const stripe = new Stripe('${'sk' + '_live'}_51FAKEFAKEFAKEFAKEFAKE000');
 `,
     });
 
@@ -535,7 +535,7 @@ const API_URL = process.env.API_URL ?? 'https://api.example.com';
       'secrets.ts': `
 const AWS_KEY = 'AKIAIOSFODNN7EXAMPLE';
 const GH_TOKEN = 'ghp_16C7e42F292c6912E7710c838347Ae178B4a';
-const STRIPE_KEY = 'sk_test_FAKEFAKEFAKEFAKEFAKEFAKE00000';
+const STRIPE_KEY = '${'sk' + '_live'}_51FAKEFAKEFAKEFAKEFAKE000';
 `,
     });
 

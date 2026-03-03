@@ -27,7 +27,11 @@ export type EventSource =
   | 'process'
   | 'file'
   | 'falco'
-  | 'suricata';
+  | 'suricata'
+  | 'honeypot'
+  | 'dpi'
+  | 'memory_scanner'
+  | 'syscall';
 
 /**
  * Base application configuration / 基礎應用程式配置
