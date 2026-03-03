@@ -26,8 +26,12 @@ import { checkThreatIntel } from './threat-intel.js';
 
 const logger = createLogger('monitor-engine');
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** Monitor engine version / 監控引擎版本 */
-export const MONITOR_VERSION = '0.1.0';
+export const MONITOR_VERSION: string = _pkg.version;
 
 /**
  * MonitorEngine - unified system monitoring engine

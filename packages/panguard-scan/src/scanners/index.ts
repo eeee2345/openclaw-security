@@ -26,13 +26,19 @@ import { checkSslCertificates } from './ssl-checker.js';
 import { checkScheduledTasks } from './scheduled-tasks.js';
 import { checkSharedFolders } from './shared-folders.js';
 import { checkCVEs } from './cve-checker.js';
+import { checkSourceCode } from './sast-checker.js';
+import { checkHardcodedSecrets } from './secrets-checker.js';
 import type { ScanConfig, ScanResult, Finding } from './types.js';
 import { sortBySeverity } from './types.js';
 
 const logger = createLogger('panguard-scan:orchestrator');
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** Scanner modules version / 掃描模組版本 */
-export const SCANNERS_VERSION = '0.1.0';
+export const SCANNERS_VERSION: string = _pkg.version;
 
 /**
  * Category-to-title mapping for risk factor conversion
@@ -326,6 +332,21 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
     logger.info('Skipping full-depth checks in quick mode');
   }
 
+  // Code SAST scan / 程式碼靜態安全分析
+  if (config.codeDir) {
+    logger.info('Running SAST and secrets scan on source code directory', {
+      codeDir: config.codeDir,
+    });
+    const [codeFindings, secretFindings] = await Promise.all([
+      checkSourceCode(config.codeDir),
+      checkHardcodedSecrets(config.codeDir),
+    ]);
+    logger.info(
+      `SAST scan: ${codeFindings.length} code finding(s), ${secretFindings.length} secret finding(s)`
+    );
+    additionalFindings.push(...codeFindings, ...secretFindings);
+  }
+
   // Step 6: Merge, enrich with manual fix commands, and sort all findings
   // 步驟 6：合併、補充手動修復指令，並排序所有發現
   const allFindings: Finding[] = [...discoveryFindings, ...additionalFindings]
@@ -374,5 +395,7 @@ export { checkSslCertificates } from './ssl-checker.js';
 export { checkScheduledTasks } from './scheduled-tasks.js';
 export { checkSharedFolders } from './shared-folders.js';
 export { checkCVEs } from './cve-checker.js';
+export { checkSourceCode } from './sast-checker.js';
+export { checkHardcodedSecrets } from './secrets-checker.js';
 export type { ScanConfig, ScanResult, Finding } from './types.js';
 export { sortBySeverity, SEVERITY_ORDER } from './types.js';

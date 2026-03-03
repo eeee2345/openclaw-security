@@ -9,7 +9,11 @@
  * @module @panguard-ai/panguard-chat/skills
  */
 
-export const SKILLS_VERSION = '0.1.0';
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
+export const SKILLS_VERSION: string = _pkg.version;
 
 // ---------------------------------------------------------------------------
 // Skill type definitions

@@ -9,7 +9,11 @@
  * @module @panguard-ai/panguard-trap
  */
 
-export const PANGUARD_TRAP_VERSION = '0.1.0';
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../package.json') as { version: string };
+
+export const PANGUARD_TRAP_VERSION: string = _pkg.version;
 export const CLAWTRAP_NAME = 'PanguardTrap';
 
 // Types
@@ -40,6 +44,10 @@ export {
   BaseTrapService,
   SSHTrapService,
   HTTPTrapService,
+  MySQLTrapService,
+  RedisTrapService,
+  SMBTrapService,
+  RDPTrapService,
   GenericTrapService,
 } from './services/index.js';
 
@@ -57,6 +65,9 @@ export type { IntelSummary } from './intel/index.js';
 
 // Engine
 export { TrapEngine } from './trap-engine.js';
+
+// PID file management
+export { PidFile } from './pid-file.js';
 
 // Threat Cloud uploader
 export { ThreatCloudUploader } from './threat-cloud-uploader.js';

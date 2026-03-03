@@ -9,8 +9,12 @@
  * @module @panguard-ai/core/discovery
  */
 
+import { createRequire } from 'node:module';
+const _require = createRequire(import.meta.url);
+const _pkg = _require('../../package.json') as { version: string };
+
 /** Discovery engine version / 偵察引擎版本 */
-export const DISCOVERY_VERSION = '0.1.0';
+export const DISCOVERY_VERSION: string = _pkg.version;
 
 // Types
 export type {

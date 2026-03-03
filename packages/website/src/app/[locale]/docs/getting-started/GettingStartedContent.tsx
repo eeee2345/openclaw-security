@@ -13,7 +13,7 @@ import { STATS } from '@/lib/stats';
 // ---------------------------------------------------------------------------
 
 type Platform = 'macos' | 'linux' | 'windows';
-type InstallMethod = 'curl' | 'homebrew' | 'npm';
+type InstallMethod = 'curl' | 'npm';
 
 const PLATFORM_META: Record<Platform, { label: string; icon: typeof Terminal }> = {
   macos: { label: 'macOS', icon: Terminal },
@@ -41,13 +41,7 @@ const INSTALL_OPTIONS: Record<Platform, InstallOption[]> = {
       label: 'One-line Install',
       recommended: true,
       command: 'curl -fsSL https://get.panguard.ai | bash',
-      note: 'Requires Node.js 20+. Install via: brew install node',
-    },
-    {
-      method: 'homebrew',
-      label: 'Homebrew',
-      prereq: 'brew install node',
-      command: 'npm install -g @panguard-ai/panguard',
+      note: 'Requires Node.js 20+',
     },
     {
       method: 'npm',
@@ -83,8 +77,8 @@ const INSTALL_OPTIONS: Record<Platform, InstallOption[]> = {
     {
       method: 'curl',
       label: 'PowerShell',
-      command: 'irm https://get.panguard.ai/windows | iex',
-      note: 'Requires Node.js 20+',
+      command: 'powershell -ExecutionPolicy Bypass -Command "irm https://get.panguard.ai/windows | iex"',
+      note: 'If using PowerShell 7+: pwsh -ExecutionPolicy Bypass -Command "irm https://get.panguard.ai/windows | iex"',
     },
   ],
 };
@@ -307,7 +301,7 @@ export default function GettingStartedContent() {
             <div className="mt-4">
               <TerminalOutput
                 lines={[
-                  '[OK] Panguard v1.1.0 installed',
+                  `[OK] Panguard v${STATS.cliVersion} installed`,
                   `[OK] Rule engine loaded (${STATS.sigmaRules.toLocaleString()} Sigma + ${STATS.yaraRules.toLocaleString()} YARA rules)`,
                   '[OK] Monitoring started. Learning period: 7 days.',
                 ]}
@@ -356,6 +350,37 @@ export default function GettingStartedContent() {
                 <p className="text-sm font-semibold text-text-primary mb-2">{t('step6Title')}</p>
                 <p className="text-text-secondary text-sm mb-3">{t('step6Desc')}</p>
                 <CodeBlock code="panguard scan --json" label="Terminal" />
+                <div className="mt-3">
+                  <TerminalOutput
+                    lines={[
+                      '{"riskScore": 72, "findings": 8, "critical": 1, "high": 2, "medium": 3, "low": 2,',
+                      ' "scanDuration": "47s", "framework": "ISO 27001",',
+                      ' "topFinding": "SSH root login enabled (critical)"}',
+                    ]}
+                  />
+                </div>
+              </div>
+
+              {/* SAST code scanning */}
+              <div className="bg-surface-1 border border-border rounded-xl p-5">
+                <p className="text-sm font-semibold text-text-primary mb-2">SAST Code Scanning</p>
+                <p className="text-text-secondary text-sm mb-3">
+                  Scan your source code for SQL injection, XSS, hardcoded secrets, and more.
+                </p>
+                <CodeBlock code="panguard scan code --dir ./my-app --json" label="Terminal" />
+                <div className="mt-3">
+                  <TerminalOutput
+                    lines={[
+                      '[OK] Scanning ./my-app (142 files)',
+                      '[OK] Semgrep: 3 findings',
+                      '[OK] Built-in patterns: 1 finding',
+                      '[OK] Secrets scanner: 0 findings',
+                      '{"totalFindings": 4, "critical": 1, "high": 2, "medium": 1,',
+                      ' "topFinding": "Hardcoded AWS access key in config.js (critical)"}',
+                    ]}
+                  />
+                </div>
+                <span className="inline-block mt-2 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-yellow-900/30 text-yellow-400">Beta</span>
               </div>
 
               {/* Remote scanning */}
@@ -404,6 +429,8 @@ export default function GettingStartedContent() {
                   { cmd: 'panguard chat config', desc: 'Configure notifications' },
                   { cmd: 'panguard trap deploy', desc: 'Deploy honeypot decoys' },
                   { cmd: 'panguard report generate', desc: 'Generate compliance report' },
+                  { cmd: 'panguard scan code --dir .', desc: 'SAST code scanning' },
+                  { cmd: 'panguard doctor', desc: 'Diagnose installation' },
                   { cmd: 'panguard whoami', desc: 'Show account info' },
                   { cmd: 'panguard --help', desc: 'Show all commands' },
                 ].map(({ cmd, desc }) => (
