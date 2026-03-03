@@ -392,16 +392,13 @@ body::after {
 .js-ready .animate-on-scroll {
   opacity: 0;
   transform: translateY(20px);
-  filter: blur(4px);
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .js-ready .animate-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
 }
 
 /* Directional variants */
@@ -528,16 +525,13 @@ body::after {
 .js-ready .reveal-word {
   opacity: 0;
   transform: translateY(16px);
-  filter: blur(3px);
   transition:
     opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .js-ready .reveal-text-container.is-visible .reveal-word {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
 }
 
 /* Stagger group: children animate when parent is visible */

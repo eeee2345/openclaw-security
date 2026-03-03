@@ -237,7 +237,7 @@ function ConfidenceSection() {
 
 export default function ShowMuscle() {
   return (
-    <section className="bg-gradient-to-b from-[#0a0a0a] via-[#081a0d] to-[#0d2614] px-4 sm:px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#0a0a0a] via-[#081a0d] to-[#0d2614] px-4 sm:px-6 py-16 sm:py-24">
       <div className="max-w-[1200px] mx-auto">
         <TeamSection />
         <FunnelSection />

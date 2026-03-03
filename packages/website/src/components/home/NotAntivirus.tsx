@@ -25,7 +25,7 @@ export default function NotAntivirus() {
   const t = useTranslations('home.notAntivirus');
 
   return (
-    <section className="bg-gradient-to-b from-[#120808] to-[#0e0f0e] px-4 sm:px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#120808] to-[#0e0f0e] px-4 sm:px-6 py-16 sm:py-24">
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <motion.div

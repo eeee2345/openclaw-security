@@ -131,7 +131,7 @@ export default function ThreatCloudSection() {
   const t = useTranslations('home.threatCloud');
 
   return (
-    <section className="bg-gradient-to-b from-[#0d2614] to-[#0a0a0a] px-4 sm:px-6 py-12 sm:py-16">
+    <section className="bg-gradient-to-b from-[#0d2614] to-[#0a0a0a] px-4 sm:px-6 py-16 sm:py-24">
       <div className="max-w-[1200px] mx-auto">
         {/* Overline */}
         <motion.p

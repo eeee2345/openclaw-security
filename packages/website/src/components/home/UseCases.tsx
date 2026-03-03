@@ -21,7 +21,7 @@ export default function UseCases() {
   }>;
 
   return (
-    <section id="use-cases" className="bg-[#0e0f0e] px-4 sm:px-6 py-12 sm:py-16">
+    <section id="use-cases" className="bg-[#0e0f0e] px-4 sm:px-6 py-16 sm:py-24">
       <div className="max-w-[1200px] mx-auto">
         {/* Title */}
         <motion.div
