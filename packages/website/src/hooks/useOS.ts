@@ -7,7 +7,7 @@ type OS = 'mac' | 'linux' | 'windows';
 const INSTALL_COMMANDS: Record<OS, string> = {
   mac: 'curl -fsSL https://get.panguard.ai | bash',
   linux: 'curl -fsSL https://get.panguard.ai | bash',
-  windows: 'irm https://get.panguard.ai/install.ps1 | iex',
+  windows: 'irm https://get.panguard.ai/windows | iex',
 };
 
 const PROMPTS: Record<OS, string> = {

@@ -12,8 +12,8 @@ export function middleware(request: NextRequest) {
   // get.panguard.ai/windows → serve PowerShell installer via API route
   if (host.startsWith('get.')) {
     const { pathname } = request.nextUrl;
-    if (pathname === '/windows' || pathname === '/win') {
-      return NextResponse.rewrite(new URL('/api/install?os=windows', request.url));
+    if (pathname === '/windows' || pathname === '/win' || pathname === '/install.ps1') {
+      return NextResponse.rewrite(new URL('/api/install/windows', request.url));
     }
     return NextResponse.rewrite(new URL('/api/install', request.url));
   }
@@ -22,5 +22,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)', '/install.ps1'],
 };

@@ -16,6 +16,16 @@ const nextConfig = {
           destination: '/api/install/windows',
         },
         {
+          source: '/win',
+          has: [{ type: 'host', value: 'get.panguard.ai' }],
+          destination: '/api/install/windows',
+        },
+        {
+          source: '/install.ps1',
+          has: [{ type: 'host', value: 'get.panguard.ai' }],
+          destination: '/api/install/windows',
+        },
+        {
           source: '/:path*',
           has: [{ type: 'host', value: 'get.panguard.ai' }],
           destination: '/api/install',
