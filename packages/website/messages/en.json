@@ -3236,7 +3236,7 @@
     "cli": {
       "backToDocs": "Back to Docs",
       "title": "CLI Reference",
-      "subtitle": "Complete command reference for the Panguard CLI. 21 commands across 6 categories covering scanning, real-time protection, honeypots, compliance reporting, and system utilities.",
+      "subtitle": "Complete command reference for the Panguard CLI. 35+ commands across 9 categories covering scanning, protection, chat, honeypots, reporting, infrastructure, hardening, configuration, and system utilities.",
       "installTitle": "Install the CLI:",
       "categories": {
         "scanning": {
@@ -3258,6 +3258,18 @@
         "reporting": {
           "title": "Reporting",
           "desc": "Compliance and audit reports"
+        },
+        "infrastructure": {
+          "title": "Infrastructure",
+          "desc": "Servers, managers, and threat intelligence"
+        },
+        "hardening": {
+          "title": "Hardening",
+          "desc": "Security auditing and credential protection"
+        },
+        "config": {
+          "title": "Configuration",
+          "desc": "LLM providers and local settings"
         },
         "system": {
           "title": "System",
@@ -3315,40 +3327,146 @@
           "desc": "Stop the running protection daemon gracefully."
         },
         "guardStatus": {
-          "desc": "Show current protection status, uptime, and resource usage."
+          "desc": "Show current protection status, uptime, and resource usage.",
+          "flags": {
+            "detailed": "3-layer health check (Process, Dashboard, AI)"
+          }
         },
-        "guardEvents": {
-          "desc": "Show recent security events detected by the protection daemon."
+        "guardConfig": {
+          "desc": "Show current guard engine configuration and active monitors."
         },
-        "chatConnect": {
-          "desc": "Connect a team chat channel for real-time security notifications. Supports Slack, Discord, Telegram, and LINE."
+        "guardInstall": {
+          "desc": "Install guard as a system service (systemd/launchd) for auto-start on boot."
         },
-        "chatDisconnect": {
-          "desc": "Disconnect a previously connected chat channel."
+        "chatSetup": {
+          "desc": "Interactive notification channel setup. Supports Telegram, Slack, Email, Webhook, and LINE.",
+          "flags": {
+            "channel": "Channel type: telegram, slack, email, webhook, line",
+            "lang": "Language for prompts (en, zh-TW)"
+          }
+        },
+        "chatTest": {
+          "desc": "Send a test notification to verify channel connectivity.",
+          "flags": {
+            "channel": "Channel type to test"
+          }
         },
         "chatStatus": {
           "desc": "Show current chat integration status and connected channels."
         },
-        "trapDeploy": {
-          "desc": "Deploy honeypot services to detect unauthorized access. Supports SSH, HTTP, FTP, SMTP, DNS, MySQL, Redis, and Telnet protocols."
+        "chatPrefs": {
+          "desc": "View or update notification preferences (critical alerts, daily/weekly summaries).",
+          "flags": {
+            "critical": "Toggle critical alerts (on/off)",
+            "daily": "Toggle daily summary (on/off)",
+            "weekly": "Toggle weekly summary (on/off)"
+          }
+        },
+        "trapStart": {
+          "desc": "Start honeypot services to detect unauthorized access. Supports SSH, HTTP, MySQL, Redis, SMB, RDP, FTP, and Telnet.",
+          "flags": {
+            "services": "Comma-separated service types (e.g. ssh,http,mysql)",
+            "noCloud": "Disable Threat Cloud intelligence sharing"
+          }
+        },
+        "trapStop": {
+          "desc": "Stop all running honeypot services."
         },
         "trapStatus": {
           "desc": "Show status and activity of deployed honeypot services."
         },
-        "trapRemove": {
-          "desc": "Remove a deployed honeypot service."
+        "trapIntel": {
+          "desc": "Show threat intelligence collected from honeypot interactions."
         },
         "reportGenerate": {
-          "desc": "Generate a compliance report. Supports ISO 27001, SOC 2, and TCSA frameworks."
+          "desc": "Generate a compliance report. Supports ISO 27001, SOC 2, and TCSA frameworks.",
+          "flags": {
+            "framework": "Framework: iso27001, soc2, tw_cyber_security_act",
+            "language": "Report language (en, zh-TW)",
+            "format": "Output format (json, pdf)",
+            "org": "Organization name for the report"
+          }
         },
-        "reportList": {
-          "desc": "List all previously generated compliance reports."
+        "reportSummary": {
+          "desc": "Show a brief compliance summary for the current endpoint."
+        },
+        "reportListFrameworks": {
+          "desc": "List all supported compliance frameworks and their control counts."
+        },
+        "serve": {
+          "desc": "Start the unified HTTP server gateway. Includes REST API, Swagger UI, admin dashboard, and health endpoint.",
+          "flags": {
+            "port": "Server port",
+            "host": "Bind host"
+          }
+        },
+        "managerStart": {
+          "desc": "Start the manager server for distributed multi-agent orchestration. Agents connect to this central server.",
+          "flags": {
+            "port": "Manager server port",
+            "apiKey": "API key for management endpoints"
+          }
+        },
+        "managerAgents": {
+          "desc": "List all registered agents connected to the manager server."
+        },
+        "threatStart": {
+          "desc": "Start the Threat Cloud API server for collective threat intelligence.",
+          "flags": {
+            "port": "API server port"
+          }
+        },
+        "hardeningAudit": {
+          "desc": "Run a security self-audit on the current system. Checks firewall, SSH config, open ports, file permissions, and more.",
+          "flags": {
+            "json": "Output results in JSON format"
+          }
+        },
+        "hardeningMigrate": {
+          "desc": "Migrate plaintext credentials to encrypted storage for improved security.",
+          "flags": {
+            "dryRun": "Report findings without migrating"
+          }
+        },
+        "configLlm": {
+          "desc": "Configure the AI/LLM provider for threat analysis. Supports Claude, OpenAI, and Ollama (local).",
+          "flags": {
+            "provider": "Provider: claude, openai, ollama",
+            "model": "Model override (e.g. claude-haiku-4-5-20251001, gpt-4o, llama3)",
+            "show": "Show current LLM configuration",
+            "clear": "Remove stored LLM configuration"
+          }
         },
         "init": {
-          "desc": "Initialize Panguard configuration in the current directory. Creates a panguard.yaml config file."
+          "desc": "Interactive setup wizard. Configures scanning, guard, and notification preferences.",
+          "flags": {
+            "lang": "Language for prompts (en, zh-TW)",
+            "advanced": "Full advanced wizard for power users"
+          }
         },
         "deploy": {
-          "desc": "Deploy Panguard agent to a remote server or cluster."
+          "desc": "Deploy all configured services based on your panguard.yaml config.",
+          "flags": {
+            "dryRun": "Show deployment plan without executing"
+          }
+        },
+        "status": {
+          "desc": "Show overall system status including guard, traps, and cloud connection.",
+          "flags": {
+            "json": "Output as JSON"
+          }
+        },
+        "doctor": {
+          "desc": "Run 10-point health diagnostics: Node.js, dependencies, config, network, guard, and more.",
+          "flags": {
+            "json": "Output as JSON"
+          }
+        },
+        "demo": {
+          "desc": "Run an automated demo sequence showcasing scan, guard, and reporting features.",
+          "flags": {
+            "lang": "Language (en, zh-TW)"
+          }
         },
         "login": {
           "desc": "Authenticate with Panguard Cloud. Opens a browser for OAuth or accepts an API key."
@@ -3356,11 +3474,11 @@
         "logout": {
           "desc": "Log out and clear stored credentials."
         },
-        "status": {
-          "desc": "Show overall system status including guard, traps, and cloud connection."
+        "whoami": {
+          "desc": "Show current authenticated user, plan tier, and subscription status."
         },
-        "doctor": {
-          "desc": "Diagnose installation health, connectivity, and configuration issues."
+        "upgrade": {
+          "desc": "View available plan upgrades or open the subscription management portal."
         }
       }
     }

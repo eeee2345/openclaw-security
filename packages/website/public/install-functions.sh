@@ -375,7 +375,7 @@ setup_path() {
 
     local export_line="export PATH=\"${bin_dir}:\$PATH\""
     local profiles_updated=()
-    for profile in "${HOME}/.bashrc" "${HOME}/.zshrc" "${HOME}/.profile"; do
+    for profile in "${HOME}/.zshrc" "${HOME}/.zprofile" "${HOME}/.bashrc" "${HOME}/.bash_profile" "${HOME}/.profile"; do
       if [ -f "$profile" ]; then
         if ! grep -qF "$bin_dir" "$profile" 2>/dev/null; then
           printf '\n# Added by Panguard AI installer\n%s\n' "$export_line" >> "$profile"
@@ -384,9 +384,22 @@ setup_path() {
       fi
     done
 
+    # On macOS with zsh, create .zprofile if no profile was found
+    if [ "${#profiles_updated[@]}" -eq 0 ]; then
+      local default_profile
+      if [ "$(uname -s)" = "Darwin" ]; then
+        default_profile="${HOME}/.zprofile"
+      else
+        default_profile="${HOME}/.bashrc"
+      fi
+      printf '\n# Added by Panguard AI installer\n%s\n' "$export_line" >> "$default_profile"
+      profiles_updated+=("$default_profile")
+      info "Created ${default_profile} with PATH entry"
+    fi
+
     if [ "${#profiles_updated[@]}" -gt 0 ]; then
       success "Added ${bin_dir} to PATH in: ${profiles_updated[*]}"
-      warn "Restart your terminal (or run: source ~/.bashrc / source ~/.zshrc) for PATH changes to take effect."
+      warn "Restart your terminal (or run: source ~/.zprofile / source ~/.bashrc) for PATH changes to take effect."
     else
       warn "Could not update any shell profile. Add the following line manually:"
       echo ""

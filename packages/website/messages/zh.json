@@ -4016,7 +4016,7 @@
     "cli": {
       "backToDocs": "返回技術文件",
       "title": "CLI 參考文件",
-      "subtitle": "Panguard CLI 完整命令參考。涵蓋掃描、即時防護、蜜罐、合規報告和系統工具等 6 大類別共 21 個命令。",
+      "subtitle": "Panguard CLI 完整命令參考。涵蓋掃描、防護、聊天、蜜罐、報告、基礎設施、安全加固、設定和系統工具等 9 大類別共 35+ 個命令。",
       "installTitle": "安裝 CLI：",
       "categories": {
         "scanning": {
@@ -4038,6 +4038,18 @@
         "reporting": {
           "title": "報告",
           "desc": "合規與稽核報告"
+        },
+        "infrastructure": {
+          "title": "基礎設施",
+          "desc": "伺服器、管理器和威脅情報"
+        },
+        "hardening": {
+          "title": "安全加固",
+          "desc": "安全審計和憑證保護"
+        },
+        "config": {
+          "title": "設定",
+          "desc": "LLM 供應商和本地設定"
         },
         "system": {
           "title": "系統",
@@ -4095,40 +4107,146 @@
           "desc": "優雅地停止正在運行的防護守護程序。"
         },
         "guardStatus": {
-          "desc": "顯示目前防護狀態、運行時間和資源使用情況。"
+          "desc": "顯示目前防護狀態、運行時間和資源使用情況。",
+          "flags": {
+            "detailed": "三層健康檢查（程序、儀表板、AI）"
+          }
         },
-        "guardEvents": {
-          "desc": "顯示防護守護程序偵測到的近期安全事件。"
+        "guardConfig": {
+          "desc": "顯示目前 guard 引擎組態和啟用的監控模組。"
         },
-        "chatConnect": {
-          "desc": "連接團隊聊天頻道以接收即時安全通知。支援 Slack、Discord、Telegram 和 LINE。"
+        "guardInstall": {
+          "desc": "將 guard 安裝為系統服務（systemd/launchd），開機時自動啟動。"
         },
-        "chatDisconnect": {
-          "desc": "斷開先前連接的聊天頻道。"
+        "chatSetup": {
+          "desc": "互動式通知頻道設定。支援 Telegram、Slack、Email、Webhook 和 LINE。",
+          "flags": {
+            "channel": "頻道類型：telegram、slack、email、webhook、line",
+            "lang": "提示語言（en、zh-TW）"
+          }
+        },
+        "chatTest": {
+          "desc": "發送測試通知以驗證頻道連線。",
+          "flags": {
+            "channel": "要測試的頻道類型"
+          }
         },
         "chatStatus": {
           "desc": "顯示目前聊天整合狀態和已連接的頻道。"
         },
-        "trapDeploy": {
-          "desc": "部署蜜罐服務以偵測未授權存取。支援 SSH、HTTP、FTP、SMTP、DNS、MySQL、Redis 和 Telnet 協定。"
+        "chatPrefs": {
+          "desc": "查看或更新通知偏好設定（緊急告警、每日/每週摘要）。",
+          "flags": {
+            "critical": "切換緊急告警（on/off）",
+            "daily": "切換每日摘要（on/off）",
+            "weekly": "切換每週摘要（on/off）"
+          }
+        },
+        "trapStart": {
+          "desc": "啟動蜜罐服務以偵測未授權存取。支援 SSH、HTTP、MySQL、Redis、SMB、RDP、FTP 和 Telnet。",
+          "flags": {
+            "services": "以逗號分隔的服務類型（如 ssh,http,mysql）",
+            "noCloud": "停用 Threat Cloud 情報分享"
+          }
+        },
+        "trapStop": {
+          "desc": "停止所有運行中的蜜罐服務。"
         },
         "trapStatus": {
           "desc": "顯示已部署蜜罐服務的狀態和活動。"
         },
-        "trapRemove": {
-          "desc": "移除已部署的蜜罐服務。"
+        "trapIntel": {
+          "desc": "顯示從蜜罐互動中收集的威脅情報。"
         },
         "reportGenerate": {
-          "desc": "產生合規報告。支援 ISO 27001、SOC 2 和 TCSA 框架。"
+          "desc": "產生合規報告。支援 ISO 27001、SOC 2 和 TCSA 框架。",
+          "flags": {
+            "framework": "框架：iso27001、soc2、tw_cyber_security_act",
+            "language": "報告語言（en、zh-TW）",
+            "format": "輸出格式（json、pdf）",
+            "org": "報告中的組織名稱"
+          }
         },
-        "reportList": {
-          "desc": "列出所有先前產生的合規報告。"
+        "reportSummary": {
+          "desc": "顯示目前端點的合規摘要。"
+        },
+        "reportListFrameworks": {
+          "desc": "列出所有支援的合規框架及其控制項數量。"
+        },
+        "serve": {
+          "desc": "啟動統一 HTTP 伺服器閘道。包含 REST API、Swagger UI、管理後台和健康檢查端點。",
+          "flags": {
+            "port": "伺服器連接埠",
+            "host": "綁定主機"
+          }
+        },
+        "managerStart": {
+          "desc": "啟動管理伺服器以進行分散式多 Agent 編排。Agent 連接至此中央伺服器。",
+          "flags": {
+            "port": "管理伺服器連接埠",
+            "apiKey": "管理端點的 API 金鑰"
+          }
+        },
+        "managerAgents": {
+          "desc": "列出所有已連接至管理伺服器的註冊 Agent。"
+        },
+        "threatStart": {
+          "desc": "啟動 Threat Cloud API 伺服器以進行集體威脅情報收集。",
+          "flags": {
+            "port": "API 伺服器連接埠"
+          }
+        },
+        "hardeningAudit": {
+          "desc": "對目前系統執行安全自我審計。檢查防火牆、SSH 組態、開放連接埠、檔案權限等。",
+          "flags": {
+            "json": "以 JSON 格式輸出結果"
+          }
+        },
+        "hardeningMigrate": {
+          "desc": "將明文憑證遷移至加密儲存以提升安全性。",
+          "flags": {
+            "dryRun": "僅報告發現項目，不執行遷移"
+          }
+        },
+        "configLlm": {
+          "desc": "設定威脅分析用的 AI/LLM 供應商。支援 Claude、OpenAI 和 Ollama（本地）。",
+          "flags": {
+            "provider": "供應商：claude、openai、ollama",
+            "model": "模型覆寫（如 claude-haiku-4-5-20251001、gpt-4o、llama3）",
+            "show": "顯示目前 LLM 組態",
+            "clear": "移除已儲存的 LLM 組態"
+          }
         },
         "init": {
-          "desc": "在目前目錄初始化 Panguard 組態。建立 panguard.yaml 組態檔。"
+          "desc": "互動式設定精靈。設定掃描、guard 和通知偏好。",
+          "flags": {
+            "lang": "提示語言（en、zh-TW）",
+            "advanced": "進階使用者完整精靈"
+          }
         },
         "deploy": {
-          "desc": "將 Panguard agent 部署到遠端伺服器或叢集。"
+          "desc": "根據 panguard.yaml 組態部署所有已設定的服務。",
+          "flags": {
+            "dryRun": "顯示部署計劃但不執行"
+          }
+        },
+        "status": {
+          "desc": "顯示整體系統狀態，包括 guard、traps 和雲端連線。",
+          "flags": {
+            "json": "以 JSON 格式輸出"
+          }
+        },
+        "doctor": {
+          "desc": "執行 10 項健康診斷：Node.js、依賴項、組態、網路、guard 等。",
+          "flags": {
+            "json": "以 JSON 格式輸出"
+          }
+        },
+        "demo": {
+          "desc": "執行自動展示流程，展示 scan、guard 和 reporting 功能。",
+          "flags": {
+            "lang": "語言（en、zh-TW）"
+          }
         },
         "login": {
           "desc": "驗證 Panguard Cloud 身份。開啟瀏覽器進行 OAuth 或接受 API 金鑰。"
@@ -4136,11 +4254,11 @@
         "logout": {
           "desc": "登出並清除已儲存的憑證。"
         },
-        "status": {
-          "desc": "顯示整體系統狀態，包括 guard、traps 和雲端連線。"
+        "whoami": {
+          "desc": "顯示目前已認證的使用者、方案等級和訂閱狀態。"
         },
-        "doctor": {
-          "desc": "診斷安裝狀態、連線和組態問題。"
+        "upgrade": {
+          "desc": "查看可用的方案升級或開啟訂閱管理入口。"
         }
       }
     }
