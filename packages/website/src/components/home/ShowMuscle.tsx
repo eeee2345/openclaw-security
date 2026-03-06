@@ -51,7 +51,7 @@ function TeamSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease }}
-        className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary"
+        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary"
       >
         {t('title')}
       </motion.h2>
@@ -61,13 +61,13 @@ function TeamSection() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.4, delay: 0.15, ease }}
-        className="text-lg text-gray-400 mt-4 max-w-2xl"
+        className="text-base sm:text-lg text-gray-400 mt-4 max-w-2xl"
       >
         {t('subtitle')}
       </motion.p>
 
       {/* Role cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-10">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mt-8 sm:mt-10">
         {roles.map((role, i) => {
           const Icon = roleIcons[i];
           return (
@@ -77,12 +77,12 @@ function TeamSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1, ease }}
-              className="bg-surface-1/50 border border-gray-700 hover:border-[#6B8F71]/50 rounded-xl p-4 transition-all duration-200 hover:-translate-y-1"
+              className="bg-surface-1/50 border border-gray-700 hover:border-[#6B8F71]/50 rounded-xl p-3 sm:p-4 transition-all duration-200 hover:-translate-y-1"
             >
-              <Icon className="w-6 h-6 text-panguard-green mb-3" />
-              <p className="text-sm font-semibold text-text-primary">{role.role}</p>
-              <p className="text-xs text-panguard-green mt-1">{role.product}</p>
-              <p className="text-xs text-gray-500 mt-2">{role.desc}</p>
+              <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-panguard-green mb-2 sm:mb-3" />
+              <p className="text-xs sm:text-sm font-semibold text-text-primary">{role.role}</p>
+              <p className="text-[10px] sm:text-xs text-panguard-green mt-1">{role.product}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 mt-1.5 sm:mt-2 leading-relaxed">{role.desc}</p>
             </motion.div>
           );
         })}
@@ -119,7 +119,7 @@ function FunnelSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease }}
-        className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary"
+        className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary"
       >
         {t('title')}
       </motion.h3>
@@ -129,7 +129,7 @@ function FunnelSection() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.4, delay: 0.15, ease }}
-        className="text-lg text-gray-400 mt-4 max-w-2xl space-y-3"
+        className="text-base sm:text-lg text-gray-400 mt-4 max-w-2xl space-y-3"
       >
         <p>{t('desc1')}</p>
         <p>{t('desc2')}</p>
@@ -193,12 +193,12 @@ function ConfidenceSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease }}
-        className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary"
+        className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary"
       >
         {t('title')}
       </motion.h3>
 
-      <div className="mt-8 space-y-4">
+      <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
         {levels.map((level, i) => {
           const colors = confidenceColors[level.color as keyof typeof confidenceColors];
           return (

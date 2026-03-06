@@ -121,4 +121,70 @@ describe('ThreatIntelFeedManager', () => {
     // Double stop should not throw
     manager.stop();
   });
+
+  // -------------------------------------------------------------------------
+  // Feed Staleness Detection / 情報源過期偵測
+  // -------------------------------------------------------------------------
+
+  it('should report all feeds as stale when never updated', () => {
+    const mgr = new ThreatIntelFeedManager({
+      updateIntervalMs: 1000,
+      enabledFeeds: ['threatfox', 'urlhaus'],
+      requestTimeoutMs: 5000,
+    });
+
+    const health = mgr.getFeedHealth();
+    expect(health).toHaveLength(2);
+    expect(health[0].stale).toBe(true);
+    expect(health[0].degraded).toBe(true);
+    expect(health[0].lastSuccessfulUpdate).toBeNull();
+    expect(health[0].confidenceMultiplier).toBe(0.5);
+
+    mgr.stop();
+  });
+
+  it('should report feed as healthy right after successful update', async () => {
+    const mgr = new ThreatIntelFeedManager({
+      updateIntervalMs: 60_000,
+      enabledFeeds: [],
+      requestTimeoutMs: 5000,
+    });
+
+    // Simulate a successful update by calling updateAll (no feeds enabled = instant success)
+    await mgr.updateAll();
+
+    // No feeds to check health for (empty enabledFeeds), so getFeedHealth returns empty
+    expect(mgr.getFeedHealth()).toEqual([]);
+
+    mgr.stop();
+  });
+
+  it('should return correct confidence multiplier: 1.0 for healthy, 0.5 for degraded', () => {
+    const mgr = new ThreatIntelFeedManager({
+      updateIntervalMs: 1000,
+      enabledFeeds: ['threatfox'],
+      requestTimeoutMs: 5000,
+    });
+
+    // Never updated → degraded → 0.5
+    expect(mgr.getConfidenceMultiplier('threatfox')).toBe(0.5);
+
+    mgr.stop();
+  });
+
+  it('should use custom stale/degraded threshold multipliers', () => {
+    const mgr = new ThreatIntelFeedManager({
+      updateIntervalMs: 1000,
+      enabledFeeds: ['urlhaus'],
+      requestTimeoutMs: 5000,
+      staleThresholdMultiplier: 3,
+      degradedThresholdMultiplier: 10,
+    });
+
+    const health = mgr.getFeedHealth();
+    expect(health[0].stale).toBe(true);
+    expect(health[0].degraded).toBe(true);
+
+    mgr.stop();
+  });
 });

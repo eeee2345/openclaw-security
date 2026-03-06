@@ -28,7 +28,7 @@ export default function Traction() {
         {/* Title */}
         <FadeInUp>
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
               {t('traction.title')}
             </h2>
             <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
@@ -38,11 +38,11 @@ export default function Traction() {
         </FadeInUp>
 
         {/* Metrics grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4 max-w-3xl mx-auto">
           {metrics.map((metric, i) => (
             <FadeInUp key={metric.label} delay={i * 0.08}>
-              <div className="bg-surface-1/50 border border-border rounded-2xl p-6 text-center">
-                <div className="text-2xl sm:text-3xl font-extrabold text-text-primary">
+              <div className="bg-surface-1/50 border border-border rounded-2xl p-4 sm:p-6 text-center">
+                <div className="text-xl sm:text-3xl font-extrabold text-text-primary">
                   {typeof metric.value === 'number' ? (
                     <CountUp target={metric.value} suffix={metric.suffix ?? ''} />
                   ) : (

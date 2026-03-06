@@ -112,6 +112,12 @@ export { OpenAIProvider } from './openai-provider.js';
 export { TokenTracker } from './token-tracker.js';
 export { FunnelRouter } from './funnel-router.js';
 export type { FunnelRouterConfig, FunnelLayerStatus } from './funnel-router.js';
+export { SmartRouter } from './smart-router.js';
+export type { SmartRouterConfig, RoutingDecision, EventComplexity } from './smart-router.js';
+export { AIQuotaManager } from './quota-manager.js';
+export type { QuotaTier, QuotaConfig, QuotaCheckResult, QuotaUsage } from './quota-manager.js';
+export { KnowledgeDistiller } from './knowledge-distiller.js';
+export type { DistillationInput, DistilledRule } from './knowledge-distiller.js';
 export { parseAnalysisResponse, parseClassificationResponse } from './response-parser.js';
 
 // Re-export prompts

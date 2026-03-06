@@ -43,6 +43,15 @@ export interface FeedUpdateResult {
   error?: string;
 }
 
+/** Feed health status / 情報源健康狀態 */
+export interface FeedHealth {
+  source: FeedSource;
+  lastSuccessfulUpdate: string | null;
+  stale: boolean;
+  degraded: boolean;
+  confidenceMultiplier: number;
+}
+
 /** Feed manager configuration / 情報管理器設定 */
 export interface FeedManagerConfig {
   /** Update interval in ms (default 1 hour) / 更新間隔 */
@@ -55,6 +64,10 @@ export interface FeedManagerConfig {
   enabledFeeds: FeedSource[];
   /** Request timeout in ms / 請求逾時 */
   requestTimeoutMs: number;
+  /** Stale threshold multiplier (default 2x update interval) */
+  staleThresholdMultiplier: number;
+  /** Degraded threshold multiplier (default 6x update interval) — reduces confidence 50% */
+  degradedThresholdMultiplier: number;
 }
 
 const DEFAULT_CONFIG: FeedManagerConfig = {
@@ -62,6 +75,8 @@ const DEFAULT_CONFIG: FeedManagerConfig = {
   maxIoCs: 50000,
   enabledFeeds: ['threatfox', 'urlhaus', 'feodotracker', 'greynoise'],
   requestTimeoutMs: 30000,
+  staleThresholdMultiplier: 2,
+  degradedThresholdMultiplier: 6,
 };
 
 /**
@@ -74,6 +89,7 @@ export class ThreatIntelFeedManager {
   private ipIndex: Map<string, IoC> = new Map(); // Fast IP lookup
   private updateTimer?: ReturnType<typeof setInterval>;
   private lastUpdate: Map<FeedSource, string> = new Map();
+  private lastSuccessfulUpdate: Map<FeedSource, number> = new Map();
 
   constructor(config: Partial<FeedManagerConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -153,6 +169,45 @@ export class ThreatIntelFeedManager {
   /** Get last update times / 取得最後更新時間 */
   getLastUpdateTimes(): Map<FeedSource, string> {
     return new Map(this.lastUpdate);
+  }
+
+  /**
+   * Get health status for all enabled feeds
+   * 取得所有啟用情報源的健康狀態
+   */
+  getFeedHealth(): FeedHealth[] {
+    return this.config.enabledFeeds.map((source) => this.getFeedHealthForSource(source));
+  }
+
+  /**
+   * Get health status for a single feed source
+   * 取得單一情報源的健康狀態
+   */
+  private getFeedHealthForSource(source: FeedSource): FeedHealth {
+    const now = Date.now();
+    const lastSuccess = this.lastSuccessfulUpdate.get(source);
+    const staleThreshold = this.config.updateIntervalMs * this.config.staleThresholdMultiplier;
+    const degradedThreshold = this.config.updateIntervalMs * this.config.degradedThresholdMultiplier;
+
+    const timeSinceUpdate = lastSuccess ? now - lastSuccess : Infinity;
+    const stale = timeSinceUpdate > staleThreshold;
+    const degraded = timeSinceUpdate > degradedThreshold;
+
+    return {
+      source,
+      lastSuccessfulUpdate: lastSuccess ? new Date(lastSuccess).toISOString() : null,
+      stale,
+      degraded,
+      confidenceMultiplier: degraded ? 0.5 : 1.0,
+    };
+  }
+
+  /**
+   * Get confidence multiplier for a feed source (1.0 = normal, 0.5 = degraded)
+   * 取得情報源的信心倍率
+   */
+  getConfidenceMultiplier(source: FeedSource): number {
+    return this.getFeedHealthForSource(source).confidenceMultiplier;
   }
 
   /**
@@ -250,11 +305,29 @@ export class ThreatIntelFeedManager {
           count = await this.fetchAbuseIPDB();
           break;
       }
-      this.lastUpdate.set(source, new Date().toISOString());
-      return { source, success: true, iocCount: count, durationMs: Date.now() - start };
+      const now = Date.now();
+      this.lastUpdate.set(source, new Date(now).toISOString());
+      this.lastSuccessfulUpdate.set(source, now);
+      return { source, success: true, iocCount: count, durationMs: now - start };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       logger.error(`Feed update failed [${source}]: ${msg}`);
+
+      // Check staleness on failure
+      const health = this.getFeedHealthForSource(source);
+      if (health.degraded) {
+        logger.error(
+          `Feed [${source}] is DEGRADED: no successful update in ` +
+            `${this.config.degradedThresholdMultiplier}x the update interval. ` +
+            `IoC confidence from this source reduced by 50%.`
+        );
+      } else if (health.stale) {
+        logger.warn(
+          `Feed [${source}] is STALE: no successful update in ` +
+            `${this.config.staleThresholdMultiplier}x the update interval.`
+        );
+      }
+
       return { source, success: false, iocCount: 0, durationMs: Date.now() - start, error: msg };
     }
   }

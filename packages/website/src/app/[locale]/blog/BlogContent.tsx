@@ -92,7 +92,7 @@ export default function BlogContent() {
         <FadeInUp>
           <Link
             href={`/blog/${featuredPost.slug}`}
-            className="block bg-surface-2 rounded-2xl border border-border p-8 md:p-10 hover:border-brand-sage/40 transition-all duration-200 card-glow group"
+            className="block bg-surface-2 rounded-2xl border border-border p-5 sm:p-8 md:p-10 hover:border-brand-sage/40 transition-all duration-200 card-glow group"
           >
             <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-10">
               {/* Left: Content */}

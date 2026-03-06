@@ -43,6 +43,7 @@ interface OpenAIClient {
         messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>;
         temperature?: number;
         max_tokens?: number;
+        response_format?: { type: 'text' | 'json_object' };
       }): Promise<OpenAIChatCompletion>;
     };
   };
@@ -178,6 +179,9 @@ export class OpenAIProvider extends LLMProviderBase {
         : 'You are a professional cybersecurity analyst specializing in threat detection, incident analysis, and security report writing.';
 
     try {
+      // Enable JSON mode when the prompt explicitly requests JSON output
+      const wantsJson = /\bjson\b/i.test(prompt) && /\breturn only json\b/i.test(prompt);
+
       const response = await client.chat.completions.create({
         model: this.model,
         messages: [
@@ -186,6 +190,7 @@ export class OpenAIProvider extends LLMProviderBase {
         ],
         temperature: this.config.temperature,
         max_tokens: this.config.maxTokens,
+        ...(wantsJson ? { response_format: { type: 'json_object' as const } } : {}),
       });
 
       // Track token usage from API response

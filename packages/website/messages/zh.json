@@ -736,7 +736,7 @@
     "faqTitle": "常見問題",
     "faqSubtitle": "關於價格與方案，你需要知道的一切。",
     "enterpriseTitle": "需要客製化方案？",
-    "enterpriseDesc": "適用於 500+ 端點、專屬合規需求或客製部署的組織。提供白手套式導入、客製 SLA 及專屬資安工程師。",
+    "enterpriseDesc": "需要超過 25 台機器？聯繫我們取得大量授權報價與客製配置。",
     "guarantee": "所有付費方案提供 14 天免費試用。不需信用卡。"
   },
   "earlyAccess": {
@@ -1520,9 +1520,9 @@
     },
     "enterprise": {
       "title": "需要超過 25 台機器？",
-      "desc": "適用於大規模部署、專屬合規需求或客製整合的組織。白手套式引導、客製 SLA 及專屬資安工程師。",
-      "ctaSales": "聯繫業務",
-      "ctaDemo": "預約 Demo"
+      "desc": "聯繫我們取得大量授權報價、客製配置及延伸端點支援。",
+      "ctaSales": "聯繫我們",
+      "ctaDemo": "免費試用"
     },
     "guarantee": "所有付費方案享 14 天免費試用。不需信用卡。",
     "checkoutUnavailable": "結帳服務暫時無法使用，請稍後再試。",
@@ -1582,16 +1582,16 @@
         "name": "Business 商業版",
         "audience": "組織與企業",
         "machines": "最多 25 台機器",
-        "bestFor": "需要企業級控管、SSO 及專屬支援的組織。",
-        "upgrade": "你超過 25 台機器時 -- 聯繫我們取得 Enterprise 報價。",
+        "bestFor": "需要進階控管、團隊管理及優先支援的組織。",
+        "upgrade": "你超過 25 台機器時 -- 聯繫我們取得大量授權報價。",
         "features": [
           "Pro 所有功能",
-          "客製 AI 模型",
-          "SIEM 整合",
-          "SSO 及 RBAC",
-          "本地部署",
-          "專屬客戶經理",
-          "90 天以上日誌保留"
+          "完整 AI + BYOK（自帶 API 金鑰）",
+          "Webhook / API 存取",
+          "90 天以上日誌保留",
+          "無限通知",
+          "最多 8 個蜜罐實例",
+          "優先電子郵件支援"
         ],
         "cta": "開始 14 天免費試用"
       }
@@ -1622,7 +1622,7 @@
       "SIEM integration": "SIEM 整合",
       "Community support": "社群支援",
       "Priority support": "優先支援",
-      "Dedicated manager": "專屬客戶經理",
+      "Support level": "支援等級",
       "Log retention": "日誌保留",
       "SSO & RBAC": "SSO & RBAC",
       "On-premise option": "本地部署選項",
@@ -1636,6 +1636,10 @@
       "Manual guide": "手動指南",
       "One-click": "一鍵修復",
       "Custom models": "客製模型",
+      "Full + BYOK": "完整 + BYOK",
+      "Forum": "論壇",
+      "Email": "電子郵件",
+      "Priority": "優先",
       "Basic": "基礎",
       "Advanced": "進階",
       "Advanced + API": "進階 + API",
@@ -2447,13 +2451,13 @@
           "desc": "透過我們全面的 REST API 將 Panguard 整合到你現有的工具鏈。原生整合 Slack、Microsoft Teams、PagerDuty、Jira 和主流 SIEM 平台。"
         },
         "item6": {
-          "title": "專屬支援與導入",
-          "desc": "Business 方案客戶享有專屬客戶成功經理、優先支援 SLA，以及指導式導入，確保在你的組織中順利推行。"
+          "title": "優先支援",
+          "desc": "Business 方案客戶享有優先電子郵件支援，回應時間更快，並提供詳細的導入文件以確保順利部署。"
         }
       },
       "pricing": {
         "title": "為你的組織客製定價",
-        "subtitle": "500+ 端點、客製 AI 模型、專屬支援、本地部署選項，以及量身定制的 SLA 保證。",
+        "subtitle": "25 台以上端點大量授權報價。自帶 API 金鑰、延伸日誌保留及 Webhook 整合。",
         "volumeDiscounts": "500 端點起享量價折扣"
       },
       "integrations": {
@@ -2471,7 +2475,7 @@
       },
       "cta": {
         "title": "看 Panguard 實際運作",
-        "desc": "與我們團隊預約個人化示範。"
+        "desc": "立即開始免費試用，探索所有功能。"
       }
     }
   },
@@ -2487,8 +2491,8 @@
       "tryFreeScan": "試試免費掃描"
     },
     "requestDemo": {
-      "title": "預約示範",
-      "desc": "與我們團隊預約 30 分鐘導覽。我們會根據你的基礎設施量身定制示範，展示相關威脅情境，並回答每一個問題。"
+      "title": "聯繫我們",
+      "desc": "對 Panguard 有問題？填寫以下表單，我們會在一個工作日內透過電子郵件回覆。"
     },
     "steps": {
       "title": "你的示範會是什麼樣的",
@@ -2531,11 +2535,11 @@
       "201-500",
       "500+"
     ],
-    "submit": "預約示範",
+    "submit": "送出訊息",
     "submitting": "提交中...",
     "error": "提交失敗，請再試一次。",
-    "successTitle": "示範請求已收到。",
-    "successDesc": "我們的團隊將在一個工作天內聯繫你，安排你的個人化導覽。"
+    "successTitle": "訊息已收到。",
+    "successDesc": "我們會在一個工作日內透過電子郵件回覆。"
   },
   "company": {
     "overline": "關於 Panguard AI",

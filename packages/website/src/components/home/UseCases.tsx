@@ -50,7 +50,7 @@ export default function UseCases() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08, ease }}
-                className="bg-surface-1/50 border border-border rounded-2xl p-6 h-full flex flex-col"
+                className="bg-surface-1/50 border border-border rounded-2xl p-4 sm:p-6 h-full flex flex-col"
               >
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-4">

@@ -32,7 +32,7 @@ export default function ProductTrapContent() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="relative min-h-[50vh] flex items-center px-6 lg:px-[120px] py-28 border-b border-border overflow-hidden">
+      <section className="relative min-h-[50vh] flex items-center px-4 sm:px-6 lg:px-[120px] py-16 sm:py-28 border-b border-border overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-brand-sage/5 rounded-full blur-[200px] pointer-events-none" />
         <div className="max-w-[1200px] mx-auto relative text-center w-full">
           <FadeInUp>

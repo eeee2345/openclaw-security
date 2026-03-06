@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FadeInUp from '@/components/FadeInUp';
 import {
   Monitor,
@@ -9,11 +9,13 @@ import {
   TrendingUp,
   TrendingDown,
   AlertTriangle,
-  CheckCircle,
   Clock,
   ArrowUpRight,
+  Wifi,
+  WifiOff,
 } from 'lucide-react';
 import { SEVERITY_CONFIG, type ThreatSeverity } from '../config/threat-cloud';
+import { fetchAgents, connectManagerSSE, type ManagerAgent } from '@/lib/manager-api';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -241,6 +243,58 @@ function StatusDot({ status }: { status: 'online' | 'offline' | 'warning' }) {
 
 export default function DashboardContent() {
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
+  const [liveAgents, setLiveAgents] = useState<AgentStatus[] | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    // Try to fetch real agent data from manager
+    fetchAgents().then((agents) => {
+      if (cancelled || !agents) return;
+      setLiveAgents(
+        agents.map((a: ManagerAgent) => ({
+          id: a.agentId,
+          hostname: a.hostname,
+          os: a.os,
+          status: a.status,
+          version: a.version,
+          lastSeen: a.lastSeen,
+          threatCount: a.threatCount,
+        }))
+      );
+      setIsConnected(true);
+    });
+
+    // Connect to SSE for real-time updates
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const cleanup = connectManagerSSE((type, _) => {
+      if (type === 'agent_online' || type === 'agent_offline' || type === 'threats_reported') {
+        // Refetch agents on status changes
+        fetchAgents().then((agents) => {
+          if (cancelled || !agents) return;
+          setLiveAgents(
+            agents.map((a: ManagerAgent) => ({
+              id: a.agentId,
+              hostname: a.hostname,
+              os: a.os,
+              status: a.status,
+              version: a.version,
+              lastSeen: a.lastSeen,
+              threatCount: a.threatCount,
+            }))
+          );
+        });
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      cleanup();
+    };
+  }, []);
+
+  const displayedAgents = liveAgents ?? [...AGENT_STATUSES];
 
   return (
     <div className="space-y-6 max-w-[1400px]">
@@ -375,7 +429,7 @@ export default function DashboardContent() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {AGENT_STATUSES.map((agent) => (
+            {displayedAgents.map((agent) => (
               <div
                 key={agent.id}
                 className={`p-3 rounded-lg border transition-colors ${
@@ -418,13 +472,21 @@ export default function DashboardContent() {
         <div className="bg-surface-1 border border-border rounded-xl p-5 card-glow">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-status-safe/10 p-2 rounded-lg">
-                <CheckCircle className="w-5 h-5 text-status-safe" />
+              <div className={`${isConnected ? 'bg-status-safe/10' : 'bg-surface-2'} p-2 rounded-lg`}>
+                {isConnected ? (
+                  <Wifi className="w-5 h-5 text-status-safe" />
+                ) : (
+                  <WifiOff className="w-5 h-5 text-text-muted" />
+                )}
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-text-primary">Threat Cloud Connected</h2>
+                <h2 className="text-sm font-semibold text-text-primary">
+                  {isConnected ? 'Manager Connected' : 'Threat Cloud Connected'}
+                </h2>
                 <p className="text-xs text-text-tertiary mt-0.5">
-                  Receiving real-time threat intelligence from 12,847 global sensors
+                  {isConnected
+                    ? `Live data from ${displayedAgents.length} agents via manager SSE stream`
+                    : 'Receiving real-time threat intelligence from 12,847 global sensors'}
                 </p>
               </div>
             </div>

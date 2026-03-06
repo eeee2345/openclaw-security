@@ -62,22 +62,22 @@ export default function NumbersWall() {
           transition={{ duration: 0.5, ease }}
           className="text-center mb-10"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
             {t('title')}
           </h2>
           <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">{t('subtitle')}</p>
         </motion.div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 max-w-4xl mx-auto">
           {statKeys.map((key, i) => {
             const Icon = statIcons[i];
             const val = statValues[i];
             return (
               <FadeInUp key={key} delay={i * 0.06}>
-                <div className="bg-surface-1/50 border border-border rounded-xl p-4 text-center">
+                <div className="bg-surface-1/50 border border-border rounded-xl p-3 sm:p-4 text-center">
                   <Icon className="w-5 h-5 text-panguard-green mx-auto mb-2" />
-                  <div className="text-2xl font-extrabold text-text-primary">
+                  <div className="text-lg sm:text-2xl font-extrabold text-text-primary">
                     {typeof val === 'number' ? (
                       <CountUp target={val} suffix={val >= 1000 ? '' : ''} />
                     ) : (

@@ -475,6 +475,7 @@ export interface GuardConfig {
     model: string;
     endpoint?: string;
     apiKey?: string;
+    byokApiKey?: string;
   };
   dataDir: string;
   threatCloudEndpoint?: string;

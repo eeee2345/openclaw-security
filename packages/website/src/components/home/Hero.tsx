@@ -24,7 +24,7 @@ function InstallBar() {
     <div className="max-w-md mx-auto">
       <div className="relative flex items-center gap-2 sm:gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-xs sm:text-sm">
         <span className="text-panguard-green select-none shrink-0">{prompt}</span>
-        <code className="text-text-secondary flex-1 select-all truncate min-w-0">{installCmd}</code>
+        <code className="text-text-secondary flex-1 select-all min-w-0 overflow-x-auto whitespace-nowrap scrollbar-none">{installCmd}</code>
         <button
           onClick={handleCopy}
           className="text-text-muted hover:text-text-secondary transition-colors p-1 shrink-0"
@@ -92,7 +92,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-text-primary"
+          className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-text-primary"
         >
           {t('title')}
         </motion.h1>

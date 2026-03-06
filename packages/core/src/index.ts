@@ -146,7 +146,7 @@ export type {
 } from './scoring/index.js';
 
 // AI / LLM interface / AI/LLM 介面
-export { AI_VERSION, createLLM, FunnelRouter } from './ai/index.js';
+export { AI_VERSION, createLLM, FunnelRouter, SmartRouter, AIQuotaManager, KnowledgeDistiller } from './ai/index.js';
 export type {
   LLMConfig,
   LLMProvider,
@@ -154,6 +154,11 @@ export type {
   AnalysisResult,
   ThreatClassification,
   FunnelRouterConfig,
+  SmartRouterConfig,
+  QuotaTier,
+  QuotaConfig,
+  DistillationInput,
+  DistilledRule,
 } from './ai/index.js';
 
 // Adapters / 對接器

@@ -23,7 +23,7 @@ function FlowSteps() {
           transition={{ duration: 0.4, delay: i * 0.2, ease }}
           className="flex items-center gap-4"
         >
-          <div className="bg-panguard-green/10 border border-panguard-green/30 rounded-xl px-6 py-4 text-center">
+          <div className="bg-panguard-green/10 border border-panguard-green/30 rounded-xl px-4 py-3 sm:px-6 sm:py-4 text-center">
             <p className="text-sm font-semibold text-panguard-green">{step.label}</p>
             <p className="text-xs text-gray-500 mt-1">{step.sub}</p>
           </div>
@@ -117,7 +117,7 @@ function OpenSourceSpirit() {
       className="mt-16 max-w-3xl mx-auto"
     >
       <h3 className="text-2xl md:text-3xl font-bold text-text-primary text-center">{t('title')}</h3>
-      <p className="text-xl text-panguard-green font-medium mt-2 text-center">{t('subtitle')}</p>
+      <p className="text-lg sm:text-xl text-panguard-green font-medium mt-2 text-center">{t('subtitle')}</p>
       <p className="text-gray-400 mt-6 leading-relaxed">{t('desc')}</p>
       <p className="text-gray-400 mt-4 leading-relaxed">{t('belief')}</p>
       <p className="text-sm text-gray-500 font-medium mt-6 text-center">{t('proof')}</p>
@@ -150,7 +150,7 @@ export default function ThreatCloudSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5, ease }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary text-center"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary text-center"
         >
           {t('title')}
         </motion.h2>
@@ -163,8 +163,8 @@ export default function ThreatCloudSection() {
           transition={{ duration: 0.5, delay: 0.15, ease }}
           className="max-w-3xl mx-auto mt-6 text-center"
         >
-          <p className="text-lg text-gray-400 leading-relaxed">{t('desc')}</p>
-          <p className="text-lg text-text-primary font-semibold mt-4">{t('descHighlight')}</p>
+          <p className="text-base sm:text-lg text-gray-400 leading-relaxed">{t('desc')}</p>
+          <p className="text-base sm:text-lg text-text-primary font-semibold mt-4">{t('descHighlight')}</p>
         </motion.div>
 
         {/* 3-step flow */}

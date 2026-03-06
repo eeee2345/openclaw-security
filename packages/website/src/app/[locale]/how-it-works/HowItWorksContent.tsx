@@ -86,7 +86,7 @@ export default function HowItWorksContent() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="relative min-h-[60vh] flex items-center px-6 lg:px-[120px] py-28 border-b border-border overflow-hidden">
+      <section className="relative min-h-[60vh] flex items-center px-4 sm:px-6 lg:px-[120px] py-16 sm:py-28 border-b border-border overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-sage/5 rounded-full blur-[200px] pointer-events-none" />
         <div className="max-w-[1200px] mx-auto relative text-center w-full">
           <FadeInUp>
@@ -368,7 +368,7 @@ export default function HowItWorksContent() {
               {t('cta.title')}
             </h2>
             <p className="text-text-secondary mt-4 mb-8">{t('cta.desc')}</p>
-            <code className="block text-sm bg-black/50 text-brand-sage px-6 py-3 rounded-lg mb-8 inline-block font-mono">
+            <code className="block text-sm bg-black/50 text-brand-sage px-4 sm:px-6 py-3 rounded-lg mb-8 inline-block font-mono">
               $ curl -fsSL https://get.panguard.ai | bash
             </code>
           </FadeInUp>

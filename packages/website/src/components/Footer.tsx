@@ -72,8 +72,8 @@ export default function Footer() {
   return (
     <footer className="bg-[#050505] border-t border-border py-12 sm:py-16 px-4 sm:px-6 lg:px-[120px]">
       <div className="max-w-[1200px] mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-12">
+          <div className="col-span-2 lg:col-span-1">
             <FooterLogo />
             <p className="text-sm text-text-tertiary mt-3 leading-relaxed">{tc('footerTagline')}</p>
             <div className="flex gap-3 mt-4">

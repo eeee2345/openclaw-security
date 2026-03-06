@@ -111,7 +111,7 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
         community: false,
         solo: true,
         pro: true,
-        business: 'Custom models',
+        business: 'Full + BYOK',
       },
       {
         feature: 'Panguard Chat',
@@ -152,11 +152,11 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
       { feature: 'Community support', community: true, solo: true, pro: true, business: true },
       { feature: 'Priority support', community: false, solo: false, pro: true, business: true },
       {
-        feature: 'Dedicated manager',
-        community: false,
-        solo: false,
-        pro: false,
-        business: 'Roadmap',
+        feature: 'Support level',
+        community: 'Forum',
+        solo: 'Email',
+        pro: 'Priority',
+        business: 'Priority',
       },
       {
         feature: 'Log retention',
@@ -303,7 +303,7 @@ export default function PricingCards() {
           return (
             <FadeInUp key={key} delay={i * 0.05}>
               <div
-                className={`relative bg-surface-1 rounded-2xl p-7 border h-full flex flex-col ${
+                className={`relative bg-surface-1 rounded-2xl p-5 sm:p-7 border h-full flex flex-col ${
                   meta.popular ? 'border-brand-sage' : 'border-border'
                 }`}
               >

@@ -37,7 +37,7 @@ export default function ThreeRoads() {
           transition={{ duration: 0.5, ease }}
           className="text-center mb-10"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-text-primary">{t('title')}</h2>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-text-primary">{t('title')}</h2>
           <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">{t('subtitle')}</p>
         </motion.div>
 
@@ -100,23 +100,23 @@ export default function ThreeRoads() {
               className="bg-surface-1/50 border border-border rounded-xl p-4"
             >
               <p className="text-xs text-gray-500 font-medium mb-2">{t(`rows.${key}.label`)}</p>
-              <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-sm">
-                <div className="text-center">
-                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">{t('columns.diy')}</p>
+              <div className="grid grid-cols-3 gap-1 sm:gap-2 text-xs sm:text-sm">
+                <div className="text-center px-1">
+                  <p className="text-[10px] sm:text-xs text-gray-600 mb-1">{t('columns.diy')}</p>
                   <p className="text-gray-500">
                     <CellValue value={t(`rows.${key}.diy`)} />
                   </p>
                 </div>
-                <div className="text-center">
-                  <p className="text-[11px] sm:text-xs text-gray-600 mb-1">
+                <div className="text-center px-1">
+                  <p className="text-[10px] sm:text-xs text-gray-600 mb-1">
                     {t('columns.consultant')}
                   </p>
                   <p className="text-gray-500">
                     <CellValue value={t(`rows.${key}.consultant`)} />
                   </p>
                 </div>
-                <div className="text-center bg-[#6B8F71]/10 rounded-lg py-1">
-                  <p className="text-[11px] sm:text-xs text-panguard-green mb-1">
+                <div className="text-center bg-[#6B8F71]/10 rounded-lg py-1 px-1">
+                  <p className="text-[10px] sm:text-xs text-panguard-green mb-1">
                     {t('columns.panguard')}
                   </p>
                   <p className="text-text-primary font-medium">

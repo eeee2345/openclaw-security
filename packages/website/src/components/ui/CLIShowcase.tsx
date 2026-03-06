@@ -123,7 +123,7 @@ export default function CLIShowcase() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative px-5 py-2.5 text-xs font-mono font-medium transition-colors shrink-0 ${
+              className={`relative px-3 sm:px-5 py-2.5 text-xs font-mono font-medium transition-colors shrink-0 ${
                 isActive
                   ? 'text-brand-sage bg-brand-sage/10'
                   : 'text-text-muted hover:text-text-secondary'

@@ -25,7 +25,10 @@ import {
   ThreatIntelFeedManager,
   YaraScanner,
   setFeedManager,
+  SmartRouter,
+  KnowledgeDistiller,
 } from '@panguard-ai/core';
+import type { QuotaTier } from '@panguard-ai/core';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type {
   GuardConfig,
@@ -231,6 +234,10 @@ export class GuardEngine {
   // YARA scanner / YARA 掃描器
   private readonly yaraScanner: YaraScanner;
 
+  // Smart AI routing / 智慧 AI 路由
+  private readonly smartRouter: SmartRouter | null = null;
+  private readonly knowledgeDistiller: KnowledgeDistiller | null = null;
+
   // State / 狀態
   private running = false;
   private startTime = 0;
@@ -302,6 +309,33 @@ export class GuardEngine {
 
     const analyzeLLM = hasFeature(license, 'ai_analysis') ? llm : null;
     this.analyzeAgent = new AnalyzeAgent(analyzeLLM);
+
+    // Initialize SmartRouter and KnowledgeDistiller for cost-optimized AI routing
+    // 初始化 SmartRouter 和 KnowledgeDistiller 以實現成本最佳化 AI 路由
+    if (analyzeLLM) {
+      const tierToQuota: Record<string, QuotaTier> = {
+        free: 'free',
+        pro: 'pro',
+        enterprise: 'business',
+      };
+      const quotaTier = tierToQuota[license.tier] ?? 'free';
+      const hasBYOK = !!config.ai?.byokApiKey;
+
+      this.smartRouter = new SmartRouter({
+        tier: quotaTier,
+        quotaOverride: hasBYOK ? { isBYOK: true } : undefined,
+      });
+
+      this.knowledgeDistiller = new KnowledgeDistiller({
+        onRuleDistilled: (rule) => {
+          logger.info(
+            `Knowledge distilled: ${rule.ruleId} (confidence: ${rule.aiConfidence}) / ` +
+              `知識蒸餾: ${rule.ruleId} (信心: ${rule.aiConfidence})`
+          );
+        },
+      });
+    }
+
     this.respondAgent = new RespondAgent(config.actionPolicy, this.mode);
     this.reportAgent = new ReportAgent(join(config.dataDir, 'events.jsonl'), this.mode);
 
@@ -691,6 +725,32 @@ export class GuardEngine {
       }
 
       this.threatsDetected++;
+
+      // SmartRouter: assess complexity and skip AI for high-confidence rule matches
+      // SmartRouter: 評估複雜度，對高信心規則匹配跳過 AI
+      if (this.smartRouter) {
+        const maxRuleConfidence = Math.max(
+          ...detection.ruleMatches.map((m) => {
+            const severityToConfidence: Record<string, number> = {
+              critical: 95,
+              high: 85,
+              medium: 70,
+              low: 50,
+              info: 30,
+            };
+            return severityToConfidence[m.severity] ?? 60;
+          })
+        );
+        const hasChain = !!detection.attackChain;
+        const complexity = this.smartRouter.assessComplexity(maxRuleConfidence, hasChain);
+
+        if (complexity === 'skip') {
+          logger.info(
+            `SmartRouter: skipping AI for high-confidence rule match (${maxRuleConfidence}%) / ` +
+              `SmartRouter: 高信心規則匹配跳過 AI (${maxRuleConfidence}%)`
+          );
+        }
+      }
 
       // Stage 2: Analyze (with Dynamic Reasoning investigation)
       // 階段 2: 分析（使用動態推理調查）

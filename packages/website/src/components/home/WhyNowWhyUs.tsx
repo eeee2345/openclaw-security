@@ -15,7 +15,7 @@ function Card({ card, delay }: { card: CardData; delay: number }) {
   const Icon = card.icon;
   return (
     <FadeInUp delay={delay}>
-      <div className="bg-surface-1/50 border border-border rounded-2xl p-6 h-full">
+      <div className="bg-surface-1/50 border border-border rounded-2xl p-4 sm:p-6 h-full">
         <Icon className="w-6 h-6 text-panguard-green mb-3" />
         <h3 className="text-lg font-bold text-text-primary mb-2">{card.title}</h3>
         <p className="text-sm text-gray-400 leading-relaxed">{card.description}</p>
@@ -75,10 +75,10 @@ export default function WhyNowWhyUs() {
         <div className="mb-16">
           <FadeInUp>
             <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
                 {t('whyNow.title')}
               </h2>
-              <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
                 {t('whyNow.subtitle')}
               </p>
             </div>
@@ -95,10 +95,10 @@ export default function WhyNowWhyUs() {
         <div>
           <FadeInUp>
             <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
                 {t('whyUs.title')}
               </h2>
-              <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
                 {t('whyUs.subtitle')}
               </p>
             </div>

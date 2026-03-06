@@ -53,9 +53,9 @@ export default function FinalCTA() {
           transition={{ duration: 0.4, delay: 0.3, ease }}
           className="mt-8"
         >
-          <div className="relative flex items-center gap-3 bg-[#0a0a0a] border border-border rounded-xl px-5 py-3.5 font-mono text-sm max-w-md mx-auto">
-            <span className="text-panguard-green select-none">{prompt}</span>
-            <code className="text-text-secondary flex-1 select-all truncate text-left">
+          <div className="relative flex items-center gap-2 sm:gap-3 bg-[#0a0a0a] border border-border rounded-xl px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-xs sm:text-sm max-w-md mx-auto">
+            <span className="text-panguard-green select-none shrink-0">{prompt}</span>
+            <code className="text-text-secondary flex-1 select-all min-w-0 overflow-x-auto whitespace-nowrap scrollbar-none text-left">
               {installCmd}
             </code>
             <button
@@ -87,19 +87,19 @@ export default function FinalCTA() {
         >
           <Link
             href="/docs/getting-started"
-            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-8 py-3.5 hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
+            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
           >
             {t('btnScan')} <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/demo"
-            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
+            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base transition-all duration-200"
           >
             {t('btnDemo')}
           </Link>
           <Link
             href="/contact"
-            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-8 py-3.5 transition-all duration-200"
+            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base transition-all duration-200"
           >
             {t('btnSales')}
           </Link>
