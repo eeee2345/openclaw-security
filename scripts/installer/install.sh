@@ -359,22 +359,34 @@ setup_path() {
 
   chmod +x "$bin_source"
 
-  info "Creating symlink at ${symlink_target}..."
-
+  # Prefer user-local bin dir (no sudo required) over system-wide symlink
   local symlink_created=false
-  if ln -sf "$bin_source" "$symlink_target" 2>/dev/null; then
-    success "Symlink created at ${symlink_target}"
-    symlink_created=true
-  else
-    warn "Permission denied. Requesting sudo to create symlink..."
-    if sudo ln -sf "$bin_source" "$symlink_target" 2>/dev/null; then
-      success "Symlink created at ${symlink_target} (with sudo)"
+
+  # First try user-local ~/.local/bin (no sudo)
+  if mkdir -p "$bin_dir" 2>/dev/null; then
+    if ln -sf "$bin_source" "${bin_dir}/panguard" 2>/dev/null; then
+      success "Installed to ${bin_dir}/panguard (no sudo required)"
       symlink_created=true
     fi
   fi
 
+  # If user-local failed, try system-wide symlink
   if [ "$symlink_created" = "false" ]; then
-    warn "Could not create symlink at ${symlink_target}. Adding ${bin_dir} to shell profiles..."
+    info "Creating symlink at ${symlink_target}..."
+    if ln -sf "$bin_source" "$symlink_target" 2>/dev/null; then
+      success "Symlink created at ${symlink_target}"
+      symlink_created=true
+    else
+      warn "Permission denied. Requesting sudo to create symlink..."
+      if sudo ln -sf "$bin_source" "$symlink_target" 2>/dev/null; then
+        success "Symlink created at ${symlink_target} (with sudo)"
+        symlink_created=true
+      fi
+    fi
+  fi
+
+  if [ "$symlink_created" = "false" ]; then
+    warn "Could not create symlink. Adding ${bin_dir} to shell profiles..."
     mkdir -p "$bin_dir"
     ln -sf "$bin_source" "${bin_dir}/panguard" 2>/dev/null || \
       cp "$bin_source" "${bin_dir}/panguard" 2>/dev/null || \
