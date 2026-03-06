@@ -478,6 +478,20 @@ print_quickstart() {
   echo -e "  ${DIM}Report issues: ${REPO_URL}/issues${NC}"
   echo ""
   success "Installation complete!"
+
+  # Ask to run first scan (only when /dev/tty is available — works with curl|bash)
+  if [ -e /dev/tty ]; then
+    echo ""
+    printf "  ${BOLD}Run your first security scan now?${NC} [Y/n] "
+    read -r answer </dev/tty 2>/dev/null || answer="n"
+    case "$answer" in
+      [nN]*) info "Skipped. Run 'panguard scan' whenever you're ready." ;;
+      *)
+        echo ""
+        panguard scan --quick 2>&1 || warn "Scan failed. Try running 'panguard scan' manually."
+        ;;
+    esac
+  fi
 }
 
 # ── Main ─────────────────────────────────────────────────────────
