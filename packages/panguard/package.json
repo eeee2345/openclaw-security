@@ -34,6 +34,7 @@
     "@panguard-ai/panguard-auth": "workspace:*",
     "@panguard-ai/manager": "workspace:*",
     "@panguard-ai/security-hardening": "workspace:*",
+    "@panguard-ai/panguard-skill-auditor": "workspace:*",
     "commander": "^12.0.0"
   },
   "devDependencies": {

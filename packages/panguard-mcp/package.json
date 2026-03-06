@@ -24,7 +24,8 @@
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@panguard-ai/core": "workspace:*",
     "@panguard-ai/panguard-scan": "workspace:*",
-    "@panguard-ai/panguard-guard": "workspace:*"
+    "@panguard-ai/panguard-guard": "workspace:*",
+    "@panguard-ai/panguard-skill-auditor": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

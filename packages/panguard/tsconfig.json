@@ -15,7 +15,8 @@
     { "path": "../threat-cloud" },
     { "path": "../panguard-auth" },
     { "path": "../panguard-manager" },
-    { "path": "../../security-hardening" }
+    { "path": "../../security-hardening" },
+    { "path": "../panguard-skill-auditor" }
   ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -230,6 +230,21 @@ const TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'panguard_audit_skill',
+    description:
+      'Audit an OpenClaw/AgentSkills SKILL.md directory for security issues. Checks manifest validity, prompt injection, tool poisoning, code vulnerabilities, dependencies, and permissions. Returns risk score (0-100) and detailed findings. / 審計 OpenClaw 技能目錄的安全問題。檢查清單有效性、提示注入、工具投毒、程式碼漏洞、依賴和權限。',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        path: {
+          type: 'string',
+          description: 'Path to skill directory containing SKILL.md',
+        },
+      },
+      required: ['path'],
+    },
+  },
+  {
     name: 'panguard_deploy',
     description:
       'Deploy Panguard services: scan for vulnerabilities, start guard monitoring, and generate initial report. This is the one-click setup for protection. / 部署 Panguard 服務：掃描漏洞、啟動監控並生成初始報告。一鍵設定防護。',
@@ -297,6 +312,14 @@ export async function dispatchTool(name: string, args: Record<string, unknown>) 
       return executeInit(args);
     case 'panguard_deploy':
       return executeDeploy(args);
+    case 'panguard_audit_skill': {
+      const { auditSkill } = await import('@panguard-ai/panguard-skill-auditor');
+      const skillPath = (args['path'] as string) ?? '.';
+      const report = await auditSkill(skillPath);
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(report, null, 2) }],
+      };
+    }
     default:
       return {
         content: [{ type: 'text' as const, text: `Unknown tool: ${name}` }],

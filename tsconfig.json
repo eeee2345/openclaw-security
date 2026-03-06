@@ -33,7 +33,8 @@
       "@panguard-ai/panguard": ["./packages/panguard/src"],
       "@panguard-ai/panguard-auth": ["./packages/panguard-auth/src"],
       "@panguard-ai/manager": ["./packages/panguard-manager/src"],
-      "@panguard-ai/panguard-mcp": ["./packages/panguard-mcp/src"]
+      "@panguard-ai/panguard-mcp": ["./packages/panguard-mcp/src"],
+      "@panguard-ai/panguard-skill-auditor": ["./packages/panguard-skill-auditor/src"]
     }
   },
   "references": [
@@ -48,7 +49,8 @@
     { "path": "./packages/panguard-auth" },
     { "path": "./packages/panguard-manager" },
     { "path": "./packages/panguard-mcp" },
-    { "path": "./security-hardening" }
+    { "path": "./security-hardening" },
+    { "path": "./packages/panguard-skill-auditor" }
   ],
   "include": [],
   "exclude": ["node_modules", "dist"]

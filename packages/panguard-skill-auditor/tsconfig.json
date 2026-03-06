@@ -7,10 +7,8 @@
   },
   "references": [
     { "path": "../core" },
-    { "path": "../panguard-scan" },
-    { "path": "../panguard-guard" },
-    { "path": "../panguard-skill-auditor" }
+    { "path": "../panguard-scan" }
   ],
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "exclude": ["node_modules", "dist"]
 }

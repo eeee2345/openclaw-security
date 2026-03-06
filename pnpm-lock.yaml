@@ -103,6 +103,9 @@ importers:
       '@panguard-ai/panguard-scan':
         specifier: workspace:*
         version: link:../panguard-scan
+      '@panguard-ai/panguard-skill-auditor':
+        specifier: workspace:*
+        version: link:../panguard-skill-auditor
       '@panguard-ai/panguard-trap':
         specifier: workspace:*
         version: link:../panguard-trap
@@ -216,6 +219,9 @@ importers:
       '@panguard-ai/panguard-scan':
         specifier: workspace:*
         version: link:../panguard-scan
+      '@panguard-ai/panguard-skill-auditor':
+        specifier: workspace:*
+        version: link:../panguard-skill-auditor
     devDependencies:
       '@types/node':
         specifier: ^22.14.0
@@ -267,6 +273,31 @@ importers:
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
+
+  packages/panguard-skill-auditor:
+    dependencies:
+      '@panguard-ai/core':
+        specifier: workspace:*
+        version: link:../core
+      '@panguard-ai/panguard-scan':
+        specifier: workspace:*
+        version: link:../panguard-scan
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.1
+    devDependencies:
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
+      '@types/node':
+        specifier: ^22.14.0
+        version: 22.19.13
+      typescript:
+        specifier: ~5.7.3
+        version: 5.7.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.4(@types/node@22.19.13)(jiti@1.21.7)(jsdom@28.1.0)(tsx@4.21.0)
 
   packages/panguard-trap:
     dependencies:
