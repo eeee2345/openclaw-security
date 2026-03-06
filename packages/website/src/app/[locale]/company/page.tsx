@@ -1,26 +1,7 @@
-import { getTranslations } from 'next-intl/server';
-import { buildAlternates } from '@/lib/seo';
-import NavBar from '@/components/NavBar';
-import Footer from '@/components/Footer';
-import CompanyContent from './CompanyContent';
+import { redirect } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
-  const t = await getTranslations({ locale: params.locale, namespace: 'metadata' });
-  return {
-    title: t('company.title'),
-    description: t('company.description'),
-    alternates: buildAlternates('/company', params.locale),
-  };
-}
-
-export default function CompanyPage() {
-  return (
-    <>
-      <NavBar />
-      <main id="main-content">
-        <CompanyContent />
-      </main>
-      <Footer />
-    </>
-  );
+// Company page consolidated into About page to avoid content duplication.
+// Brand story, values, and team content all live on /about now.
+export default function CompanyPage({ params }: { params: { locale: string } }) {
+  redirect(`/${params.locale}/about`);
 }

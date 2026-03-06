@@ -59,7 +59,11 @@
       "compliance": "合規管理",
       "complianceDesc": "ISO 27001、SOC 2、TCSA",
       "integrations": "整合串接",
-      "integrationsDesc": "連接你的工具"
+      "integrationsDesc": "連接你的工具",
+      "manager": "Panguard Manager",
+      "managerDesc": "多端點管理",
+      "mcp": "MCP Server",
+      "mcpDesc": "AI 助手整合"
     },
     "solutionLinks": {
       "developers": "開發者方案",
@@ -1199,6 +1203,11 @@
       "desc": "我們正在尋找相信資安應該人人可及的人。",
       "primary": "查看開放職位",
       "secondary": "聯繫我們"
+    },
+    "investors": {
+      "title": "投資人與顧問",
+      "desc": "我們正在建立投資人和顧問網路，目前與資安專家、AI 研究者和企業安全領導者洽談中。",
+      "cta": "有興趣擔任顧問？"
     }
   },
   "openSource": {
@@ -1472,6 +1481,14 @@
     "billing": {
       "title": "帳單管理",
       "description": "管理你的 Panguard AI 訂閱、付款方式和帳單紀錄。"
+    },
+    "productMcp": {
+      "title": "Panguard MCP Server",
+      "description": "從 Claude Desktop、Cursor 或任何 MCP 客戶端控制 Panguard 安全工具。11 個工具透過自然語言使用。"
+    },
+    "productManager": {
+      "title": "Panguard Manager",
+      "description": "分散式 Guard 代理的中央管控。從單一儀表板管理 25 台以上端點。"
     }
   },
   "pricingPage": {
@@ -2289,6 +2306,96 @@
         "title": "所有框架，一鍵搞定。",
         "desc": "選擇你需要的合規框架，Panguard Report 自動生成對應每項控制措施的完整報告。覆蓋率百分比清楚顯示你目前的狀況。差距會以具體的修正建議標示出來。",
         "libraryTitle": "報告庫"
+      }
+    },
+    "mcp": {
+      "overline": "Panguard MCP Server",
+      "title": "從你的 AI 助手",
+      "titleHighlight": "控制安全工具。",
+      "subtitle": "讓 Claude 幫你掃描伺服器、封鎖 IP、產生合規報告 -- 全部透過自然語言對話完成。",
+      "howItWorks": {
+        "overline": "零設定",
+        "title": "加一段 JSON 設定，完成。",
+        "desc": "Panguard MCP Server 使用 stdio 傳輸進行安全的本機通訊。將設定加入你的 AI 客戶端，所有 Panguard 工具立即可用。不需要 API 金鑰、不需要雲端設定、不需要 port forwarding。",
+        "configNote": "支援 Claude Desktop、Cursor 及任何 MCP 相容客戶端。需先在本機安裝 Panguard。"
+      },
+      "tools": {
+        "overline": "MCP 工具",
+        "title": "11 個安全工具，隨時待命。"
+      },
+      "clients": {
+        "overline": "相容性",
+        "title": "支援所有 MCP 客戶端。"
+      },
+      "cta": {
+        "title": "立即試用。",
+        "desc": "安裝 Panguard，加入 MCP 設定，請你的 AI 執行安全掃描。",
+        "cta1": "安裝 Panguard",
+        "cta2": "查看所有產品"
+      }
+    },
+    "manager": {
+      "overline": "Panguard Manager",
+      "title": "一個儀表板管理",
+      "titleHighlight": "所有端點。",
+      "subtitle": "分散式 Guard 代理的中央管控。從單一介面管理 25 台以上伺服器。",
+      "architecture": {
+        "overline": "架構",
+        "title": "星型拓撲安全管理。",
+        "desc": "Panguard Manager 作為中央節點，協調基礎設施中所有 Guard 代理。每個端點獨立運行自己的 Guard 代理，Manager 負責匯總威脅、分發策略並提供統一儀表板。即使 Manager 離線，各代理仍會持續保護其端點。"
+      },
+      "features": {
+        "overline": "功能",
+        "title": "管理叢集安全所需的一切。",
+        "subtitle": "專為管理多台伺服器、容器和雲端實例的團隊打造。"
+      },
+      "featuresList": {
+        "item1": {
+          "title": "代理註冊表",
+          "desc": "自動發現並註冊 Guard 代理。即時追蹤心跳、健康狀態和版本。"
+        },
+        "item2": {
+          "title": "威脅匯整",
+          "desc": "跨所有代理關聯威脅。發現橫跨多台伺服器的攻擊模式 -- 橫向移動、協同掃描、分散式暴力破解。"
+        },
+        "item3": {
+          "title": "策略分發",
+          "desc": "從一處推送安全策略。同時更新整個叢集的 Sigma 規則、YARA 簽章和回應設定。"
+        },
+        "item4": {
+          "title": "統一儀表板",
+          "desc": "即時 WebSocket 儀表板，在單一畫面顯示所有端點、活躍威脅、防護狀態和代理健康度。"
+        },
+        "item5": {
+          "title": "跨端點關聯",
+          "desc": "偵測橫跨多台機器的多階段攻擊。Manager 串連個別代理無法獨自發現的線索。"
+        },
+        "item6": {
+          "title": "集中式日誌",
+          "desc": "將所有端點的安全事件匯整到一個可搜尋的日誌。依嚴重性、來源、時間範圍或威脅類型篩選。"
+        }
+      },
+      "useCases": {
+        "overline": "使用場景",
+        "title": "專為多伺服器環境打造。",
+        "item1": {
+          "title": "DevOps 團隊",
+          "desc": "管理 staging、production 和 CI/CD runner 的安全。透過 SSH 或 Ansible 部署 Guard 代理，從 Manager 監控一切。"
+        },
+        "item2": {
+          "title": "託管服務商 (MSP)",
+          "desc": "從單一儀表板監控客戶基礎設施。隔離租戶、自訂每個客戶的策略、產生個別客戶的合規報告。"
+        },
+        "item3": {
+          "title": "多區域部署",
+          "desc": "協調跨資料中心和雲端區域的安全。Manager 在全域匯整威脅情報，代理在本地執行策略。"
+        }
+      },
+      "cta": {
+        "title": "擴展你的安全。",
+        "desc": "從一台伺服器開始。透過 Business 方案使用 Manager 擴展到 25 台以上。",
+        "cta1": "開始使用",
+        "cta2": "查看方案價格"
       }
     }
   },

@@ -115,7 +115,7 @@ const productConfigs = [
       'Real-time guard status and alert monitoring',
       'Zero configuration -- auto-discovers Panguard installation',
     ],
-    href: '/docs/cli',
+    href: '/product/mcp',
   },
   {
     key: 'skillAuditor' as const,

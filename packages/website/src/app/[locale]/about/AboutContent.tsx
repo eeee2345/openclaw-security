@@ -12,6 +12,7 @@ import {
   NetworkIcon,
   ShieldIcon,
   GlobalIcon,
+  TeamIcon,
 } from '@/components/ui/BrandIcons';
 
 /* ─── Belief Icons ─── */
@@ -143,8 +144,25 @@ export default function AboutContent() {
         </div>
       </SectionWrapper>
 
-      {/* ── CTA ── */}
+      {/* ── Investors & Advisors ── */}
       <SectionWrapper>
+        <FadeInUp>
+          <div className="max-w-xl mx-auto bg-surface-1 rounded-xl border border-border p-8 text-center">
+            <TeamIcon className="w-8 h-8 text-brand-sage mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-text-primary mb-2">{t('investors.title')}</h2>
+            <p className="text-text-secondary text-sm leading-relaxed">{t('investors.desc')}</p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-sage mt-4 hover:gap-3 transition-all duration-200"
+            >
+              {t('investors.cta')} <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </FadeInUp>
+      </SectionWrapper>
+
+      {/* ── CTA ── */}
+      <SectionWrapper dark>
         <div className="text-center max-w-2xl mx-auto">
           <FadeInUp>
             <h2 className="text-[clamp(28px,3.5vw,40px)] font-bold text-text-primary">
