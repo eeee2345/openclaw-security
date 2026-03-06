@@ -515,16 +515,16 @@ print_quickstart() {
   echo ""
   success "Installation complete!"
 
-  # Ask to run first scan (only when /dev/tty is available — works with curl|bash)
+  # Launch interactive mode (only when /dev/tty is available — works with curl|bash)
   if [ -e /dev/tty ]; then
     echo ""
-    printf "  ${BOLD}Run your first security scan now?${NC} [Y/n] "
+    printf "  ${BOLD}Launch Panguard AI now?${NC} [Y/n] "
     read -r answer </dev/tty 2>/dev/null || answer="n"
     case "$answer" in
-      [nN]*) info "Skipped. Run 'panguard scan' whenever you're ready." ;;
+      [nN]*) info "Run 'panguard' to start the interactive dashboard." ;;
       *)
         echo ""
-        panguard scan --quick 2>&1 || warn "Scan failed. Try running 'panguard scan' manually."
+        exec panguard </dev/tty
         ;;
     esac
   fi

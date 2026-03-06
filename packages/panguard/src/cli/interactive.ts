@@ -681,20 +681,39 @@ async function actionScan(): Promise<void> {
     console.log(`  ${c.safe(noIssues)}`);
   }
 
-  nextSteps(
-    currentLang === 'zh-TW'
-      ? [
-          { cmd: 'guard start', desc: '\u555F\u52D5\u5373\u6642\u9632\u8B77' },
-          { cmd: 'scan --full', desc: '\u57F7\u884C\u5B8C\u6574\u6383\u63CF' },
-          { cmd: 'report', desc: '\u7522\u751F\u5408\u898F\u5831\u544A' },
-        ]
-      : [
-          { cmd: 'guard start', desc: 'Enable real-time protection' },
-          { cmd: 'scan --full', desc: 'Run a comprehensive scan' },
-          { cmd: 'report', desc: 'Generate compliance report' },
-        ],
-    currentLang
-  );
+  // Agent auto-suggestion: offer to activate Guard if not running
+  const guardRunning = isGuardRunning().running;
+  if (!guardRunning) {
+    console.log('');
+    const agentMsg = currentLang === 'zh-TW'
+      ? `${c.sage('\u25C6')} \u5373\u6642\u9632\u8B77\u5C1A\u672A\u555F\u52D5\u3002\u8981\u73FE\u5728\u555F\u7528\u55CE\uFF1F`
+      : `${c.sage('\u25C6')} Real-time protection is not active. Enable now?`;
+    console.log(`  ${agentMsg}`);
+
+    const guardItems: MenuItem[] = [
+      { key: '1', label: currentLang === 'zh-TW' ? '\u662F\uFF0C\u555F\u52D5 Guard \u9632\u8B77' : 'Yes, start Guard protection' },
+      { key: '2', label: currentLang === 'zh-TW' ? '\u4E0D\u7528\uFF0C\u56DE\u4E3B\u9078\u55AE' : 'No, return to main menu' },
+    ];
+    renderCompactMenu('', guardItems);
+    const guardChoice = await waitForCompactChoice(guardItems, currentLang);
+    if (guardChoice?.key === '1') {
+      await actionGuard();
+      return;
+    }
+  } else {
+    nextSteps(
+      currentLang === 'zh-TW'
+        ? [
+            { cmd: 'scan --full', desc: '\u57F7\u884C\u5B8C\u6574\u6383\u63CF' },
+            { cmd: 'report', desc: '\u7522\u751F\u5408\u898F\u5831\u544A' },
+          ]
+        : [
+            { cmd: 'scan --full', desc: 'Run a comprehensive scan' },
+            { cmd: 'report', desc: 'Generate compliance report' },
+          ],
+      currentLang
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------
