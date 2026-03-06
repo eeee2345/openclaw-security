@@ -5,6 +5,7 @@
  * @module @panguard-ai/panguard-scan/scanners/remote
  */
 
+import { lookup } from 'node:dns/promises';
 import type { Language } from '@panguard-ai/core';
 import type { Finding, ScanResult } from '../types.js';
 import { SEVERITY_ORDER } from '../types.js';
@@ -19,11 +20,43 @@ export interface RemoteScanConfig {
   timeout?: number;
 }
 
+/** Check if an IP address is private/reserved (SSRF protection). */
+function isPrivateIP(ip: string): boolean {
+  // IPv4 private/reserved ranges
+  const parts = ip.split('.').map(Number);
+  if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
+    const [a, b] = parts as [number, number, number, number];
+    if (a === 10) return true;                          // 10.0.0.0/8
+    if (a === 172 && b >= 16 && b <= 31) return true;   // 172.16.0.0/12
+    if (a === 192 && b === 168) return true;             // 192.168.0.0/16
+    if (a === 127) return true;                          // 127.0.0.0/8
+    if (a === 0) return true;                            // 0.0.0.0/8
+    if (a === 169 && b === 254) return true;             // link-local
+    if (a >= 224) return true;                           // multicast + reserved
+  }
+  // IPv6 loopback and link-local
+  if (ip === '::1' || ip === '::' || ip.startsWith('fe80:') || ip.startsWith('fc') || ip.startsWith('fd')) {
+    return true;
+  }
+  return false;
+}
+
 /**
  * Run a comprehensive remote scan against a target host.
  */
 export async function runRemoteScan(config: RemoteScanConfig): Promise<ScanResult> {
   const { target, lang, timeout = 5000 } = config;
+
+  // SSRF protection: resolve hostname and block private/reserved IPs
+  try {
+    const resolved = await lookup(target);
+    if (isPrivateIP(resolved.address)) {
+      throw new Error(`Scanning private/reserved IP addresses is not allowed: ${target}`);
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message.includes('not allowed')) throw err;
+    // DNS resolution failed — let individual scanners handle it
+  }
   const startTime = Date.now();
   const allFindings: Finding[] = [];
 

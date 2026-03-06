@@ -60,6 +60,14 @@ export class ManagerServer {
     this.config = config;
     this.manager = new Manager(config);
 
+    // In production, require an auth token to prevent unauthenticated access
+    if (process.env['NODE_ENV'] === 'production' && !config.authToken) {
+      throw new Error(
+        'MANAGER_AUTH_TOKEN is required in production. ' +
+          'Generate one with: openssl rand -hex 32'
+      );
+    }
+
     // Pre-hash auth token for constant-time comparison
     this.hashedAuthToken = config.authToken
       ? createHash('sha256').update(config.authToken).digest()

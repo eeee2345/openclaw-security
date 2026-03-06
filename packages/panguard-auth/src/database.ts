@@ -198,7 +198,7 @@ export class AuthDB {
       input.company ?? null,
       input.role ?? null,
       input.source ?? 'website',
-      verifyToken
+      hashToken(verifyToken)
     );
     return this.getWaitlistById(Number(result.lastInsertRowid))!;
   }
@@ -227,8 +227,6 @@ export class AuthDB {
       .get(id) as WaitlistEntry | undefined;
   }
 
-  // TODO: Consider hashing verify_token before storage for defense-in-depth.
-  // Current risk is low: tokens expire in 24h and only toggle waitlist.verified.
   verifyWaitlistToken(token: string): WaitlistEntry | undefined {
     const entry = this.db
       .prepare(
@@ -239,7 +237,7 @@ export class AuthDB {
         AND (verify_token_expires_at IS NULL OR verify_token_expires_at > datetime('now'))
     `
       )
-      .get(token) as WaitlistEntry | undefined;
+      .get(hashToken(token)) as WaitlistEntry | undefined;
 
     if (entry) {
       this.db
