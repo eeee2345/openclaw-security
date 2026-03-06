@@ -197,9 +197,8 @@ describe('Installer E2E', { timeout: TIMEOUT }, () => {
         writeFileSync(join(tmpDir, '.bashrc'), '# test\n');
 
         let exitCode = 0;
-        let output = '';
         try {
-          output = execSync(`bash "${INSTALL_SCRIPT}" 2>&1`, {
+          execSync(`bash "${INSTALL_SCRIPT}" 2>&1`, {
             env: {
               ...process.env,
               HOME: tmpDir,
@@ -212,11 +211,8 @@ describe('Installer E2E', { timeout: TIMEOUT }, () => {
         } catch (error: unknown) {
           const e = error as {
             status?: number;
-            stdout?: Buffer | string;
-            stderr?: Buffer | string;
           };
           exitCode = e.status ?? 1;
-          output = (e.stdout?.toString() || '') + (e.stderr?.toString() || '');
         }
 
         expect(exitCode).not.toBe(0);

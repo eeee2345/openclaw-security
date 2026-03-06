@@ -12,9 +12,9 @@
  * to detect and respond to real attack patterns.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { join } from 'node:path';
-import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import type { SecurityEvent } from '@panguard-ai/core';
 import { RuleEngine } from '@panguard-ai/core';

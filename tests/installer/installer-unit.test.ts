@@ -1,20 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { execSync } from 'node:child_process';
-import {
-  mkdtempSync,
-  writeFileSync,
-  mkdirSync,
-  existsSync,
-  readFileSync,
-  rmSync,
-  chmodSync,
-} from 'node:fs';
+import { mkdtempSync, writeFileSync, existsSync, readFileSync, rmSync, chmodSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 
 const PROJECT_ROOT = resolve(__dirname, '../..');
 const FUNCTIONS_SCRIPT = join(PROJECT_ROOT, 'scripts/installer/install-functions.sh');
-const HELPERS_DIR = join(__dirname, 'helpers');
 
 // Minimal system PATH that includes bash but NOT node (for mocking)
 const SYSTEM_PATH = '/usr/bin:/bin:/usr/sbin:/sbin';
