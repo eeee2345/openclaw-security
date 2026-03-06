@@ -7,6 +7,20 @@ const isVercel = !!process.env.VERCEL;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/docs',
+        destination: 'https://docs.panguard.ai',
+        permanent: true,
+      },
+      {
+        source: '/docs/:path*',
+        destination: 'https://docs.panguard.ai/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [
