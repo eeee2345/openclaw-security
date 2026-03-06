@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const AUTH_API = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
+const AUTH_API = process.env.NEXT_PUBLIC_API_URL || 'https://panguard-api-production.up.railway.app';
 
 export async function POST(req: Request) {
   if (!AUTH_API) {

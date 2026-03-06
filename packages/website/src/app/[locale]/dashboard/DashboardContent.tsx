@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://panguard-api-production.up.railway.app';
 const REQUEST_TIMEOUT = 15_000;
 
 const ONBOARDING_STORAGE_KEY = 'panguard_onboarding_checklist';

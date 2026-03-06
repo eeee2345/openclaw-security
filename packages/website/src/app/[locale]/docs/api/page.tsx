@@ -81,7 +81,7 @@ const METHOD_COLORS: Record<string, string> = {
 };
 
 export default function ApiDocsPage() {
-  const apiBaseUrl = process.env['NEXT_PUBLIC_API_URL'] ?? 'https://api.panguard.ai';
+  const apiBaseUrl = process.env['NEXT_PUBLIC_API_URL'] ?? 'https://panguard-api-production.up.railway.app';
 
   return (
     <div className="min-h-screen bg-[#1A1614] text-[#F5F1E8]">

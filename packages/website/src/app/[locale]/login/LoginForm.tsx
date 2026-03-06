@@ -9,7 +9,7 @@ import { useRouter } from '@/navigation';
 import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://panguard-api-production.up.railway.app';
 
 export default function LoginForm() {
   const t = useTranslations('auth.login');

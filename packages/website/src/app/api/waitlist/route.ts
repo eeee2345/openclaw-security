@@ -3,7 +3,7 @@ import { appendToSheet } from '@/lib/sheets';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 import { validateWaitlist } from '@/lib/validate';
 
-const AUTH_API = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
+const AUTH_API = process.env.NEXT_PUBLIC_API_URL || 'https://panguard-api-production.up.railway.app';
 
 export async function POST(req: Request) {
   const ip = getClientIP(req);

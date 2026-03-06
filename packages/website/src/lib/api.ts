@@ -4,7 +4,7 @@
  * All authenticated API calls should use this instead of raw fetch.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://panguard-api-production.up.railway.app';
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 export class ApiError extends Error {

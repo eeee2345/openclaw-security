@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getJsonPosts, savePost } from '@/lib/blog-store';
 import type { BlogPost } from '@/data/blog-posts';
 
-const AUTH_API = process.env.NEXT_PUBLIC_API_URL || 'https://api.panguard.ai';
+const AUTH_API = process.env.NEXT_PUBLIC_API_URL || 'https://panguard-api-production.up.railway.app';
 
 async function verifyAdmin(req: Request): Promise<boolean> {
   const authHeader = req.headers.get('authorization');
