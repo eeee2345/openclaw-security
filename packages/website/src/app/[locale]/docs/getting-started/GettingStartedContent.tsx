@@ -356,6 +356,17 @@ export default function GettingStartedContent() {
                 />
               </div>
 
+              {/* Understanding Scan Results */}
+              <div className="bg-surface-1 border border-border rounded-xl p-5">
+                <p className="text-sm font-semibold text-text-primary mb-2">{t('step5Title')}</p>
+                <p className="text-text-secondary text-sm mb-3">{t('step5Desc')}</p>
+                <ul className="space-y-1 text-sm text-text-secondary">
+                  <li>{t('step5Score')}</li>
+                  <li>{t('step5Grade')}</li>
+                  <li>{t('step5Findings')}</li>
+                </ul>
+              </div>
+
               {/* JSON output */}
               <div className="bg-surface-1 border border-border rounded-xl p-5">
                 <p className="text-sm font-semibold text-text-primary mb-2">{t('step6Title')}</p>

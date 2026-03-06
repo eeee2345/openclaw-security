@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/core",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "type": "module",
   "description": "Core shared modules for Panguard AI / Panguard \u5b89\u5168\u5e73\u53f0\u6838\u5fc3\u5171\u7528\u6a21\u7d44",
   "main": "./dist/index.js",

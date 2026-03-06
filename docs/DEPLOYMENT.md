@@ -737,8 +737,8 @@ On a successful tagged release, the following packages are published to npm auto
 
 ```bash
 # Tag and push to trigger the release workflow
-git tag v0.2.6
-git push origin v0.2.6
+git tag v0.3.0
+git push origin v0.3.0
 ```
 
 The CI pipeline will:

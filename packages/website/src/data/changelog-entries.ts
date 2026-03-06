@@ -8,6 +8,22 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
   {
+    version: '1.4.0',
+    date: '2026-03-06',
+    title: 'Skill Auditor, MCP 11 Tools & Security Hardening',
+    description: 'Panguard Skill Auditor enters public beta. MCP server now exposes 11 tools. Multiple security fixes for production readiness.',
+    changes: [
+      { type: 'feature', text: 'Panguard Skill Auditor: 5-check security audit for OpenClaw/AgentSkills (Beta)' },
+      { type: 'feature', text: 'MCP server expanded to 11 tools including audit_skill' },
+      { type: 'feature', text: 'CLI audit command: panguard audit skill <path>' },
+      { type: 'security', text: 'Manager API requires MANAGER_AUTH_TOKEN in production' },
+      { type: 'security', text: 'Waitlist verify_token now hashed with SHA-256' },
+      { type: 'security', text: 'Remote scanner SSRF protection (private IP blocklist)' },
+      { type: 'security', text: 'Threat Cloud backup uses Database.backup() instead of VACUUM INTO' },
+      { type: 'improvement', text: 'ReDoS protection in Sigma rule regex compilation' },
+    ],
+  },
+  {
     version: '1.3.0',
     date: '2026-02-20',
     title: 'Panguard Trap Public Beta',

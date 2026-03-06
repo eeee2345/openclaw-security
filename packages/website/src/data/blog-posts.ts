@@ -20,6 +20,33 @@ export const categories = [
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'panguard-v0-3-0-public-release',
+    title: 'Panguard AI v0.3.0: Skill Auditor, MCP Tools & Public Release',
+    excerpt:
+      'Panguard AI is now publicly available. v0.3.0 introduces Skill Auditor for AI agent security, 11 MCP tools, and hardened security defaults.',
+    category: 'Product Updates',
+    date: '2026-03-06',
+    author: 'Panguard Team',
+    readingTime: '5 min',
+    content: [
+      '## Panguard AI Is Now Public',
+      'Today we are making Panguard AI publicly available. Eight security tools, one install command, zero expertise required. Our mission is simple: give every developer and small business the same protection that Fortune 500 companies pay six figures for.',
+      '## What Is New in v0.3.0',
+      '### Skill Auditor (Beta)',
+      'AI agents are everywhere. OpenClaw, AgentSkills, MCP tools -- the ecosystem is exploding. But who audits the skills before you install them? Panguard Skill Auditor runs 5 automated security checks on any SKILL.md file: manifest validation, prompt injection detection, tool poisoning detection, dependency analysis, and permission scope analysis. Run `panguard audit skill ./my-skill` and get a 0-100 risk score in seconds.',
+      '### MCP Server: 11 Tools',
+      'Control Panguard from Claude, Cursor, or any MCP-compatible AI assistant. The MCP server now exposes 11 tools: scan, scan_code, guard_start, guard_stop, status, alerts, block_ip, generate_report, init, deploy, and the new audit_skill. Start with `panguard serve --mcp`.',
+      '### Security Hardening',
+      'This release includes multiple security fixes identified during our pre-release audit: Manager API now requires authentication tokens in production, waitlist verification tokens are hashed with SHA-256, the remote scanner blocks private IP addresses to prevent SSRF, and Sigma rule regex compilation includes ReDoS protection.',
+      '## Get Started',
+      'Install Panguard in one command:',
+      '```bash\ncurl -fsSL https://get.panguard.ai | bash\npanguard scan --quick\n```',
+      'The Community plan is free forever. One machine, unlimited scans, Layer 1 threat detection, and Threat Cloud intelligence. Paid plans start at $9/month for full AI-powered protection.',
+      '## What Is Next',
+      'We are working on SOAR playbook automation, log collectors for centralized monitoring, and anomaly scoring improvements. Follow us on GitHub for updates.',
+    ],
+  },
+  {
     slug: 'why-99-percent-businesses-have-zero-security',
     title: "Why 99% of Businesses Have Zero Security -- And What We're Doing About It",
     excerpt:
