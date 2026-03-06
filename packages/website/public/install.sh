@@ -367,6 +367,35 @@ setup_path() {
     if ln -sf "$bin_source" "${bin_dir}/panguard" 2>/dev/null; then
       success "Installed to ${bin_dir}/panguard (no sudo required)"
       symlink_created=true
+      # Ensure ~/.local/bin is in PATH (many systems don't include it by default)
+      if ! echo "$PATH" | tr ':' '\n' | grep -qx "$bin_dir" 2>/dev/null; then
+        local export_line="export PATH=\"${bin_dir}:\$PATH\""
+        local profiles_updated=()
+        for profile in "${HOME}/.zshrc" "${HOME}/.zprofile" "${HOME}/.bashrc" "${HOME}/.bash_profile" "${HOME}/.profile"; do
+          if [ -f "$profile" ]; then
+            if ! grep -qF "$bin_dir" "$profile" 2>/dev/null; then
+              printf '\n# Added by Panguard AI installer\n%s\n' "$export_line" >> "$profile"
+              profiles_updated+=("$profile")
+            fi
+          fi
+        done
+        # On macOS with zsh, create .zprofile if no profile was found
+        if [ "${#profiles_updated[@]}" -eq 0 ]; then
+          local default_profile
+          if [ "$(uname -s)" = "Darwin" ]; then
+            default_profile="${HOME}/.zprofile"
+          else
+            default_profile="${HOME}/.bashrc"
+          fi
+          printf '\n# Added by Panguard AI installer\n%s\n' "$export_line" >> "$default_profile"
+          profiles_updated+=("$default_profile")
+        fi
+        if [ "${#profiles_updated[@]}" -gt 0 ]; then
+          info "Added ${bin_dir} to PATH in: ${profiles_updated[*]}"
+          # Export for current session so verify step works
+          export PATH="${bin_dir}:$PATH"
+        fi
+      fi
     fi
   fi
 
