@@ -58,8 +58,8 @@ jobs:
         run: pnpm run build
       - name: Type check
         run: pnpm run typecheck
-      - name: Run tests with coverage
-        run: pnpm run test:coverage
+      - name: Run tests with coverage (excluding installer E2E — has its own workflow)
+        run: pnpm exec vitest run --coverage --exclude 'tests/installer/**'
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()

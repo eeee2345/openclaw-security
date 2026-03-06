@@ -35,6 +35,9 @@ COPY packages/panguard-chat/package.json packages/panguard-chat/
 COPY packages/panguard-report/package.json packages/panguard-report/
 COPY packages/panguard-trap/package.json packages/panguard-trap/
 COPY packages/panguard-web/package.json packages/panguard-web/
+COPY packages/panguard-manager/package.json packages/panguard-manager/
+COPY packages/panguard-mcp/package.json packages/panguard-mcp/
+COPY packages/panguard-skill-auditor/package.json packages/panguard-skill-auditor/
 COPY packages/threat-cloud/package.json packages/threat-cloud/
 COPY security-hardening/package.json security-hardening/
 
@@ -51,6 +54,9 @@ COPY packages/panguard-chat/ packages/panguard-chat/
 COPY packages/panguard-report/ packages/panguard-report/
 COPY packages/panguard-trap/ packages/panguard-trap/
 COPY packages/panguard-web/ packages/panguard-web/
+COPY packages/panguard-manager/ packages/panguard-manager/
+COPY packages/panguard-mcp/ packages/panguard-mcp/
+COPY packages/panguard-skill-auditor/ packages/panguard-skill-auditor/
 COPY packages/threat-cloud/ packages/threat-cloud/
 COPY security-hardening/ security-hardening/
 COPY config/ config/
@@ -72,7 +78,7 @@ RUN printf '{"name":"panguard-api","version":"0.1.0","private":true,"type":"modu
 
 # Step 3: Copy workspace packages into node_modules AFTER npm install
 RUN mkdir -p /standalone/node_modules/@panguard-ai && \
-    for pkg in core panguard-auth panguard-guard panguard-scan panguard-chat panguard-report panguard-trap panguard-web; do \
+    for pkg in core panguard-auth panguard-guard panguard-scan panguard-chat panguard-report panguard-trap panguard-web panguard-manager panguard-mcp panguard-skill-auditor; do \
       mkdir -p /standalone/node_modules/@panguard-ai/$pkg && \
       cp -r packages/$pkg/dist /standalone/node_modules/@panguard-ai/$pkg/dist && \
       cp packages/$pkg/package.json /standalone/node_modules/@panguard-ai/$pkg/; \

@@ -32,7 +32,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm run typecheck
-      - run: pnpm run test
+      - name: Run tests (excluding installer E2E — has its own workflow)
+        run: pnpm exec vitest run --exclude 'tests/installer/**'
 
   # Deploy website to Vercel
   deploy-website:
