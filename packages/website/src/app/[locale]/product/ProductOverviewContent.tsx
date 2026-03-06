@@ -10,6 +10,7 @@ import {
   NetworkIcon,
   AnalyticsIcon,
   IntegrationIcon,
+  CheckIcon,
 } from '@/components/ui/BrandIcons';
 import BrandLogo from '@/components/ui/BrandLogo';
 import FadeInUp from '@/components/FadeInUp';
@@ -113,6 +114,23 @@ const productConfigs = [
       'SAST code scanning via AI assistant conversation',
       'Real-time guard status and alert monitoring',
       'Zero configuration -- auto-discovers Panguard installation',
+    ],
+    href: '/docs/cli',
+  },
+  {
+    key: 'skillAuditor' as const,
+    icon: CheckIcon,
+    badgeColor: 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20',
+    isBeta: true,
+    description:
+      `Panguard Skill Auditor analyzes OpenClaw and AgentSkills SKILL.md files for security threats before you install them. It runs ${STATS.skillAuditChecks} automated checks: manifest validation, prompt injection detection (11 patterns + hidden Unicode + base64), tool poisoning detection, dependency analysis, and permission scope analysis. Get a 0-100 risk score in milliseconds.`,
+    features: [
+      'Prompt injection detection: 11 patterns including hidden Unicode and base64 payloads',
+      'Tool poisoning detection: sudo escalation, curl|bash RCE, file exfiltration, reverse shells',
+      'SAST + secrets scanning on all code files in the skill directory',
+      'Dependency analysis: external URLs, npm/pip packages, required binaries',
+      'Permission scope analysis: detects bash, network, database, credential usage',
+      'CLI and MCP integration: panguard audit skill <path> or ask your AI assistant',
     ],
     href: '/docs/cli',
   },

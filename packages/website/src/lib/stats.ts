@@ -31,15 +31,16 @@ export const STATS = {
   detectionLayers: 3,
   responseActions: 6,
   complianceControls: 50,
-  cliCommands: 21,
-  products: 7,
+  cliCommands: 22,
+  products: 8,
   aiAgents: 4,
-  mcpTools: 10,
+  mcpTools: 11,
   sastPatterns: 16,
   playbookTemplates: 3,
   logParsers: 4,
   license: 'MIT' as const,
-  lastUpdated: '2026-03-03',
+  skillAuditChecks: 5,
+  lastUpdated: '2026-03-06',
 } as const;
 
 export type Stats = typeof STATS;
@@ -56,6 +57,7 @@ export const MATURITY: Record<string, MaturityLevel> = {
   report: 'GA',
   threatCloud: 'GA',
   manager: 'GA',
+  skillAuditor: 'Beta',
   mcp: 'Beta',
   sast: 'Beta',
   soarPlaybooks: 'Beta',
