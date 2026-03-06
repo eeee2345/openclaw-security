@@ -25,7 +25,7 @@
 
 > macOS and Linux are primary platforms. Windows supports core features; some OS-level detection is limited.
 
-### Available Binaries (v0.3.0)
+### Available Binaries (v0.3.1)
 
 | Platform       | Architecture | Install Method          |
 | -------------- | ------------ | ----------------------- |
@@ -92,7 +92,7 @@ pnpm build
 
 ```bash
 panguard --version
-# Expected: 0.3.0
+# Expected: 0.3.1
 ```
 
 ---
