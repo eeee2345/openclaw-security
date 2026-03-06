@@ -18,6 +18,49 @@ import type { SigmaRule, RuleMatch } from './types.js';
 const logger = createLogger('sigma-matcher');
 
 /**
+ * Regex compilation cache to avoid recompiling the same patterns.
+ * 正規表達式編譯快取，避免重複編譯相同模式。
+ */
+const regexCache = new Map<string, RegExp>();
+
+/** Maximum allowed regex pattern length to prevent ReDoS */
+const MAX_REGEX_LEN = 1024;
+
+/** Timeout for regex test (ms) */
+const REGEX_TIMEOUT_MS = 50;
+
+/**
+ * Safely compile and cache a regex, rejecting overly complex patterns.
+ * 安全地編譯和快取正規表達式，拒絕過度複雜的模式。
+ */
+function safeRegex(pattern: string, flags: string): RegExp | null {
+  const cacheKey = `${pattern}::${flags}`;
+  const cached = regexCache.get(cacheKey);
+  if (cached) return cached;
+
+  // Reject overly long patterns
+  if (pattern.length > MAX_REGEX_LEN) {
+    logger.warn(`Regex pattern too long (${pattern.length} chars), skipping / 正規表達式過長，跳過`);
+    return null;
+  }
+
+  // Detect common ReDoS patterns: nested quantifiers like (a+)+, (a*)*
+  if (/(\.[*+]|\[[^\]]*\][*+]|\([^)]*[*+][^)]*\))[*+{]/.test(pattern)) {
+    logger.warn(`Potential ReDoS pattern detected, skipping: "${pattern.slice(0, 80)}" / 偵測到潛在 ReDoS 模式，跳過`);
+    return null;
+  }
+
+  try {
+    const re = new RegExp(pattern, flags);
+    regexCache.set(cacheKey, re);
+    return re;
+  } catch {
+    logger.warn(`Invalid regex: "${pattern.slice(0, 80)}" / 無效的正規表達式`);
+    return null;
+  }
+}
+
+/**
  * Convert a Sigma wildcard pattern to a RegExp
  * 將 Sigma 萬用字元模式轉換為正規表達式
  *
@@ -27,10 +70,10 @@ const logger = createLogger('sigma-matcher');
  * @param pattern - Sigma pattern string possibly containing `*` wildcards / 可能包含 `*` 萬用字元的 Sigma 模式字串
  * @returns Compiled RegExp for the pattern / 模式的編譯正規表達式
  */
-function wildcardToRegex(pattern: string): RegExp {
+function wildcardToRegex(pattern: string): RegExp | null {
   const escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
   const withWildcards = escaped.replace(/\*/g, '.*');
-  return new RegExp(`^${withWildcards}$`, 'i');
+  return safeRegex(`^${withWildcards}$`, 'i');
 }
 
 /**
@@ -109,13 +152,10 @@ function matchValue(actual: string, expected: string, modifier: string | null): 
       return actualLower.endsWith(expectedLower);
     case 'startswith':
       return actualLower.startsWith(expectedLower);
-    case 're':
-      try {
-        return new RegExp(expected, 'i').test(actual);
-      } catch {
-        logger.warn(`Invalid regex pattern: "${expected}" / 無效的正規表達式: "${expected}"`);
-        return false;
-      }
+    case 're': {
+      const re = safeRegex(expected, 'i');
+      return re !== null && re.test(actual);
+    }
     case 'base64':
     case 'base64offset': {
       // Check if the actual value contains the expected value in base64 form
@@ -145,7 +185,8 @@ function matchValue(actual: string, expected: string, modifier: string | null): 
     default: {
       // Default: exact match or wildcard match / 預設：精確比對或萬用字元比對
       if (expected.includes('*')) {
-        return wildcardToRegex(expected).test(actual);
+        const re = wildcardToRegex(expected);
+        return re !== null && re.test(actual);
       }
       return actualLower === expectedLower;
     }

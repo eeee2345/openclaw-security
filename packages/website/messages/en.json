@@ -1004,9 +1004,9 @@
   "product": {
     "overview": {
       "overline": "Platform",
-      "title": "Seven products. One mission:",
+      "title": "Eight products. One mission:",
       "titleHighlight": "make security invisible.",
-      "subtitle": "Start with a free scan. Scale to 24/7 AI protection, intelligent honeypots, automated compliance, SAST code scanning, and MCP integration -- all from a single platform that installs in one command.",
+      "subtitle": "Start with a free scan. Scale to 24/7 AI protection, intelligent honeypots, automated compliance, SAST code scanning, skill security auditing, and MCP integration -- all from a single platform that installs in one command.",
       "products": {
         "scan": {
           "name": "Panguard Scan",
@@ -1037,6 +1037,11 @@
           "name": "MCP Server",
           "tagline": "Control Panguard from your AI assistant.",
           "badge": "Integration"
+        },
+        "skillAuditor": {
+          "name": "Skill Auditor",
+          "tagline": "Audit AI skills before you install them.",
+          "badge": "OpenClaw"
         },
         "sast": {
           "name": "Code Scanner",
