@@ -363,8 +363,13 @@ setup_path() {
   local symlink_created=false
 
   # First try user-local ~/.local/bin (no sudo)
+  # NOTE: We create a wrapper script instead of a symlink because the
+  # bin/panguard launcher uses dirname($0) to locate its install dir.
+  # A symlink would resolve to ~/.local/bin → wrong SCRIPT_DIR.
   if mkdir -p "$bin_dir" 2>/dev/null; then
-    if ln -sf "$bin_source" "${bin_dir}/panguard" 2>/dev/null; then
+    printf '#!/usr/bin/env bash\nexec "%s" "$@"\n' "$bin_source" > "${bin_dir}/panguard" 2>/dev/null
+    chmod +x "${bin_dir}/panguard" 2>/dev/null
+    if [ -x "${bin_dir}/panguard" ]; then
       success "Installed to ${bin_dir}/panguard (no sudo required)"
       symlink_created=true
       # Ensure ~/.local/bin is in PATH (many systems don't include it by default)
@@ -399,27 +404,29 @@ setup_path() {
     fi
   fi
 
-  # If user-local failed, try system-wide symlink
+  # If user-local failed, try system-wide wrapper at /usr/local/bin
   if [ "$symlink_created" = "false" ]; then
-    info "Creating symlink at ${symlink_target}..."
-    if ln -sf "$bin_source" "$symlink_target" 2>/dev/null; then
-      success "Symlink created at ${symlink_target}"
+    info "Creating wrapper at ${symlink_target}..."
+    local wrapper_content
+    wrapper_content="$(printf '#!/usr/bin/env bash\nexec "%s" "$@"\n' "$bin_source")"
+    if printf '%s' "$wrapper_content" > "$symlink_target" 2>/dev/null && chmod +x "$symlink_target" 2>/dev/null; then
+      success "Wrapper created at ${symlink_target}"
       symlink_created=true
     else
-      warn "Permission denied. Requesting sudo to create symlink..."
-      if sudo ln -sf "$bin_source" "$symlink_target" 2>/dev/null; then
-        success "Symlink created at ${symlink_target} (with sudo)"
+      warn "Permission denied. Requesting sudo..."
+      if printf '%s' "$wrapper_content" | sudo tee "$symlink_target" >/dev/null 2>&1 && sudo chmod +x "$symlink_target" 2>/dev/null; then
+        success "Wrapper created at ${symlink_target} (with sudo)"
         symlink_created=true
       fi
     fi
   fi
 
   if [ "$symlink_created" = "false" ]; then
-    warn "Could not create symlink. Adding ${bin_dir} to shell profiles..."
+    warn "Could not create wrapper. Adding ${bin_dir} to shell profiles..."
     mkdir -p "$bin_dir"
-    ln -sf "$bin_source" "${bin_dir}/panguard" 2>/dev/null || \
-      cp "$bin_source" "${bin_dir}/panguard" 2>/dev/null || \
-      warn "Could not copy binary to ${bin_dir}."
+    printf '#!/usr/bin/env bash\nexec "%s" "$@"\n' "$bin_source" > "${bin_dir}/panguard" 2>/dev/null && \
+      chmod +x "${bin_dir}/panguard" 2>/dev/null || \
+      warn "Could not create wrapper at ${bin_dir}/panguard."
 
     local export_line="export PATH=\"${bin_dir}:\$PATH\""
     local profiles_updated=()
