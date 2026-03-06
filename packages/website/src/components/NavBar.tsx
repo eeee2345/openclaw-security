@@ -149,6 +149,16 @@ export default function NavBar() {
       desc: t('productLinks.reportDesc'),
       href: '/product/report',
     },
+    {
+      label: t('productLinks.manager'),
+      desc: t('productLinks.managerDesc'),
+      href: '/product/manager',
+    },
+    {
+      label: t('productLinks.mcp'),
+      desc: t('productLinks.mcpDesc'),
+      href: '/product/mcp',
+    },
   ];
 
   const topLinks = [

@@ -59,7 +59,11 @@
       "compliance": "Compliance",
       "complianceDesc": "ISO 27001, SOC 2, TCSA",
       "integrations": "Integrations",
-      "integrationsDesc": "Connect your tools"
+      "integrationsDesc": "Connect your tools",
+      "manager": "Panguard Manager",
+      "managerDesc": "Multi-endpoint orchestration",
+      "mcp": "MCP Server",
+      "mcpDesc": "AI assistant integration"
     },
     "solutionLinks": {
       "developers": "For Developers",
@@ -1555,6 +1559,96 @@
         "title": "Every framework. One click.",
         "desc": "Select the compliance framework you need, and Panguard Report generates a complete report mapped to every control. Coverage percentages show exactly where you stand. Gaps are highlighted with specific remediation guidance.",
         "libraryTitle": "Report Library"
+      }
+    },
+    "mcp": {
+      "overline": "Panguard MCP Server",
+      "title": "Control security from",
+      "titleHighlight": "your AI assistant.",
+      "subtitle": "Ask Claude to scan your server, block an IP, or generate a compliance report -- all through natural conversation.",
+      "howItWorks": {
+        "overline": "Zero Configuration",
+        "title": "Add one JSON block. Done.",
+        "desc": "Panguard MCP Server uses stdio transport for secure local communication. Add the configuration to your AI client, and every Panguard tool becomes available as a natural language command. No API keys, no cloud setup, no port forwarding.",
+        "configNote": "Works with Claude Desktop, Cursor, and any MCP-compatible client. Panguard must be installed locally."
+      },
+      "tools": {
+        "overline": "MCP Tools",
+        "title": "11 security tools at your AI's fingertips."
+      },
+      "clients": {
+        "overline": "Compatibility",
+        "title": "Works with any MCP client."
+      },
+      "cta": {
+        "title": "Try it now.",
+        "desc": "Install Panguard, add the MCP config, and ask your AI to run a security scan.",
+        "cta1": "Install Panguard",
+        "cta2": "See All Products"
+      }
+    },
+    "manager": {
+      "overline": "Panguard Manager",
+      "title": "One dashboard for",
+      "titleHighlight": "all your endpoints.",
+      "subtitle": "Central orchestration for distributed Guard agents. Manage 25+ servers from a single pane of glass.",
+      "architecture": {
+        "overline": "Architecture",
+        "title": "Hub-and-spoke security management.",
+        "desc": "Panguard Manager acts as the central node that coordinates all Guard agents across your infrastructure. Each endpoint runs its own Guard agent independently, while Manager aggregates threats, distributes policies, and provides a unified dashboard. If Manager goes down, agents continue protecting their endpoints autonomously."
+      },
+      "features": {
+        "overline": "Capabilities",
+        "title": "Everything you need to manage fleet security.",
+        "subtitle": "Built for teams managing multiple servers, containers, and cloud instances."
+      },
+      "featuresList": {
+        "item1": {
+          "title": "Agent Registry",
+          "desc": "Auto-discover and register Guard agents. Track heartbeats, health status, and version across every endpoint in real time."
+        },
+        "item2": {
+          "title": "Threat Aggregation",
+          "desc": "Correlate threats across all agents. See attack patterns that span multiple servers -- lateral movement, coordinated scans, distributed brute force."
+        },
+        "item3": {
+          "title": "Policy Distribution",
+          "desc": "Push security policies from one place. Update Sigma rules, YARA signatures, and response configurations across your entire fleet simultaneously."
+        },
+        "item4": {
+          "title": "Unified Dashboard",
+          "desc": "Real-time WebSocket dashboard showing all endpoints, active threats, protection status, and agent health on a single screen."
+        },
+        "item5": {
+          "title": "Cross-Endpoint Correlation",
+          "desc": "Detect multi-stage attacks that span multiple machines. Manager connects the dots that individual agents cannot see alone."
+        },
+        "item6": {
+          "title": "Centralized Logging",
+          "desc": "Aggregate security events from all endpoints into one searchable log. Filter by severity, source, time range, or threat type."
+        }
+      },
+      "useCases": {
+        "overline": "Use Cases",
+        "title": "Built for multi-server environments.",
+        "item1": {
+          "title": "DevOps Teams",
+          "desc": "Manage security across staging, production, and CI/CD runners. Deploy Guard agents via SSH or Ansible and monitor everything from Manager."
+        },
+        "item2": {
+          "title": "Managed Service Providers",
+          "desc": "Monitor client infrastructure from a single dashboard. Isolate tenants, customize policies per client, and generate per-client compliance reports."
+        },
+        "item3": {
+          "title": "Multi-Region Deployments",
+          "desc": "Coordinate security across data centers and cloud regions. Manager aggregates threat intelligence globally while agents enforce policies locally."
+        }
+      },
+      "cta": {
+        "title": "Scale your security.",
+        "desc": "Start with one server. Scale to 25+ with Manager on the Business plan.",
+        "cta1": "Get Started",
+        "cta2": "View Pricing"
       }
     }
   },
@@ -4260,6 +4354,11 @@
       "desc": "We're looking for people who believe security should be accessible to everyone.",
       "primary": "View Open Roles",
       "secondary": "Get in Touch"
+    },
+    "investors": {
+      "title": "Investors & Advisors",
+      "desc": "We are building our investor and advisor network. We are in conversations with cybersecurity veterans, AI researchers, and enterprise security leaders.",
+      "cta": "Interested in advising?"
     }
   },
   "openSource": {
@@ -4533,6 +4632,14 @@
     "billing": {
       "title": "Billing",
       "description": "Manage your Panguard AI subscription, payment methods, and billing history."
+    },
+    "productMcp": {
+      "title": "Panguard MCP Server",
+      "description": "Control Panguard security tools from Claude Desktop, Cursor, or any MCP client. 11 tools via natural language."
+    },
+    "productManager": {
+      "title": "Panguard Manager",
+      "description": "Central orchestration for distributed Guard agents. Manage 25+ endpoints from a single dashboard."
     }
   },
   "notFound": {
