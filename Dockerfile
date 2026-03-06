@@ -78,11 +78,14 @@ RUN printf '{"name":"panguard-api","version":"0.1.0","private":true,"type":"modu
 
 # Step 3: Copy workspace packages into node_modules AFTER npm install
 RUN mkdir -p /standalone/node_modules/@panguard-ai && \
-    for pkg in core panguard-auth panguard-guard panguard-scan panguard-chat panguard-report panguard-trap panguard-web panguard-manager panguard-mcp panguard-skill-auditor; do \
+    for pkg in core panguard-auth panguard-guard panguard-scan panguard-chat panguard-report panguard-trap panguard-web panguard-mcp panguard-skill-auditor; do \
       mkdir -p /standalone/node_modules/@panguard-ai/$pkg && \
       cp -r packages/$pkg/dist /standalone/node_modules/@panguard-ai/$pkg/dist && \
       cp packages/$pkg/package.json /standalone/node_modules/@panguard-ai/$pkg/; \
     done && \
+    mkdir -p /standalone/node_modules/@panguard-ai/manager && \
+    cp -r packages/panguard-manager/dist /standalone/node_modules/@panguard-ai/manager/dist && \
+    cp packages/panguard-manager/package.json /standalone/node_modules/@panguard-ai/manager/ && \
     mkdir -p /standalone/node_modules/@panguard-ai/security-hardening && \
     cp -r security-hardening/dist /standalone/node_modules/@panguard-ai/security-hardening/dist && \
     cp security-hardening/package.json /standalone/node_modules/@panguard-ai/security-hardening/ && \
