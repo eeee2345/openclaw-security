@@ -514,7 +514,7 @@
         },
         {
           "name": "Guard",
-          "desc": "4 個 AI Agent 全天候偵測、分析、回應、報告，不眠不休。"
+          "desc": "5 個 AI Agent 全天候偵測、分析、回應、報告、通知，不眠不休。"
         },
         {
           "name": "Chat",
@@ -794,9 +794,9 @@
       }
     },
     "layers": {
-      "overline": "五層偵測",
-      "title": "五層偵測，攔截別人漏掉的",
-      "subtitle": "從靜態分析到上下文記憶，每一層都增加智慧。",
+      "overline": "五階段偵測",
+      "title": "五階段偵測，攔截別人漏掉的",
+      "subtitle": "從靜態分析到上下文記憶，每一階段都增加智慧。",
       "layer1": {
         "badge": "第一層",
         "name": "環境探索",
@@ -853,7 +853,7 @@
     },
     "agentPipeline": {
       "overline": "AGENT 管線",
-      "title": "四個 AI Agent。一個調查引擎。",
+      "title": "五個 AI Agent。一個調查引擎。",
       "subtitle": "每個 Agent 有專業分工。組合起來，形成一個自主的資安團隊。",
       "detect": {
         "name": "DetectAgent",
@@ -1470,7 +1470,7 @@
     },
     "technology": {
       "title": "技術架構",
-      "description": "安全不只掃描，更會思考。三層 AI 防禦漏斗、四個自主代理和學習你環境的情境記憶。"
+      "description": "安全不只掃描，更會思考。三層 AI 防禦漏斗、五個自主代理和學習你環境的情境記憶。"
     },
     "howItWorks": {
       "title": "運作原理 -- Panguard AI",
@@ -1973,8 +1973,8 @@
       },
       "featuresList": {
         "item1": {
-          "title": "4 代理 AI 管線",
-          "desc": "事件流經 4 個專業 AI 代理：偵測（Sigma/YARA 規則 + 本地 LLM）、分析（威脅分類）、回應（自動修復）、報告（合規文件）。Chat 通知將警報發送到 Telegram、Slack 和 Email。90% 的事件僅由規則處理，零成本。"
+          "title": "5 代理 AI 管線",
+          "desc": "事件流經 5 個專業 AI 代理：偵測（Sigma/YARA 規則 + 本地 LLM）、分析（威脅分類）、回應（自動修復）、報告（合規文件）、通知（Telegram、Slack、Email）。90% 的事件僅由規則處理，零成本。"
         },
         "item2": {
           "title": "3 種自動回應類型",
@@ -3672,7 +3672,7 @@
     "title": "安全不只掃描，",
     "titleHighlight": "更會思考",
     "titleSuffix": "。",
-    "subtitle": "三層 AI 防禦漏斗、四個自主代理和學習你環境的情境記憶。90% 的雜訊事件零成本，3% 的關鍵事件獲得最深層推理。",
+    "subtitle": "三層 AI 防禦漏斗、五個自主代理和學習你環境的情境記憶。90% 的雜訊事件零成本，3% 的關鍵事件獲得最深層推理。",
     "defenseFunnel": {
       "overline": "防禦漏斗",
       "title": "三層。90% 免費。",
@@ -3704,8 +3704,8 @@
     },
     "agents": {
       "overline": "代理架構",
-      "title": "四個代理。一個使命。",
-      "subtitle": "每個代理都是專家。它們共同組成自主安全運營管線：偵測、分析、回應、報告 -- 搭配 Chat 通知讓你隨時掌握狀況。",
+      "title": "五個代理。一個使命。",
+      "subtitle": "每個代理都是專家。它們共同組成自主安全運營管線：偵測、分析、回應、報告、通知 -- 即時掌握所有狀況。",
       "detect": {
         "name": "偵測代理",
         "role": "第一線反應者",

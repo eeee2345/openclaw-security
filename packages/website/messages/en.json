@@ -1171,8 +1171,8 @@
       },
       "featuresList": {
         "item1": {
-          "title": "4-Agent AI Pipeline",
-          "desc": "Events flow through 4 specialized AI agents: Detect (Sigma/YARA rules + local LLM), Analyze (threat classification), Respond (auto-remediation), and Report (compliance documentation). Chat notifications deliver alerts to Telegram, Slack, and email. 90% of events handled at zero cost by rules alone."
+          "title": "5-Agent AI Pipeline",
+          "desc": "Events flow through 5 specialized AI agents: Detect (Sigma/YARA rules + local LLM), Analyze (threat classification), Respond (auto-remediation), Report (compliance documentation), and Chat (Telegram, Slack, email notifications). 90% of events handled at zero cost by rules alone."
         },
         "item2": {
           "title": "3 Auto-Response Types",
@@ -2870,7 +2870,7 @@
     "title": "Security that",
     "titleHighlight": "thinks",
     "titleSuffix": ", not just scans.",
-    "subtitle": "A three-layer AI defense funnel, four autonomous agents, and a context memory that learns your environment. Built so the 90 % of events that are noise cost nothing, and the 3 % that matter get the deepest reasoning available.",
+    "subtitle": "A three-layer AI defense funnel, five autonomous agents, and a context memory that learns your environment. Built so the 90 % of events that are noise cost nothing, and the 3 % that matter get the deepest reasoning available.",
     "defenseFunnel": {
       "overline": "Defense Funnel",
       "title": "Three layers. 90 % free.",
@@ -2902,8 +2902,8 @@
     },
     "agents": {
       "overline": "Agent Architecture",
-      "title": "Four agents. One mission.",
-      "subtitle": "Each agent is a specialist. Together they form an autonomous security operations pipeline that detects, analyzes, responds, and reports -- with Chat notifications keeping you informed.",
+      "title": "Five agents. One mission.",
+      "subtitle": "Each agent is a specialist. Together they form an autonomous security operations pipeline that detects, analyzes, responds, reports, and notifies -- keeping you informed in real time.",
       "detect": {
         "name": "Detect Agent",
         "role": "First Responder",
@@ -4166,9 +4166,9 @@
       }
     },
     "layers": {
-      "overline": "FIVE DETECTION LAYERS",
-      "title": "Five layers that catch what others miss",
-      "subtitle": "From static analysis to contextual memory, each layer adds intelligence.",
+      "overline": "FIVE DETECTION STAGES",
+      "title": "Five stages that catch what others miss",
+      "subtitle": "From static analysis to contextual memory, each stage adds intelligence.",
       "layer1": {
         "badge": "Layer 1",
         "name": "Environment Discovery",
@@ -4225,7 +4225,7 @@
     },
     "agentPipeline": {
       "overline": "AGENT PIPELINE",
-      "title": "Four AI Agents. One Investigation Engine.",
+      "title": "Five AI Agents. One Investigation Engine.",
       "subtitle": "Each agent has a specialized role. Together, they form an autonomous security team.",
       "detect": {
         "name": "DetectAgent",
@@ -4838,7 +4838,7 @@
     },
     "technology": {
       "title": "Technology",
-      "description": "Security that thinks, not just scans. A three-layer AI defense funnel, four autonomous agents, and a context memory that learns your environment."
+      "description": "Security that thinks, not just scans. A three-layer AI defense funnel, five autonomous agents, and a context memory that learns your environment."
     },
     "howItWorks": {
       "title": "How It Works — Panguard AI",

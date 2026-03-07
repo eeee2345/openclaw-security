@@ -133,7 +133,7 @@ export default function HowItWorksContent() {
         </div>
       </SectionWrapper>
 
-      {/* ── Five Detection Layers (funnel) ── */}
+      {/* ── Five Detection Stages (funnel) ── */}
       <SectionWrapper dark>
         <SectionTitle
           overline={t('layers.overline')}
