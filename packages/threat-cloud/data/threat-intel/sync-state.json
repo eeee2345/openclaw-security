@@ -1,0 +1,16 @@
+{
+  "lastSyncAt": "2026-03-07T18:17:15.273Z",
+  "totalRecordsAllTime": 4527,
+  "totalSigmaRules": 13,
+  "totalYaraRules": 558,
+  "syncHistory": [
+    {
+      "syncAt": "2026-03-07T18:17:15.273Z",
+      "newRecords": 4527,
+      "newSigma": 13,
+      "newYara": 558,
+      "durationMs": 356250,
+      "errors": []
+    }
+  ]
+}

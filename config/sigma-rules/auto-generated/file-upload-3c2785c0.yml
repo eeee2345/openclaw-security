@@ -1,0 +1,32 @@
+title: Potential Malicious File Upload Attempt
+id: 3c2785c0-eca1-47d6-8313-714654ce3157
+status: experimental
+description: |
+  "Potential File Upload attack detected. Auto-generated from HackerOne report: TeamT5 ThreatSonar Anti-Ransomware Unrestricted Upload of File with Dangerous Type Vulnerability"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2024-7694
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.command_and_control
+  - attack.t1105
+logsource:
+  category: webserver
+detection:
+  selection_method:
+    cs-method: 'POST'
+  selection_ext:
+    cs-uri|endswith:
+      - '.php'
+      - '.jsp'
+      - '.asp'
+      - '.exe'
+      - '.sh'
+      - '..php'
+      - '%00.jpg'
+  condition: selection_method and selection_ext
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

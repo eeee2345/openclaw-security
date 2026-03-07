@@ -284,14 +284,26 @@ Available feeds: ${Object.keys(FEEDS).join(', ')}
   return { dbPath, feedNames };
 }
 
-async function main(): Promise<void> {
-  const { dbPath, feedNames } = parseArgs();
+export interface SeedResult {
+  totalImported: number;
+  totalDuplicates: number;
+  totalErrors: number;
+  totalActive: number;
+}
 
-  console.log('=== Threat Cloud Seed Script ===\n');
-  console.log(`Database: ${dbPath}`);
+/**
+ * Seed the Threat Cloud database with public threat intelligence feeds.
+ * Can be called programmatically or via CLI.
+ */
+export async function seedDatabase(
+  dbPath: string,
+  feedNames: string[] = ['all']
+): Promise<SeedResult> {
 
   const dbWrapper = new ThreatCloudDB(dbPath);
   const store = new IoCStore(dbWrapper.getDB());
+
+  console.log(`Database: ${dbPath}`);
 
   const selectedFeeds = feedNames.includes('all')
     ? Object.values(FEEDS)
@@ -373,6 +385,19 @@ async function main(): Promise<void> {
 
   dbWrapper.close();
   console.log('\nDone.');
+
+  return {
+    totalImported,
+    totalDuplicates,
+    totalErrors,
+    totalActive,
+  };
+}
+
+async function main(): Promise<void> {
+  const { dbPath, feedNames } = parseArgs();
+  console.log('=== Threat Cloud Seed Script ===\n');
+  await seedDatabase(dbPath, feedNames);
 }
 
 void main();

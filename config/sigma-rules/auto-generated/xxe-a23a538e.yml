@@ -1,0 +1,27 @@
+title: Potential XML External Entity (XXE) Injection
+id: a23a538e-c8f8-47fe-b35c-8086290a7672
+status: experimental
+description: |
+  "Potential XXE attack detected. Auto-generated from HackerOne report: OSGeo GeoServer Improper Restriction of XML External Entity Reference Vulnerability"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-58360
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.initial_access
+  - attack.t1190
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-body|contains:
+      - '<!ENTITY'
+      - '<!DOCTYPE'
+      - 'SYSTEM "file:'
+      - 'SYSTEM "http:'
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

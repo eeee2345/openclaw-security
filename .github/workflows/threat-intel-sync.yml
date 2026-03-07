@@ -1,0 +1,58 @@
+name: Threat Intel Sync
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      full_sync:
+        description: 'Force full sync (ignore last sync date)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci --workspace=packages/threat-cloud
+
+      - name: Clear sync state for full sync
+        if: github.event.inputs.full_sync == 'true'
+        run: rm -f packages/threat-cloud/data/threat-intel/sync-state.json
+
+      - name: Run scheduled sync
+        run: npx tsx packages/threat-cloud/scripts/scheduled-sync.ts
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet config/sigma-rules/ packages/threat-cloud/data/ || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push new rules
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "Panguard Bot"
+          git config user.email "bot@panguard.ai"
+
+          SIGMA_COUNT=$(find config/sigma-rules/auto-generated -name "*.yml" | wc -l | tr -d ' ')
+          YARA_COUNT=$(find config/sigma-rules/auto-generated -name "*.yar" | wc -l | tr -d ' ')
+
+          git add config/sigma-rules/ packages/threat-cloud/data/
+          git commit -m "chore(threat-intel): scheduled sync — ${SIGMA_COUNT} sigma, ${YARA_COUNT} yara rules"
+          git push

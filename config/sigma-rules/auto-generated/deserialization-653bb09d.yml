@@ -1,0 +1,29 @@
+title: Potential Insecure Deserialization Attack
+id: 653bb09d-d634-4516-9d74-21da4fee83d8
+status: experimental
+description: |
+  "Potential Deserialization attack detected. Auto-generated from HackerOne report: RoundCube Webmail Deserialization of Untrusted Data Vulnerability"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-49113
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.execution
+  - attack.t1059
+logsource:
+  category: application
+detection:
+  selection:
+    cs-uri-query|contains:
+      - 'rO0AB'
+      - 'aced0005'
+      - 'O:4:'
+      - 'a:2:{'
+      - '__reduce__'
+      - 'pickle.loads'
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

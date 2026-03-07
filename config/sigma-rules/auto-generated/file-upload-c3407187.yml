@@ -1,0 +1,33 @@
+title: Potential Malicious File Upload Attempt
+id: c3407187-9f54-437f-b363-5914d3bfc6f5
+status: experimental
+description: |
+  "Potential File Upload attack detected. Auto-generated from HackerOne report: CVE-1999-0036"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-1999-0036
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.command_and_control
+  - attack.t1105
+  - cwe.434
+logsource:
+  category: webserver
+detection:
+  selection_method:
+    cs-method: 'POST'
+  selection_ext:
+    cs-uri|endswith:
+      - '.php'
+      - '.jsp'
+      - '.asp'
+      - '.exe'
+      - '.sh'
+      - '..php'
+      - '%00.jpg'
+  condition: selection_method and selection_ext
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

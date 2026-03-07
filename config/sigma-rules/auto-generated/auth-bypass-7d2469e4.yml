@@ -1,0 +1,28 @@
+title: Potential Authentication Bypass Attempt
+id: 7d2469e4-c62d-4c64-a701-6208f9334dc9
+status: experimental
+description: |
+  "Potential Auth Bypass attack detected. Auto-generated from HackerOne report: Cisco Catalyst SD-WAN Controller and Manager Authentication Bypass Vulnerability"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://nvd.nist.gov/vuln/detail/CVE-2026-20127
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.defense_evasion
+  - attack.t1078
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-query|contains:
+      - '/admin'
+      - '/internal'
+      - 'x-forwarded-for'
+      - 'x-original-url'
+      - 'x-rewrite-url'
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium
