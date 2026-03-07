@@ -159,6 +159,11 @@ export default function NavBar() {
       desc: t('productLinks.mcpDesc'),
       href: '/product/mcp',
     },
+    {
+      label: t('productLinks.skillAuditor'),
+      desc: t('productLinks.skillAuditorDesc'),
+      href: '/product/skill-auditor',
+    },
   ];
 
   const topLinks = [

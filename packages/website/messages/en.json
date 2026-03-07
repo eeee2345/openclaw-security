@@ -63,7 +63,9 @@
       "manager": "Panguard Manager",
       "managerDesc": "Multi-endpoint orchestration",
       "mcp": "MCP Server",
-      "mcpDesc": "AI assistant integration"
+      "mcpDesc": "AI assistant integration",
+      "skillAuditor": "Skill Auditor",
+      "skillAuditorDesc": "Pre-install skill security"
     },
     "solutionLinks": {
       "developers": "For Developers",

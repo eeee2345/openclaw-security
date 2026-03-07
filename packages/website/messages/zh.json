@@ -63,7 +63,9 @@
       "manager": "Panguard Manager",
       "managerDesc": "多端點管理",
       "mcp": "MCP Server",
-      "mcpDesc": "AI 助手整合"
+      "mcpDesc": "AI 助手整合",
+      "skillAuditor": "Skill Auditor",
+      "skillAuditorDesc": "安裝前技能安全審計"
     },
     "solutionLinks": {
       "developers": "開發者方案",
