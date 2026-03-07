@@ -8,7 +8,7 @@
  * @module @panguard-ai/panguard-mcp/tests/tools
  */
 
-import { describe, it, expect, vi, beforeEach, afterAll, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -217,7 +217,6 @@ describe('panguard_block_ip', () => {
 
   it('returns error for empty string IP', async () => {
     const result = await dispatchTool('panguard_block_ip', { ip: '' });
-    const parsed = parseResult(result);
 
     expect(result.isError).toBe(true);
   });

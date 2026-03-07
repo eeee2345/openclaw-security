@@ -15,7 +15,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { execFile } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { platform as osPlatform } from 'node:os';
 import { createLogger } from '@panguard-ai/core';

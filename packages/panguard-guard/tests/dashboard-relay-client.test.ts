@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createServer, type IncomingMessage } from 'node:http';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import type { Socket } from 'node:net';
 import type { Server } from 'node:http';
 import { DashboardRelayClient, type RelayClientConfig } from '../src/dashboard/relay-client.js';

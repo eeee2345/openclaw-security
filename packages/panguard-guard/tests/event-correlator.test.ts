@@ -125,9 +125,8 @@ describe('EventCorrelator - Brute Force (T1110)', () => {
     const ip = '203.0.113.42';
 
     // Spread 5 events over 70 seconds (each 15s apart)
-    let lastResult;
     for (let i = 0; i < 5; i++) {
-      lastResult = correlator.addEvent(
+      correlator.addEvent(
         makeCorrelationEvent({
           timestamp: now + i * 15000,
           sourceIP: ip,

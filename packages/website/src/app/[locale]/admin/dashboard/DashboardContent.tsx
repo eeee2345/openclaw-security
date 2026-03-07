@@ -166,7 +166,7 @@ export default function DashboardContent() {
     });
 
     // Connect to SSE for real-time updates
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const cleanup = connectManagerSSE((type, _) => {
       if (type === 'agent_online' || type === 'agent_offline' || type === 'threats_reported') {
         // Refetch agents on status changes

@@ -8,7 +8,7 @@
  * @module @panguard-ai/core/cli/wizard
  */
 
-import { c, symbols, guardSpinner } from './index.js';
+import { c, guardSpinner } from './index.js';
 import { promptSelect, promptText, promptConfirm } from './prompts.js';
 import type { SelectOption } from './prompts.js';
 

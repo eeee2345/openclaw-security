@@ -62,7 +62,7 @@ program
       failOn?: string;
       output?: string;
     }) => {
-      const lang: Language = options.lang === 'zh-TW' ? 'zh-TW' : 'en';
+      const _lang: Language = options.lang === 'zh-TW' ? 'zh-TW' : 'en';
       const { checkSourceCode } = await import('../scanners/sast-checker.js');
       const { checkHardcodedSecrets } = await import('../scanners/secrets-checker.js');
 

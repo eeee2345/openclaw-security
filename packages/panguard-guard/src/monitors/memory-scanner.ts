@@ -15,7 +15,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { readFileSync, readdirSync, existsSync, openSync, readSync, closeSync } from 'node:fs';
+import { readFileSync, readdirSync, openSync, readSync, closeSync } from 'node:fs';
 import { platform as osPlatform } from 'node:os';
 import { createLogger } from '@panguard-ai/core';
 import type { SecurityEvent, Severity } from '@panguard-ai/core';

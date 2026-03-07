@@ -116,7 +116,7 @@ const SECRET_PATTERNS: SecretPattern[] = [
   },
   {
     id: 'SECRETS-SLACK-TOKEN',
-    pattern: /\bxox[pboa]-[0-9A-Za-z\-]{10,}\b/g,
+    pattern: /\bxox[pboa]-[0-9A-Za-z-]{10,}\b/g,
     title: 'Slack token detected / 偵測到 Slack 令牌',
     description:
       'A Slack API token was found hardcoded in source code. ' +

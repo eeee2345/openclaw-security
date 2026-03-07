@@ -14,7 +14,7 @@
 import { EventEmitter } from 'node:events';
 import { request as httpRequest } from 'node:http';
 import { request as httpsRequest } from 'node:https';
-import { createHash, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import type { Socket } from 'node:net';
 import { createLogger } from '@panguard-ai/core';
 
@@ -313,7 +313,7 @@ export class DashboardRelayClient extends EventEmitter {
   }
 
   /** Send a pong frame in response to a ping / 回應 ping 發送 pong 框架 */
-  private sendPong(pingData: Buffer): void {
+  private sendPong(_pingData: Buffer): void {
     if (!this.socket) return;
 
     try {

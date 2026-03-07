@@ -425,7 +425,7 @@ describe('PlaybookEngine', () => {
       testEngine.recordOccurrence(compositeKey);
 
       // Hack: override the firstSeen to be in the past
-      const internalMap = (testEngine as any).occurrenceCounts as Map<
+      const internalMap = (testEngine as Record<string, unknown>).occurrenceCounts as Map<
         string,
         { count: number; firstSeen: number }
       >;
@@ -461,7 +461,7 @@ describe('PlaybookEngine', () => {
       engine.recordOccurrence(key);
       engine.recordOccurrence(key);
 
-      const internalMap = (engine as any).occurrenceCounts as Map<
+      const internalMap = (engine as Record<string, unknown>).occurrenceCounts as Map<
         string,
         { count: number; firstSeen: number }
       >;
@@ -476,7 +476,7 @@ describe('PlaybookEngine', () => {
 
       engine.recordOccurrence(key);
 
-      const internalMap = (engine as any).occurrenceCounts as Map<
+      const internalMap = (engine as Record<string, unknown>).occurrenceCounts as Map<
         string,
         { count: number; firstSeen: number }
       >;
@@ -492,7 +492,7 @@ describe('PlaybookEngine', () => {
 
       engine.recordOccurrence(key);
 
-      const internalMap = (engine as any).occurrenceCounts as Map<
+      const internalMap = (engine as Record<string, unknown>).occurrenceCounts as Map<
         string,
         { count: number; firstSeen: number }
       >;

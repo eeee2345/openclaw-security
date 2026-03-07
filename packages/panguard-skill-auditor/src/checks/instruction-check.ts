@@ -103,6 +103,7 @@ const PATTERNS: Pattern[] = [
 ];
 
 /** Zero-width, invisible, and steganographic Unicode characters */
+// eslint-disable-next-line no-misleading-character-class
 const HIDDEN_UNICODE_RE = /[\u200B\u200C\u200D\u200E\u200F\u202A-\u202E\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u3164\u115F\u1160\uFFF9-\uFFFB]|\uDB40[\uDC00-\uDC7F]/;
 
 /** Fullwidth Latin characters (U+FF01-U+FF5E) — visually similar to ASCII but bypass \b word boundaries */

@@ -17,7 +17,6 @@
 import { EventEmitter } from 'node:events';
 import { readFileSync, existsSync } from 'node:fs';
 import { platform as osPlatform } from 'node:os';
-import { execFile } from 'node:child_process';
 import { createLogger } from '@panguard-ai/core';
 import type { SecurityEvent, Severity } from '@panguard-ai/core';
 
@@ -267,7 +266,7 @@ export class DpiMonitor extends EventEmitter {
   private analyzeConnections(): void {
     const now = Date.now();
     const current = this.getCurrentConnections();
-    const timeDelta = now - this.previousSnapshotTime;
+    const _timeDelta = now - this.previousSnapshotTime;
 
     // Find new established connections / 找出新建立的連線
     const prevKeys = new Set(
@@ -447,7 +446,7 @@ export class DpiMonitor extends EventEmitter {
    * 偵測 C2 信標模式（定期回撥間隔）
    */
   private detectBeaconing(): void {
-    for (const [key, tracker] of this.beaconTrackers) {
+    for (const [_key, tracker] of this.beaconTrackers) {
       if (tracker.intervals.length < BEACON_MIN_CONNECTIONS) continue;
 
       // Calculate mean and standard deviation of intervals

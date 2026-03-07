@@ -13,7 +13,7 @@ vi.mock('@panguard-ai/panguard-report', () => ({
 
 // Mock auth-guard to bypass authentication for testing
 vi.mock('../src/cli/auth-guard.js', () => ({
-  withAuth: vi.fn((_tier: string, handler: Function) => {
+  withAuth: vi.fn((_tier: string, handler: (opts: Record<string, string | undefined>) => Promise<void>) => {
     return async (opts: Record<string, string | undefined>) => {
       await handler(opts);
     };

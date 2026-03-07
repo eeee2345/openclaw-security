@@ -3,7 +3,7 @@
  * Syscall 監控器測試
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { parseSyscallEvent, SyscallMonitor } from '../src/monitors/syscall-monitor.js';
 import type { SyscallEvent } from '../src/monitors/syscall-monitor.js';
 

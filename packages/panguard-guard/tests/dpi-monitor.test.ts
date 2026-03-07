@@ -3,7 +3,7 @@
  * DPI 監控器測試
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { DpiMonitor } from '../src/monitors/dpi-monitor.js';
 import type { SecurityEvent } from '@panguard-ai/core';
 

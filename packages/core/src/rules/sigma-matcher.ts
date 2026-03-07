@@ -27,7 +27,7 @@ const regexCache = new Map<string, RegExp>();
 const MAX_REGEX_LEN = 1024;
 
 /** Timeout for regex test (ms) */
-const REGEX_TIMEOUT_MS = 50;
+const _REGEX_TIMEOUT_MS = 50;
 
 /**
  * Safely compile and cache a regex, rejecting overly complex patterns.

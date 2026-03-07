@@ -5,10 +5,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, rmSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import type { AnonymizedThreatData, ThreatCloudUpdate } from '../src/types.js';
+import type { AnonymizedThreatData } from '../src/types.js';
 
 // Mock createLogger
 vi.mock('@panguard-ai/core', async () => {

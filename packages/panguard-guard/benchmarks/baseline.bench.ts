@@ -5,7 +5,7 @@
  * with varying baseline sizes.
  */
 
-import { bench, describe, beforeEach } from 'vitest';
+import { bench, describe } from 'vitest';
 import type { SecurityEvent } from '@panguard-ai/core';
 import { setLogLevel } from '@panguard-ai/core';
 import type {
@@ -16,7 +16,6 @@ import type {
   PortPattern,
 } from '../src/types.js';
 import {
-  createEmptyBaseline,
   continuousBaselineUpdate,
   pruneStalePatterns,
   updateBaseline,
