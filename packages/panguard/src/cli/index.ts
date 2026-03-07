@@ -32,6 +32,7 @@ import { upgradeCommand } from './commands/upgrade.js';
 import { configCommand } from './commands/config.js';
 import { doctorCommand } from './commands/doctor.js';
 import { auditCommand } from './commands/audit.js';
+import { hacktivityCommand } from './commands/hacktivity.js';
 import { startInteractive } from './interactive.js';
 import { refreshTierInBackground } from './auth-guard.js';
 
@@ -63,6 +64,7 @@ program.addCommand(upgradeCommand());
 program.addCommand(configCommand());
 program.addCommand(doctorCommand());
 program.addCommand(auditCommand());
+program.addCommand(hacktivityCommand());
 
 // Refresh tier from server in background (non-blocking)
 refreshTierInBackground();

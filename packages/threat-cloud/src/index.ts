@@ -10,6 +10,7 @@ export { SightingStore } from './sighting-store.js';
 export { AuditLogger } from './audit-logger.js';
 export { Scheduler } from './scheduler.js';
 export { submitSkillThreat, lookupSkillThreat } from './skill-threat-client.js';
+export { HackerOneAdapter, AttackExtractor, SigmaRuleGenerator, RuleValidator } from './threat-intel/index.js';
 export type { SkillThreatSubmitResult } from './skill-threat-client.js';
 export type {
   AnonymizedThreatData,
@@ -57,3 +58,13 @@ export type {
   SkillThreatRecord,
   SkillThreatLookup,
 } from './types.js';
+export type {
+  StoredReport,
+  ExtractedAttackPattern,
+  ExtractionResult,
+  GeneratedRule,
+  RuleValidationResult,
+  HackerOneConfig,
+  ExtractorConfig,
+  SyncStatus,
+} from './threat-intel/types.js';
