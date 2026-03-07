@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   Wifi,
   WifiOff,
+  Download,
 } from 'lucide-react';
 import { SEVERITY_CONFIG, type ThreatSeverity } from '../config/threat-cloud';
 import { fetchAgents, connectManagerSSE, type ManagerAgent } from '@/lib/manager-api';
@@ -48,129 +49,6 @@ interface AgentStatus {
   readonly lastSeen: string;
   readonly threatCount: number;
 }
-
-/* ------------------------------------------------------------------ */
-/*  Mock Data                                                          */
-/* ------------------------------------------------------------------ */
-
-const STAT_CARDS: readonly StatCard[] = [
-  {
-    id: 'endpoints',
-    label: 'Endpoints Monitored',
-    value: '247',
-    change: '+12 this week',
-    changeType: 'positive',
-    icon: Monitor,
-    accentColor: 'text-brand-sage',
-  },
-  {
-    id: 'threats',
-    label: 'Active Threats',
-    value: '8',
-    change: '-3 from yesterday',
-    changeType: 'positive',
-    icon: ShieldAlert,
-    accentColor: 'text-status-danger',
-  },
-  {
-    id: 'agents',
-    label: 'Guard Agents Online',
-    value: '241',
-    change: '97.6% uptime',
-    changeType: 'neutral',
-    icon: Cpu,
-    accentColor: 'text-status-safe',
-  },
-  {
-    id: 'blocked',
-    label: 'Threats Blocked (30d)',
-    value: '1,429',
-    change: '+18% vs last month',
-    changeType: 'negative',
-    icon: TrendingUp,
-    accentColor: 'text-status-caution',
-  },
-] as const;
-
-const RECENT_ALERTS: readonly RecentAlert[] = [
-  {
-    id: 'a1',
-    severity: 'critical',
-    message: 'Rootkit installation attempt detected on prod-web-03',
-    source: '192.168.1.45',
-    timestamp: '2 min ago',
-  },
-  {
-    id: 'a2',
-    severity: 'high',
-    message: 'Suspicious outbound connection to known C2 server',
-    source: '10.0.2.18',
-    timestamp: '15 min ago',
-  },
-  {
-    id: 'a3',
-    severity: 'medium',
-    message: 'Unusual privilege escalation pattern on dev-api-01',
-    source: '172.16.0.22',
-    timestamp: '42 min ago',
-  },
-  {
-    id: 'a4',
-    severity: 'high',
-    message: 'Port scan detected from external IP targeting SSH services',
-    source: '203.0.113.42',
-    timestamp: '1h ago',
-  },
-  {
-    id: 'a5',
-    severity: 'low',
-    message: 'New package installed outside maintenance window',
-    source: '10.0.1.55',
-    timestamp: '2h ago',
-  },
-  {
-    id: 'a6',
-    severity: 'medium',
-    message: 'Modified system binary checksum mismatch on staging-db-02',
-    source: '172.16.0.88',
-    timestamp: '3h ago',
-  },
-] as const;
-
-const AGENT_STATUSES: readonly AgentStatus[] = [
-  { id: 'g1', hostname: 'prod-web-01', os: 'Ubuntu 22.04', status: 'online', version: '0.9.3', lastSeen: 'Just now', threatCount: 0 },
-  { id: 'g2', hostname: 'prod-web-02', os: 'Ubuntu 22.04', status: 'online', version: '0.9.3', lastSeen: 'Just now', threatCount: 1 },
-  { id: 'g3', hostname: 'prod-web-03', os: 'Ubuntu 22.04', status: 'warning', version: '0.9.2', lastSeen: '5 min ago', threatCount: 3 },
-  { id: 'g4', hostname: 'prod-api-01', os: 'Debian 12', status: 'online', version: '0.9.3', lastSeen: 'Just now', threatCount: 0 },
-  { id: 'g5', hostname: 'prod-db-01', os: 'Rocky Linux 9', status: 'online', version: '0.9.3', lastSeen: '1 min ago', threatCount: 0 },
-  { id: 'g6', hostname: 'staging-web-01', os: 'Ubuntu 22.04', status: 'online', version: '0.9.3', lastSeen: 'Just now', threatCount: 0 },
-  { id: 'g7', hostname: 'staging-db-02', os: 'Rocky Linux 9', status: 'warning', version: '0.9.1', lastSeen: '8 min ago', threatCount: 2 },
-  { id: 'g8', hostname: 'dev-api-01', os: 'macOS 14.3', status: 'online', version: '0.9.3', lastSeen: '2 min ago', threatCount: 1 },
-  { id: 'g9', hostname: 'dev-ml-gpu-01', os: 'Ubuntu 22.04', status: 'offline', version: '0.9.0', lastSeen: '2 days ago', threatCount: 0 },
-  { id: 'g10', hostname: 'ci-runner-01', os: 'Debian 12', status: 'online', version: '0.9.3', lastSeen: 'Just now', threatCount: 0 },
-  { id: 'g11', hostname: 'ci-runner-02', os: 'Debian 12', status: 'online', version: '0.9.3', lastSeen: '1 min ago', threatCount: 0 },
-  { id: 'g12', hostname: 'backup-srv-01', os: 'Rocky Linux 9', status: 'online', version: '0.9.2', lastSeen: '3 min ago', threatCount: 0 },
-] as const;
-
-/** Bar chart data: threats per day for the last 14 days */
-const THREAT_TREND_DATA: readonly { day: string; count: number }[] = [
-  { day: 'Feb 17', count: 12 },
-  { day: 'Feb 18', count: 8 },
-  { day: 'Feb 19', count: 15 },
-  { day: 'Feb 20', count: 22 },
-  { day: 'Feb 21', count: 18 },
-  { day: 'Feb 22', count: 9 },
-  { day: 'Feb 23', count: 6 },
-  { day: 'Feb 24', count: 14 },
-  { day: 'Feb 25', count: 28 },
-  { day: 'Feb 26', count: 19 },
-  { day: 'Feb 27', count: 11 },
-  { day: 'Feb 28', count: 7 },
-  { day: 'Mar 1', count: 16 },
-  { day: 'Mar 2', count: 8 },
-] as const;
-
-const MAX_THREAT_COUNT = Math.max(...THREAT_TREND_DATA.map((d) => d.count));
 
 /* ------------------------------------------------------------------ */
 /*  Sub-components                                                     */
@@ -238,12 +116,33 @@ function StatusDot({ status }: { status: 'online' | 'offline' | 'warning' }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Empty State                                                        */
+/* ------------------------------------------------------------------ */
+
+function EmptyState({ icon: Icon, title, description }: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="bg-surface-2 p-3 rounded-xl mb-4">
+        <Icon className="w-6 h-6 text-text-muted" />
+      </div>
+      <p className="text-sm font-medium text-text-secondary">{title}</p>
+      <p className="text-xs text-text-tertiary mt-1 max-w-sm">{description}</p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
 
 export default function DashboardContent() {
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [liveAgents, setLiveAgents] = useState<AgentStatus[] | null>(null);
+  const [liveAlerts] = useState<RecentAlert[]>([]);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -294,7 +193,48 @@ export default function DashboardContent() {
     };
   }, []);
 
-  const displayedAgents = liveAgents ?? [...AGENT_STATUSES];
+  const displayedAgents = liveAgents ?? [];
+  const onlineCount = displayedAgents.filter((a) => a.status === 'online').length;
+  const threatCount = displayedAgents.reduce((sum, a) => sum + a.threatCount, 0);
+
+  const statCards: readonly StatCard[] = [
+    {
+      id: 'endpoints',
+      label: 'Endpoints Monitored',
+      value: String(displayedAgents.length),
+      change: displayedAgents.length === 0 ? 'Install Guard to get started' : `${onlineCount} online`,
+      changeType: 'neutral',
+      icon: Monitor,
+      accentColor: 'text-brand-sage',
+    },
+    {
+      id: 'threats',
+      label: 'Active Threats',
+      value: String(threatCount),
+      change: threatCount === 0 ? 'All clear' : `${threatCount} detected`,
+      changeType: threatCount === 0 ? 'positive' : 'negative',
+      icon: ShieldAlert,
+      accentColor: threatCount > 0 ? 'text-status-danger' : 'text-status-safe',
+    },
+    {
+      id: 'agents',
+      label: 'Guard Agents Online',
+      value: String(onlineCount),
+      change: displayedAgents.length === 0 ? 'No agents connected' : `${displayedAgents.length} total`,
+      changeType: 'neutral',
+      icon: Cpu,
+      accentColor: 'text-status-safe',
+    },
+    {
+      id: 'blocked',
+      label: 'Threats Blocked (30d)',
+      value: '0',
+      change: 'No data yet',
+      changeType: 'neutral',
+      icon: TrendingUp,
+      accentColor: 'text-status-caution',
+    },
+  ] as const;
 
   return (
     <div className="space-y-6 max-w-[1400px]">
@@ -316,7 +256,7 @@ export default function DashboardContent() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {STAT_CARDS.map((stat, i) => (
+        {statCards.map((stat, i) => (
           <StatCardComponent key={stat.id} stat={stat} index={i} />
         ))}
       </div>
@@ -330,30 +270,11 @@ export default function DashboardContent() {
               <h2 className="text-sm font-semibold text-text-primary">Threat Trend (14 days)</h2>
               <span className="text-xs text-text-tertiary">Daily detected threats</span>
             </div>
-            <div className="flex items-end gap-1.5 h-40">
-              {THREAT_TREND_DATA.map((bar) => {
-                const heightPct = MAX_THREAT_COUNT > 0 ? (bar.count / MAX_THREAT_COUNT) * 100 : 0;
-                const isHigh = bar.count > 20;
-                return (
-                  <div key={bar.day} className="flex-1 flex flex-col items-center gap-1 group">
-                    <span className="text-[10px] text-text-tertiary opacity-0 group-hover:opacity-100 transition-opacity font-mono">
-                      {bar.count}
-                    </span>
-                    <div className="w-full relative">
-                      <div
-                        className={`w-full rounded-t transition-all duration-300 group-hover:opacity-80 ${
-                          isHigh ? 'bg-status-caution' : 'bg-brand-sage'
-                        }`}
-                        style={{ height: `${Math.max(4, (heightPct / 100) * 120)}px` }}
-                      />
-                    </div>
-                    <span className="text-[9px] text-text-muted truncate w-full text-center hidden sm:block">
-                      {bar.day.split(' ')[1]}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+            <EmptyState
+              icon={TrendingUp}
+              title="No threat data yet"
+              description="Threat trends will appear here once Guard agents start reporting."
+            />
           </div>
         </FadeInUp>
 
@@ -372,34 +293,42 @@ export default function DashboardContent() {
                 View all <ArrowUpRight className="w-3 h-3" />
               </a>
             </div>
-            <div className="space-y-3 max-h-[300px] overflow-y-auto">
-              {RECENT_ALERTS.map((alert) => (
-                <button
-                  key={alert.id}
-                  onClick={() => setSelectedAlertId(selectedAlertId === alert.id ? null : alert.id)}
-                  className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
-                    selectedAlertId === alert.id
-                      ? 'bg-surface-2 border-brand-sage/30'
-                      : 'bg-surface-2/50 border-transparent hover:border-border-hover'
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <SeverityBadge severity={alert.severity} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-text-primary leading-relaxed line-clamp-2">
-                        {alert.message}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className="text-[10px] text-text-tertiary font-mono">
-                          {alert.source}
-                        </span>
-                        <span className="text-[10px] text-text-muted">{alert.timestamp}</span>
+            {liveAlerts.length === 0 ? (
+              <EmptyState
+                icon={ShieldAlert}
+                title="No alerts"
+                description="Security alerts will appear here when threats are detected."
+              />
+            ) : (
+              <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                {liveAlerts.map((alert) => (
+                  <button
+                    key={alert.id}
+                    onClick={() => setSelectedAlertId(selectedAlertId === alert.id ? null : alert.id)}
+                    className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
+                      selectedAlertId === alert.id
+                        ? 'bg-surface-2 border-brand-sage/30'
+                        : 'bg-surface-2/50 border-transparent hover:border-border-hover'
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <SeverityBadge severity={alert.severity} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-text-primary leading-relaxed line-clamp-2">
+                          {alert.message}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="text-[10px] text-text-tertiary font-mono">
+                            {alert.source}
+                          </span>
+                          <span className="text-[10px] text-text-muted">{alert.timestamp}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </FadeInUp>
       </div>
@@ -428,46 +357,54 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {displayedAgents.map((agent) => (
-              <div
-                key={agent.id}
-                className={`p-3 rounded-lg border transition-colors ${
-                  agent.status === 'offline'
-                    ? 'bg-surface-2/30 border-border opacity-60'
-                    : agent.status === 'warning'
-                      ? 'bg-surface-2/50 border-status-caution/20'
-                      : 'bg-surface-2/50 border-border hover:border-border-hover'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <StatusDot status={agent.status} />
-                    <span className="text-sm font-medium text-text-primary truncate font-mono">
-                      {agent.hostname}
-                    </span>
+          {displayedAgents.length === 0 ? (
+            <EmptyState
+              icon={Download}
+              title="No Guard agents connected"
+              description="Install Panguard Guard on your endpoints to see them here. Run: curl -fsSL https://get.panguard.ai | bash"
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {displayedAgents.map((agent) => (
+                <div
+                  key={agent.id}
+                  className={`p-3 rounded-lg border transition-colors ${
+                    agent.status === 'offline'
+                      ? 'bg-surface-2/30 border-border opacity-60'
+                      : agent.status === 'warning'
+                        ? 'bg-surface-2/50 border-status-caution/20'
+                        : 'bg-surface-2/50 border-border hover:border-border-hover'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <StatusDot status={agent.status} />
+                      <span className="text-sm font-medium text-text-primary truncate font-mono">
+                        {agent.hostname}
+                      </span>
+                    </div>
+                    {agent.threatCount > 0 && (
+                      <span className="text-[10px] font-semibold bg-status-danger/10 text-status-danger border border-status-danger/20 px-1.5 py-0.5 rounded-full">
+                        {agent.threatCount}
+                      </span>
+                    )}
                   </div>
-                  {agent.threatCount > 0 && (
-                    <span className="text-[10px] font-semibold bg-status-danger/10 text-status-danger border border-status-danger/20 px-1.5 py-0.5 rounded-full">
-                      {agent.threatCount}
-                    </span>
-                  )}
+                  <div className="flex items-center justify-between text-[11px] text-text-tertiary">
+                    <span>{agent.os}</span>
+                    <span>v{agent.version}</span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-1.5">
+                    <Clock className="w-3 h-3 text-text-muted" />
+                    <span className="text-[10px] text-text-muted">{agent.lastSeen}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-text-tertiary">
-                  <span>{agent.os}</span>
-                  <span>v{agent.version}</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1.5">
-                  <Clock className="w-3 h-3 text-text-muted" />
-                  <span className="text-[10px] text-text-muted">{agent.lastSeen}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </FadeInUp>
 
-      {/* Threat Cloud Status */}
+      {/* Connection Status */}
       <FadeInUp delay={0.25}>
         <div className="bg-surface-1 border border-border rounded-xl p-5 card-glow">
           <div className="flex items-center justify-between">
@@ -481,29 +418,13 @@ export default function DashboardContent() {
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-text-primary">
-                  {isConnected ? 'Manager Connected' : 'Threat Cloud Connected'}
+                  {isConnected ? 'Manager Connected' : 'Waiting for Connection'}
                 </h2>
                 <p className="text-xs text-text-tertiary mt-0.5">
                   {isConnected
                     ? `Live data from ${displayedAgents.length} agents via manager SSE stream`
-                    : 'Receiving real-time threat intelligence from 12,847 global sensors'}
+                    : 'Connect Guard agents to see real-time data'}
                 </p>
-              </div>
-            </div>
-            <div className="hidden sm:flex items-center gap-4 text-xs">
-              <div className="text-center">
-                <p className="font-mono text-text-primary font-semibold">48ms</p>
-                <p className="text-text-muted">Avg latency</p>
-              </div>
-              <div className="w-px h-8 bg-border" />
-              <div className="text-center">
-                <p className="font-mono text-text-primary font-semibold">99.97%</p>
-                <p className="text-text-muted">Uptime</p>
-              </div>
-              <div className="w-px h-8 bg-border" />
-              <div className="text-center">
-                <p className="font-mono text-text-primary font-semibold">2.1M</p>
-                <p className="text-text-muted">IoCs cached</p>
               </div>
             </div>
           </div>

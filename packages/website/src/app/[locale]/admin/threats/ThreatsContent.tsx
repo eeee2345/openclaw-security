@@ -17,6 +17,7 @@ import {
   KeyRound,
   Wifi,
   FileWarning,
+  ShieldCheck,
 } from 'lucide-react';
 import { SEVERITY_CONFIG, type ThreatSeverity } from '../config/threat-cloud';
 
@@ -54,151 +55,10 @@ interface ThreatEvent {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mock Data                                                          */
+/*  Live data — starts empty, populated by manager SSE                */
 /* ------------------------------------------------------------------ */
 
-const THREAT_EVENTS: readonly ThreatEvent[] = [
-  {
-    id: 't-001',
-    severity: 'critical',
-    type: 'rootkit',
-    typeLabel: 'Rootkit Installation',
-    description: 'Rootkit installation attempt detected. Suspicious kernel module loading intercepted and blocked by Guard agent. Module signature does not match known kernel extensions.',
-    sourceIp: '192.168.1.45',
-    targetEndpoint: 'prod-web-03',
-    timestamp: '2026-03-02T14:28:00Z',
-    timestampRelative: '2 min ago',
-    seenOnEndpoints: 1,
-    status: 'active',
-    confidence: 98,
-  },
-  {
-    id: 't-002',
-    severity: 'high',
-    type: 'c2_communication',
-    typeLabel: 'C2 Communication',
-    description: 'Outbound connection to known Command & Control server detected. IP 203.0.113.42 matched against Threat Cloud IoC database. Connection was blocked at the network layer.',
-    sourceIp: '10.0.2.18',
-    targetEndpoint: 'prod-web-02',
-    timestamp: '2026-03-02T14:15:00Z',
-    timestampRelative: '15 min ago',
-    seenOnEndpoints: 3,
-    status: 'investigating',
-    confidence: 94,
-  },
-  {
-    id: 't-003',
-    severity: 'medium',
-    type: 'privilege_escalation',
-    typeLabel: 'Privilege Escalation',
-    description: 'Unusual sudo invocation pattern detected. User "deploy" attempted to escalate to root with non-standard flags. Context analysis indicates potential exploitation of CVE-2024-1086.',
-    sourceIp: '172.16.0.22',
-    targetEndpoint: 'dev-api-01',
-    timestamp: '2026-03-02T13:48:00Z',
-    timestampRelative: '42 min ago',
-    seenOnEndpoints: 1,
-    status: 'mitigated',
-    confidence: 76,
-  },
-  {
-    id: 't-004',
-    severity: 'high',
-    type: 'port_scan',
-    typeLabel: 'Port Scan',
-    description: 'Coordinated port scan targeting SSH services (port 22) across multiple endpoints. Source IP is external and appears to be part of a larger scanning campaign. Correlated with Threat Cloud intelligence.',
-    sourceIp: '203.0.113.42',
-    targetEndpoint: 'prod-web-01',
-    timestamp: '2026-03-02T13:30:00Z',
-    timestampRelative: '1h ago',
-    seenOnEndpoints: 8,
-    status: 'active',
-    confidence: 91,
-  },
-  {
-    id: 't-005',
-    severity: 'low',
-    type: 'unauthorized_package',
-    typeLabel: 'Unauthorized Package',
-    description: 'New package "netcat-openbsd" installed outside the defined maintenance window. Package is in the approved list but installation timing violates policy.',
-    sourceIp: '10.0.1.55',
-    targetEndpoint: 'ci-runner-01',
-    timestamp: '2026-03-02T12:30:00Z',
-    timestampRelative: '2h ago',
-    seenOnEndpoints: 1,
-    status: 'mitigated',
-    confidence: 62,
-  },
-  {
-    id: 't-006',
-    severity: 'medium',
-    type: 'binary_modification',
-    typeLabel: 'Binary Modification',
-    description: 'System binary checksum mismatch detected for /usr/bin/ssh. Current hash does not match the known-good baseline established during initial enrollment.',
-    sourceIp: '172.16.0.88',
-    targetEndpoint: 'staging-db-02',
-    timestamp: '2026-03-02T11:30:00Z',
-    timestampRelative: '3h ago',
-    seenOnEndpoints: 2,
-    status: 'investigating',
-    confidence: 82,
-  },
-  {
-    id: 't-007',
-    severity: 'critical',
-    type: 'reverse_shell',
-    typeLabel: 'Reverse Shell',
-    description: 'Reverse shell connection attempt detected. Process "bash" attempted to open outbound TCP connection to 185.234.72.13:4444. Connection was killed and process terminated.',
-    sourceIp: '10.0.1.12',
-    targetEndpoint: 'prod-web-03',
-    timestamp: '2026-03-02T10:15:00Z',
-    timestampRelative: '4h ago',
-    seenOnEndpoints: 1,
-    status: 'mitigated',
-    confidence: 99,
-  },
-  {
-    id: 't-008',
-    severity: 'high',
-    type: 'brute_force',
-    typeLabel: 'Brute Force',
-    description: 'SSH brute force attack detected with 847 failed login attempts in the past hour from a single source. IP has been automatically blocklisted by the Guard agent.',
-    sourceIp: '45.33.32.156',
-    targetEndpoint: 'prod-api-01',
-    timestamp: '2026-03-02T09:45:00Z',
-    timestampRelative: '5h ago',
-    seenOnEndpoints: 5,
-    status: 'mitigated',
-    confidence: 97,
-  },
-  {
-    id: 't-009',
-    severity: 'medium',
-    type: 'data_exfiltration',
-    typeLabel: 'Data Exfiltration',
-    description: 'Anomalous outbound data transfer detected. Process "curl" transferred 2.4GB to external endpoint within 15 minutes. Behavior flagged by AI anomaly detection model.',
-    sourceIp: '10.0.3.10',
-    targetEndpoint: 'prod-db-01',
-    timestamp: '2026-03-02T08:20:00Z',
-    timestampRelative: '6h ago',
-    seenOnEndpoints: 1,
-    status: 'investigating',
-    confidence: 71,
-  },
-  {
-    id: 't-010',
-    severity: 'low',
-    type: 'malware_download',
-    typeLabel: 'Malware Download',
-    description: 'Potentially malicious file download blocked. File hash matched Threat Cloud signature for known cryptominer. File was quarantined before execution.',
-    sourceIp: '10.0.5.11',
-    targetEndpoint: 'ci-runner-02',
-    timestamp: '2026-03-02T07:10:00Z',
-    timestampRelative: '7h ago',
-    seenOnEndpoints: 1,
-    status: 'mitigated',
-    confidence: 88,
-  },
-] as const;
+const THREAT_EVENTS: readonly ThreatEvent[] = [];
 
 /* ------------------------------------------------------------------ */
 /*  Utility                                                            */
@@ -348,7 +208,7 @@ export default function ThreatsContent() {
             Threat Feed
           </h1>
           <p className="text-sm text-text-secondary mt-1">
-            Aggregated threats across all {THREAT_EVENTS.length > 0 ? 'monitored' : ''} endpoints
+            Aggregated threats across all monitored endpoints
           </p>
         </div>
       </FadeInUp>
@@ -379,64 +239,72 @@ export default function ThreatsContent() {
         </div>
       </FadeInUp>
 
-      {/* Filters */}
-      <FadeInUp delay={0.08}>
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-            <input
-              type="text"
-              placeholder="Search by description, type, IP, or endpoint..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-1 border border-border rounded-lg pl-9 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-brand-sage focus:border-brand-sage transition-colors"
-            />
-          </div>
+      {THREAT_EVENTS.length > 0 && (
+        <>
+          {/* Filters */}
+          <FadeInUp delay={0.08}>
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Search */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <input
+                  type="text"
+                  placeholder="Search by description, type, IP, or endpoint..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-surface-1 border border-border rounded-lg pl-9 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-brand-sage focus:border-brand-sage transition-colors"
+                />
+              </div>
 
-          {/* Severity filter pills */}
-          <div className="flex items-center gap-1.5">
-            <Filter className="w-4 h-4 text-text-muted mr-1" />
-            {SEVERITY_FILTERS.map((filter) => (
-              <button
-                key={filter.value}
-                onClick={() => setSeverityFilter(filter.value)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
-                  severityFilter === filter.value
-                    ? 'bg-brand-sage/15 text-brand-sage border border-brand-sage/30'
-                    : 'bg-surface-2 text-text-secondary border border-transparent hover:border-border-hover'
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
+              {/* Severity filter pills */}
+              <div className="flex items-center gap-1.5">
+                <Filter className="w-4 h-4 text-text-muted mr-1" />
+                {SEVERITY_FILTERS.map((filter) => (
+                  <button
+                    key={filter.value}
+                    onClick={() => setSeverityFilter(filter.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                      severityFilter === filter.value
+                        ? 'bg-brand-sage/15 text-brand-sage border border-brand-sage/30'
+                        : 'bg-surface-2 text-text-secondary border border-transparent hover:border-border-hover'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
 
-          {/* Sort */}
-          <div className="flex items-center gap-1.5">
-            <ArrowUpDown className="w-4 h-4 text-text-muted" />
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-surface-2 border border-border rounded-lg px-3 py-1.5 text-xs text-text-secondary focus:outline-none focus:ring-1 focus:ring-brand-sage appearance-none cursor-pointer"
-            >
-              <option value="time">Most recent</option>
-              <option value="severity">Severity</option>
-              <option value="confidence">Confidence</option>
-            </select>
-          </div>
-        </div>
-      </FadeInUp>
+              {/* Sort */}
+              <div className="flex items-center gap-1.5">
+                <ArrowUpDown className="w-4 h-4 text-text-muted" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                  className="bg-surface-2 border border-border rounded-lg px-3 py-1.5 text-xs text-text-secondary focus:outline-none focus:ring-1 focus:ring-brand-sage appearance-none cursor-pointer"
+                >
+                  <option value="time">Most recent</option>
+                  <option value="severity">Severity</option>
+                  <option value="confidence">Confidence</option>
+                </select>
+              </div>
+            </div>
+          </FadeInUp>
+        </>
+      )}
 
       {/* Threat list */}
       <FadeInUp delay={0.12}>
         <div className="space-y-3">
           {filteredThreats.length === 0 && (
-            <div className="bg-surface-1 border border-border rounded-xl px-5 py-12 text-center card-glow">
-              <ShieldAlert className="w-8 h-8 text-text-muted mx-auto mb-3" />
-              <p className="text-sm text-text-secondary">No threats match your filters</p>
-              <p className="text-xs text-text-tertiary mt-1">
-                Try adjusting the severity filter or search query
+            <div className="bg-surface-1 border border-border rounded-xl px-5 py-16 text-center card-glow">
+              <div className="bg-surface-2 p-3 rounded-xl inline-block mb-4">
+                <ShieldCheck className="w-6 h-6 text-status-safe" />
+              </div>
+              <p className="text-sm font-medium text-text-secondary">No threats detected</p>
+              <p className="text-xs text-text-tertiary mt-1 max-w-sm mx-auto">
+                {THREAT_EVENTS.length === 0
+                  ? 'Threats will appear here once Guard agents start monitoring your endpoints.'
+                  : 'Try adjusting the severity filter or search query'}
               </p>
             </div>
           )}
