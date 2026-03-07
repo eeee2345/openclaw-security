@@ -4129,22 +4129,22 @@
         "title": "Panguard Report",
         "desc": "合規報告、SOC 2 證據收集、PDF 自訂"
       },
-      "dashboard": {
-        "title": "儀表板",
-        "desc": "儀表板概覽、自訂檢視、團隊管理、SSO 設定"
+      "skillAuditor": {
+        "title": "Skill Auditor",
+        "desc": "AI Agent 技能安全掃描、風險評分、CI/CD 整合"
       }
     },
-    "popularArticles": {
-      "title": "熱門文章",
-      "subtitle": "經常被參考的指南和教學。",
-      "article1": "如何在 Ubuntu/Debian 安裝 Panguard",
-      "article2": "如何在 CentOS/RHEL 安裝 Panguard",
-      "article3": "設定 Slack 通知",
-      "article4": "了解威脅嚴重性等級",
-      "article5": "設定自動合規報告",
-      "article6": "API 認證和速率限制",
-      "article7": "代理連線故障排除",
-      "article8": "升級 Panguard 到最新版本"
+    "guides": {
+      "title": "指南",
+      "subtitle": "部署和進階設定的逐步指南。",
+      "deployment": {
+        "title": "多端點部署",
+        "desc": "SSH 批次安裝、Ansible playbook、Threat Cloud 整合，適用 5-100+ 台伺服器。"
+      },
+      "advancedSetup": {
+        "title": "進階設定",
+        "desc": "整合 Ollama（本地 AI）、Falco（eBPF 監控）和 Suricata（網路 IDS）。"
+      }
     },
     "cantFind": "找不到你要的？",
     "cantFindDesc": "我們的團隊隨時為你提供幫助。透過聯繫頁面聯繫我們或加入社群討論。",

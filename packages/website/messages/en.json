@@ -3281,22 +3281,22 @@
         "title": "Panguard Report",
         "desc": "Compliance reports, SOC 2 evidence collection, PDF customization"
       },
-      "dashboard": {
-        "title": "Dashboard",
-        "desc": "Dashboard overview, custom views, team management, SSO setup"
+      "skillAuditor": {
+        "title": "Skill Auditor",
+        "desc": "AI agent skill security scanning, risk scoring, CI/CD integration"
       }
     },
-    "popularArticles": {
-      "title": "Popular Articles",
-      "subtitle": "Frequently referenced guides and how-tos.",
-      "article1": "How to install Panguard on Ubuntu/Debian",
-      "article2": "How to install Panguard on CentOS/RHEL",
-      "article3": "Configuring Slack notifications",
-      "article4": "Understanding threat severity levels",
-      "article5": "Setting up automated compliance reports",
-      "article6": "API authentication and rate limits",
-      "article7": "Troubleshooting agent connectivity",
-      "article8": "Upgrading Panguard to the latest version"
+    "guides": {
+      "title": "Guides",
+      "subtitle": "Step-by-step guides for deployment and advanced configuration.",
+      "deployment": {
+        "title": "Multi-Endpoint Deployment",
+        "desc": "SSH batch install, Ansible playbooks, and Threat Cloud integration for 5-100+ servers."
+      },
+      "advancedSetup": {
+        "title": "Advanced Setup",
+        "desc": "Integrate Ollama (local AI), Falco (eBPF monitoring), and Suricata (network IDS)."
+      }
     },
     "cantFind": "Can't find what you're looking for?",
     "cantFindDesc": "Our team is here to help. Reach out through our contact page or join the community discussion.",

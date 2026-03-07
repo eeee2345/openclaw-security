@@ -22,31 +22,24 @@ import {
 
 const quickStartConfigs = [
   { key: 'item1' as const, icon: TerminalIcon, href: '/docs/getting-started' },
-  { key: 'item2' as const, icon: DeployIcon },
-  { key: 'item3' as const, icon: IntegrationIcon },
   { key: 'cliRef' as const, icon: TerminalIcon, href: '/docs/cli' },
+  { key: 'item3' as const, icon: IntegrationIcon, href: '/docs/api' },
   { key: 'benchmark' as const, icon: AnalyticsIcon, href: '/docs/benchmark' },
 ];
 
 const productDocConfigs = [
-  { key: 'scan' as const, icon: ScanIcon },
-  { key: 'guard' as const, icon: ShieldIcon },
-  { key: 'chat' as const, icon: ChatIcon },
-  { key: 'trap' as const, icon: TrapIcon },
-  { key: 'report' as const, icon: ReportIcon },
-  { key: 'dashboard' as const, icon: AnalyticsIcon },
+  { key: 'scan' as const, icon: ScanIcon, href: '/docs/scan' },
+  { key: 'guard' as const, icon: ShieldIcon, href: '/docs/guard' },
+  { key: 'chat' as const, icon: ChatIcon, href: '/docs/chat' },
+  { key: 'trap' as const, icon: TrapIcon, href: '/docs/trap' },
+  { key: 'report' as const, icon: ReportIcon, href: '/docs/report' },
+  { key: 'skillAuditor' as const, icon: AnalyticsIcon, href: '/docs/skill-auditor' },
 ];
 
-const articleKeys = [
-  'article1',
-  'article2',
-  'article3',
-  'article4',
-  'article5',
-  'article6',
-  'article7',
-  'article8',
-] as const;
+const guideConfigs = [
+  { key: 'deployment' as const, icon: DeployIcon, href: '/docs/deployment' },
+  { key: 'advancedSetup' as const, icon: IntegrationIcon, href: '/docs/advanced-setup' },
+];
 
 /* ════════════════════════  Component  ═════════════════════════ */
 
@@ -79,42 +72,26 @@ export default function DocsContent() {
         </FadeInUp>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
-          {quickStartConfigs.map((card, i) => {
-            const hasLink = 'href' in card && card.href;
-            const inner = (
-              <div className="bg-surface-1 border border-border rounded-2xl p-6 card-glow h-full flex flex-col">
-                <div className="w-9 h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center mb-4">
-                  <card.icon className="w-4 h-4 text-brand-sage" />
-                </div>
-                <h4 className="text-text-primary font-semibold">
-                  {t(`quickStart.${card.key}.title`)}
-                </h4>
-                <p className="text-sm text-text-secondary mt-2 leading-relaxed flex-1">
-                  {t(`quickStart.${card.key}.desc`)}
-                </p>
-                {hasLink ? (
+          {quickStartConfigs.map((card, i) => (
+            <FadeInUp key={card.key} delay={i * 0.06}>
+              <Link href={card.href} className="block h-full">
+                <div className="bg-surface-1 border border-border rounded-2xl p-6 card-glow h-full flex flex-col">
+                  <div className="w-9 h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center mb-4">
+                    <card.icon className="w-4 h-4 text-brand-sage" />
+                  </div>
+                  <h4 className="text-text-primary font-semibold">
+                    {t(`quickStart.${card.key}.title`)}
+                  </h4>
+                  <p className="text-sm text-text-secondary mt-2 leading-relaxed flex-1">
+                    {t(`quickStart.${card.key}.desc`)}
+                  </p>
                   <span className="text-brand-sage text-xs font-medium flex items-center gap-1 mt-4">
                     {t('readGuide')} &rarr;
                   </span>
-                ) : (
-                  <span className="text-text-muted text-xs font-medium flex items-center gap-1 mt-4">
-                    {t('comingSoon')}
-                  </span>
-                )}
-              </div>
-            );
-            return (
-              <FadeInUp key={card.key} delay={i * 0.06}>
-                {hasLink ? (
-                  <Link href={card.href as string} className="block h-full">
-                    {inner}
-                  </Link>
-                ) : (
-                  inner
-                )}
-              </FadeInUp>
-            );
-          })}
+                </div>
+              </Link>
+            </FadeInUp>
+          ))}
         </div>
       </SectionWrapper>
 
@@ -130,41 +107,55 @@ export default function DocsContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {productDocConfigs.map((doc, i) => (
             <FadeInUp key={doc.key} delay={i * 0.06}>
-              <div className="bg-surface-1 border border-border rounded-2xl p-6 h-full flex flex-col">
-                <div className="w-9 h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center mb-4">
-                  <doc.icon className="w-4 h-4 text-brand-sage" />
+              <Link href={doc.href} className="block h-full">
+                <div className="bg-surface-1 border border-border rounded-2xl p-6 h-full flex flex-col card-glow">
+                  <div className="w-9 h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center mb-4">
+                    <doc.icon className="w-4 h-4 text-brand-sage" />
+                  </div>
+                  <h4 className="text-text-primary font-semibold">
+                    {t(`productDocs.${doc.key}.title`)}
+                  </h4>
+                  <p className="text-sm text-text-secondary mt-2 leading-relaxed flex-1">
+                    {t(`productDocs.${doc.key}.desc`)}
+                  </p>
+                  <span className="text-brand-sage text-xs font-medium flex items-center gap-1 mt-4">
+                    {t('readGuide')} &rarr;
+                  </span>
                 </div>
-                <h4 className="text-text-primary font-semibold">
-                  {t(`productDocs.${doc.key}.title`)}
-                </h4>
-                <p className="text-sm text-text-secondary mt-2 leading-relaxed flex-1">
-                  {t(`productDocs.${doc.key}.desc`)}
-                </p>
-                <span className="text-text-muted text-xs font-medium flex items-center gap-1 mt-4">
-                  {t('comingSoon')}
-                </span>
-              </div>
+              </Link>
             </FadeInUp>
           ))}
         </div>
       </SectionWrapper>
 
-      {/* ───────────── Popular Articles ───────────── */}
+      {/* ───────────── Guides ───────────── */}
       <SectionWrapper>
         <FadeInUp>
           <h3 className="text-xs uppercase tracking-[0.12em] text-brand-sage font-semibold mb-2 text-center">
-            {t('popularArticles.title')}
+            {t('guides.title')}
           </h3>
-          <p className="text-text-secondary text-center mb-10">{t('popularArticles.subtitle')}</p>
+          <p className="text-text-secondary text-center mb-10">{t('guides.subtitle')}</p>
         </FadeInUp>
 
-        <div className="max-w-2xl mx-auto divide-y divide-border">
-          {articleKeys.map((key, i) => (
-            <FadeInUp key={key} delay={i * 0.04}>
-              <div className="flex items-center justify-between py-4 text-text-secondary">
-                <span className="text-sm">{t(`popularArticles.${key}`)}</span>
-                <span className="text-text-muted text-xs shrink-0 ml-4">{t('comingSoon')}</span>
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
+          {guideConfigs.map((guide, i) => (
+            <FadeInUp key={guide.key} delay={i * 0.06}>
+              <Link href={guide.href} className="block h-full">
+                <div className="bg-surface-1 border border-border rounded-2xl p-6 card-glow h-full flex flex-col">
+                  <div className="w-9 h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center mb-4">
+                    <guide.icon className="w-4 h-4 text-brand-sage" />
+                  </div>
+                  <h4 className="text-text-primary font-semibold">
+                    {t(`guides.${guide.key}.title`)}
+                  </h4>
+                  <p className="text-sm text-text-secondary mt-2 leading-relaxed flex-1">
+                    {t(`guides.${guide.key}.desc`)}
+                  </p>
+                  <span className="text-brand-sage text-xs font-medium flex items-center gap-1 mt-4">
+                    {t('readGuide')} &rarr;
+                  </span>
+                </div>
+              </Link>
             </FadeInUp>
           ))}
         </div>
