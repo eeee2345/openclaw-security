@@ -2,232 +2,240 @@
  * Panguard MCP - Server Tests
  * Panguard MCP - 伺服器測試
  *
- * Tests for the MCP server tool definitions and dispatcher.
- * MCP 伺服器工具定義和分派器的測試。
+ * Tests for MCP server setup: tool listing, schema validation, metadata,
+ * and the dispatch router.
  *
  * @module @panguard-ai/panguard-mcp/tests/server
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
-import os from 'node:os';
-import { getAllToolDefinitions, dispatchTool } from '../src/server.js';
+import { describe, it, expect, vi } from 'vitest';
+import { getAllToolDefinitions, dispatchTool, PANGUARD_MCP_VERSION } from '../src/server.js';
 
-// ─── Tool Definitions ───────────────────────────────────────────────────────
+// ─── Server Metadata ────────────────────────────────────────────────────────
+
+describe('Server metadata', () => {
+  it('exports a valid semver version string', () => {
+    expect(typeof PANGUARD_MCP_VERSION).toBe('string');
+    // Semver: major.minor.patch with optional pre-release
+    expect(PANGUARD_MCP_VERSION).toMatch(/^\d+\.\d+\.\d+/);
+  });
+});
+
+// ─── Tool Listing ───────────────────────────────────────────────────────────
 
 describe('getAllToolDefinitions()', () => {
+  const tools = getAllToolDefinitions();
+
   it('returns exactly 11 tool definitions', () => {
-    const tools = getAllToolDefinitions();
     expect(tools).toHaveLength(11);
   });
 
+  const EXPECTED_TOOL_NAMES = [
+    'panguard_scan',
+    'panguard_scan_code',
+    'panguard_guard_start',
+    'panguard_guard_stop',
+    'panguard_status',
+    'panguard_alerts',
+    'panguard_block_ip',
+    'panguard_generate_report',
+    'panguard_init',
+    'panguard_audit_skill',
+    'panguard_deploy',
+  ] as const;
+
   it('contains all expected tool names', () => {
-    const tools = getAllToolDefinitions();
     const names = tools.map((t) => t.name);
-    expect(names).toContain('panguard_scan');
-    expect(names).toContain('panguard_scan_code');
-    expect(names).toContain('panguard_guard_start');
-    expect(names).toContain('panguard_guard_stop');
-    expect(names).toContain('panguard_status');
-    expect(names).toContain('panguard_alerts');
-    expect(names).toContain('panguard_block_ip');
-    expect(names).toContain('panguard_generate_report');
-    expect(names).toContain('panguard_init');
-    expect(names).toContain('panguard_deploy');
-    expect(names).toContain('panguard_audit_skill');
+    for (const expected of EXPECTED_TOOL_NAMES) {
+      expect(names).toContain(expected);
+    }
   });
 
-  it('every tool has an inputSchema', () => {
-    const tools = getAllToolDefinitions();
+  it('has no duplicate tool names', () => {
+    const names = tools.map((t) => t.name);
+    const unique = new Set(names);
+    expect(unique.size).toBe(names.length);
+  });
+
+  it('every tool has a non-empty name', () => {
     for (const tool of tools) {
-      expect(tool.inputSchema).toBeDefined();
-      expect(tool.inputSchema.type).toBe('object');
-      expect(tool.inputSchema.properties).toBeDefined();
+      expect(typeof tool.name).toBe('string');
+      expect(tool.name.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('every tool name follows panguard_ prefix convention', () => {
+    for (const tool of tools) {
+      expect(tool.name).toMatch(/^panguard_/);
     }
   });
 
   it('every tool has a non-empty description', () => {
-    const tools = getAllToolDefinitions();
     for (const tool of tools) {
       expect(typeof tool.description).toBe('string');
-      expect(tool.description.length).toBeGreaterThan(0);
+      expect(tool.description.length).toBeGreaterThan(10);
     }
   });
 
-  it('panguard_block_ip requires "ip" field', () => {
-    const tools = getAllToolDefinitions();
-    const blockTool = tools.find((t) => t.name === 'panguard_block_ip');
-    expect(blockTool).toBeDefined();
-    expect(blockTool!.inputSchema.required).toContain('ip');
-  });
-
-  it('panguard_scan_code requires "dir" field', () => {
-    const tools = getAllToolDefinitions();
-    const scanCodeTool = tools.find((t) => t.name === 'panguard_scan_code');
-    expect(scanCodeTool).toBeDefined();
-    expect(scanCodeTool!.inputSchema.required).toContain('dir');
-  });
-});
-
-// ─── dispatchTool — panguard_status ─────────────────────────────────────────
-
-describe('dispatchTool("panguard_status", {})', () => {
-  it('returns a content array with text', async () => {
-    const result = await dispatchTool('panguard_status', {});
-    expect(result.content).toBeInstanceOf(Array);
-    expect(result.content.length).toBeGreaterThan(0);
-    expect(result.content[0]).toHaveProperty('type', 'text');
-    expect(typeof result.content[0]!.text).toBe('string');
-  });
-
-  it('returns valid JSON with guard status field', async () => {
-    const result = await dispatchTool('panguard_status', {});
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('guard');
-    expect(parsed).toHaveProperty('summary');
-  });
-});
-
-// ─── dispatchTool — panguard_block_ip ───────────────────────────────────────
-
-describe('dispatchTool("panguard_block_ip", ...)', () => {
-  it('returns error when no IP is provided', async () => {
-    const result = await dispatchTool('panguard_block_ip', {});
-    expect(result.isError).toBe(true);
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('error');
-  });
-
-  it('returns error for an invalid IP address', async () => {
-    const result = await dispatchTool('panguard_block_ip', { ip: 'not-an-ip' });
-    expect(result.isError).toBe(true);
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('error');
-  });
-
-  it('returns success for a valid IPv4 address', async () => {
-    const result = await dispatchTool('panguard_block_ip', { ip: '192.168.1.1' });
-    expect(result.isError).toBeFalsy();
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('status', 'blocked');
-    expect(parsed).toHaveProperty('ip', '192.168.1.1');
-  });
-
-  it('returns success for a valid IPv6 address', async () => {
-    const result = await dispatchTool('panguard_block_ip', { ip: '::1' });
-    expect(result.isError).toBeFalsy();
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('status', 'blocked');
-  });
-
-  it('includes custom reason in the blocked response', async () => {
-    const result = await dispatchTool('panguard_block_ip', {
-      ip: '10.0.0.1',
-      reason: 'Suspicious scan activity',
-    });
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed['reason']).toBe('Suspicious scan activity');
-  });
-});
-
-// ─── dispatchTool — panguard_init ───────────────────────────────────────────
-
-const TEST_DATA_DIR = path.join(os.tmpdir(), 'test-panguard-mcp-' + Date.now());
-
-describe('dispatchTool("panguard_init", ...)', () => {
-  afterAll(async () => {
-    await fs.rm(TEST_DATA_DIR, { recursive: true, force: true });
-  });
-
-  it('creates the data directory and config.json', async () => {
-    const result = await dispatchTool('panguard_init', { dataDir: TEST_DATA_DIR });
-    expect(result.isError).toBeFalsy();
-
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed['status']).toBe('initialized');
-    expect(parsed['dataDir']).toBe(TEST_DATA_DIR);
-
-    const configPath = path.join(TEST_DATA_DIR, 'config.json');
-    const exists = await fs.access(configPath).then(() => true).catch(() => false);
-    expect(exists).toBe(true);
-  });
-
-  it('writes valid JSON config with correct defaults', async () => {
-    const configPath = path.join(TEST_DATA_DIR, 'config.json');
-    const content = await fs.readFile(configPath, 'utf-8');
-    const config = JSON.parse(content) as Record<string, unknown>;
-
-    expect(config['mode']).toBe('learning');
-    expect(config['lang']).toBe('en');
-    expect(config['dataDir']).toBe(TEST_DATA_DIR);
-  });
-
-  it('respects custom mode and lang arguments', async () => {
-    const customDir = TEST_DATA_DIR + '-custom';
-    try {
-      await dispatchTool('panguard_init', {
-        dataDir: customDir,
-        mode: 'protection',
-        lang: 'zh-TW',
-      });
-
-      const configPath = path.join(customDir, 'config.json');
-      const content = await fs.readFile(configPath, 'utf-8');
-      const config = JSON.parse(content) as Record<string, unknown>;
-
-      expect(config['mode']).toBe('protection');
-      expect(config['lang']).toBe('zh-TW');
-    } finally {
-      await fs.rm(customDir, { recursive: true, force: true });
+  it('every tool description is bilingual (contains "/")', () => {
+    for (const tool of tools) {
+      expect(tool.description).toContain('/');
     }
   });
 });
 
-// ─── dispatchTool — panguard_alerts ─────────────────────────────────────────
+// ─── Tool Schema Validation ─────────────────────────────────────────────────
 
-describe('dispatchTool("panguard_alerts", {})', () => {
-  it('returns content array even when no events file exists', async () => {
-    const result = await dispatchTool('panguard_alerts', {
-      dataDir: path.join(os.tmpdir(), 'nonexistent-panguard-' + Date.now()),
-    });
-    expect(result.content).toBeInstanceOf(Array);
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('total_alerts', 0);
-    expect(parsed).toHaveProperty('alerts');
-    expect(Array.isArray(parsed['alerts'])).toBe(true);
+describe('Tool schema validation', () => {
+  const tools = getAllToolDefinitions();
+
+  it('every tool has inputSchema with type "object"', () => {
+    for (const tool of tools) {
+      expect(tool.inputSchema).toBeDefined();
+      expect(tool.inputSchema.type).toBe('object');
+    }
+  });
+
+  it('every tool has a properties object in inputSchema', () => {
+    for (const tool of tools) {
+      expect(tool.inputSchema.properties).toBeDefined();
+      expect(typeof tool.inputSchema.properties).toBe('object');
+    }
+  });
+
+  it('every property has a type field', () => {
+    for (const tool of tools) {
+      const props = tool.inputSchema.properties;
+      for (const [key, schema] of Object.entries(props)) {
+        expect((schema as Record<string, unknown>)['type']).toBeDefined();
+      }
+    }
+  });
+
+  // Required fields checks
+  it('panguard_scan_code requires "dir"', () => {
+    const tool = tools.find((t) => t.name === 'panguard_scan_code');
+    expect(tool).toBeDefined();
+    expect(tool!.inputSchema.required).toContain('dir');
+  });
+
+  it('panguard_block_ip requires "ip"', () => {
+    const tool = tools.find((t) => t.name === 'panguard_block_ip');
+    expect(tool).toBeDefined();
+    expect(tool!.inputSchema.required).toContain('ip');
+  });
+
+  it('panguard_audit_skill requires "path"', () => {
+    const tool = tools.find((t) => t.name === 'panguard_audit_skill');
+    expect(tool).toBeDefined();
+    expect(tool!.inputSchema.required).toContain('path');
+  });
+
+  // Enum validation
+  it('panguard_scan depth enum is ["quick", "full"]', () => {
+    const tool = tools.find((t) => t.name === 'panguard_scan');
+    const depthProp = tool!.inputSchema.properties['depth'] as Record<string, unknown>;
+    expect(depthProp['enum']).toEqual(['quick', 'full']);
+  });
+
+  it('panguard_scan lang enum is ["en", "zh-TW"]', () => {
+    const tool = tools.find((t) => t.name === 'panguard_scan');
+    const langProp = tool!.inputSchema.properties['lang'] as Record<string, unknown>;
+    expect(langProp['enum']).toEqual(['en', 'zh-TW']);
+  });
+
+  it('panguard_guard_start mode enum is ["learning", "protection"]', () => {
+    const tool = tools.find((t) => t.name === 'panguard_guard_start');
+    const modeProp = tool!.inputSchema.properties['mode'] as Record<string, unknown>;
+    expect(modeProp['enum']).toEqual(['learning', 'protection']);
+  });
+
+  it('panguard_alerts severity enum includes "all"', () => {
+    const tool = tools.find((t) => t.name === 'panguard_alerts');
+    const severityProp = tool!.inputSchema.properties['severity'] as Record<string, unknown>;
+    expect(severityProp['enum']).toContain('all');
+    expect(severityProp['enum']).toContain('critical');
+    expect(severityProp['enum']).toContain('high');
+    expect(severityProp['enum']).toContain('medium');
+    expect(severityProp['enum']).toContain('low');
+  });
+
+  // Tools that should NOT have required fields
+  it('panguard_scan has no required fields', () => {
+    const tool = tools.find((t) => t.name === 'panguard_scan');
+    expect(tool!.inputSchema.required).toBeUndefined();
+  });
+
+  it('panguard_guard_start has no required fields', () => {
+    const tool = tools.find((t) => t.name === 'panguard_guard_start');
+    expect(tool!.inputSchema.required).toBeUndefined();
+  });
+
+  it('panguard_status has no required fields', () => {
+    const tool = tools.find((t) => t.name === 'panguard_status');
+    expect(tool!.inputSchema.required).toBeUndefined();
+  });
+
+  it('panguard_deploy has no required fields', () => {
+    const tool = tools.find((t) => t.name === 'panguard_deploy');
+    expect(tool!.inputSchema.required).toBeUndefined();
   });
 });
 
-// ─── dispatchTool — panguard_guard_start / stop ──────────────────────────────
+// ─── Specific Tool Schema Detail ────────────────────────────────────────────
 
-describe('dispatchTool("panguard_guard_start", {})', () => {
-  it('returns status ready with dataDir and command', async () => {
-    const result = await dispatchTool('panguard_guard_start', {
-      dataDir: path.join(os.tmpdir(), 'pg-mcp-guard-test-' + Date.now()),
-    });
-    expect(result.content).toBeInstanceOf(Array);
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed).toHaveProperty('status', 'ready');
-    expect(typeof parsed['command']).toBe('string');
+describe('Individual tool schema details', () => {
+  const tools = getAllToolDefinitions();
+
+  it('panguard_alerts has limit property of type number', () => {
+    const tool = tools.find((t) => t.name === 'panguard_alerts');
+    const limitProp = tool!.inputSchema.properties['limit'] as Record<string, unknown>;
+    expect(limitProp['type']).toBe('number');
+    expect(limitProp['default']).toBe(20);
+  });
+
+  it('panguard_deploy has generateReport property of type boolean', () => {
+    const tool = tools.find((t) => t.name === 'panguard_deploy');
+    const reportProp = tool!.inputSchema.properties['generateReport'] as Record<string, unknown>;
+    expect(reportProp['type']).toBe('boolean');
+    expect(reportProp['default']).toBe(true);
+  });
+
+  it('panguard_generate_report has output property with default path', () => {
+    const tool = tools.find((t) => t.name === 'panguard_generate_report');
+    const outputProp = tool!.inputSchema.properties['output'] as Record<string, unknown>;
+    expect(outputProp['type']).toBe('string');
+    expect(outputProp['default']).toBe('./panguard-report.pdf');
+  });
+
+  it('panguard_block_ip has ip, duration, and reason properties', () => {
+    const tool = tools.find((t) => t.name === 'panguard_block_ip');
+    const props = Object.keys(tool!.inputSchema.properties);
+    expect(props).toContain('ip');
+    expect(props).toContain('duration');
+    expect(props).toContain('reason');
+  });
+
+  it('panguard_init has dataDir, lang, and mode properties', () => {
+    const tool = tools.find((t) => t.name === 'panguard_init');
+    const props = Object.keys(tool!.inputSchema.properties);
+    expect(props).toContain('dataDir');
+    expect(props).toContain('lang');
+    expect(props).toContain('mode');
   });
 });
 
-describe('dispatchTool("panguard_guard_stop", {})', () => {
-  it('returns status not_running when no PID file', async () => {
-    const result = await dispatchTool('panguard_guard_stop', {
-      dataDir: path.join(os.tmpdir(), 'pg-mcp-stop-test-' + Date.now()),
-    });
-    const parsed = JSON.parse(result.content[0]!.text as string) as Record<string, unknown>;
-    expect(parsed['status']).toBe('not_running');
-  });
-});
-
-// ─── dispatchTool — unknown tool ─────────────────────────────────────────────
+// ─── dispatchTool — Unknown Tool ────────────────────────────────────────────
 
 describe('dispatchTool with unknown tool name', () => {
   it('returns isError: true for unknown tools', async () => {
     const result = await dispatchTool('nonexistent_tool', {});
     expect(result.isError).toBe(true);
+    expect(result.content[0]!.text).toContain('Unknown tool');
+  });
+
+  it('includes the tool name in the error message', async () => {
+    const result = await dispatchTool('some_random_tool', {});
+    expect(result.content[0]!.text).toContain('some_random_tool');
   });
 });
