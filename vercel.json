@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd packages/website && next build",
+  "installCommand": "pnpm install --filter @panguard-ai/website...",
+  "framework": "nextjs",
+  "outputDirectory": "packages/website/.next"
+}
