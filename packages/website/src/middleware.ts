@@ -7,15 +7,24 @@ const intlMiddleware = createMiddleware(routing);
 
 export function middleware(request: NextRequest) {
   const host = request.headers.get('host') || '';
+  const { pathname } = request.nextUrl;
 
   // get.panguard.ai → serve install script via API route
-  // get.panguard.ai/windows → serve PowerShell installer via API route
   if (host.startsWith('get.')) {
-    const { pathname } = request.nextUrl;
     if (pathname === '/windows' || pathname === '/win' || pathname === '/install.ps1') {
       return NextResponse.rewrite(new URL('/api/install/windows', request.url));
     }
     return NextResponse.rewrite(new URL('/api/install', request.url));
+  }
+
+  // /docs → redirect to docs.panguard.ai (before i18n middleware intercepts)
+  const docsMatch = pathname.match(/^(?:\/(?:en|zh))?\/docs(?:\/(.*))?$/);
+  if (docsMatch) {
+    const subpath = docsMatch[1] || '';
+    const target = subpath
+      ? `https://docs.panguard.ai/${subpath}`
+      : 'https://docs.panguard.ai';
+    return NextResponse.redirect(target, 301);
   }
 
   return intlMiddleware(request);

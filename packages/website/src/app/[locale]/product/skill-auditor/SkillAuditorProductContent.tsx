@@ -380,6 +380,45 @@ Run with --json for machine-readable output.`}
         </div>
       </SectionWrapper>
 
+      {/* ── Three Layers ── */}
+      <SectionWrapper className="border-t border-border">
+        <div className="max-w-[1000px] mx-auto">
+          <FadeInUp>
+            <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4 text-center">
+              {t('checks.layers.overline')}
+            </p>
+            <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-text-primary leading-[1.1] text-center max-w-2xl mx-auto">
+              {t('checks.layers.title')}
+            </h2>
+          </FadeInUp>
+
+          <FadeInUp delay={0.1}>
+            <div className="mt-10 space-y-4">
+              {(['layer1', 'layer2', 'layer3'] as const).map((key, i) => (
+                <div key={key} className={`flex items-start gap-4 p-5 rounded-xl border ${i === 1 ? 'border-brand-sage/30 bg-brand-sage/5' : 'border-border bg-surface-0'}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-extrabold ${i === 1 ? 'bg-brand-sage/20 text-brand-sage' : 'bg-surface-1 text-text-muted'}`}>
+                    {i + 1}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-semibold ${i === 1 ? 'text-brand-sage' : 'text-text-muted'}`}>
+                        {t(`checks.layers.${key}.label`)}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-text-primary mt-0.5">
+                      {t(`checks.layers.${key}.name`)}
+                    </h3>
+                    <p className="text-sm text-text-secondary mt-1 leading-relaxed">
+                      {t(`checks.layers.${key}.desc`)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
       {/* ── Risk Score ── */}
       <SectionWrapper className="border-t border-border">
         <div className="max-w-3xl mx-auto">

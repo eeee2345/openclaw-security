@@ -2447,8 +2447,8 @@
         }
       },
       "checks": {
-        "overline": "7 道檢查",
-        "title": "一秒掃完，七個面向。",
+        "overline": "三層防護",
+        "title": "Regex 抓已知的。AI 抓看不出來的。社群抓掃過的。",
         "promptInjection": { "name": "指令劫持", "detail": "11 組特徵比對，抓身份偽裝、指令覆蓋、越獄攻擊" },
         "hiddenUnicode": { "name": "隱形字元", "detail": "零寬空格、方向覆寫、長得跟真的一樣的假字母，肉眼看不見的東西" },
         "encodedPayloads": { "name": "編碼過的惡意內容", "detail": "自動解開 Base64，檢查裡面有沒有 eval、exec、subprocess" },
@@ -2458,7 +2458,26 @@
         "manifestValidation": { "name": "格式驗證", "detail": "SKILL.md 結構完整嗎、該填的欄位有沒有少、metadata 正常嗎" },
         "scanTime": "掃描耗時",
         "checkCategories": "檢查項目",
-        "injectionPatterns": "攻擊特徵"
+        "injectionPatterns": "攻擊特徵",
+        "layers": {
+          "overline": "怎麼運作",
+          "title": "三層一起掃，單層抓不到的東西逃不掉。",
+          "layer1": {
+            "name": "特徵比對",
+            "desc": "11 組 prompt injection 特徵、6 組工具下毒簽章、同形字偵測、Base64 解碼。確定性結果，一秒內跑完。",
+            "label": "第一層"
+          },
+          "layer2": {
+            "name": "AI 語意分析",
+            "desc": "LLM 分析 skill 有沒有社交工程、描述跟實際行為矛盾、或是刻意繞過 regex 的混淆攻擊。",
+            "label": "第二層"
+          },
+          "layer3": {
+            "name": "Threat Cloud 社群情報",
+            "desc": "每次掃描都會上傳匿名化威脅指標。別人掃過的危險 skill，你還沒掃就先知道了。",
+            "label": "第三層"
+          }
+        }
       },
       "riskScoring": {
         "overline": "量化風險",

@@ -1700,8 +1700,8 @@
         }
       },
       "checks": {
-        "overline": "7 AUTOMATED CHECKS",
-        "title": "Deep scan in under 1 second.",
+        "overline": "THREE-LAYER SECURITY",
+        "title": "Regex. AI. Community intelligence.",
         "promptInjection": { "name": "Prompt Injection", "detail": "11 regex patterns detect identity override, instruction hijacking, and jailbreak attempts" },
         "hiddenUnicode": { "name": "Hidden Unicode", "detail": "Zero-width characters, RTL overrides, homoglyph attacks invisible to human reviewers" },
         "encodedPayloads": { "name": "Encoded Payloads", "detail": "Auto-decode Base64 and detect eval, exec, subprocess, child_process inside" },
@@ -1711,7 +1711,26 @@
         "manifestValidation": { "name": "Manifest Validation", "detail": "Verifies SKILL.md structure, required fields, and metadata integrity" },
         "scanTime": "Scan time",
         "checkCategories": "Check categories",
-        "injectionPatterns": "Injection patterns"
+        "injectionPatterns": "Injection patterns",
+        "layers": {
+          "overline": "HOW IT WORKS",
+          "title": "Three layers catch what one layer can't.",
+          "layer1": {
+            "name": "Pattern Matching",
+            "desc": "11 prompt injection patterns, 6 tool poisoning signatures, homoglyph detection, Base64 decode. Deterministic, under 1 second.",
+            "label": "Layer 1"
+          },
+          "layer2": {
+            "name": "AI Semantic Analysis",
+            "desc": "LLM analyzes the skill for social engineering, intent mismatch, and obfuscated attacks that regex physically cannot catch.",
+            "label": "Layer 2"
+          },
+          "layer3": {
+            "name": "Threat Cloud Intelligence",
+            "desc": "Every scan contributes anonymized threat data. If someone already flagged a dangerous skill, you know before you scan.",
+            "label": "Layer 3"
+          }
+        }
       },
       "riskScoring": {
         "overline": "RISK SCORING",
@@ -4398,6 +4417,23 @@
         "users100k": "100,000 users: predictive threat detection"
       }
     },
+    "skillIntel": {
+      "overline": "AI SKILL INTELLIGENCE",
+      "title": "Not just endpoints. AI skills too.",
+      "desc": "Threat Cloud doesn't just track server attacks. Every Panguard Skill Auditor scan contributes anonymized skill threat data — hash, risk score, finding categories. The result: a community-powered trust database for the entire AI skill ecosystem.",
+      "item1": {
+        "title": "Instant Verdict",
+        "desc": "If someone already scanned a known-malicious skill, you get the result before your scan even starts."
+      },
+      "item2": {
+        "title": "Community Trust Score",
+        "desc": "Skills build trust over time. More scans with clean results = higher trust ratio. One CRITICAL finding from anyone = flagged for everyone."
+      },
+      "item3": {
+        "title": "Zero-Day Propagation",
+        "desc": "A new malicious skill appears on OpenClaw. The first person to scan it flags it. Within minutes, every Panguard user knows."
+      }
+    },
     "api": {
       "overline": "API ACCESS",
       "title": "For Developers: Threat Cloud API",
@@ -4416,12 +4452,12 @@
           "desc": "Auto-generated detection rules"
         },
         {
-          "name": "Campaign Timeline",
-          "desc": "Active attack campaign tracking"
+          "name": "Skill Threat Lookup",
+          "desc": "Check if a skill is known-malicious before scanning"
         },
         {
-          "name": "Geographic Heatmap",
-          "desc": "Threat distribution by region"
+          "name": "Campaign Timeline",
+          "desc": "Active attack campaign tracking"
         },
         {
           "name": "MITRE ATT&CK Map",
