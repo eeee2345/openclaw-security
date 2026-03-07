@@ -1656,7 +1656,7 @@
       "title": "The security layer that runs",
       "titleHighlight": "before",
       "titleSuffix": "your AI agent does.",
-      "subtitle": "Scan any AI agent skill for prompt injection, tool poisoning, and hidden threats. Get a 0-100 risk score in under 1 second. Works with OpenClaw, Claude, MCP, and more.",
+      "subtitle": "Every time you install a skill from OpenClaw, Panguard scans it automatically. Clean? It installs. Suspicious? You get a report on your phone before anything happens.",
       "cta1": "Get Started",
       "cta2": "Read the Docs",
       "problem": {
@@ -1668,10 +1668,12 @@
       "pillars": {
         "overline": "WHY PANGUARD",
         "title": "What AI agents can't do for you.",
+        "themLabel": "AI Agents",
+        "usLabel": "Panguard",
         "preInstall": {
           "title": "Pre-Install Gate",
           "subtitle": "Know before you install",
-          "desc": "AI agents only check permissions at runtime — after the code is already on your machine. Panguard scans skills before installation, blocking threats at the door.",
+          "desc": "Scan any skill from any source — OpenClaw, GitHub, local directory — before it touches your system. Panguard catches what manual review can't: hidden Unicode, encoded payloads, prompt injection.",
           "them": "Allow / Deny prompt at runtime",
           "us": "Full static analysis before install"
         },
@@ -1723,23 +1725,104 @@
       "workflows": {
         "overline": "REAL WORKFLOWS",
         "title": "Built for how you actually work.",
-        "developer": { "persona": "Developer", "title": "Installing a skill from OpenClaw" },
-        "smb": { "persona": "SMB IT Admin", "title": "Vetting skills for your team" },
-        "enterprise": { "persona": "Enterprise DevSecOps", "title": "CI/CD pipeline gate" }
+        "developer": { "persona": "Developer", "title": "CLI — scan before you install" },
+        "smb": { "persona": "DevSecOps", "title": "CI/CD — gate skills in your pipeline" },
+        "enterprise": { "persona": "Enterprise", "title": "Manager — fleet-wide policy enforcement" }
       },
-      "ecosystem": {
-        "overline": "FULL STACK SECURITY",
-        "title": "From skill safety to server protection.",
-        "desc": "Skill Auditor protects your AI agent. Panguard Guard protects your infrastructure. Together, they cover the full attack surface.",
-        "auditor": "Pre-install scanning",
-        "runtime": "Agent-level allow/deny",
-        "guard": "System-level protection"
+      "comparison": {
+        "overline": "THE DIFFERENCE",
+        "title": "Skill vetting is not skill auditing.",
+        "desc": "Community vetting relies on human eyeballs. Panguard Skill Auditor uses automated static analysis that catches what humans physically cannot see.",
+        "vettingLabel": "Skill Vetting",
+        "panguardLabel": "Panguard Skill Auditor",
+        "footnote": "Vetting is valuable for context and intent -- but it cannot replace automated analysis for hidden threats.",
+        "rows": {
+          "method": {
+            "label": "Method",
+            "vetting": "Manual checklist, line-by-line visual review",
+            "panguard": "Automated static analysis (regex + SAST + secrets scan)"
+          },
+          "speed": {
+            "label": "Speed",
+            "vetting": "Minutes per skill",
+            "panguard": "Under 1 second"
+          },
+          "coverage": {
+            "label": "Coverage",
+            "vetting": "Visible plaintext threats only",
+            "panguard": "Hidden Unicode, Base64 payloads, homoglyph attacks"
+          },
+          "consistency": {
+            "label": "Consistency",
+            "vetting": "Depends on who reviews and when",
+            "panguard": "Deterministic -- same input, same score every time"
+          },
+          "output": {
+            "label": "Output",
+            "vetting": "Subjective pass/fail judgment",
+            "panguard": "Structured report with line numbers and risk levels"
+          }
+        }
+      },
+      "complementary": {
+        "overline": "NOT COMPETING. COMPLEMENTING.",
+        "title": "Three layers of defense. One workflow.",
+        "desc": "Panguard fills the gap in the OpenClaw install flow that nobody else covers yet: pre-install static analysis. Your agent's allow/deny is a separate layer. Both together make the full picture.",
+        "flowLabel": "Panguard Auditor (before) + Agent Permissions (during) + Panguard Guard (always)",
+        "layer1": {
+          "phase": "Before Install",
+          "name": "Panguard Skill Auditor",
+          "desc": "The skill gets scanned before it even touches your system. Problems found? Install does not run.",
+          "analogy": "App Store review"
+        },
+        "layer2": {
+          "phase": "At Runtime",
+          "name": "Agent Permissions",
+          "desc": "Your agent prompts allow/deny when a skill tries to access files or run commands. This is the last gate before execution.",
+          "analogy": "Phone permission popup"
+        },
+        "layer3": {
+          "phase": "Always On",
+          "name": "Panguard Guard",
+          "desc": "If something does slip through, Guard watches at the system level 24/7. Detects anomalies and responds automatically.",
+          "analogy": "Building security system"
+        }
+      },
+      "differentiation": {
+        "overline": "WHY THIS EXISTS",
+        "title": "What nobody else does.",
+        "desc": "Agent platforms handle runtime permissions. Community reviewers do manual vetting. Panguard covers the gap between those two.",
+        "point1": {
+          "title": "Pre-install, not post-install",
+          "desc": "Agent platforms ask allow/deny after a skill is already downloaded. Panguard scans before anything touches your system. The threat never lands.",
+          "punchline": "No other tool scans before claw install completes."
+        },
+        "point2": {
+          "title": "A score, not a yes/no",
+          "desc": "Runtime permission prompts give you a binary choice with no context. Panguard gives a 0-100 score, specific findings at exact line numbers, and severity levels you can act on.",
+          "punchline": "Informed decisions instead of blind guesses."
+        },
+        "point3": {
+          "title": "CI/CD native",
+          "desc": "Organizations can gate skill installation in their pipelines. JSON output, non-zero exit codes on failure, GitHub Actions ready. No AI agent will ever do this for you.",
+          "punchline": "The enterprise kill switch for risky skills."
+        },
+        "point4": {
+          "title": "Platform independent",
+          "desc": "Works with OpenClaw SKILL.md, MCP tools, and any markdown-based skill format. One scanner for every ecosystem, not locked to a single vendor.",
+          "punchline": "One tool. Every skill format."
+        }
+      },
+      "positioning": {
+        "quote": "OpenClaw helps you find great tools. Panguard makes sure they deserve your trust.",
+        "explanation": "Open ecosystems need an independent security layer. The people who publish skills and the people who audit them should not be the same party. Panguard is that independent third party."
       },
       "cta": {
         "title": "Stop trusting. Start scanning.",
         "desc": "One command. Seven checks. Zero blind spots.",
         "cta1": "Get Started Free",
-        "cta2": "View Pricing"
+        "cta2": "View Pricing",
+        "installTitle": "Install Panguard"
       }
     }
   },

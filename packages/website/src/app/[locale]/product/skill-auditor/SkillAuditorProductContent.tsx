@@ -10,7 +10,6 @@ import {
   GitBranch,
   Globe,
   Terminal,
-  Building2,
   Laptop,
   ChevronRight,
   Copy,
@@ -23,12 +22,16 @@ import {
   FileKey,
   Binary,
   Server,
+  UserCheck,
+  ScanLine,
+  ClipboardCheck,
+  Smartphone,
 } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import { Link } from '@/navigation';
 
-/* ─── Reusable CodeBlock ─── */
+/* ── Reusable CodeBlock ── */
 function CodeBlock({ code, title }: { code: string; title?: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
@@ -61,7 +64,7 @@ function CodeBlock({ code, title }: { code: string; title?: string }) {
   );
 }
 
-/* ─── Static config (icons, colors, keys — not translatable) ─── */
+/* ── Static config ── */
 const pillarKeys = ['preInstall', 'riskScore', 'cicd', 'crossPlatform'] as const;
 const pillarIcons = [ShieldAlert, Gauge, GitBranch, Globe];
 
@@ -77,25 +80,25 @@ const checkKeys = [
 const checkIcons = [Shield, Eye, Binary, AlertTriangle, Code, FileKey, Search];
 
 const workflowKeys = ['developer', 'smb', 'enterprise'] as const;
-const workflowIcons = [Terminal, Laptop, Building2];
+const workflowIcons = [Terminal, Laptop, GitBranch];
 const workflowSteps = [
   [
-    '$ panguard skill install cool-agent-tool',
-    'Scanning cool-agent-tool... done (0.3s)',
-    'Risk: 8/100 (LOW) — Safe to install',
-    'Installed successfully.',
-  ],
-  [
-    '$ panguard audit skill ./vendor-skill --json',
-    'Risk: 45/100 (HIGH)',
-    'Found: env exfiltration pattern at line 23',
-    'Blocked. Forwarded report to security@yourcompany.com',
+    '$ panguard audit skill ./new-tool',
+    'Scanning... done (0.3s)',
+    'Risk: 8/100 (LOW)',
+    'Safe to install.',
   ],
   [
     '# .github/workflows/skill-gate.yml',
-    '- run: panguard audit skill ./skills/ --ci',
-    '  # Exits non-zero if any skill scores > 40',
-    '  # Blocks merge automatically',
+    '- run: panguard audit skill ./skills/',
+    '    --json --threshold 40',
+    '  # Blocks PR if risk > 40',
+  ],
+  [
+    '# panguard-manager policy',
+    'skill_policy:',
+    '  require_audit: true',
+    '  max_risk_score: 39',
   ],
 ];
 
@@ -105,6 +108,8 @@ const riskLevels = [
   { range: '40-69', level: 'HIGH', color: 'text-orange-400', bg: 'bg-orange-400/10', key: 'high' as const },
   { range: '70-100', level: 'CRITICAL', color: 'text-red-400', bg: 'bg-red-400/10', key: 'critical' as const },
 ];
+
+const comparisonRows = ['method', 'speed', 'coverage', 'consistency', 'output'] as const;
 
 export default function SkillAuditorProductContent() {
   const t = useTranslations('product.skillAuditor');
@@ -150,27 +155,22 @@ export default function SkillAuditorProductContent() {
             </div>
           </FadeInUp>
 
-          {/* Quick demo — terminal output stays in English (it's CLI output) */}
           <FadeInUp delay={0.2}>
             <div className="max-w-2xl mx-auto mt-12">
               <CodeBlock
                 title="terminal"
-                code={`$ panguard audit skill ./suspicious-agent
+                code={`$ panguard audit skill ./skills/suspicious-agent
 
-PANGUARD SKILL AUDIT REPORT
-============================
-Skill:      suspicious-agent
-Risk Score: 72/100
-Risk Level: CRITICAL
-Duration:   0.3s
+Scanning suspicious-agent... done (0.3s)
+Risk Score: 72/100 (CRITICAL)
 
-FINDINGS:
   [CRITICAL] Prompt injection: "ignore previous instructions"
              SKILL.md:42
   [HIGH]     Reverse shell: "bash -i >& /dev/tcp/..."
              SKILL.md:87
 
-VERDICT: DO NOT INSTALL`}
+VERDICT: DO NOT INSTALL
+Run with --json for machine-readable output.`}
               />
             </div>
           </FadeInUp>
@@ -199,7 +199,82 @@ VERDICT: DO NOT INSTALL`}
         </div>
       </SectionWrapper>
 
-      {/* ── 4 Pillars ── */}
+      {/* ── Skill Vetting vs Panguard Comparison ── */}
+      <SectionWrapper className="border-t border-border">
+        <div className="max-w-[1000px] mx-auto">
+          <FadeInUp>
+            <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4 text-center">
+              {t('comparison.overline')}
+            </p>
+            <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-text-primary leading-[1.1] text-center max-w-2xl mx-auto">
+              {t('comparison.title')}
+            </h2>
+            <p className="text-text-secondary mt-4 text-center max-w-xl mx-auto">
+              {t('comparison.desc')}
+            </p>
+          </FadeInUp>
+
+          {/* Desktop: table layout */}
+          <FadeInUp delay={0.1}>
+            <div className="mt-10 overflow-x-auto -mx-4 px-4">
+              <div className="min-w-[560px] overflow-hidden rounded-2xl border border-border">
+                {/* Table header */}
+                <div className="grid grid-cols-3 bg-surface-1/50">
+                  <div className="p-3 sm:p-4 border-b border-r border-border" />
+                  <div className="p-3 sm:p-4 border-b border-r border-border text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <UserCheck className="w-4 h-4 text-text-muted" />
+                      <span className="text-xs sm:text-sm font-bold text-text-secondary">
+                        {t('comparison.vettingLabel')}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-3 sm:p-4 border-b border-border text-center bg-brand-sage/5">
+                    <div className="flex items-center justify-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-brand-sage" />
+                      <span className="text-xs sm:text-sm font-bold text-brand-sage">
+                        {t('comparison.panguardLabel')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Table rows */}
+                {comparisonRows.map((row, i) => (
+                  <div
+                    key={row}
+                    className={`grid grid-cols-3 ${i < comparisonRows.length - 1 ? 'border-b border-border' : ''}`}
+                  >
+                    <div className="p-3 sm:p-4 border-r border-border flex items-center">
+                      <span className="text-xs sm:text-sm font-semibold text-text-primary">
+                        {t(`comparison.rows.${row}.label`)}
+                      </span>
+                    </div>
+                    <div className="p-3 sm:p-4 border-r border-border flex items-center">
+                      <span className="text-xs sm:text-sm text-text-muted">
+                        {t(`comparison.rows.${row}.vetting`)}
+                      </span>
+                    </div>
+                    <div className="p-3 sm:p-4 bg-brand-sage/5 flex items-center">
+                      <span className="text-xs sm:text-sm text-text-primary font-medium">
+                        {t(`comparison.rows.${row}.panguard`)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeInUp>
+
+          <FadeInUp delay={0.15}>
+            <p className="text-text-muted text-xs text-center mt-4 italic">
+              {t('comparison.footnote')}
+            </p>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
+      {/* ── 4 Pillars (Why Panguard) ── */}
       <SectionWrapper className="border-t border-border">
         <div className="max-w-[1200px] mx-auto">
           <FadeInUp>
@@ -233,11 +308,15 @@ VERDICT: DO NOT INSTALL`}
                         </p>
                         <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
                           <div className="p-2.5 rounded-lg bg-red-500/5 border border-red-500/10">
-                            <span className="text-red-400 font-semibold block mb-1">AI Agents</span>
+                            <span className="text-red-400 font-semibold block mb-1">
+                              {t('pillars.themLabel')}
+                            </span>
                             <span className="text-text-muted">{t(`pillars.${key}.them`)}</span>
                           </div>
                           <div className="p-2.5 rounded-lg bg-brand-sage/5 border border-brand-sage/10">
-                            <span className="text-brand-sage font-semibold block mb-1">Panguard</span>
+                            <span className="text-brand-sage font-semibold block mb-1">
+                              {t('pillars.usLabel')}
+                            </span>
                             <span className="text-text-muted">{t(`pillars.${key}.us`)}</span>
                           </div>
                         </div>
@@ -279,7 +358,6 @@ VERDICT: DO NOT INSTALL`}
                 </FadeInUp>
               );
             })}
-            {/* Stats card */}
             <FadeInUp delay={0.04 * checkKeys.length}>
               <div className="p-5 rounded-xl border border-brand-sage/20 bg-brand-sage/5 h-full flex flex-col justify-center">
                 <div className="flex items-center gap-6">
@@ -319,12 +397,14 @@ VERDICT: DO NOT INSTALL`}
           <div className="mt-8 space-y-3">
             {riskLevels.map((r, i) => (
               <FadeInUp key={r.level} delay={0.05 * i}>
-                <div className={`flex items-center gap-4 p-4 rounded-xl border border-border ${r.bg}`}>
-                  <div className={`text-2xl font-extrabold ${r.color} w-24 text-center`}>
-                    {r.range}
+                <div className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-4 rounded-xl border border-border ${r.bg}`}>
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`text-xl sm:text-2xl font-extrabold ${r.color} w-16 sm:w-20 text-center flex-shrink-0`}>
+                      {r.range}
+                    </div>
+                    <div className={`text-sm font-bold ${r.color} w-20 flex-shrink-0`}>{r.level}</div>
                   </div>
-                  <div className={`text-sm font-bold ${r.color} w-24`}>{r.level}</div>
-                  <div className="text-text-secondary text-sm flex-1">
+                  <div className="text-text-secondary text-sm flex-1 pl-16 sm:pl-0">
                     {t(`riskScoring.${r.key}`)}
                   </div>
                 </div>
@@ -384,64 +464,133 @@ VERDICT: DO NOT INSTALL`}
         </div>
       </SectionWrapper>
 
-      {/* ── Panguard Ecosystem ── */}
+      {/* ── Complementary Defense ── */}
       <SectionWrapper className="border-t border-border">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-[1000px] mx-auto">
           <FadeInUp>
-            <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4">
-              {t('ecosystem.overline')}
+            <p className="text-[11px] uppercase tracking-[0.15em] text-brand-sage font-semibold mb-4 text-center">
+              {t('complementary.overline')}
             </p>
-            <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-text-primary leading-[1.1]">
-              {t('ecosystem.title')}
+            <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-text-primary leading-[1.1] text-center max-w-2xl mx-auto">
+              {t('complementary.title')}
             </h2>
-            <p className="text-text-secondary mt-4 max-w-xl mx-auto">
-              {t('ecosystem.desc')}
+            <p className="text-text-secondary mt-4 text-center max-w-xl mx-auto">
+              {t('complementary.desc')}
             </p>
           </FadeInUp>
+
+          {/* 3-layer defense pipeline */}
           <FadeInUp delay={0.1}>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-brand-sage/20 bg-brand-sage/5">
-                <ShieldCheck className="w-5 h-5 text-brand-sage" />
-                <div className="text-left">
-                  <div className="text-sm font-bold text-text-primary">Skill Auditor</div>
-                  <div className="text-xs text-text-muted">{t('ecosystem.auditor')}</div>
+            <div className="mt-10 grid md:grid-cols-3 gap-4">
+              {/* Layer 1: Panguard Auditor */}
+              <div className="p-6 rounded-2xl border-2 border-brand-sage/30 bg-brand-sage/5 text-center">
+                <div className="w-12 h-12 rounded-xl bg-brand-sage/10 flex items-center justify-center mx-auto mb-4">
+                  <ScanLine className="w-6 h-6 text-brand-sage" />
+                </div>
+                <div className="text-xs text-brand-sage font-semibold mb-1">
+                  {t('complementary.layer1.phase')}
+                </div>
+                <h3 className="text-lg font-bold text-text-primary">
+                  {t('complementary.layer1.name')}
+                </h3>
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('complementary.layer1.desc')}
+                </p>
+                <div className="mt-4 px-3 py-2 rounded-lg bg-surface-0 border border-border">
+                  <div className="flex items-center gap-2 justify-center">
+                    <ClipboardCheck className="w-4 h-4 text-brand-sage" />
+                    <span className="text-xs text-text-muted italic">
+                      {t('complementary.layer1.analogy')}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-text-muted rotate-90 sm:rotate-0" />
-              <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-border">
-                <Lock className="w-5 h-5 text-text-secondary" />
-                <div className="text-left">
-                  <div className="text-sm font-bold text-text-primary">Runtime Permissions</div>
-                  <div className="text-xs text-text-muted">{t('ecosystem.runtime')}</div>
+
+              {/* Layer 2: Runtime Permissions */}
+              <div className="p-6 rounded-2xl border border-border bg-surface-0 text-center">
+                <div className="w-12 h-12 rounded-xl bg-surface-1 flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-6 h-6 text-text-secondary" />
+                </div>
+                <div className="text-xs text-text-muted font-semibold mb-1">
+                  {t('complementary.layer2.phase')}
+                </div>
+                <h3 className="text-lg font-bold text-text-primary">
+                  {t('complementary.layer2.name')}
+                </h3>
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('complementary.layer2.desc')}
+                </p>
+                <div className="mt-4 px-3 py-2 rounded-lg bg-surface-1/50 border border-border">
+                  <div className="flex items-center gap-2 justify-center">
+                    <Smartphone className="w-4 h-4 text-text-muted" />
+                    <span className="text-xs text-text-muted italic">
+                      {t('complementary.layer2.analogy')}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-text-muted rotate-90 sm:rotate-0" />
-              <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-brand-sage/20 bg-brand-sage/5">
-                <Server className="w-5 h-5 text-brand-sage" />
-                <div className="text-left">
-                  <div className="text-sm font-bold text-text-primary">Panguard Guard</div>
-                  <div className="text-xs text-text-muted">{t('ecosystem.guard')}</div>
+
+              {/* Layer 3: Panguard Guard */}
+              <div className="p-6 rounded-2xl border-2 border-brand-sage/30 bg-brand-sage/5 text-center">
+                <div className="w-12 h-12 rounded-xl bg-brand-sage/10 flex items-center justify-center mx-auto mb-4">
+                  <Server className="w-6 h-6 text-brand-sage" />
+                </div>
+                <div className="text-xs text-brand-sage font-semibold mb-1">
+                  {t('complementary.layer3.phase')}
+                </div>
+                <h3 className="text-lg font-bold text-text-primary">
+                  {t('complementary.layer3.name')}
+                </h3>
+                <p className="text-sm text-text-secondary mt-2">
+                  {t('complementary.layer3.desc')}
+                </p>
+                <div className="mt-4 px-3 py-2 rounded-lg bg-surface-0 border border-border">
+                  <div className="flex items-center gap-2 justify-center">
+                    <Shield className="w-4 h-4 text-brand-sage" />
+                    <span className="text-xs text-text-muted italic">
+                      {t('complementary.layer3.analogy')}
+                    </span>
+                  </div>
                 </div>
               </div>
+            </div>
+          </FadeInUp>
+
+          {/* Arrow flow */}
+          <FadeInUp delay={0.15}>
+            <div className="mt-6 flex items-center justify-center gap-2 text-xs text-text-muted">
+              <span className="px-3 py-1 rounded-full bg-brand-sage/10 text-brand-sage font-semibold">
+                {t('complementary.flowLabel')}
+              </span>
             </div>
           </FadeInUp>
         </div>
       </SectionWrapper>
 
       {/* ── CTA ── */}
-      <section className="px-4 sm:px-6 lg:px-[120px] py-20 sm:py-28 border-t border-border">
+      <SectionWrapper className="border-t border-border">
         <div className="max-w-[800px] mx-auto text-center">
           <FadeInUp>
-            <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-text-primary leading-[1.1]">
-              {t('cta.title')}
-            </h2>
-            <p className="text-text-secondary mt-4 text-lg">
-              {t('cta.desc')}
+            <blockquote className="text-[clamp(18px,2.5vw,28px)] font-bold text-text-primary leading-[1.3] italic">
+              &ldquo;{t('positioning.quote')}&rdquo;
+            </blockquote>
+            <p className="text-text-secondary mt-4 text-base leading-relaxed max-w-xl mx-auto">
+              {t('positioning.explanation')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>
+            <div className="mt-12">
+              <h2 className="text-[clamp(28px,3.5vw,44px)] font-bold text-text-primary leading-[1.1]">
+                {t('cta.title')}
+              </h2>
+              <p className="text-text-secondary mt-4 text-lg">
+                {t('cta.desc')}
+              </p>
+            </div>
+          </FadeInUp>
+          <FadeInUp delay={0.15}>
             <div className="max-w-lg mx-auto mt-8">
-              <CodeBlock code="curl -fsSL https://panguard.ai/api/install | bash" title="Install Panguard" />
+              <CodeBlock code="curl -fsSL https://panguard.ai/api/install | bash" title={t('cta.installTitle')} />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
               <Link
@@ -459,7 +608,7 @@ VERDICT: DO NOT INSTALL`}
             </div>
           </FadeInUp>
         </div>
-      </section>
+      </SectionWrapper>
     </>
   );
 }

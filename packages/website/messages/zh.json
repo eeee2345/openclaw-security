@@ -2400,93 +2400,176 @@
     },
     "skillAuditor": {
       "overline": "SKILL AUDITOR",
-      "title": "在 AI 動手之前，",
-      "titleHighlight": "先過我這關。",
+      "title": "OpenClaw 的",
+      "titleHighlight": "安全檢查站。",
       "titleSuffix": "",
-      "subtitle": "掃描任何 AI agent skill，偵測 prompt injection、工具投毒、隱藏攻擊。不到 1 秒完成評估，給出 0-100 風險評分。支援 OpenClaw、Claude、MCP 等所有主流格式。",
-      "cta1": "立即開始",
-      "cta2": "閱讀文件",
+      "subtitle": "每次你從 OpenClaw 安裝 skill，Panguard 自動在背景掃描。沒問題？直接裝好。有問題？報告送到你的手機，你再決定要不要裝。",
+      "cta1": "馬上試",
+      "cta2": "看文件",
       "problem": {
-        "overline": "為什麼你該在意",
-        "title": "AI skill 市集，是新一代的攻擊入口。",
-        "desc": "OpenClaw、ClawdHub、MCP 等平台讓安裝 AI skill 變得超簡單。但你裝進來的每一個 skill，都是用你 agent 的權限在跑 — 它可以讀你的檔案、環境變數、甚至連到你的伺服器。",
-        "desc2": "一個惡意 skill 就能偷走你的 API key、開 reverse shell、或劫持你 agent 的身份。人工審查看不到零寬字元、Base64 編碼的惡意 payload、或精心設計的 prompt injection。"
+        "overline": "你遲早會遇到",
+        "title": "OpenClaw 上的 skill，你真的都信得過嗎？",
+        "desc": "開放生態系的好處是誰都能發布 skill。壞處也是。你從 OpenClaw 裝進來的每一個 skill，拿到的是你 agent 的完整權限 — 它碰得到你的檔案、.env、SSH key。",
+        "desc2": "問題是有些攻擊你用看的看不出來。零寬字元藏在正常文字中間、惡意指令用 Base64 包起來、prompt injection 寫得像普通的使用說明。等你發現的時候，API key 早就被撈走了。"
       },
       "pillars": {
-        "overline": "為什麼選 PANGUARD",
-        "title": "AI 做不到的事，我們來。",
+        "overline": "為什麼是 PANGUARD",
+        "title": "OpenClaw 生態系缺的那一塊。",
+        "themLabel": "AI Agents",
+        "usLabel": "Panguard",
         "preInstall": {
-          "title": "裝之前就擋",
-          "subtitle": "先知道再安裝",
-          "desc": "AI agent 只會在執行時問你 allow/deny — 那時惡意程式碼已經在你機器上了。Panguard 在安裝前就完成掃描，把威脅擋在門外。",
-          "them": "執行時才跳出 allow/deny",
-          "us": "安裝前完成完整靜態分析"
+          "title": "裝之前先掃",
+          "subtitle": "任何來源、任何格式",
+          "desc": "不管 skill 從哪來 — OpenClaw、GitHub、本地目錄 — 裝之前都先掃一次。隱形字元、編碼過的惡意指令、prompt injection，這些人看不出來的東西 Panguard 抓得到。",
+          "them": "執行時才問你 allow/deny",
+          "us": "install 之前就掃完"
         },
         "riskScore": {
-          "title": "0-100 量化評分",
-          "subtitle": "不只是 allow 或 deny",
-          "desc": "每個 skill 都有量化風險分數，附帶具體發現、行號、嚴重等級。你的團隊做的是明智決策，不是盲猜。",
-          "them": "只有 allow 或 deny 兩個選項",
-          "us": "量化分數 + 完整報告"
+          "title": "0 到 100 分，有憑有據",
+          "subtitle": "你知道問題在哪、有多嚴重",
+          "desc": "Panguard 會告訴你哪一行有問題、屬於什麼威脅類型、嚴重程度幾級。有報告可以看，有根據可以判斷。",
+          "them": "只有允許跟拒絕",
+          "us": "分數 + 原因 + 行號 + 報告"
         },
         "cicd": {
-          "title": "CI/CD 原生整合",
-          "subtitle": "自動化你的安全關卡",
-          "desc": "放進 GitHub Actions、GitLab CI 或任何 pipeline，自動阻擋高風險 skill 進入正式環境。沒有任何 AI agent 能做到這件事。",
-          "them": "不支援 CI/CD",
-          "us": "JSON 輸出、exit code、pipeline 原生支援"
+          "title": "直接接進 CI/CD",
+          "subtitle": "pipeline 自動把關",
+          "desc": "你的 skill 倉庫可以在 GitHub Actions 或 GitLab CI 裡跑 Panguard。風險分數超標的 PR 自動擋掉，團隊不用額外花時間盯。",
+          "them": "沒有 CI/CD 整合",
+          "us": "JSON 輸出 + exit code，直接接 pipeline"
         },
         "crossPlatform": {
-          "title": "跨平台通吃",
-          "subtitle": "所有 skill 格式，一個掃描器",
-          "desc": "支援 OpenClaw SKILL.md、Claude skills、MCP tools，以及任何 markdown 格式的 agent skill。一個工具掃全部。",
-          "them": "只能掃自己生態系的 skill",
-          "us": "OpenClaw、Claude、MCP、自訂格式"
+          "title": "什麼格式都能掃",
+          "subtitle": "OpenClaw、MCP、自訂格式",
+          "desc": "支援 OpenClaw SKILL.md、MCP tools、各種 markdown 格式的 agent skill。不管 skill 從哪裡來，一個指令搞定。",
+          "them": "只能掃自家的 skill",
+          "us": "OpenClaw、MCP、自訂格式都行"
         }
       },
       "checks": {
-        "overline": "7 項自動化檢查",
-        "title": "深度掃描，不到 1 秒。",
-        "promptInjection": { "name": "Prompt Injection", "detail": "11 組 regex 偵測身份覆寫、指令劫持、越獄攻擊" },
-        "hiddenUnicode": { "name": "隱藏 Unicode", "detail": "零寬字元、RTL 覆蓋、同形字攻擊 — 人眼完全看不到" },
-        "encodedPayloads": { "name": "編碼惡意載荷", "detail": "自動解碼 Base64，偵測內含的 eval、exec、subprocess、child_process" },
-        "toolPoisoning": { "name": "工具投毒", "detail": "Reverse shell、權限提升、遠端程式碼執行、環境變數竊取" },
-        "sastSecrets": { "name": "程式碼掃描 + 機敏資料", "detail": "靜態分析找漏洞，偵測寫死的 API key、AWS 憑證、私鑰" },
-        "permissionScope": { "name": "權限範圍分析", "detail": "比對 skill 要求的權限與它宣稱的用途是否合理" },
-        "manifestValidation": { "name": "Manifest 驗證", "detail": "驗證 SKILL.md 結構、必填欄位、metadata 完整性" },
-        "scanTime": "掃描時間",
-        "checkCategories": "檢查類別",
-        "injectionPatterns": "注入特徵"
+        "overline": "7 道檢查",
+        "title": "一秒掃完，七個面向。",
+        "promptInjection": { "name": "指令劫持", "detail": "11 組特徵比對，抓身份偽裝、指令覆蓋、越獄攻擊" },
+        "hiddenUnicode": { "name": "隱形字元", "detail": "零寬空格、方向覆寫、長得跟真的一樣的假字母，肉眼看不見的東西" },
+        "encodedPayloads": { "name": "編碼過的惡意內容", "detail": "自動解開 Base64，檢查裡面有沒有 eval、exec、subprocess" },
+        "toolPoisoning": { "name": "工具下毒", "detail": "反向連線、提權、遠端執行、偷環境變數這些後門手法" },
+        "sastSecrets": { "name": "原始碼 + 金鑰掃描", "detail": "抓寫死在程式碼裡的 API key、AWS 憑證、私鑰" },
+        "permissionScope": { "name": "權限合理性", "detail": "skill 說自己是唯讀的，結果要寫入權限？會標出來" },
+        "manifestValidation": { "name": "格式驗證", "detail": "SKILL.md 結構完整嗎、該填的欄位有沒有少、metadata 正常嗎" },
+        "scanTime": "掃描耗時",
+        "checkCategories": "檢查項目",
+        "injectionPatterns": "攻擊特徵"
       },
       "riskScoring": {
-        "overline": "風險評分",
-        "title": "不只告訴你結果，還告訴你為什麼。",
-        "desc": "不是只有「已封鎖」或「已允許」。每個 skill 都有量化分數和具體發現，讓你的團隊做出行動。",
-        "low": "快速瀏覽後可安心安裝",
-        "medium": "建議檢視發現項目再安裝",
-        "high": "需要詳細人工審查",
-        "critical": "請勿安裝"
+        "overline": "量化風險",
+        "title": "幾分、為什麼、怎麼辦。",
+        "desc": "每個 skill 都有量化分數和具體發現，看完報告你就知道該裝還是該丟。",
+        "low": "看一下就可以裝了",
+        "medium": "看過報告再決定",
+        "high": "建議找人仔細看",
+        "critical": "不要裝"
       },
       "workflows": {
-        "overline": "真實使用場景",
-        "title": "配合你實際的工作方式。",
-        "developer": { "persona": "開發者", "title": "從 OpenClaw 安裝 skill" },
-        "smb": { "persona": "中小企業 IT 管理員", "title": "幫團隊審核 skill" },
-        "enterprise": { "persona": "企業 DevSecOps", "title": "CI/CD pipeline 安全關卡" }
+        "overline": "實際怎麼用",
+        "title": "三種場景，你一定碰過至少一個。",
+        "developer": { "persona": "開發者", "title": "CLI — 裝之前先掃一次" },
+        "smb": { "persona": "DevSecOps", "title": "CI/CD — pipeline 自動擋高風險 skill" },
+        "enterprise": { "persona": "企業", "title": "Manager — 全機群統一安全策略" }
       },
-      "ecosystem": {
-        "overline": "全方位防護",
-        "title": "從 skill 安全到伺服器防護，一條龍。",
-        "desc": "Skill Auditor 保護你的 AI agent。Panguard Guard 保護你的基礎設施。兩者組合，涵蓋完整攻擊面。",
-        "auditor": "安裝前掃描",
-        "runtime": "Agent 層級 allow/deny",
-        "guard": "系統層級防護"
+      "comparison": {
+        "overline": "搞清楚差別",
+        "title": "人看跟機器掃，能力差很多。",
+        "desc": "社群 vetting 靠人審，有經驗的人可以看出意圖。但隱形字元、編碼過的惡意指令，這些人眼物理上看不到。",
+        "vettingLabel": "社群人工審查",
+        "panguardLabel": "Panguard Skill Auditor",
+        "footnote": "人工審查對判斷意圖和脈絡很有用，機器掃描對抓隱藏威脅很強。最好的做法是兩個都做。",
+        "rows": {
+          "method": {
+            "label": "怎麼做",
+            "vetting": "照 checklist 一條一條看，靠經驗",
+            "panguard": "自動靜態分析：regex + 程式碼掃描 + 金鑰偵測"
+          },
+          "speed": {
+            "label": "花多久",
+            "vetting": "每個 skill 幾分鐘",
+            "panguard": "一秒以內"
+          },
+          "coverage": {
+            "label": "能抓到什麼",
+            "vetting": "看得到的明文威脅",
+            "panguard": "隱形字元、Base64 包裝、同形字攻擊"
+          },
+          "consistency": {
+            "label": "穩定度",
+            "vetting": "看今天誰在審、狀態如何",
+            "panguard": "掃一百次結果都一樣"
+          },
+          "output": {
+            "label": "給你什麼",
+            "vetting": "主觀判斷：可以 / 不行",
+            "panguard": "報告：第幾行、什麼問題、幾級、建議"
+          }
+        }
+      },
+      "complementary": {
+        "overline": "跟 AGENT 的關係",
+        "title": "三個階段，各管各的。",
+        "desc": "Panguard 補的是 OpenClaw 安裝流程裡目前還沒有人在做的事：裝之前的靜態分析。Agent 自己的 allow/deny 是另一層，兩個加在一起才完整。",
+        "flowLabel": "Panguard 掃描（裝之前）→ Agent 權限（跑的時候）→ Guard 監控（全天候）",
+        "layer1": {
+          "phase": "裝之前",
+          "name": "Panguard Skill Auditor",
+          "desc": "skill 進到你系統之前就掃完了。有問題的話連 install 都不會執行。",
+          "analogy": "App Store 上架審查"
+        },
+        "layer2": {
+          "phase": "執行階段",
+          "name": "Agent 權限控制",
+          "desc": "你的 agent 在 skill 要讀檔案或跑指令的時候會跳出確認。這是最後一道關卡。",
+          "analogy": "手機的權限彈窗"
+        },
+        "layer3": {
+          "phase": "全天候",
+          "name": "Panguard Guard",
+          "desc": "真的有東西溜進來了，Guard 在系統底層 24 小時盯著，偵測到異常直接處理。",
+          "analogy": "大樓保全系統"
+        }
+      },
+      "differentiation": {
+        "overline": "只有我們在做的事",
+        "title": "這些事，目前沒有人做。",
+        "desc": "Agent 平台管的是執行時權限。社群做的是人工審查。中間那一段 — 安裝前的自動化分析 — 是空的。Panguard 補的就是這塊。",
+        "point1": {
+          "title": "安裝前攔截，不是安裝後才問",
+          "desc": "Agent 的 allow/deny 是 skill 已經下載到你電腦之後才跳出來的。Panguard 在 claw install 的過程中就掃完了，有問題的東西根本不會落地。",
+          "punchline": "目前沒有其他工具在 install 完成前做掃描。"
+        },
+        "point2": {
+          "title": "給分數，不是給 yes/no",
+          "desc": "執行時的權限彈窗只有允許或拒絕，你不知道為什麼要拒絕。Panguard 給你 0-100 分，問題在第幾行，屬於什麼類型，嚴重程度幾級。",
+          "punchline": "有依據的判斷，看完就知道該怎麼做。"
+        },
+        "point3": {
+          "title": "直接放進 CI/CD",
+          "desc": "企業可以在 pipeline 裡設關卡：風險分數超過 40 的 skill，PR 自動擋掉。JSON 輸出、exit code、GitHub Actions 直接接。這件事沒有任何 AI agent 會幫你做。",
+          "punchline": "給企業用的自動化安全閘門。"
+        },
+        "point4": {
+          "title": "不綁平台",
+          "desc": "OpenClaw 的 SKILL.md、MCP tools、各種 markdown 格式的 skill 都能掃。一個工具涵蓋所有生態系，不被單一供應商綁住。",
+          "punchline": "一個掃描器，所有 skill 格式。"
+        }
+      },
+      "positioning": {
+        "quote": "OpenClaw 讓你輕鬆找到好工具。Panguard 確保那些工具值得信任。",
+        "explanation": "開放生態系需要一個獨立的安全層。發布 skill 的人和審查 skill 的人，不應該是同一個角色。Panguard 就是這個獨立的第三方。"
       },
       "cta": {
-        "title": "別盲信。先掃描。",
-        "desc": "一行指令。七項檢查。零死角。",
+        "title": "先掃再裝。",
+        "desc": "一行指令，七道檢查，裝之前就知道結果。",
         "cta1": "免費開始",
-        "cta2": "查看方案價格"
+        "cta2": "看方案",
+        "installTitle": "安裝 Panguard"
       }
     }
   },
