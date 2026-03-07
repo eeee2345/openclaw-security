@@ -4002,7 +4002,9 @@
     "solution": "解決方案",
     "quote": "引言",
     "similarResults": "準備好看到類似的成果嗎？",
-    "moreStories": "更多故事"
+    "moreStories": "更多故事",
+    "scenarioDisclaimer": "這是基於常見產業資安挑戰的情境模擬。所呈現的指標與成果為預估值，非經驗證的客戶實際數據。",
+    "ctaDesc": "了解 Panguard AI 如何幫助您的團隊達成類似的資安成效。"
   },
   "docs": {
     "overline": "技術文件",
@@ -4626,27 +4628,23 @@
   "resources": {
     "overline": "資源中心",
     "title": "安全知識庫",
-    "subtitle": "白皮書、報告和指南，幫助你的團隊建立更強大的安全。",
+    "subtitle": "指南、教學和參考文件，幫助你充分運用 Panguard AI。",
     "types": {
       "all": "全部",
-      "whitepaper": "白皮書",
-      "report": "報告",
       "guide": "指南",
-      "webinar": "線上研討會",
-      "infographic": "資訊圖表"
+      "reference": "參考文件",
+      "tutorial": "教學"
     },
     "featured": "精選",
-    "watch": "觀看",
-    "download": "下載",
-    "comingSoon": "即將推出",
+    "readDocs": "閱讀文件",
     "noResources": "此分類尚無資源。請稍後再來。",
     "newsletter": {
-      "title": "資源直送你的收件匣",
-      "desc": "以精選的白皮書、報告和指南掌握威脅態勢最新資訊，直接送到你的收件匣。無垃圾郵件 -- 只有可操作的安全知識。",
+      "title": "最新消息直送你的收件匣",
+      "desc": "以產品更新、安全指南和最佳實踐掌握最新資訊，直接送到你的收件匣。無垃圾郵件 -- 只有可操作的安全知識。",
       "subscribe": "訂閱",
       "emailPlaceholder": "you@company.com",
       "emailAriaLabel": "電子郵件地址",
-      "note": "加入 2,000+ 位注重安全的工程師。隨時退訂。",
+      "note": "加入全球注重安全的工程師行列。隨時退訂。",
       "success": "訂閱成功！你將在收件匣收到資源。",
       "error": "發生錯誤，請再試一次。"
     }

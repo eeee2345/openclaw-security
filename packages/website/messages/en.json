@@ -3188,7 +3188,9 @@
     "solution": "The Solution",
     "quote": "Quote",
     "similarResults": "Ready to see similar results?",
-    "moreStories": "More Stories"
+    "moreStories": "More Stories",
+    "scenarioDisclaimer": "This is an illustrative scenario based on common industry security challenges. The metrics and outcomes shown are projected estimates, not verified customer results.",
+    "ctaDesc": "See how Panguard AI can help your team achieve similar security outcomes."
   },
   "docs": {
     "overline": "DOCUMENTATION",
@@ -3812,27 +3814,23 @@
   "resources": {
     "overline": "RESOURCES",
     "title": "Security Knowledge Base",
-    "subtitle": "Whitepapers, reports, and guides to help your team build stronger security.",
+    "subtitle": "Guides, tutorials, and reference documentation to help you get the most out of Panguard AI.",
     "types": {
       "all": "All",
-      "whitepaper": "Whitepaper",
-      "report": "Report",
       "guide": "Guide",
-      "webinar": "Webinar",
-      "infographic": "Infographic"
+      "reference": "Reference",
+      "tutorial": "Tutorial"
     },
     "featured": "Featured",
-    "watch": "Watch",
-    "download": "Download",
-    "comingSoon": "Coming Soon",
+    "readDocs": "Read Docs",
     "noResources": "No resources in this category yet. Check back soon.",
     "newsletter": {
-      "title": "Get Resources Delivered to Your Inbox",
-      "desc": "Stay ahead of the threat landscape with curated whitepapers, reports, and guides delivered directly to your inbox. No spam -- just actionable security knowledge.",
+      "title": "Get Updates Delivered to Your Inbox",
+      "desc": "Stay informed with product updates, security guides, and best practices delivered to your inbox. No spam -- just actionable security knowledge.",
       "subscribe": "Subscribe",
       "emailPlaceholder": "you@company.com",
       "emailAriaLabel": "Email address",
-      "note": "Join 2,000+ security-conscious engineers. Unsubscribe anytime.",
+      "note": "Join security-conscious engineers worldwide. Unsubscribe anytime.",
       "success": "Subscribed! You'll receive resources in your inbox.",
       "error": "Something went wrong. Please try again."
     }

@@ -1,76 +1,89 @@
 export interface Resource {
   slug: string;
   title: string;
-  type: 'Whitepaper' | 'Report' | 'Guide' | 'Webinar' | 'Infographic';
+  type: 'Guide' | 'Reference' | 'Tutorial';
   description: string;
   date: string;
+  /** External link to docs site */
+  docsUrl: string;
 }
 
-export const resourceTypes = ['All', 'Whitepaper', 'Report', 'Guide', 'Webinar', 'Infographic'];
+export const resourceTypes = ['All', 'Guide', 'Reference', 'Tutorial'];
+
+/** Docs base URL — Mintlify docs site */
+const DOCS = 'https://docs.panguard.ai';
 
 export const resources: Resource[] = [
   {
-    slug: 'ai-endpoint-security-paradigm',
-    title: 'AI-Powered Endpoint Security: A New Paradigm for SMBs',
-    type: 'Whitepaper',
+    slug: 'first-scan-guide',
+    title: 'Your First Panguard Scan',
+    type: 'Tutorial',
     description:
-      'How AI-driven detection, automated response, and natural language reporting are replacing traditional endpoint security for growing teams.',
-    date: '2026-02',
+      'Step-by-step guide to install Panguard, run your first 60-second security scan, and interpret the results.',
+    date: '2026-03',
+    docsUrl: `${DOCS}/guides/first-scan`,
   },
   {
-    slug: 'state-of-smb-cybersecurity-2026',
-    title: '2026 State of SMB Cybersecurity',
-    type: 'Report',
-    description:
-      'Analysis of 10,000+ endpoints reveals the threats, costs, and defense strategies defining SMB cybersecurity in 2026.',
-    date: '2026-01',
-  },
-  {
-    slug: 'zero-to-soc2-startup-journey',
-    title: "From Zero to SOC 2: A Startup's Compliance Journey",
+    slug: 'real-time-protection-guide',
+    title: 'Setting Up Real-Time Protection',
     type: 'Guide',
     description:
-      'A step-by-step playbook for startups achieving SOC 2 compliance without external consultants.',
-    date: '2026-01',
+      'Deploy Panguard Guard for continuous endpoint monitoring with 3-layer AI detection and automated response.',
+    date: '2026-03',
+    docsUrl: `${DOCS}/guides/real-time-protection`,
   },
   {
-    slug: 'honeypot-deployment-best-practices',
+    slug: 'honeypot-deployment',
     title: 'Honeypot Deployment Best Practices',
     type: 'Guide',
     description:
-      'How to deploy, configure, and maximize intelligence from AI-powered honeypots in production environments.',
-    date: '2025-12',
+      'How to deploy, configure, and maximize intelligence from Panguard Trap honeypots across 8 protocols.',
+    date: '2026-02',
+    docsUrl: `${DOCS}/guides/honeypots`,
   },
   {
-    slug: 'anatomy-of-ransomware-attack',
-    title: 'Anatomy of a Ransomware Attack',
-    type: 'Infographic',
-    description:
-      'Visual breakdown of a modern ransomware attack chain and how each Panguard product layer responds.',
-    date: '2025-12',
-  },
-  {
-    slug: 'security-program-team-of-one',
-    title: 'Building a Security Program with a Team of One',
-    type: 'Webinar',
-    description:
-      'Recorded webinar: how solo developers and small teams can build enterprise-grade security programs with AI automation.',
-    date: '2025-11',
-  },
-  {
-    slug: 'cost-of-cybercrime-small-business',
-    title: 'Cost of Cybercrime for Small Businesses 2026',
-    type: 'Report',
-    description:
-      'Data-driven analysis of the financial impact of cyberattacks on businesses with fewer than 500 employees.',
-    date: '2025-11',
-  },
-  {
-    slug: 'choosing-ai-security-vendor',
-    title: 'Choosing an AI Security Vendor: Evaluation Checklist',
+    slug: 'compliance-reports-guide',
+    title: 'Generating Compliance Reports',
     type: 'Guide',
     description:
-      'A comprehensive checklist for evaluating AI-powered security platforms, including questions to ask, red flags, and comparison frameworks.',
-    date: '2025-10',
+      'Automate ISO 27001, SOC 2, and Taiwan Cyber Security Act compliance evidence collection and report generation.',
+    date: '2026-02',
+    docsUrl: `${DOCS}/guides/compliance-reports`,
+  },
+  {
+    slug: 'mcp-integration',
+    title: 'MCP Integration for Claude & Cursor',
+    type: 'Tutorial',
+    description:
+      'Connect Panguard to Claude Desktop or Cursor via Model Context Protocol for AI-powered security workflows.',
+    date: '2026-02',
+    docsUrl: `${DOCS}/guides/mcp-integration`,
+  },
+  {
+    slug: 'multi-endpoint-management',
+    title: 'Multi-Endpoint Management',
+    type: 'Guide',
+    description:
+      'Scale from a single server to 25+ endpoints with centralized policy management and cross-agent threat correlation.',
+    date: '2026-01',
+    docsUrl: `${DOCS}/guides/multi-endpoint`,
+  },
+  {
+    slug: 'cli-reference',
+    title: 'CLI Command Reference',
+    type: 'Reference',
+    description:
+      'Complete reference for all 22 Panguard CLI commands including scan, guard, trap, report, chat, and more.',
+    date: '2026-01',
+    docsUrl: `${DOCS}/cli/overview`,
+  },
+  {
+    slug: 'api-reference',
+    title: 'API Reference',
+    type: 'Reference',
+    description:
+      'REST API documentation for Auth, Manager, and Threat Cloud services with authentication and endpoint details.',
+    date: '2026-01',
+    docsUrl: `${DOCS}/api-reference/overview`,
   },
 ];

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import { Link } from '@/navigation';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Info } from 'lucide-react';
 import type { CaseStudy } from '@/data/case-studies';
 
 export default function CaseStudyContent({ study }: { study: CaseStudy }) {
@@ -23,6 +23,18 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
             {t('allStories')}
           </Link>
         </FadeInUp>
+
+        {/* Scenario Disclaimer */}
+        {study.isScenario && (
+          <FadeInUp delay={0.04}>
+            <div className="flex items-start gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3 mb-6">
+              <Info className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+              <p className="text-xs text-amber-300/80 leading-relaxed">
+                {t('scenarioDisclaimer')}
+              </p>
+            </div>
+          </FadeInUp>
+        )}
 
         <FadeInUp delay={0.05}>
           <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -126,8 +138,7 @@ export default function CaseStudyContent({ study }: { study: CaseStudy }) {
               {t('similarResults')}
             </h2>
             <p className="text-text-secondary mt-4 max-w-xl mx-auto leading-relaxed">
-              Join {study.company} and other growing teams that trust Panguard AI to protect their
-              infrastructure.
+{t('ctaDesc')}
             </p>
           </FadeInUp>
           <FadeInUp delay={0.1}>

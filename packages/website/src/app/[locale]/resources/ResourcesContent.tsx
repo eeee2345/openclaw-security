@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 
 type SubscribeStatus = 'idle' | 'loading' | 'success' | 'error';
-import { FileText, Video, Image as ImageIcon, Download, Mail, Send } from 'lucide-react';
+import { FileText, BookOpen, Terminal, ExternalLink, Mail, Send } from 'lucide-react';
 import FadeInUp from '@/components/FadeInUp';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import SectionTitle from '@/components/ui/SectionTitle';
@@ -24,21 +24,19 @@ function formatDate(dateStr: string, locale: string): string {
 /* ─── Type Badge Color Map ─── */
 
 const typeBadgeStyles: Record<Resource['type'], string> = {
-  Whitepaper: 'bg-brand-sage/10 text-brand-sage',
-  Report: 'bg-blue-500/10 text-blue-400',
   Guide: 'bg-amber-500/10 text-amber-400',
-  Webinar: 'bg-purple-500/10 text-purple-400',
-  Infographic: 'bg-pink-500/10 text-pink-400',
+  Reference: 'bg-blue-500/10 text-blue-400',
+  Tutorial: 'bg-brand-sage/10 text-brand-sage',
 };
 
 /* ─── Type Icon Map ─── */
 
 function TypeIcon({ type, className }: { type: Resource['type']; className?: string }) {
   switch (type) {
-    case 'Webinar':
-      return <Video className={className} />;
-    case 'Infographic':
-      return <ImageIcon className={className} />;
+    case 'Reference':
+      return <Terminal className={className} />;
+    case 'Tutorial':
+      return <BookOpen className={className} />;
     default:
       return <FileText className={className} />;
   }
@@ -114,13 +112,15 @@ export default function ResourcesContent() {
 
               {/* Right: CTA */}
               <div className="shrink-0 md:mt-4">
-                <button
-                  disabled
-                  className="inline-flex items-center gap-2 bg-surface-2 border border-border text-text-muted font-semibold rounded-full px-6 py-3 cursor-not-allowed"
+                <a
+                  href={featuredResource.docsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold rounded-full px-6 py-3 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
                 >
-                  <Download className="w-4 h-4" />
-                  {t('comingSoon')}
-                </button>
+                  <ExternalLink className="w-4 h-4" />
+                  {t('readDocs')}
+                </a>
               </div>
             </div>
           </div>
@@ -181,7 +181,15 @@ export default function ResourcesContent() {
                       <TypeIcon type={resource.type} className="w-3.5 h-3.5" />
                       <span>{resource.type}</span>
                     </div>
-                    <span className="text-text-muted text-sm font-semibold">{t('comingSoon')}</span>
+                    <a
+                      href={resource.docsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-sm font-semibold text-brand-sage hover:text-brand-sage-light transition-colors"
+                    >
+                      {t('readDocs')}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
                   </div>
                 </div>
               </FadeInUp>
