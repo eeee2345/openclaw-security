@@ -25,8 +25,8 @@ const TOOL_PATTERNS: ToolPattern[] = [
   { name: 'Credentials', regex: /\b(api[_\s]?key|token|password|secret|credential|auth)\b/i, risk: 'medium', reason: 'Handles sensitive credentials' },
   { name: 'SSH/Keys', regex: /\b(ssh-keygen|authorized_keys|~\/\.ssh|id_rsa|id_ed25519)\b/i, risk: 'high', reason: 'Can access or modify SSH keys' },
   { name: 'Cron/Scheduler', regex: /\b(crontab|\/etc\/cron|systemctl\s+enable|launchctl\s+load)\b/i, risk: 'high', reason: 'Can install persistent scheduled tasks' },
-  { name: 'Docker', regex: /\b(docker\.sock|docker\s+run|docker\s+exec|--privileged)\b/i, risk: 'high', reason: 'Can access Docker daemon or run privileged containers' },
-  { name: 'Env Injection', regex: /\b(\.bashrc|\.zshrc|\.profile|\.bash_profile|export\s+\w+=)\b/i, risk: 'high', reason: 'Can inject environment variables via shell profile' },
+  { name: 'Docker', regex: /(?:\b|(?<=\s|^))(docker\.sock|docker\s+run|docker\s+exec|--privileged)\b/i, risk: 'high', reason: 'Can access Docker daemon or run privileged containers' },
+  { name: 'Env Injection', regex: /(?:\b|(?<=[\s~/]))(\.\w*(?:bashrc|zshrc|profile|bash_profile))\b|(?:\b)(export\s+\w+=)/i, risk: 'high', reason: 'Can inject environment variables via shell profile' },
   { name: 'Clipboard', regex: /\b(pbpaste|pbcopy|xclip|xsel|clipboard)\b/i, risk: 'medium', reason: 'Can access or modify clipboard contents' },
 ];
 

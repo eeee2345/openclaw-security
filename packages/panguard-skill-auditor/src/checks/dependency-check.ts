@@ -27,7 +27,7 @@ export function checkDependencies(manifest: SkillManifest): CheckResult {
 
   // Extract URLs
   const urls = [...new Set(instructions.match(URL_RE) ?? [])];
-  const externalDomains: string[] = [];
+  const externalDomainSet = new Set<string>();
 
   for (const url of urls) {
     try {
@@ -35,12 +35,14 @@ export function checkDependencies(manifest: SkillManifest): CheckResult {
       const domain = parsed.hostname;
       const baseDomain = domain.split('.').slice(-2).join('.');
       if (!SAFE_DOMAINS.has(baseDomain) && !SAFE_DOMAINS.has(domain)) {
-        externalDomains.push(domain);
+        externalDomainSet.add(domain);
       }
     } catch {
       // Invalid URL, skip
     }
   }
+
+  const externalDomains = [...externalDomainSet];
 
   if (externalDomains.length > 0) {
     findings.push({
