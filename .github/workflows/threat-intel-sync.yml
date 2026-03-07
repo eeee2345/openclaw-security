@@ -42,7 +42,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          git diff --quiet config/sigma-rules/ packages/threat-cloud/data/ || echo "has_changes=true" >> $GITHUB_OUTPUT
+          git diff --quiet config/sigma-rules/ config/yara-rules/ packages/threat-cloud/data/ || echo "has_changes=true" >> $GITHUB_OUTPUT
 
       - name: Commit and push new rules
         if: steps.changes.outputs.has_changes == 'true'
@@ -51,8 +51,8 @@ jobs:
           git config user.email "bot@panguard.ai"
 
           SIGMA_COUNT=$(find config/sigma-rules/auto-generated -name "*.yml" | wc -l | tr -d ' ')
-          YARA_COUNT=$(find config/sigma-rules/auto-generated -name "*.yar" | wc -l | tr -d ' ')
+          YARA_COUNT=$(find config/yara-rules/auto-generated -name "*.yar" | wc -l | tr -d ' ')
 
-          git add config/sigma-rules/ packages/threat-cloud/data/
+          git add config/sigma-rules/ config/yara-rules/ packages/threat-cloud/data/
           git commit -m "chore(threat-intel): scheduled sync — ${SIGMA_COUNT} sigma, ${YARA_COUNT} yara rules"
           git push

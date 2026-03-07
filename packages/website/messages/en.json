@@ -368,7 +368,7 @@
     "threatCloud": {
       "overline": "ONE MORE THING",
       "title": "The more people use it, the safer everyone gets.",
-      "desc": "Every Panguard instance is a sensor. When it detects a new attack, it anonymously shares the pattern with Threat Cloud. Threat Cloud auto-generates new Sigma detection rules and pushes them to every Panguard user — worldwide.",
+      "desc": "Every Panguard instance is a sensor. When it detects a new attack, it anonymously shares the pattern with Threat Cloud. Threat Cloud doesn't just generate traditional Sigma detection rules — it also produces ATR (Agent Threat Rules), the world's first open standard for detecting AI agent attacks. Prompt injection, tool poisoning, context exfiltration — threats Sigma can't catch, ATR catches.",
       "descHighlight": "You're not just protected. You're part of the shield.",
       "privacy1": "Only anonymized threat signatures leave your machine. Zero raw data. Zero telemetry. Encrypted in transit (TLS 1.3). Your logs, your code, your data — never leaves.",
       "privacy2": "You can turn off Threat Cloud anytime. Even Community tier works fully offline.",
@@ -546,6 +546,7 @@
         "layers": "Detection layers",
         "actions": "Response actions",
         "protocols": "Honeypot protocols",
+        "atrRules": "ATR agent threat rules",
         "mit": "Open source license"
       },
       "githubCta": "Verify on GitHub",
@@ -691,6 +692,10 @@
       "card4": {
         "title": "Threat Cloud Network Effect",
         "desc": "Every deployment strengthens detection for everyone through anonymized threat intelligence sharing."
+      },
+      "card5": {
+        "title": "Agent-Native Detection",
+        "desc": "We created ATR — the first open standard for AI agent threat detection. Sigma protects servers. YARA catches malware. ATR catches prompt injection, tool poisoning, and agent manipulation."
       }
     },
     "traction": {
@@ -1704,13 +1709,34 @@
       "checks": {
         "overline": "THREE-LAYER SECURITY",
         "title": "Regex. AI. Community intelligence.",
-        "promptInjection": { "name": "Prompt Injection", "detail": "11 regex patterns detect identity override, instruction hijacking, and jailbreak attempts" },
-        "hiddenUnicode": { "name": "Hidden Unicode", "detail": "Zero-width characters, RTL overrides, homoglyph attacks invisible to human reviewers" },
-        "encodedPayloads": { "name": "Encoded Payloads", "detail": "Auto-decode Base64 and detect eval, exec, subprocess, child_process inside" },
-        "toolPoisoning": { "name": "Tool Poisoning", "detail": "Reverse shells, privilege escalation, remote code execution, env exfiltration" },
-        "sastSecrets": { "name": "SAST + Secrets", "detail": "Static analysis for vulnerabilities, hardcoded API keys, AWS credentials, private keys" },
-        "permissionScope": { "name": "Permission Scope", "detail": "Evaluates requested permissions against the skill's stated purpose" },
-        "manifestValidation": { "name": "Manifest Validation", "detail": "Verifies SKILL.md structure, required fields, and metadata integrity" },
+        "promptInjection": {
+          "name": "Prompt Injection",
+          "detail": "11 regex patterns detect identity override, instruction hijacking, and jailbreak attempts"
+        },
+        "hiddenUnicode": {
+          "name": "Hidden Unicode",
+          "detail": "Zero-width characters, RTL overrides, homoglyph attacks invisible to human reviewers"
+        },
+        "encodedPayloads": {
+          "name": "Encoded Payloads",
+          "detail": "Auto-decode Base64 and detect eval, exec, subprocess, child_process inside"
+        },
+        "toolPoisoning": {
+          "name": "Tool Poisoning",
+          "detail": "Reverse shells, privilege escalation, remote code execution, env exfiltration"
+        },
+        "sastSecrets": {
+          "name": "SAST + Secrets",
+          "detail": "Static analysis for vulnerabilities, hardcoded API keys, AWS credentials, private keys"
+        },
+        "permissionScope": {
+          "name": "Permission Scope",
+          "detail": "Evaluates requested permissions against the skill's stated purpose"
+        },
+        "manifestValidation": {
+          "name": "Manifest Validation",
+          "detail": "Verifies SKILL.md structure, required fields, and metadata integrity"
+        },
         "scanTime": "Scan time",
         "checkCategories": "Check categories",
         "injectionPatterns": "Injection patterns",
@@ -1746,9 +1772,18 @@
       "workflows": {
         "overline": "REAL WORKFLOWS",
         "title": "Built for how you actually work.",
-        "developer": { "persona": "Developer", "title": "CLI — scan before you install" },
-        "smb": { "persona": "DevSecOps", "title": "CI/CD — gate skills in your pipeline" },
-        "enterprise": { "persona": "Enterprise", "title": "Manager — fleet-wide policy enforcement" }
+        "developer": {
+          "persona": "Developer",
+          "title": "CLI — scan before you install"
+        },
+        "smb": {
+          "persona": "DevSecOps",
+          "title": "CI/CD — gate skills in your pipeline"
+        },
+        "enterprise": {
+          "persona": "Enterprise",
+          "title": "Manager — fleet-wide policy enforcement"
+        }
       },
       "comparison": {
         "overline": "THE DIFFERENCE",
@@ -4478,6 +4513,40 @@
       "desc": "Every installation makes everyone safer.",
       "primary": "Get Started",
       "secondary": "View API Documentation"
+    },
+    "liveIntel": {
+      "overline": "LIVE INTELLIGENCE",
+      "title": "Real-Time Threat Pipeline",
+      "subtitle": "Auto-crawling 11 sources every 6 hours. Rules auto-generated and promoted.",
+      "stats": {
+        "sources": "Intel Sources",
+        "records": "Validated Records",
+        "sigmaRules": "Sigma Rules",
+        "yaraRules": "YARA Rules",
+        "autoGenSigma": "Auto-Generated Sigma",
+        "autoGenYara": "Auto-Generated YARA",
+        "promoted": "Auto-Promoted",
+        "draft": "Pending Review",
+        "syncInterval": "Sync Interval",
+        "lastSync": "Last Sync"
+      },
+      "sourceList": [
+        "NVD (NIST)",
+        "CISA KEV",
+        "MITRE ATT&CK",
+        "URLhaus",
+        "MalwareBazaar",
+        "ThreatFox",
+        "OSV.dev",
+        "GitHub Advisory",
+        "AlienVault OTX",
+        "ExploitDB",
+        "HackerOne"
+      ],
+      "badge": {
+        "promoted": "Auto-Promoted",
+        "draft": "Draft"
+      }
     }
   },
   "about": {

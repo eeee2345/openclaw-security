@@ -368,7 +368,7 @@
     "threatCloud": {
       "overline": "One More Thing",
       "title": "用的人越多，每個人就越安全。",
-      "desc": "每一台裝了 Panguard 的機器都是一個感測節點。偵測到新型攻擊時，會自動把匿名化的攻擊特徵回傳 Threat Cloud。Threat Cloud 分析比對後，自動產生新的 Sigma 偵測規則，再推送給全球所有 Panguard 用戶。",
+      "desc": "每一台裝了 Panguard 的機器都是一個感測節點。偵測到新型攻擊時，會自動把匿名化的攻擊特徵回傳 Threat Cloud。Threat Cloud 不只產生傳統的 Sigma 偵測規則——它還自動產出 ATR（Agent Threat Rules），全世界第一套專門偵測 AI Agent 攻擊的開源規則標準。Prompt injection、tool poisoning、context exfiltration——這些 Sigma 抓不到的，ATR 抓得到。",
       "descHighlight": "你不只是被保護的人，你也是守護者。",
       "privacy1": "離開你機器的只有匿名威脅特徵——零原始資料、零遙測、TLS 1.3 全程加密。你的 log、程式碼、資料永遠留在你手上。",
       "privacy2": "不放心的話，隨時可以關掉 Threat Cloud。Community 版也完全支援離線運作。",
@@ -546,6 +546,7 @@
         "layers": "偵測層",
         "actions": "回應動作",
         "protocols": "蜜罐協定",
+        "atrRules": "ATR Agent 威脅規則",
         "mit": "開源授權"
       },
       "githubCta": "去 GitHub 驗證",
@@ -691,6 +692,10 @@
       "card4": {
         "title": "Threat Cloud 網路效應",
         "desc": "每次部署都透過匿名化威脅情報分享，強化所有人的偵測能力。"
+      },
+      "card5": {
+        "title": "Agent 原生偵測",
+        "desc": "我們創造了 ATR——第一個 AI Agent 威脅偵測的開放標準。Sigma 保護伺服器，YARA 抓惡意程式，ATR 抓 prompt injection、tool poisoning 和 agent manipulation。"
       }
     },
     "traction": {
@@ -1140,6 +1145,40 @@
       "desc": "每一次安裝都讓所有人更安全。",
       "primary": "立即開始",
       "secondary": "查看 API 文件"
+    },
+    "liveIntel": {
+      "overline": "即時情報",
+      "title": "即時威脅情報管線",
+      "subtitle": "每 6 小時自動爬取 11 個資料來源，規則自動產生並晉升。",
+      "stats": {
+        "sources": "情報來源",
+        "records": "驗證通過記錄",
+        "sigmaRules": "Sigma 規則",
+        "yaraRules": "YARA 規則",
+        "autoGenSigma": "自動產生 Sigma",
+        "autoGenYara": "自動產生 YARA",
+        "promoted": "自動晉升",
+        "draft": "待審核",
+        "syncInterval": "同步週期",
+        "lastSync": "最後同步"
+      },
+      "sourceList": [
+        "NVD (NIST)",
+        "CISA KEV",
+        "MITRE ATT&CK",
+        "URLhaus",
+        "MalwareBazaar",
+        "ThreatFox",
+        "OSV.dev",
+        "GitHub Advisory",
+        "AlienVault OTX",
+        "ExploitDB",
+        "HackerOne"
+      ],
+      "badge": {
+        "promoted": "已晉升",
+        "draft": "草稿"
+      }
     }
   },
   "about": {
@@ -2472,13 +2511,34 @@
       "checks": {
         "overline": "三層防護",
         "title": "Regex 抓已知的。AI 抓看不出來的。社群抓掃過的。",
-        "promptInjection": { "name": "指令劫持", "detail": "11 組特徵比對，抓身份偽裝、指令覆蓋、越獄攻擊" },
-        "hiddenUnicode": { "name": "隱形字元", "detail": "零寬空格、方向覆寫、長得跟真的一樣的假字母，肉眼看不見的東西" },
-        "encodedPayloads": { "name": "編碼過的惡意內容", "detail": "自動解開 Base64，檢查裡面有沒有 eval、exec、subprocess" },
-        "toolPoisoning": { "name": "工具下毒", "detail": "反向連線、提權、遠端執行、偷環境變數這些後門手法" },
-        "sastSecrets": { "name": "原始碼 + 金鑰掃描", "detail": "抓寫死在程式碼裡的 API key、AWS 憑證、私鑰" },
-        "permissionScope": { "name": "權限合理性", "detail": "skill 說自己是唯讀的，結果要寫入權限？會標出來" },
-        "manifestValidation": { "name": "格式驗證", "detail": "SKILL.md 結構完整嗎、該填的欄位有沒有少、metadata 正常嗎" },
+        "promptInjection": {
+          "name": "指令劫持",
+          "detail": "11 組特徵比對，抓身份偽裝、指令覆蓋、越獄攻擊"
+        },
+        "hiddenUnicode": {
+          "name": "隱形字元",
+          "detail": "零寬空格、方向覆寫、長得跟真的一樣的假字母，肉眼看不見的東西"
+        },
+        "encodedPayloads": {
+          "name": "編碼過的惡意內容",
+          "detail": "自動解開 Base64，檢查裡面有沒有 eval、exec、subprocess"
+        },
+        "toolPoisoning": {
+          "name": "工具下毒",
+          "detail": "反向連線、提權、遠端執行、偷環境變數這些後門手法"
+        },
+        "sastSecrets": {
+          "name": "原始碼 + 金鑰掃描",
+          "detail": "抓寫死在程式碼裡的 API key、AWS 憑證、私鑰"
+        },
+        "permissionScope": {
+          "name": "權限合理性",
+          "detail": "skill 說自己是唯讀的，結果要寫入權限？會標出來"
+        },
+        "manifestValidation": {
+          "name": "格式驗證",
+          "detail": "SKILL.md 結構完整嗎、該填的欄位有沒有少、metadata 正常嗎"
+        },
         "scanTime": "掃描耗時",
         "checkCategories": "檢查項目",
         "injectionPatterns": "攻擊特徵",
@@ -2514,9 +2574,18 @@
       "workflows": {
         "overline": "實際怎麼用",
         "title": "三種場景，你一定碰過至少一個。",
-        "developer": { "persona": "開發者", "title": "CLI — 裝之前先掃一次" },
-        "smb": { "persona": "DevSecOps", "title": "CI/CD — pipeline 自動擋高風險 skill" },
-        "enterprise": { "persona": "企業", "title": "Manager — 全機群統一安全策略" }
+        "developer": {
+          "persona": "開發者",
+          "title": "CLI — 裝之前先掃一次"
+        },
+        "smb": {
+          "persona": "DevSecOps",
+          "title": "CI/CD — pipeline 自動擋高風險 skill"
+        },
+        "enterprise": {
+          "persona": "企業",
+          "title": "Manager — 全機群統一安全策略"
+        }
       },
       "comparison": {
         "overline": "搞清楚差別",
