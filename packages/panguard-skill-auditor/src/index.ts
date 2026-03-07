@@ -1,10 +1,10 @@
 /**
  * Panguard Skill Auditor - Main entry
- * Panguard 技能審計器 - 主入口
  *
- * Security auditor for OpenClaw/AgentSkills SKILL.md files.
- * Checks manifest validity, prompt injection, code security,
- * dependencies, and permissions.
+ * Three-layer security analysis for AI agent skills:
+ *   Layer 1: Regex pattern matching (fast, deterministic)
+ *   Layer 2: LLM semantic analysis (catches social engineering, intent mismatch)
+ *   Layer 3: Threat Cloud lookup (community intelligence, planned)
  *
  * @module @panguard-ai/panguard-skill-auditor
  */
@@ -15,20 +15,22 @@ import { checkInstructions } from './checks/instruction-check.js';
 import { checkCode } from './checks/code-check.js';
 import { checkDependencies } from './checks/dependency-check.js';
 import { checkPermissions } from './checks/permission-check.js';
+import { checkWithAI } from './checks/ai-check.js';
 import { calculateRiskScore } from './risk-scorer.js';
-import type { AuditReport, CheckResult } from './types.js';
+import type { AuditReport, AuditOptions, CheckResult } from './types.js';
 
-export type { AuditReport, AuditFinding, CheckResult, SkillManifest } from './types.js';
+export type { AuditReport, AuditFinding, CheckResult, SkillManifest, AuditOptions } from './types.js';
+export type { SkillAnalysisLLM } from './checks/ai-check.js';
 export { parseSkillManifest } from './manifest-parser.js';
 
 /**
  * Audit a skill directory for security issues.
- * 審計技能目錄的安全問題。
  *
  * @param skillDir - Path to the skill directory containing SKILL.md
+ * @param options - Optional: LLM provider for AI analysis, skipAI flag
  * @returns Complete audit report
  */
-export async function auditSkill(skillDir: string): Promise<AuditReport> {
+export async function auditSkill(skillDir: string, options?: AuditOptions): Promise<AuditReport> {
   const startTime = Date.now();
 
   // 1. Parse manifest
@@ -37,27 +39,27 @@ export async function auditSkill(skillDir: string): Promise<AuditReport> {
   // 2. Run all checks
   const checks: CheckResult[] = [];
 
-  // Manifest validation
+  // Layer 1: Regex-based checks (deterministic, fast)
   checks.push(checkManifest(manifest));
 
   if (manifest) {
-    // Prompt injection + tool poisoning
     checks.push(checkInstructions(manifest.instructions));
-
-    // Dependencies
     checks.push(checkDependencies(manifest));
-
-    // Permissions
     checks.push(checkPermissions(manifest));
   }
 
-  // Code security (SAST + secrets) — always run on directory
+  // Code security (SAST + secrets)
   checks.push(await checkCode(skillDir));
+
+  // Layer 2: AI semantic analysis (optional)
+  if (manifest && !options?.skipAI) {
+    checks.push(await checkWithAI(manifest.instructions, manifest.description, options?.llm));
+  }
 
   // 3. Aggregate findings
   const allFindings = checks.flatMap((c) => c.findings);
 
-  // 4. Calculate risk score
+  // 4. Calculate risk score (with dedup)
   const { score, level } = calculateRiskScore(allFindings);
 
   return {

@@ -1,9 +1,8 @@
 /**
  * Risk scoring engine
- * 風險評分引擎
  *
  * Calculates a 0-100 risk score from audit findings.
- * 根據審計發現計算 0-100 風險評分。
+ * Deduplicates findings by ID — only the highest severity instance counts.
  */
 
 import type { AuditFinding, AuditReport } from './types.js';
@@ -15,18 +14,33 @@ const SEVERITY_WEIGHTS: Record<string, number> = {
   low: 1,
 };
 
+const SEVERITY_RANK: Record<string, number> = {
+  critical: 4,
+  high: 3,
+  medium: 2,
+  low: 1,
+  info: 0,
+};
+
 /**
  * Calculate risk score (0-100) from findings.
- * Higher score = higher risk.
+ * Deduplicates by finding ID — keeps the highest severity instance.
  */
 export function calculateRiskScore(findings: AuditFinding[]): { score: number; level: AuditReport['riskLevel'] } {
-  let rawScore = 0;
-
+  // Deduplicate: keep highest severity per finding ID
+  const deduped = new Map<string, AuditFinding>();
   for (const finding of findings) {
+    const existing = deduped.get(finding.id);
+    if (!existing || (SEVERITY_RANK[finding.severity] ?? 0) > (SEVERITY_RANK[existing.severity] ?? 0)) {
+      deduped.set(finding.id, finding);
+    }
+  }
+
+  let rawScore = 0;
+  for (const finding of deduped.values()) {
     rawScore += SEVERITY_WEIGHTS[finding.severity] ?? 0;
   }
 
-  // Cap at 100
   const score = Math.min(100, rawScore);
 
   let level: AuditReport['riskLevel'];

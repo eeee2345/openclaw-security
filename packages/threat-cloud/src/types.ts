@@ -395,6 +395,65 @@ export interface AuditLogQuery {
   limit?: number;
 }
 
+// ---------------------------------------------------------------------------
+// Phase B: Skill Threat Intelligence / AI Skill 威脅情報
+// ---------------------------------------------------------------------------
+
+/** Skill threat submission from Skill Auditor instances */
+export interface SkillThreatSubmission {
+  /** SHA-256 hash of the SKILL.md content */
+  skillHash: string;
+  /** Skill name (from manifest) */
+  skillName: string;
+  /** Risk score from auditor (0-100) */
+  riskScore: number;
+  /** Risk level */
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  /** Anonymized finding summaries (no raw content) */
+  findingSummaries: SkillFindingSummary[];
+  /** Skill source registry (e.g. "openclaw", "github", "local") */
+  sourceRegistry?: string;
+  /** Auditor version */
+  auditorVersion?: string;
+}
+
+/** Anonymized finding summary for Threat Cloud sharing */
+export interface SkillFindingSummary {
+  id: string;
+  category: string;
+  severity: string;
+  /** Generic title, no line-specific content */
+  title: string;
+}
+
+/** Stored skill threat record in Threat Cloud */
+export interface SkillThreatRecord {
+  id: number;
+  skillHash: string;
+  skillName: string;
+  /** Aggregate risk score (weighted average across submissions) */
+  aggregateRiskScore: number;
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  /** Number of times this skill has been scanned across all users */
+  scanCount: number;
+  /** Most common findings across all submissions */
+  topFindings: SkillFindingSummary[];
+  firstSeen: string;
+  lastSeen: string;
+  /** Community trust: positive scans / total scans */
+  trustRatio: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Skill threat lookup result */
+export interface SkillThreatLookup {
+  found: boolean;
+  record?: SkillThreatRecord;
+  /** "safe" | "suspicious" | "dangerous" | "unknown" */
+  verdict: 'safe' | 'suspicious' | 'dangerous' | 'unknown';
+}
+
 /** Feed license info for compliance / Feed 授權資訊 */
 export type FeedLicense =
   | 'public_domain'

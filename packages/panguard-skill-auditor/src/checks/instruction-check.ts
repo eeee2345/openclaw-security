@@ -105,8 +105,26 @@ const PATTERNS: Pattern[] = [
 /** Zero-width and invisible Unicode characters */
 const HIDDEN_UNICODE_RE = /[\u200B\u200C\u200D\u200E\u200F\u202A-\u202E\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD]/;
 
-/** Base64-encoded suspicious keywords */
-const BASE64_BLOCK_RE = /[A-Za-z0-9+/]{40,}={0,2}/g;
+/**
+ * Homoglyph detection — Cyrillic/Greek characters that look identical to Latin.
+ * Maps confusable Unicode codepoints to their Latin lookalikes.
+ */
+const HOMOGLYPH_MAP: Record<string, string> = {
+  '\u0410': 'A', '\u0412': 'B', '\u0421': 'C', '\u0415': 'E', '\u041D': 'H',
+  '\u041A': 'K', '\u041C': 'M', '\u041E': 'O', '\u0420': 'P', '\u0422': 'T',
+  '\u0425': 'X', '\u0430': 'a', '\u0435': 'e', '\u043E': 'o', '\u0440': 'p',
+  '\u0441': 'c', '\u0443': 'y', '\u0445': 'x', '\u0455': 's', '\u0456': 'i',
+  '\u0458': 'j', '\u0471': 'v', '\u0473': 'w',
+  // Greek
+  '\u0391': 'A', '\u0392': 'B', '\u0395': 'E', '\u0396': 'Z', '\u0397': 'H',
+  '\u0399': 'I', '\u039A': 'K', '\u039C': 'M', '\u039D': 'N', '\u039F': 'O',
+  '\u03A1': 'P', '\u03A4': 'T', '\u03A5': 'Y', '\u03A7': 'X',
+  '\u03B1': 'a', '\u03BF': 'o', '\u03C1': 'p',
+};
+const HOMOGLYPH_RE = new RegExp(`[${Object.keys(HOMOGLYPH_MAP).join('')}]`);
+
+/** Base64-encoded suspicious keywords — lowered threshold to 20 chars */
+const BASE64_BLOCK_RE = /[A-Za-z0-9+/]{20,}={0,2}/g;
 const SUSPICIOUS_DECODED = /(eval|exec|system|import\s+os|subprocess|child_process|require\s*\(|__import__|curl|wget)/i;
 
 export function checkInstructions(instructions: string): CheckResult {
@@ -137,6 +155,22 @@ export function checkInstructions(instructions: string): CheckResult {
       id: 'hidden-unicode',
       title: 'Hidden Unicode characters detected',
       description: `Found invisible character U+${charCode.toString(16).toUpperCase().padStart(4, '0')} at line ${lineNum}. This may be used to hide malicious instructions.`,
+      severity: 'high',
+      category: 'prompt-injection',
+      location: `SKILL.md:${lineNum}`,
+    });
+  }
+
+  // Homoglyph detection (Cyrillic/Greek lookalikes)
+  const homoglyphMatch = HOMOGLYPH_RE.exec(instructions);
+  if (homoglyphMatch) {
+    const lineNum = instructions.substring(0, homoglyphMatch.index).split('\n').length;
+    const charCode = homoglyphMatch[0]?.codePointAt(0) ?? 0;
+    const latin = HOMOGLYPH_MAP[homoglyphMatch[0]] ?? '?';
+    findings.push({
+      id: 'homoglyph-attack',
+      title: 'Homoglyph character detected',
+      description: `Found non-Latin character U+${charCode.toString(16).toUpperCase().padStart(4, '0')} (looks like "${latin}") at line ${lineNum}. This may be used to bypass text-based security checks.`,
       severity: 'high',
       category: 'prompt-injection',
       location: `SKILL.md:${lineNum}`,

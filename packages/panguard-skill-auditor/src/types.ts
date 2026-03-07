@@ -47,7 +47,7 @@ export interface AuditFinding {
   title: string;
   description: string;
   severity: Severity;
-  category: 'manifest' | 'prompt-injection' | 'tool-poisoning' | 'code' | 'secrets' | 'dependency' | 'permission';
+  category: 'manifest' | 'prompt-injection' | 'tool-poisoning' | 'code' | 'secrets' | 'dependency' | 'permission' | 'ai-analysis';
   location?: string;
 }
 
@@ -56,6 +56,14 @@ export interface CheckResult {
   status: 'pass' | 'warn' | 'fail' | 'info';
   label: string;
   findings: AuditFinding[];
+}
+
+/** Options for auditSkill */
+export interface AuditOptions {
+  /** LLM provider for AI semantic analysis (Layer 2). Optional. */
+  llm?: import('./checks/ai-check.js').SkillAnalysisLLM;
+  /** Skip AI analysis even if LLM is configured */
+  skipAI?: boolean;
 }
 
 /** Complete audit report */

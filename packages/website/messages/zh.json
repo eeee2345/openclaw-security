@@ -1073,6 +1073,23 @@
         "users100k": "100,000 個用戶：預測性威脅偵測"
       }
     },
+    "skillIntel": {
+      "overline": "AI SKILL 情報",
+      "title": "不只是端點。AI skill 也保護。",
+      "desc": "Threat Cloud 不只追蹤伺服器攻擊。每次 Panguard Skill Auditor 掃描都會貢獻匿名化的 skill 威脅資料 -- 雜湊、風險分數、發現類別。結果是一個社群驅動的 AI skill 信任資料庫。",
+      "item1": {
+        "title": "即時判定",
+        "desc": "如果有人已經掃過一個已知惡意的 skill，你的掃描還沒開始就先拿到結果。"
+      },
+      "item2": {
+        "title": "社群信任分數",
+        "desc": "Skill 的信任度隨時間累積。乾淨掃描越多、信任比例越高。任何人發現一個 CRITICAL 問題，所有人都會被標記。"
+      },
+      "item3": {
+        "title": "零日傳播",
+        "desc": "一個新的惡意 skill 出現在 OpenClaw。第一個掃描的人標記它。幾分鐘內，每個 Panguard 用戶都知道了。"
+      }
+    },
     "api": {
       "overline": "API 存取",
       "title": "給開發者：Threat Cloud API",
@@ -1101,6 +1118,10 @@
         {
           "name": "MITRE ATT&CK 地圖",
           "desc": "技術覆蓋率視覺化"
+        },
+        {
+          "name": "Skill 威脅查詢",
+          "desc": "AI skill 社群信任分數與威脅歷史"
         }
       ]
     },

@@ -230,8 +230,40 @@ export default function ThreatCloudContent() {
         </div>
       </SectionWrapper>
 
-      {/* ── API ── */}
+      {/* ── Skill Intelligence ── */}
       <SectionWrapper dark>
+        <SectionTitle
+          overline={t('skillIntel.overline')}
+          title={t('skillIntel.title')}
+        />
+        <FadeInUp delay={0.05}>
+          <p className="text-text-secondary text-center max-w-2xl mx-auto mt-4 leading-relaxed">
+            {t('skillIntel.desc')}
+          </p>
+        </FadeInUp>
+        <div className="grid sm:grid-cols-3 gap-4 mt-14">
+          {(['item1', 'item2', 'item3'] as const).map((key, i) => {
+            const icons = [ScanIcon, ShieldIcon, GlobalIcon];
+            const Icon = icons[i];
+            return (
+              <FadeInUp key={key} delay={i * 0.08}>
+                <div className="bg-surface-1 rounded-xl border border-border p-6 h-full card-glow">
+                  <Icon className="w-6 h-6 text-brand-sage mb-4" />
+                  <p className="text-sm font-bold text-text-primary mb-2">
+                    {t(`skillIntel.${key}.title`)}
+                  </p>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {t(`skillIntel.${key}.desc`)}
+                  </p>
+                </div>
+              </FadeInUp>
+            );
+          })}
+        </div>
+      </SectionWrapper>
+
+      {/* ── API ── */}
+      <SectionWrapper>
         <SectionTitle
           overline={t('api.overline')}
           title={t('api.title')}
