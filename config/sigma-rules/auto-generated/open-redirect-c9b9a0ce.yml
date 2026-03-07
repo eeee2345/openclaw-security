@@ -1,0 +1,27 @@
+title: Potential Open Redirect Attempt
+id: c9b9a0ce-ab2d-43c4-98bb-8c6713b420ec
+status: experimental
+description: |
+  "Potential Open Redirect attack detected. Auto-generated from HackerOne report: Open Redirect on lovable.dev via redirect parameter leads to phishing attacks"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://hackerone.com/reports/3581815
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.initial_access
+  - attack.t1566.002
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-query|contains:
+      - '//evil.com'
+      - '/@evil.com'
+      - '/\evil.com'
+      - '%0d%0a'
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

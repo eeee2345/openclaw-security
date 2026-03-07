@@ -1,0 +1,32 @@
+title: Potential OS Command Injection
+id: 7d255250-a5be-4e5f-b052-3e4c3491e203
+status: experimental
+description: |
+  "Potential Command Injection attack detected. Auto-generated from HackerOne report: SSTI leads to Command injection"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://hackerone.com/reports/3584149
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.execution
+  - attack.t1059
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-query|contains:
+      - '$('
+      - '`'
+      - '|'
+      - ';'
+      - '&&'
+      - '||'
+      - '%0a'
+      - '
+'
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: low

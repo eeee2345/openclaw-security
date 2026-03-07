@@ -1,0 +1,32 @@
+title: Potential Code Injection Attack
+id: a91d74a0-225c-412c-9d88-b2d6978c862c
+status: experimental
+description: |
+  "Potential Code Injection attack detected. Auto-generated from HackerOne report: Injection in path parameter of Ingress-nginx"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://hackerone.com/reports/2701701
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.execution
+  - attack.t1059
+  - cwe.94
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-query|contains:
+      - 'eval('
+      - 'exec('
+      - 'system('
+      - '__import__'
+      - 'Runtime.getRuntime()'
+      - 'Process'
+      - 'spawn('
+      - 'require('
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

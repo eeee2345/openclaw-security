@@ -1,0 +1,30 @@
+title: Potential Information Disclosure Attack
+id: 668a20c1-e4eb-4e30-9f86-702a96c48bea
+status: experimental
+description: |
+  "Potential Information Disclosure attack detected. Auto-generated from HackerOne report: Publicly accessible `█████████` endpoint exposing internal user identifiers and email addresses"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://hackerone.com/reports/3360293
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.discovery
+  - attack.t1082
+  - cwe.200
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-query|contains:
+      - '.env'
+      - '.git/'
+      - 'phpinfo'
+      - '/debug/'
+      - '/actuator'
+      - '/.well-known'
+  condition: selection
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: medium

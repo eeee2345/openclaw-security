@@ -1,0 +1,37 @@
+title: Potential Cross-Site Scripting (XSS) Attempt
+id: 97a8015a-379c-4bb8-ac0b-50bfb2ea8af1
+status: experimental
+description: |
+  "Potential XSS attack detected. Auto-generated from HackerOne report: AI Playground XSS to steal user-chat messages and access to connected MCP Server"
+  Auto-generated from HackerOne report analysis.
+references:
+  - https://hackerone.com/reports/3424998
+author: Panguard Threat Intel (auto-generated)
+date: 2026/03/07
+tags:
+  - attack.execution
+  - attack.t1059.007
+logsource:
+  category: webserver
+detection:
+  selection_query:
+    cs-uri-query|contains:
+      - '<script'
+      - 'javascript:'
+      - 'onerror='
+      - 'onload='
+      - '<img src='
+      - '<svg'
+  selection_body:
+    cs-body|contains:
+      - '<script'
+      - 'javascript:'
+      - 'onerror='
+      - 'onload='
+      - '<img src='
+      - '<svg'
+  condition: selection_query or selection_body
+falsepositives:
+  - Legitimate internal API calls
+  - Development/testing environments
+level: low
