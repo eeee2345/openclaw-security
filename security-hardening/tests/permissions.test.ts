@@ -275,7 +275,7 @@ describe('Operation Permission Check', () => {
   describe('unknown operation', () => {
     it('should block unknown operation types', () => {
       // Cast to bypass TypeScript to test the default case
-      expect(isOperationAllowed('unknown_op' as any, DEFAULT_SECURITY_POLICY)).toBe(false);
+      expect(isOperationAllowed('unknown_op' as unknown as Parameters<typeof isOperationAllowed>[0], DEFAULT_SECURITY_POLICY)).toBe(false);
     });
   });
 });

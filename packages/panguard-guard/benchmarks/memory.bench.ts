@@ -7,7 +7,7 @@
  * - Memory under event processing
  */
 
-import { bench, describe, beforeAll } from 'vitest';
+import { bench, describe } from 'vitest';
 import { RuleEngine, setLogLevel } from '@panguard-ai/core';
 import type { SecurityEvent, SigmaRule } from '@panguard-ai/core';
 import { DetectAgent } from '../src/agent/detect-agent.js';
@@ -99,16 +99,6 @@ function generateEvents(count: number): SecurityEvent[] {
 // Utility: snapshot heap usage
 // ---------------------------------------------------------------------------
 
-function forceGC(): void {
-  if (typeof globalThis.gc === 'function') {
-    globalThis.gc();
-  }
-}
-
-function getHeapUsedMB(): number {
-  forceGC();
-  return process.memoryUsage().heapUsed / (1024 * 1024);
-}
 
 // ---------------------------------------------------------------------------
 // Pre-generate data

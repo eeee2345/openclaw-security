@@ -4,13 +4,11 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createServer, type IncomingMessage } from 'node:http';
-import { createHash, randomBytes } from 'node:crypto';
+import { createServer, request as httpRequest, type IncomingMessage } from 'node:http';
+import { randomBytes } from 'node:crypto';
 import type { Socket } from 'node:net';
 import { DashboardRelay } from '../src/dashboard-relay.js';
 
-/** WebSocket magic GUID / WebSocket 魔術 GUID */
-const WS_MAGIC_GUID = '258EAFA5-E914-47DA-95CA-5AB5DC11E65B';
 
 /** Helper to get a free port / 輔助取得可用埠 */
 function getPort(): Promise<number> {
@@ -31,10 +29,9 @@ function wsConnect(
   headers?: Record<string, string>
 ): Promise<Socket> {
   return new Promise((resolve, reject) => {
-    const { request } = require('node:http') as typeof import('node:http');
     const wsKey = randomBytes(16).toString('base64');
 
-    const req = request({
+    const req = httpRequest({
       hostname: '127.0.0.1',
       port,
       path,
@@ -171,7 +168,7 @@ describe('DashboardRelay', () => {
 
   describe('handleUpgrade - agent connection', () => {
     it('should register an agent connection on relay path', async () => {
-      const socket = track(await wsConnect(port, '/api/dashboard/relay/agent-001'));
+      track(await wsConnect(port, '/api/dashboard/relay/agent-001'));
       // Allow event loop to process
       await new Promise((r) => setTimeout(r, 50));
 
@@ -179,11 +176,11 @@ describe('DashboardRelay', () => {
     });
 
     it('should replace existing agent connection on reconnect', async () => {
-      const socket1 = track(await wsConnect(port, '/api/dashboard/relay/agent-002'));
+      track(await wsConnect(port, '/api/dashboard/relay/agent-002'));
       await new Promise((r) => setTimeout(r, 50));
       expect(relay.getConnectedAgents()).toContain('agent-002');
 
-      const socket2 = track(await wsConnect(port, '/api/dashboard/relay/agent-002'));
+      track(await wsConnect(port, '/api/dashboard/relay/agent-002'));
       await new Promise((r) => setTimeout(r, 50));
       expect(relay.getConnectedAgents()).toContain('agent-002');
       // Still only one agent

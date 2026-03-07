@@ -921,7 +921,7 @@ export class ThreatCloudServer {
     const submission = JSON.parse(body) as SkillThreatSubmission;
 
     // Validate required fields
-    if (!submission.skillHash || !submission.skillName || submission.riskScore == null) {
+    if (!submission.skillHash || !submission.skillName || submission.riskScore === null || submission.riskScore === undefined) {
       this.sendJson(res, 400, {
         ok: false,
         error: 'Missing required fields: skillHash, skillName, riskScore',

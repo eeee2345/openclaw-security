@@ -792,7 +792,6 @@ describe('formatSkillsHelp', () => {
     it('should include all Chinese category labels', () => {
       const output = formatSkillsHelp('zh-TW');
       // Use the actual category labels from the source code's categoryLabels mapping
-      const expectedLabels = ['[' + getSkillsByCategory('scan')[0]!.nameZh.slice(2) ? '' : ''];
       // Verify using the known categoryLabels from the source
       expect(output).toContain('[');
       expect(output).toContain(']');

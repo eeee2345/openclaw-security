@@ -38,7 +38,7 @@ vi.mock('../src/cli/auth-guard.js', () => ({
     authorized: true,
     credentials: null,
   }),
-  withAuth: vi.fn((_tier: string, handler: Function) => handler),
+  withAuth: vi.fn((_tier: string, handler: (...args: unknown[]) => unknown) => handler),
 }));
 
 vi.mock('@panguard-ai/core', async (importOriginal) => {

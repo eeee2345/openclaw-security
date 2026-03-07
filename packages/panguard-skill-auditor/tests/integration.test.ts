@@ -187,7 +187,7 @@ describe('auditSkill integration', () => {
     it('should not run AI check when skipAI is true', async () => {
       await writeSkillFile(tmpDir, CLEAN_SKILL_CONTENT);
       const llm = makeNoopLLM();
-      const report = await auditSkill(tmpDir, { skipAI: true, llm });
+      await auditSkill(tmpDir, { skipAI: true, llm });
       expect(vi.mocked(llm.analyze)).not.toHaveBeenCalled();
     });
 

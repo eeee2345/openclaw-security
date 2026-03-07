@@ -8,12 +8,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type {
-  ThreatVerdict,
   DetectionResult,
-  ResponseResult,
   EnvironmentBaseline,
   GuardConfig,
-  ActionPolicy,
 } from '../src/types.js';
 import { DEFAULT_ACTION_POLICY } from '../src/types.js';
 

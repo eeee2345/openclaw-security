@@ -8,7 +8,7 @@
  * @module @panguard-ai/panguard-mcp/tests/server
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { getAllToolDefinitions, dispatchTool, PANGUARD_MCP_VERSION } from '../src/server.js';
 
 // ─── Server Metadata ────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@ describe('Tool schema validation', () => {
   it('every property has a type field', () => {
     for (const tool of tools) {
       const props = tool.inputSchema.properties;
-      for (const [key, schema] of Object.entries(props)) {
+      for (const [_key, schema] of Object.entries(props)) {
         expect((schema as Record<string, unknown>)['type']).toBeDefined();
       }
     }

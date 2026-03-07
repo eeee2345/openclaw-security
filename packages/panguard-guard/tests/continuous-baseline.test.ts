@@ -5,7 +5,7 @@
  * Tests continuousBaselineUpdate and pruneStalePatterns functions.
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type { EnvironmentBaseline } from '../src/types.js';
 import {

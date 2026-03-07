@@ -6,9 +6,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
+import { request as httpNodeRequest } from 'node:http';
+import { execFileSync as nodeExecFileSync } from 'node:child_process';
 import { Command } from 'commander';
 import { runCLI } from '@panguard-ai/panguard-guard';
-import { c, symbols, box, header } from '@panguard-ai/core';
+import { c, box, header } from '@panguard-ai/core';
 
 export function guardCommand(): Command {
   const cmd = new Command('guard').description(
@@ -130,8 +132,7 @@ function readJsonFile(filePath: string): Record<string, unknown> | null {
 /** Try to connect to the dashboard health endpoint with a 2-second timeout */
 async function checkDashboardReachable(port: number): Promise<boolean> {
   return new Promise<boolean>((resolve) => {
-    const { request } = require('node:http') as typeof import('http');
-    const req = request(
+    const req = httpNodeRequest(
       { hostname: 'localhost', port, path: '/api/health', method: 'GET', timeout: 2000 },
       (res) => {
         resolve(res.statusCode !== undefined && res.statusCode < 500);
@@ -218,8 +219,7 @@ async function showDetailedStatus(dataDirOverride?: string): Promise<void> {
   // Attempt to derive uptime from the process start time (macOS / Linux)
   if (processRunning && pid !== null) {
     try {
-      const { execFileSync } = require('node:child_process') as typeof import('child_process');
-      const out = execFileSync('ps', ['-p', String(pid), '-o', 'etime='], {
+      const out = nodeExecFileSync('ps', ['-p', String(pid), '-o', 'etime='], {
         encoding: 'utf-8',
         timeout: 2000,
       }).trim();

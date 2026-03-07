@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SmartRouter } from '../src/ai/smart-router.js';
 import type { SmartRouterConfig } from '../src/ai/smart-router.js';
 import type { LLMProvider, AnalysisResult, ThreatClassification, TokenUsage } from '../src/ai/types.js';
-import type { SecurityEvent } from '../src/types.js';
 
 // Suppress logger stderr output during tests
 let stderrSpy: ReturnType<typeof vi.spyOn>;

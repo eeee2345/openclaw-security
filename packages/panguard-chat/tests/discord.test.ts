@@ -3,7 +3,7 @@
  * Discord 管道測試
  */
 
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DiscordChannel } from '../src/channels/discord.js';
 import type { ThreatAlert, FormattedMessage } from '../src/types.js';
 

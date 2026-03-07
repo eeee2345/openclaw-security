@@ -21,8 +21,7 @@ import {
   waitForCompactChoice,
 } from './menu.js';
 import type { MenuItem, Lang } from './menu.js';
-import { checkFeatureAccess, showUpgradePrompt, getLicense, FEATURE_TIER } from './auth-guard.js';
-import { tierDisplayName } from './credentials.js';
+import { checkFeatureAccess, showUpgradePrompt, getLicense } from './auth-guard.js';
 import { breadcrumb, nextSteps, confirmDestructive, moduleCountDisplay, formatError } from './ux-helpers.js';
 
 // ---------------------------------------------------------------------------

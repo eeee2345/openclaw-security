@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { parsePlaybook, validatePlaybook, loadPlaybooksFromDir } from '../src/playbook/parser.js';
@@ -130,7 +130,7 @@ describe('validatePlaybook', () => {
     const playbook: Playbook = {
       name: 'test',
       trigger: { pattern: 'brute_force' },
-      actions: [{ type: 'invalid_action' as any }],
+      actions: [{ type: 'invalid_action' as unknown as 'notify' }],
     };
     const result = validatePlaybook(playbook);
 
@@ -153,7 +153,7 @@ describe('validatePlaybook', () => {
   it('should report error for invalid pattern type', () => {
     const playbook: Playbook = {
       name: 'test',
-      trigger: { pattern: 'unknown_pattern' as any },
+      trigger: { pattern: 'unknown_pattern' as unknown as 'brute_force' },
       actions: [{ type: 'notify' }],
     };
     const result = validatePlaybook(playbook);
@@ -165,7 +165,7 @@ describe('validatePlaybook', () => {
   it('should report error for invalid minSeverity', () => {
     const playbook: Playbook = {
       name: 'test',
-      trigger: { minSeverity: 'extreme' as any },
+      trigger: { minSeverity: 'extreme' as unknown as 'low' },
       actions: [{ type: 'notify' }],
     };
     const result = validatePlaybook(playbook);

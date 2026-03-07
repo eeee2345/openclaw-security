@@ -9,7 +9,6 @@ import type { Page } from '@playwright/test';
 import {
   MOCK_TOKEN,
   MOCK_USER,
-  MOCK_ADMIN,
   authMeSuccess,
   authMeAdmin,
   authMeUnauthorized,
@@ -18,8 +17,6 @@ import {
   billingStatusPro,
   totpStatusDisabled,
 } from './api-mocks';
-
-const API_PATTERN = '**/api/**';
 
 /**
  * Dismiss the cookie consent banner by setting the consent cookie.

@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import type { ActionPolicy, ThreatVerdict } from '../src/types.js';
+import type { ThreatVerdict } from '../src/types.js';
 import { DEFAULT_ACTION_POLICY } from '../src/types.js';
 
 // Mock child_process.execFile to avoid actual firewall commands

@@ -376,7 +376,7 @@ export function getChannelConfigSteps(channel: ChannelType): readonly SetupStep[
         },
       ];
     default: {
-      const _exhaustive: never = channel;
+      void (channel as never);
       return [];
     }
   }

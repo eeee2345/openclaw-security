@@ -3,7 +3,7 @@
  * RootkitDetector 單元測試
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   createRootkitEvent,
   checkLdPreload,

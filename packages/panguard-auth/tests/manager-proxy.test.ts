@@ -4,16 +4,13 @@
  * error handling (ECONNREFUSED, timeout), and response reshaping.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as http from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
 import {
   ManagerProxy,
-  type ManagerEnvelope,
   type ManagerOverviewData,
-  type AgentListResponse,
-  type EventsResponse,
   type ThreatSummaryData,
 } from '../src/manager-proxy.js';
 

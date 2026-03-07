@@ -7,10 +7,8 @@
  * @module @panguard-ai/panguard/cli/menu
  */
 
-import { c, visLen } from '@panguard-ai/core';
-import { tierLabel } from './theme.js';
+import { c } from '@panguard-ai/core';
 import type { Tier } from './credentials.js';
-import { getLicense } from './auth-guard.js';
 
 export type Lang = 'en' | 'zh-TW';
 
@@ -32,10 +30,6 @@ export type MainInputResult =
   | { type: 'command'; text: string };
 
 // ── ANSI helpers ────────────────────────────────────────────────────
-
-function hideCursor(): void {
-  process.stdout.write('\x1b[?25l');
-}
 
 function showCursor(): void {
   process.stdout.write('\x1b[?25h');
