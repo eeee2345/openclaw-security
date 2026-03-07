@@ -372,7 +372,8 @@ export type AuditAction =
   | 'rule_publish'
   | 'rule_generate'
   | 'campaign_create'
-  | 'feed_access';
+  | 'feed_access'
+  | 'skill_threat_submit';
 
 /** Audit log entry / 稽核日誌項目 */
 export interface AuditLogEntry {

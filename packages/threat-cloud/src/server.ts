@@ -34,12 +34,32 @@ import type {
   IoCStatus,
   SightingInput,
   AuditLogQuery,
+  SkillThreatSubmission,
+  SkillThreatRecord,
+  SkillThreatLookup,
+  SkillFindingSummary,
 } from './types.js';
 
 /** Rate limiter state / 速率限制狀態 */
 interface RateLimitEntry {
   count: number;
   resetAt: number;
+}
+
+/** Raw skill_threats row from SQLite */
+interface SkillThreatRow {
+  id: number;
+  skill_hash: string;
+  skill_name: string;
+  aggregate_risk_score: number;
+  risk_level: string;
+  scan_count: number;
+  top_findings: string;
+  first_seen: string;
+  last_seen: string;
+  trust_ratio: number;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
@@ -346,6 +366,17 @@ export class ThreatCloudServer {
       }
       if (pathname === '/api/feeds/agent-update' && req.method === 'GET') {
         this.handleAgentUpdate(url, res);
+        return;
+      }
+
+      // Skill threat endpoints
+      if (pathname === '/api/skill-threats' && req.method === 'POST') {
+        await this.handlePostSkillThreat(req, res, auditCtx);
+        return;
+      }
+      if (pathname.startsWith('/api/skill-threats/') && req.method === 'GET') {
+        const hash = decodeURIComponent(pathname.slice('/api/skill-threats/'.length));
+        this.handleLookupSkillThreat(hash, res);
         return;
       }
 
@@ -874,6 +905,246 @@ export class ThreatCloudServer {
     const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
     const result = this.feedDistributor.getAgentUpdate(params.get('since') || undefined);
     this.sendJson(res, 200, { ok: true, data: result });
+  }
+
+  // -------------------------------------------------------------------------
+  // Skill threat handlers / Skill 威脅處理器
+  // -------------------------------------------------------------------------
+
+  /** POST /api/skill-threats - Submit scan result for a skill */
+  private async handlePostSkillThreat(
+    req: IncomingMessage,
+    res: ServerResponse,
+    auditCtx: { actorHash: string; ipAddress: string }
+  ): Promise<void> {
+    const body = await this.readBody(req);
+    const submission = JSON.parse(body) as SkillThreatSubmission;
+
+    // Validate required fields
+    if (!submission.skillHash || !submission.skillName || submission.riskScore == null) {
+      this.sendJson(res, 400, {
+        ok: false,
+        error: 'Missing required fields: skillHash, skillName, riskScore',
+      });
+      return;
+    }
+
+    // Validate skillHash format (SHA-256 hex)
+    if (!/^[a-f0-9]{64}$/i.test(submission.skillHash)) {
+      this.sendJson(res, 400, { ok: false, error: 'skillHash must be a valid SHA-256 hex string' });
+      return;
+    }
+
+    // Validate riskScore range
+    if (submission.riskScore < 0 || submission.riskScore > 100) {
+      this.sendJson(res, 400, { ok: false, error: 'riskScore must be between 0 and 100' });
+      return;
+    }
+
+    // Validate riskLevel
+    const validRiskLevels = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const;
+    if (!submission.riskLevel || !validRiskLevels.includes(submission.riskLevel)) {
+      this.sendJson(res, 400, {
+        ok: false,
+        error: 'riskLevel must be one of: LOW, MEDIUM, HIGH, CRITICAL',
+      });
+      return;
+    }
+
+    // Sanitize
+    submission.skillName = this.sanitizeString(submission.skillName, 200);
+    const safeFindings: SkillFindingSummary[] = (submission.findingSummaries ?? [])
+      .slice(0, 50)
+      .map((f) => ({
+        id: this.sanitizeString(f.id ?? '', 100),
+        category: this.sanitizeString(f.category ?? '', 100),
+        severity: this.sanitizeString(f.severity ?? '', 20),
+        title: this.sanitizeString(f.title ?? '', 200),
+      }));
+
+    const rawDb = this.db.getDB();
+    const now = new Date().toISOString();
+
+    // Check if skill_hash already exists
+    const existing = rawDb
+      .prepare('SELECT * FROM skill_threats WHERE skill_hash = ?')
+      .get(submission.skillHash) as SkillThreatRow | undefined;
+
+    let resultData: { skillHash: string; scanCount: number; aggregateRiskScore: number };
+
+    if (existing) {
+      // Update: weighted average for aggregate risk score
+      const newScanCount = existing.scan_count + 1;
+      const newAggregateScore =
+        (existing.aggregate_risk_score * existing.scan_count + submission.riskScore) / newScanCount;
+
+      // Update trust_ratio: approximate by tracking how many scans had riskScore < 50
+      // Current trust reflects (safe scans / total). If new scan is safe, trust goes up.
+      const currentSafeScans = Math.round(existing.trust_ratio * existing.scan_count);
+      const newSafeScans = submission.riskScore < 50 ? currentSafeScans + 1 : currentSafeScans;
+      const newTrustRatio = newSafeScans / newScanCount;
+
+      // Determine new risk level based on aggregate score
+      const newRiskLevel = this.computeRiskLevel(newAggregateScore);
+
+      // Merge top findings: combine existing and new, deduplicate by id, keep top 20
+      const existingFindings = JSON.parse(existing.top_findings) as SkillFindingSummary[];
+      const mergedFindings = this.mergeFindings(existingFindings, safeFindings, 20);
+
+      rawDb
+        .prepare(
+          `UPDATE skill_threats
+           SET aggregate_risk_score = ?,
+               risk_level = ?,
+               scan_count = ?,
+               top_findings = ?,
+               last_seen = ?,
+               trust_ratio = ?,
+               updated_at = ?
+           WHERE skill_hash = ?`
+        )
+        .run(
+          newAggregateScore,
+          newRiskLevel,
+          newScanCount,
+          JSON.stringify(mergedFindings),
+          now,
+          newTrustRatio,
+          now,
+          submission.skillHash
+        );
+
+      resultData = {
+        skillHash: submission.skillHash,
+        scanCount: newScanCount,
+        aggregateRiskScore: Math.round(newAggregateScore * 100) / 100,
+      };
+    } else {
+      // Create new record
+      const trustRatio = submission.riskScore < 50 ? 1.0 : 0.0;
+      const riskLevel = this.computeRiskLevel(submission.riskScore);
+
+      rawDb
+        .prepare(
+          `INSERT INTO skill_threats
+           (skill_hash, skill_name, aggregate_risk_score, risk_level, scan_count,
+            top_findings, first_seen, last_seen, trust_ratio, created_at, updated_at)
+           VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?)`
+        )
+        .run(
+          submission.skillHash,
+          submission.skillName,
+          submission.riskScore,
+          riskLevel,
+          JSON.stringify(safeFindings),
+          now,
+          now,
+          trustRatio,
+          now,
+          now
+        );
+
+      resultData = {
+        skillHash: submission.skillHash,
+        scanCount: 1,
+        aggregateRiskScore: submission.riskScore,
+      };
+    }
+
+    // Audit log
+    this.auditLogger.log('skill_threat_submit', 'skill_threat', submission.skillHash, {
+      ...auditCtx,
+      details: {
+        skillName: submission.skillName,
+        riskScore: submission.riskScore,
+        riskLevel: submission.riskLevel,
+      },
+    });
+
+    this.sendJson(res, 201, { ok: true, data: resultData });
+  }
+
+  /** GET /api/skill-threats/:hash - Lookup skill threat intelligence */
+  private handleLookupSkillThreat(hash: string, res: ServerResponse): void {
+    // Validate hash format
+    if (!/^[a-f0-9]{64}$/i.test(hash)) {
+      this.sendJson(res, 400, { ok: false, error: 'Invalid skill hash format' });
+      return;
+    }
+
+    const rawDb = this.db.getDB();
+    const row = rawDb
+      .prepare('SELECT * FROM skill_threats WHERE skill_hash = ?')
+      .get(hash) as SkillThreatRow | undefined;
+
+    if (!row) {
+      const lookup: SkillThreatLookup = { found: false, verdict: 'unknown' };
+      this.sendJson(res, 200, { ok: true, data: lookup });
+      return;
+    }
+
+    const record: SkillThreatRecord = {
+      id: row.id,
+      skillHash: row.skill_hash,
+      skillName: row.skill_name,
+      aggregateRiskScore: row.aggregate_risk_score,
+      riskLevel: row.risk_level as SkillThreatRecord['riskLevel'],
+      scanCount: row.scan_count,
+      topFindings: JSON.parse(row.top_findings) as SkillFindingSummary[],
+      firstSeen: row.first_seen,
+      lastSeen: row.last_seen,
+      trustRatio: row.trust_ratio,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    };
+
+    let verdict: SkillThreatLookup['verdict'];
+    if (record.aggregateRiskScore < 30) {
+      verdict = 'safe';
+    } else if (record.aggregateRiskScore < 70) {
+      verdict = 'suspicious';
+    } else {
+      verdict = 'dangerous';
+    }
+
+    const lookup: SkillThreatLookup = { found: true, record, verdict };
+    this.sendJson(res, 200, { ok: true, data: lookup });
+  }
+
+  /** Compute risk level from aggregate score */
+  private computeRiskLevel(score: number): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
+    if (score < 30) return 'LOW';
+    if (score < 60) return 'MEDIUM';
+    if (score < 85) return 'HIGH';
+    return 'CRITICAL';
+  }
+
+  /** Merge finding arrays: deduplicate by id, keep top N by severity priority */
+  private mergeFindings(
+    existing: SkillFindingSummary[],
+    incoming: SkillFindingSummary[],
+    maxCount: number
+  ): SkillFindingSummary[] {
+    const severityOrder: Record<string, number> = {
+      critical: 0,
+      high: 1,
+      medium: 2,
+      low: 3,
+      info: 4,
+    };
+    const map = new Map<string, SkillFindingSummary>();
+    for (const f of existing) {
+      map.set(f.id, f);
+    }
+    for (const f of incoming) {
+      // Incoming overwrites existing with same id (fresher data)
+      map.set(f.id, f);
+    }
+    const merged = Array.from(map.values());
+    merged.sort(
+      (a, b) => (severityOrder[a.severity.toLowerCase()] ?? 5) - (severityOrder[b.severity.toLowerCase()] ?? 5)
+    );
+    return merged.slice(0, maxCount);
   }
 
   // -------------------------------------------------------------------------

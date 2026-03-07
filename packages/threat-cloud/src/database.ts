@@ -266,6 +266,27 @@ export class ThreatCloudDB {
             CHECK(source_reliability IN ('A','B','C','D','E','F'));
         `,
       },
+      {
+        version: 9,
+        name: 'create_skill_threats_table',
+        sql: `
+          CREATE TABLE IF NOT EXISTS skill_threats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            skill_hash TEXT NOT NULL,
+            skill_name TEXT NOT NULL,
+            aggregate_risk_score REAL NOT NULL DEFAULT 0,
+            risk_level TEXT NOT NULL DEFAULT 'LOW',
+            scan_count INTEGER NOT NULL DEFAULT 0,
+            top_findings TEXT NOT NULL DEFAULT '[]',
+            first_seen TEXT NOT NULL,
+            last_seen TEXT NOT NULL,
+            trust_ratio REAL NOT NULL DEFAULT 1.0,
+            created_at TEXT NOT NULL DEFAULT (datetime('now')),
+            updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+          );
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_skill_threats_hash ON skill_threats(skill_hash);
+        `,
+      },
     ];
 
     const insertMigration = this.db.prepare(

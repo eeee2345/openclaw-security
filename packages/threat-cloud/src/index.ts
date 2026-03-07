@@ -9,6 +9,8 @@ export { FeedDistributor } from './feed-distributor.js';
 export { SightingStore } from './sighting-store.js';
 export { AuditLogger } from './audit-logger.js';
 export { Scheduler } from './scheduler.js';
+export { submitSkillThreat, lookupSkillThreat } from './skill-threat-client.js';
+export type { SkillThreatSubmitResult } from './skill-threat-client.js';
 export type {
   AnonymizedThreatData,
   ThreatCloudRule,
@@ -50,4 +52,8 @@ export type {
   AuditLogQuery,
   FeedLicense,
   FeedSourceConfig,
+  SkillThreatSubmission,
+  SkillFindingSummary,
+  SkillThreatRecord,
+  SkillThreatLookup,
 } from './types.js';
