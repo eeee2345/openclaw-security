@@ -43,9 +43,12 @@ export function calculateRiskScore(findings: AuditFinding[]): { score: number; l
 
   const score = Math.min(100, rawScore);
 
+  // Critical-override: any critical finding forces at least HIGH risk level
+  const hasCritical = [...deduped.values()].some((f) => f.severity === 'critical');
+
   let level: AuditReport['riskLevel'];
-  if (score >= 70) level = 'CRITICAL';
-  else if (score >= 40) level = 'HIGH';
+  if (score >= 70 || (hasCritical && score >= 25)) level = 'CRITICAL';
+  else if (score >= 40 || hasCritical) level = 'HIGH';
   else if (score >= 15) level = 'MEDIUM';
   else level = 'LOW';
 

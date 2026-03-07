@@ -22,8 +22,14 @@ const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
 export async function parseSkillManifest(skillDir: string): Promise<SkillManifest | null> {
   const skillPath = path.join(skillDir, 'SKILL.md');
 
+  const MAX_SKILL_SIZE = 1024 * 1024; // 1 MB
+
   let content: string;
   try {
+    const stat = await fs.stat(skillPath);
+    if (stat.size > MAX_SKILL_SIZE) {
+      return null;
+    }
     content = await fs.readFile(skillPath, 'utf-8');
   } catch {
     return null;
@@ -43,7 +49,7 @@ export async function parseSkillManifest(skillDir: string): Promise<SkillManifes
 
   let parsed: Record<string, unknown>;
   try {
-    parsed = (yaml.load(frontmatterRaw ?? '') as Record<string, unknown>) ?? {};
+    parsed = (yaml.load(frontmatterRaw ?? '', { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>) ?? {};
   } catch {
     return {
       name: path.basename(skillDir),

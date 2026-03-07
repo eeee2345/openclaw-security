@@ -118,31 +118,42 @@ describe('calculateRiskScore', () => {
       expect(result5.level).toBe('LOW');
     });
 
-    it('should return MEDIUM for score 15-39', () => {
+    it('should return MEDIUM for score 15-39 (no critical findings)', () => {
       // score = 15 (one high finding)
       const result15 = calculateRiskScore([makeFinding({ id: 'f1', severity: 'high' })]);
       expect(result15.level).toBe('MEDIUM');
 
-      // score = 25 (one critical finding)
-      const result25 = calculateRiskScore([makeFinding({ id: 'f1', severity: 'critical' })]);
-      expect(result25.level).toBe('MEDIUM');
+      // score = 20 (four medium findings)
+      const result20 = calculateRiskScore([
+        makeFinding({ id: 'f1', severity: 'medium' }),
+        makeFinding({ id: 'f2', severity: 'medium' }),
+        makeFinding({ id: 'f3', severity: 'medium' }),
+        makeFinding({ id: 'f4', severity: 'medium' }),
+      ]);
+      expect(result20.level).toBe('MEDIUM');
     });
 
-    it('should return HIGH for score 40-69', () => {
-      // score = 40 (high + critical = 15 + 25)
+    it('should force CRITICAL when any critical finding exists (critical-override)', () => {
+      // score = 25 (one critical) — critical-override forces CRITICAL
+      const result25 = calculateRiskScore([makeFinding({ id: 'f1', severity: 'critical' })]);
+      expect(result25.level).toBe('CRITICAL');
+
+      // score = 40 (high + critical) — critical-override forces CRITICAL
       const result40 = calculateRiskScore([
         makeFinding({ id: 'f1', severity: 'high' }),
         makeFinding({ id: 'f2', severity: 'critical' }),
       ]);
-      expect(result40.level).toBe('HIGH');
+      expect(result40.level).toBe('CRITICAL');
+    });
 
-      // score = 65 (two critical + one high = 50 + 15)
-      const result65 = calculateRiskScore([
-        makeFinding({ id: 'f1', severity: 'critical' }),
-        makeFinding({ id: 'f2', severity: 'critical' }),
+    it('should return HIGH for score 40-69 (no critical findings)', () => {
+      // score = 45 (three high = 45)
+      const result45 = calculateRiskScore([
+        makeFinding({ id: 'f1', severity: 'high' }),
+        makeFinding({ id: 'f2', severity: 'high' }),
         makeFinding({ id: 'f3', severity: 'high' }),
       ]);
-      expect(result65.level).toBe('HIGH');
+      expect(result45.level).toBe('HIGH');
     });
 
     it('should return CRITICAL for score 70+', () => {

@@ -78,7 +78,7 @@ describe('checkWithAI', () => {
       expect(result.findings[0].id).toBe('ai-social-engineering');
       expect(result.findings[0].title).toBe('Deceptive language detected');
       expect(result.findings[0].severity).toBe('high');
-      expect(result.findings[0].category).toBe('prompt-injection');
+      expect(result.findings[0].category).toBe('ai-analysis');
       expect(result.findings[0].location).toBe('AI analysis');
     });
 

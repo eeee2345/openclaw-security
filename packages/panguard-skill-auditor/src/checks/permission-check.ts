@@ -23,6 +23,11 @@ const TOOL_PATTERNS: ToolPattern[] = [
   { name: 'Browser', regex: /\b(browser|open.*url|navigate.*to|web.*scrape|playwright|puppeteer)\b/i, risk: 'medium', reason: 'Can open URLs and interact with web pages' },
   { name: 'Database', regex: /\b(database|sql|query|insert|update|delete.*from|mongodb|postgres|mysql)\b/i, risk: 'high', reason: 'Can access and modify database contents' },
   { name: 'Credentials', regex: /\b(api[_\s]?key|token|password|secret|credential|auth)\b/i, risk: 'medium', reason: 'Handles sensitive credentials' },
+  { name: 'SSH/Keys', regex: /\b(ssh-keygen|authorized_keys|~\/\.ssh|id_rsa|id_ed25519)\b/i, risk: 'high', reason: 'Can access or modify SSH keys' },
+  { name: 'Cron/Scheduler', regex: /\b(crontab|\/etc\/cron|systemctl\s+enable|launchctl\s+load)\b/i, risk: 'high', reason: 'Can install persistent scheduled tasks' },
+  { name: 'Docker', regex: /\b(docker\.sock|docker\s+run|docker\s+exec|--privileged)\b/i, risk: 'high', reason: 'Can access Docker daemon or run privileged containers' },
+  { name: 'Env Injection', regex: /\b(\.bashrc|\.zshrc|\.profile|\.bash_profile|export\s+\w+=)\b/i, risk: 'high', reason: 'Can inject environment variables via shell profile' },
+  { name: 'Clipboard', regex: /\b(pbpaste|pbcopy|xclip|xsel|clipboard)\b/i, risk: 'medium', reason: 'Can access or modify clipboard contents' },
 ];
 
 export function checkPermissions(manifest: SkillManifest): CheckResult {
@@ -35,6 +40,14 @@ export function checkPermissions(manifest: SkillManifest): CheckResult {
       detectedTools.push({ name: pattern.name, risk: pattern.risk });
 
       if (pattern.risk === 'high') {
+        findings.push({
+          id: `perm-${pattern.name.toLowerCase().replace(/[^a-z]/g, '-')}`,
+          title: `Skill uses ${pattern.name} (${pattern.risk} risk)`,
+          description: pattern.reason,
+          severity: 'high',
+          category: 'permission',
+        });
+      } else if (pattern.risk === 'medium') {
         findings.push({
           id: `perm-${pattern.name.toLowerCase().replace(/[^a-z]/g, '-')}`,
           title: `Skill uses ${pattern.name} (${pattern.risk} risk)`,

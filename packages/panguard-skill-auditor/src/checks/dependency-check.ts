@@ -100,7 +100,9 @@ export function checkDependencies(manifest: SkillManifest): CheckResult {
 
   const status = findings.some((f) => f.severity === 'high' || f.severity === 'critical')
     ? 'warn'
-    : 'info';
+    : findings.length > 0
+      ? 'warn'
+      : 'pass';
 
   const urlCount = urls.length;
   const label = urlCount > 0

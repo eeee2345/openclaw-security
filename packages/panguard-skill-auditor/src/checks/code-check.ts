@@ -23,9 +23,15 @@ export async function checkCode(skillDir: string): Promise<CheckResult> {
     }
   } catch {
     return {
-      status: 'info',
-      label: 'Code: panguard-scan not available, skipping code analysis',
-      findings: [],
+      status: 'warn',
+      label: 'Code: panguard-scan not available, code analysis skipped',
+      findings: [{
+        id: 'code-scan-unavailable',
+        title: 'Code scanner not available',
+        description: 'panguard-scan module could not be loaded. Code vulnerabilities and hardcoded secrets were NOT checked. Install @panguard-ai/panguard-scan for full coverage.',
+        severity: 'medium',
+        category: 'code',
+      }],
     };
   }
 
@@ -33,8 +39,6 @@ export async function checkCode(skillDir: string): Promise<CheckResult> {
     checkSourceCode ? checkSourceCode(skillDir) : Promise.resolve([]),
     checkHardcodedSecrets ? checkHardcodedSecrets(skillDir) : Promise.resolve([]),
   ]);
-
-  let scriptFileCount = 0;
 
   for (const finding of codeResults) {
     findings.push({
@@ -46,7 +50,6 @@ export async function checkCode(skillDir: string): Promise<CheckResult> {
       location: finding.details,
     });
   }
-  scriptFileCount += codeResults.length > 0 ? codeResults.length : 0;
 
   for (const finding of secretResults) {
     findings.push({

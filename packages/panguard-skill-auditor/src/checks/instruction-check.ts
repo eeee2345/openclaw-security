@@ -31,7 +31,7 @@ const PATTERNS: Pattern[] = [
   {
     id: 'pi-you-are-now',
     title: 'Prompt injection: identity override',
-    regex: /\b(you are now|act as|pretend to be|assume the role|from now on you)\b/i,
+    regex: /\b(you are now|act as|pretend to be|assume the role|from now on you|your true identity|henceforth operate as|your persona for this|switch to developer mode|enable maintenance mode|your updated system config)/i,
     severity: 'high',
     category: 'prompt-injection',
   },
@@ -45,7 +45,7 @@ const PATTERNS: Pattern[] = [
   {
     id: 'pi-do-anything',
     title: 'Prompt injection: jailbreak pattern',
-    regex: /\b(DAN|do anything now|jailbreak|bypass safety|ignore safety|no restrictions)\b/i,
+    regex: /\b(DAN|do anything now|jailbreak|bypass safety|ignore safety|no restrictions|unrestricted mode|god mode|developer mode|maintenance mode|STAN|respond without filter|disable content policy)\b/i,
     severity: 'critical',
     category: 'prompt-injection',
   },
@@ -68,7 +68,7 @@ const PATTERNS: Pattern[] = [
   {
     id: 'tp-reverse-shell',
     title: 'Reverse shell pattern detected',
-    regex: /\b(nc\s+-[elp]|ncat\s+-|bash\s+-i\s+>&|\/dev\/tcp\/|mkfifo|socat\s.*exec)/i,
+    regex: /\b(nc\s+-[elp]|ncat\s+-|bash\s+-i\s+>&|\/dev\/tcp\/|mkfifo|socat\s.*exec|python[23]?\s+-c\s+['"]import\s+socket|perl\s+-e\s+['"]use\s+Socket|php\s+-r\s+['"]\$sock\s*=\s*fsockopen|powershell\s.*TCPClient)/i,
     severity: 'critical',
     category: 'tool-poisoning',
   },
@@ -102,8 +102,11 @@ const PATTERNS: Pattern[] = [
   },
 ];
 
-/** Zero-width and invisible Unicode characters */
-const HIDDEN_UNICODE_RE = /[\u200B\u200C\u200D\u200E\u200F\u202A-\u202E\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD]/;
+/** Zero-width, invisible, and steganographic Unicode characters */
+const HIDDEN_UNICODE_RE = /[\u200B\u200C\u200D\u200E\u200F\u202A-\u202E\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u3164\u115F\u1160\uFFF9-\uFFFB]|\uDB40[\uDC00-\uDC7F]/;
+
+/** Fullwidth Latin characters (U+FF01-U+FF5E) — visually similar to ASCII but bypass \b word boundaries */
+const FULLWIDTH_LATIN_RE = /[\uFF01-\uFF5E]{4,}/;
 
 /**
  * Homoglyph detection — Cyrillic/Greek characters that look identical to Latin.
@@ -126,6 +129,10 @@ const HOMOGLYPH_RE = new RegExp(`[${Object.keys(HOMOGLYPH_MAP).join('')}]`);
 /** Base64-encoded suspicious keywords — lowered threshold to 20 chars */
 const BASE64_BLOCK_RE = /[A-Za-z0-9+/]{20,}={0,2}/g;
 const SUSPICIOUS_DECODED = /(eval|exec|system|import\s+os|subprocess|child_process|require\s*\(|__import__|curl|wget)/i;
+
+/** Hex-encoded payload detection — sequences of \xNN or contiguous hex */
+const HEX_ESCAPE_RE = /(\\x[0-9a-fA-F]{2}){8,}/g;
+const HEX_BLOCK_RE = /\b([0-9a-fA-F]{2}){12,}\b/g;
 
 export function checkInstructions(instructions: string): CheckResult {
   const findings: AuditFinding[] = [];
@@ -195,6 +202,43 @@ export function checkInstructions(instructions: string): CheckResult {
         }
       } catch {
         // Not valid base64, skip
+      }
+    }
+  }
+
+  // Fullwidth Latin detection
+  const fullwidthMatch = FULLWIDTH_LATIN_RE.exec(instructions);
+  if (fullwidthMatch) {
+    const lineNum = instructions.substring(0, fullwidthMatch.index).split('\n').length;
+    findings.push({
+      id: 'fullwidth-latin',
+      title: 'Fullwidth Latin characters detected',
+      description: `Found fullwidth Latin characters at line ${lineNum}. These bypass word-boundary regex checks while looking identical to normal text.`,
+      severity: 'high',
+      category: 'prompt-injection',
+      location: `SKILL.md:${lineNum}`,
+    });
+  }
+
+  // Hex-encoded payload detection
+  for (const hexRe of [HEX_ESCAPE_RE, HEX_BLOCK_RE]) {
+    const hexMatch = hexRe.exec(instructions);
+    if (hexMatch) {
+      try {
+        const hex = hexMatch[0].replace(/\\x/g, '');
+        const decoded = Buffer.from(hex, 'hex').toString('utf-8');
+        if (SUSPICIOUS_DECODED.test(decoded)) {
+          findings.push({
+            id: 'hex-encoded-payload',
+            title: 'Hex-encoded suspicious payload',
+            description: `Decoded hex content contains executable patterns: "${decoded.substring(0, 60)}..."`,
+            severity: 'critical',
+            category: 'prompt-injection',
+          });
+          break;
+        }
+      } catch {
+        // Not valid hex, skip
       }
     }
   }
