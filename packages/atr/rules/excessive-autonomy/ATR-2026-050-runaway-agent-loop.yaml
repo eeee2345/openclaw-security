@@ -1,15 +1,15 @@
 title: "Runaway Agent Loop Detection"
 id: ATR-2026-050
-status: draft
-description: >
-  Detects when an agent enters a runaway loop, making excessive repeated
-  calls, cycling through the same actions, or failing to terminate after
-  reaching its objective. Runaway loops waste computational resources,
-  accumulate costs, and may indicate a logic error, adversarial manipulation,
-  or failure in the agent's termination conditions. This rule monitors for
-  repetitive tool call patterns, excessive iteration counts, and agents
-  that exceed reasonable time or call count thresholds.
-author: "ATR Community"
+status: experimental
+description: |
+  Detects when an agent enters a runaway loop through repeated identical
+  actions, infinite retry patterns, or recursive self-invocation. This
+  rule uses regex-only detection to identify loop indicators in agent
+  output and tool call content, such as retry counters, repeated action
+  descriptions, recursive invocation patterns, and stalled progress
+  indicators. Runaway loops waste computational resources, accumulate
+  costs, and may indicate logic errors or adversarial manipulation.
+author: "Panguard AI"
 date: "2026/03/08"
 severity: high
 
@@ -24,108 +24,106 @@ references:
 tags:
   category: excessive-autonomy
   subcategory: runaway-loop
-  confidence: high
+  confidence: medium
 
 agent_source:
-  type: agent_behavior
+  type: llm_io
   framework:
-    - autogen
-    - crewai
-    - langchain
-    - langgraph
-    - swarm
-    - openai
+    - any
   provider:
-    - openai
-    - anthropic
-    - google
+    - any
 
 detection:
   conditions:
-    - field: agent_behavior
-      operator: threshold
-      value: "total_tool_calls > 50 within 300s"
-      description: "Agent exceeding 50 tool calls within a 5-minute window"
-    - field: agent_behavior
-      operator: repetition
-      value: "same_tool_call_signature repeated >= 5 consecutively"
-      description: "Same tool call with identical or near-identical arguments repeated 5+ times"
-    - field: agent_behavior
-      operator: threshold
-      value: "iteration_count > 20 without state_change"
-      description: "Agent iterating more than 20 times without meaningful state progression"
-    - field: agent_behavior
-      operator: cycle
-      value: "tool_call_sequence_cycle_length <= 3 repeated >= 4 times"
-      description: "Short repeating cycle of tool calls detected (e.g., A-B-A-B-A-B)"
-    - field: agent_behavior
-      operator: threshold
-      value: "session_duration > 1800s without completion_signal"
-      description: "Agent running for more than 30 minutes without signaling completion"
-    - field: agent_output
-      operator: repetition
-      value: "output_similarity >= 0.95 for >= 3 consecutive outputs"
-      description: "Agent producing nearly identical outputs repeatedly"
+    - field: content
+      operator: regex
+      value: "(?i)(?:retrying|retry\\s+(?:attempt|number|#|count))\\s*(?::?\\s*)?\\d+"
+      description: "Retry counter pattern indicating repeated attempts"
+    - field: content
+      operator: regex
+      value: "(?i)attempt\\s+\\d+\\s+(?:of|/)\\s+\\d+"
+      description: "Attempt X of Y counter pattern (e.g., attempt 5 of 10)"
+    - field: content
+      operator: regex
+      value: "(?i)(?:trying\\s+again|let\\s+me\\s+(?:try|attempt)\\s+(?:again|once\\s+more|one\\s+more\\s+time)|retrying\\s+(?:the\\s+)?(?:same|previous|last)\\s+(?:operation|request|call|action))"
+      description: "Natural language retry patterns in agent output"
+    - field: content
+      operator: regex
+      value: "(?i)(?:still\\s+(?:failing|not\\s+working|getting\\s+(?:the\\s+same\\s+)?error)|same\\s+error\\s+(?:again|as\\s+before|persists)|error\\s+(?:persists|continues|remains))"
+      description: "Stalled progress with persistent error indicators"
+    - field: content
+      operator: regex
+      value: "(?i)(?:calling\\s+(?:myself|this\\s+(?:function|tool|agent))\\s+(?:again|recursively)|recursive\\s+(?:call|invocation|execution)|self[_-]?(?:invoke|call|trigger))"
+      description: "Recursive self-invocation patterns"
+    - field: content
+      operator: regex
+      value: "(?i)(?:iteration\\s+(?:#\\s*)?\\d{2,}|loop\\s+(?:iteration|count|index)\\s*[:=]?\\s*\\d{2,}|cycle\\s+\\d{2,})"
+      description: "High iteration count indicating prolonged looping"
+    - field: content
+      operator: regex
+      value: "(?i)(?:repeating\\s+(?:the\\s+)?(?:same|previous|identical)\\s+(?:step|action|operation|request)|performing\\s+(?:the\\s+)?(?:same|identical)\\s+(?:action|call)\\s+again)"
+      description: "Agent acknowledging it is repeating identical actions"
+    - field: content
+      operator: regex
+      value: "(?i)(?:max(?:imum)?\\s+retries?\\s+(?:reached|exceeded|hit)|(?:exceeded|hit|reached)\\s+(?:the\\s+)?(?:retry|attempt|iteration)\\s+(?:limit|maximum|cap))"
+      description: "Retry limit reached indicators"
+    - field: content
+      operator: regex
+      value: "(?i)(?:no\\s+progress\\s+(?:after|in)\\s+\\d+\\s+(?:attempts?|tries|iterations?|cycles?)|stuck\\s+(?:in\\s+(?:a\\s+)?loop|on\\s+(?:the\\s+)?same\\s+(?:step|error)))"
+      description: "Explicit stall or no-progress acknowledgement"
+    - field: content
+      operator: regex
+      value: "(?i)(?:(?:while|for)\\s*\\(\\s*(?:true|1|;;)\\s*\\)|(?:loop|repeat)\\s*\\{\\s*(?:call|invoke|execute))"
+      description: "Infinite loop constructs in generated or executed code"
+    - field: content
+      operator: regex
+      value: "(?i)(?:will\\s+keep\\s+(?:trying|retrying|attempting)|(?:continuously|endlessly|infinitely)\\s+(?:retrying|looping|repeating|calling))"
+      description: "Agent declaring intent to retry indefinitely"
+    - field: content
+      operator: regex
+      value: "(?i)(?:spawn(?:ing|ed)?\\s+(?:another|new|additional)\\s+(?:instance|copy|clone)\\s+of\\s+(?:myself|this\\s+agent)|fork(?:ing|ed)?\\s+(?:a\\s+)?(?:new\\s+)?(?:agent|process|instance))"
+      description: "Agent spawning copies of itself (fork bomb pattern)"
   condition: any
   false_positives:
-    - "Legitimate batch processing tasks that require many sequential operations"
+    - "Legitimate batch processing with progress counters in output"
     - "Polling agents designed to check status at regular intervals"
-    - "Long-running data pipeline agents with expected high call counts"
+    - "Long-running data pipeline agents with expected high iteration counts"
+    - "Retry logic in error handling with bounded retry limits"
 
 response:
   actions:
     - reduce_permissions
     - escalate
     - alert
+    - kill_agent
   auto_response_threshold: high
-  message_template: >
-    [ATR-2026-050] HIGH: Runaway agent loop detected. Agent
-    {agent_id} has made {call_count} tool calls in {time_window}s with
-    {repetition_count} repeated patterns detected. The agent has been
-    paused and rate limited. Session: {session_id}. Review agent logic
-    and termination conditions.
+  message_template: |
+    [ATR-2026-050] HIGH: Runaway agent loop detected. Agent {agent_id}
+    shows repeated action patterns or retry loops. Pattern: {matched_pattern}.
+    Agent paused and rate limited. Session: {session_id}. Review agent
+    logic and termination conditions.
 
 test_cases:
   true_positives:
-    - input:
-        agent_id: "processor-agent-01"
-        behavior_log:
-          - {tool: "search_web", args: {"query": "latest news"}, timestamp: 0}
-          - {tool: "search_web", args: {"query": "latest news"}, timestamp: 2}
-          - {tool: "search_web", args: {"query": "latest news"}, timestamp: 4}
-          - {tool: "search_web", args: {"query": "latest news"}, timestamp: 6}
-          - {tool: "search_web", args: {"query": "latest news"}, timestamp: 8}
-          - {tool: "search_web", args: {"query": "latest news"}, timestamp: 10}
+    - input: "Retrying attempt 15 of 10. The request still returns the same error."
       expected: triggered
-      description: "Agent repeating identical search calls in rapid succession"
-    - input:
-        agent_id: "analysis-agent-02"
-        behavior_log_summary:
-          total_tool_calls: 87
-          time_window_seconds: 240
-          unique_tool_calls: 3
-          cycle_pattern: ["fetch_data", "process", "fetch_data", "process"]
-          cycle_repeats: 21
+      description: "Retry counter exceeding stated maximum"
+    - input: "Still failing after 25 iterations. Let me try again with the same parameters."
       expected: triggered
-      description: "Agent stuck in a fetch-process cycle with 87 calls in 4 minutes"
+      description: "Agent stuck in retry loop with no progress"
+    - input: "Calling myself recursively to process the remaining items. Recursive call depth: 47."
+      expected: triggered
+      description: "Recursive self-invocation with deep call stack"
+    - input: "Will keep trying until it works. Continuously retrying the API call."
+      expected: triggered
+      description: "Agent declaring intent to retry indefinitely"
   true_negatives:
-    - input:
-        agent_id: "batch-agent-01"
-        behavior_log_summary:
-          total_tool_calls: 45
-          time_window_seconds: 600
-          unique_tool_calls: 12
-          state_changes: 40
-          completion_signal: true
+    - input: "Processing batch 3 of 5. All items completed successfully so far."
       expected: not_triggered
-      description: "Batch processing agent making varied calls with state progression and completion"
-    - input:
-        agent_id: "monitor-agent-01"
-        behavior_log_summary:
-          total_tool_calls: 30
-          time_window_seconds: 1800
-          unique_tool_calls: 2
-          purpose: "scheduled_health_check"
-          interval: "60s"
+      description: "Legitimate batch processing with bounded progress counter"
+    - input: "The API returned an error. Retrying once with exponential backoff."
       expected: not_triggered
-      description: "Monitoring agent performing scheduled health checks at regular intervals"
+      description: "Normal bounded retry logic in error handling"
+    - input: "Task completed after 3 attempts. Here are the final results."
+      expected: not_triggered
+      description: "Successful completion after reasonable retry count"

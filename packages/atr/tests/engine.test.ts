@@ -15,12 +15,11 @@ describe('ATREngine', () => {
   });
 
   it('loads all rule files without errors', () => {
-    expect(engine.getRuleCount()).toBe(33);
+    expect(engine.getRuleCount()).toBe(29);
   });
 
   it('skips draft rules during evaluation', () => {
     const draftRules = engine.getRules().filter((r) => r.status === 'draft');
-    expect(draftRules.length).toBeGreaterThan(0);
 
     // Draft rules should be loaded but not trigger
     for (const rule of draftRules) {
@@ -33,6 +32,9 @@ describe('ATREngine', () => {
       const draftMatch = matches.find((m) => m.rule.id === rule.id);
       expect(draftMatch).toBeUndefined();
     }
+
+    // All rules are currently experimental or stable; no draft rules expected
+    expect(draftRules.length).toBe(0);
   });
 
   describe('ATR-2026-001: Direct Prompt Injection', () => {
