@@ -39,6 +39,7 @@ COPY packages/panguard-manager/package.json packages/panguard-manager/
 COPY packages/panguard-mcp/package.json packages/panguard-mcp/
 COPY packages/panguard-skill-auditor/package.json packages/panguard-skill-auditor/
 COPY packages/threat-cloud/package.json packages/threat-cloud/
+COPY packages/atr/package.json packages/atr/
 COPY security-hardening/package.json security-hardening/
 
 # Install all dependencies (including dev for TypeScript compilation)
@@ -58,6 +59,7 @@ COPY packages/panguard-manager/ packages/panguard-manager/
 COPY packages/panguard-mcp/ packages/panguard-mcp/
 COPY packages/panguard-skill-auditor/ packages/panguard-skill-auditor/
 COPY packages/threat-cloud/ packages/threat-cloud/
+COPY packages/atr/ packages/atr/
 COPY security-hardening/ security-hardening/
 COPY config/ config/
 COPY packages/admin/ packages/admin/
@@ -91,7 +93,12 @@ RUN mkdir -p /standalone/node_modules/@panguard-ai && \
     cp security-hardening/package.json /standalone/node_modules/@panguard-ai/security-hardening/ && \
     mkdir -p /standalone/node_modules/@panguard-ai/threat-cloud && \
     cp -r packages/threat-cloud/dist /standalone/node_modules/@panguard-ai/threat-cloud/dist && \
-    cp packages/threat-cloud/package.json /standalone/node_modules/@panguard-ai/threat-cloud/
+    cp packages/threat-cloud/package.json /standalone/node_modules/@panguard-ai/threat-cloud/ && \
+    mkdir -p /standalone/node_modules/agent-threat-rules && \
+    cp -r packages/atr/dist /standalone/node_modules/agent-threat-rules/dist && \
+    cp packages/atr/package.json /standalone/node_modules/agent-threat-rules/ && \
+    cp -r packages/atr/rules /standalone/node_modules/agent-threat-rules/rules && \
+    cp -r packages/atr/spec /standalone/node_modules/agent-threat-rules/spec
 
 # Verify entry point exists
 RUN ls -la /standalone/dist/cli/index.js
