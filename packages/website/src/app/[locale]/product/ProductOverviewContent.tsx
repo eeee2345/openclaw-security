@@ -160,6 +160,12 @@ export default function ProductOverviewContent() {
 
   return (
     <>
+      <p id="definition" className="sr-only">
+        Panguard provides five integrated security tools — Scan, Guard, Chat, Trap, and Report —
+        powered by a 5-agent AI pipeline with three-tier processing: local rules (90%), local AI
+        (7%), and cloud AI (3%).
+      </p>
+
       {/* ───────────── Hero ───────────── */}
       <section className="pt-24 pb-4 px-6 text-center">
         <FadeInUp>

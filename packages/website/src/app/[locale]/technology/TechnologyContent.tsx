@@ -144,6 +144,12 @@ export default function TechnologyContent() {
 
   return (
     <>
+      <p id="definition" className="sr-only">
+        Panguard&apos;s detection engine combines three analysis engines — Sigma rule matching,
+        YARA signature scanning, and ATR (Agent Threat Rules) — across five detection stages with
+        graceful degradation from cloud to fully offline operation.
+      </p>
+
       {/* -- Hero -- */}
       <section className="relative min-h-[60vh] flex items-center px-5 sm:px-6 lg:px-[120px] py-16 sm:py-28 border-b border-border overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-sage/5 rounded-full blur-[200px] pointer-events-none" />

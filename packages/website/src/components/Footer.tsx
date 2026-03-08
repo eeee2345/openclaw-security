@@ -30,6 +30,7 @@ export default function Footer() {
         { label: t('guard'), href: '/product/guard' },
         { label: t('scan'), href: '/product/scan' },
         { label: t('threatCloud'), href: '/threat-cloud' },
+        { label: t('atr'), href: '/atr' },
         { label: t('chat'), href: '/product/chat' },
         { label: t('trap'), href: '/product/trap' },
         { label: t('report'), href: '/product/report' },

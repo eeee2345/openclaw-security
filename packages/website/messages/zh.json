@@ -38,6 +38,7 @@
     "useCases": "使用場景",
     "howItWorks": "技術架構",
     "threatCloud": "Threat Cloud",
+    "atr": "ATR",
     "about": "關於我們",
     "blog": "部落格",
     "startFreeScan": "免費掃描",
@@ -117,6 +118,7 @@
     "legal": "法律",
     "scan": "Scan",
     "threatCloud": "Threat Cloud",
+    "atr": "ATR",
     "guard": "Guard",
     "chat": "Chat",
     "trap": "Trap",
@@ -1544,6 +1546,10 @@
       "title": "帳單管理",
       "description": "管理你的 Panguard AI 訂閱、付款方式和帳單紀錄。"
     },
+    "atr": {
+      "title": "Agent Threat Rules (ATR) -- Panguard AI",
+      "description": "首個 AI Agent 威脅的開放偵測標準。8 大類別、29 條規則。對應 OWASP LLM Top 10。社群驅動、YAML 格式、機器可讀。"
+    },
     "productMcp": {
       "title": "Panguard MCP Server",
       "description": "從 Claude Desktop、Cursor 或任何 MCP 客戶端控制 Panguard 安全工具。11 個工具透過自然語言使用。"
@@ -1706,7 +1712,11 @@
       "Log retention": "日誌保留",
       "SSO & RBAC": "SSO & RBAC",
       "On-premise option": "本地部署選項",
+      "Agent Threat Rules (ATR)": "Agent Threat Rules (ATR)",
       "Machines": "機器數"
+    },
+    "comparisonBadges": {
+      "Agent Threat Rules (ATR)": "業界首創"
     },
     "comparisonValues": {
       "Full": "完整",
@@ -5360,6 +5370,120 @@
         "優先技術支援",
         "客製化 SLA"
       ]
+    }
+  },
+  "atrPage": {
+    "hero": {
+      "overline": "開放標準",
+      "title": "Agent Threat Rules",
+      "titleHighlight": "(ATR)",
+      "subtitle": "首個 AI Agent 威脅的開放偵測標準。機器可讀、社群驅動，專為 Sigma 和 YARA 從未設計來偵測的威脅而生。"
+    },
+    "problem": {
+      "overline": "問題",
+      "title": "傳統規則看不見 Agent 威脅",
+      "desc1": "Sigma 偵測日誌型 IOC。YARA 匹配檔案層級的位元組模式。兩者都無法理解提示詞流程、工具呼叫或多輪 Agent 對話。",
+      "desc2": "AI Agent 帶來全新攻擊面：提示詞注入、工具投毒、上下文竊取、技能入侵。這些威脅存在於語意層 -- 對設計來偵測網路封包和檔案雜湊的模式匹配器完全不可見。",
+      "desc3": "ATR 是缺失的偵測標準。專為 AI Agent 時代而生。",
+      "sigmaTitle": "Sigma Rules",
+      "sigmaDesc": "日誌型 IOC。無法感知提示詞上下文或工具互動。",
+      "yaraTitle": "YARA Rules",
+      "yaraDesc": "檔案層級位元組模式。無法檢查 Agent 對話流程。",
+      "atrTitle": "ATR Rules",
+      "atrDesc": "語意層偵測。專為提示詞、工具和 Agent 行為而生。"
+    },
+    "categories": {
+      "overline": "規則分類",
+      "title": "8 大類別。29 條規則。持續增長中。",
+      "subtitle": "涵蓋 AI Agent 攻擊向量的完整光譜，對應 OWASP LLM Top 10。",
+      "items": {
+        "prompt-injection": {
+          "name": "提示詞注入",
+          "count": "5 條規則",
+          "desc": "直接和間接提示詞注入、越獄攻擊、系統提示詞覆寫、多輪攻擊"
+        },
+        "tool-poisoning": {
+          "name": "工具投毒",
+          "count": "4 條規則",
+          "desc": "惡意 MCP 回應、工具輸出注入、未授權工具呼叫、透過工具的 SSRF"
+        },
+        "context-exfiltration": {
+          "name": "上下文竊取",
+          "count": "3 條規則",
+          "desc": "系統提示詞洩漏、API 金鑰暴露、內部指令竊取"
+        },
+        "agent-manipulation": {
+          "name": "Agent 操縱",
+          "count": "3 條規則",
+          "desc": "Agent 冒充、跨 Agent 注入、目標劫持"
+        },
+        "privilege-escalation": {
+          "name": "權限提升",
+          "count": "3 條規則",
+          "desc": "工具權限提升、範圍蔓延、管理員函式存取"
+        },
+        "excessive-autonomy": {
+          "name": "過度自主",
+          "count": "2 條規則",
+          "desc": "失控 Agent 迴圈、不受控執行導致的資源耗盡"
+        },
+        "skill-compromise": {
+          "name": "技能入侵",
+          "count": "7 條規則",
+          "desc": "技能冒充、隱藏功能、鏈式攻擊、參數注入、更新攻擊"
+        },
+        "data-poisoning": {
+          "name": "資料投毒",
+          "count": "2 條規則",
+          "desc": "RAG 檢索投毒、知識庫污染"
+        }
+      }
+    },
+    "howItWorks": {
+      "overline": "運作原理",
+      "title": "YAML 規則。即時引擎。",
+      "subtitle": "撰寫人類可讀的規則。ATR 引擎在毫秒內將其與即時 Agent 遙測資料進行匹配。",
+      "step1": {
+        "name": "定義偵測邏輯",
+        "desc": "每條規則指定 Agent 欄位的條件：user_input、tool_calls、model_output、context。支援正則表達式、關鍵字和語意運算子。"
+      },
+      "step2": {
+        "name": "對應安全框架",
+        "desc": "規則連結到 OWASP LLM Top 10 和 MITRE ATLAS 參考，提供合規覆蓋率和威脅上下文。"
+      },
+      "step3": {
+        "name": "引擎即時評估",
+        "desc": "ATR 引擎載入規則，在 Agent 事件發生時即時匹配。每條規則的評估時間低於一毫秒。"
+      },
+      "step4": {
+        "name": "自動回應",
+        "desc": "當規則觸發時，可配置的動作啟動：block_input、alert、snapshot、escalate。基於閾值的自動回應防止誤報疲勞。"
+      },
+      "ruleExample": "範例：直接提示詞注入偵測"
+    },
+    "owasp": {
+      "overline": "合規對應",
+      "title": "OWASP LLM Top 10 覆蓋",
+      "subtitle": "每條 ATR 規則對應到 OWASP LLM 應用程式 Top 10，提供最關鍵 AI 安全風險的結構化覆蓋。",
+      "items": [
+        { "id": "LLM01", "name": "提示詞注入", "covered": true },
+        { "id": "LLM02", "name": "不安全的輸出處理", "covered": true },
+        { "id": "LLM03", "name": "訓練資料投毒", "covered": true },
+        { "id": "LLM04", "name": "模型阻斷服務", "covered": true },
+        { "id": "LLM05", "name": "供應鏈漏洞", "covered": true },
+        { "id": "LLM06", "name": "敏感資訊洩漏", "covered": true },
+        { "id": "LLM07", "name": "不安全的插件設計", "covered": true },
+        { "id": "LLM08", "name": "過度代理", "covered": true },
+        { "id": "LLM09", "name": "過度依賴", "covered": false },
+        { "id": "LLM10", "name": "模型竊取", "covered": false }
+      ]
+    },
+    "cta": {
+      "title": "加入 ATR 社群",
+      "desc": "ATR 是開源且社群驅動的。貢獻規則、回報新威脅模式，或將 ATR 整合到你自己的 Agent 安全堆疊中。",
+      "contribute": "在 GitHub 上貢獻",
+      "getStarted": "立即開始",
+      "githubUrl": "https://github.com/panguard-ai/panguard-ai"
     }
   }
 }

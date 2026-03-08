@@ -24,6 +24,11 @@ export default function Home() {
     <>
       <NavBar />
       <main id="main-content">
+        <p id="definition" className="sr-only">
+          Panguard AI is an open-source, AI-powered endpoint security platform that protects servers
+          with behavioral AI, 3,155 Sigma rules, and 5,895 YARA signatures — installable in 60
+          seconds via a single CLI command.
+        </p>
         {/* S1: Hero */}
         <Hero />
         {/* S2: Industry Problem */}

@@ -121,11 +121,11 @@ See `spec/atr-schema.yaml` for the full schema specification.
 
 | Attack Category | OWASP LLM | MITRE ATLAS | Rules | Status |
 |---|---|---|---|---|
-| Prompt Injection | LLM01 | AML.T0051 | 5 | experimental |
+| Prompt Injection | LLM01 | AML.T0051 | 5 (4+1 draft) | experimental |
 | Tool Poisoning | LLM01/LLM05 | AML.T0053 | 4 | experimental |
 | Context Exfiltration | LLM02/LLM07 | AML.T0056 | 3 | experimental |
-| Agent Manipulation | LLM01/LLM06 | AML.T0043 | 3 | experimental |
-| Privilege Escalation | LLM06 | AML.T0050 | 3 | experimental |
+| Agent Manipulation | LLM01/LLM06 | AML.T0043 | 3 (2+1 draft) | experimental |
+| Privilege Escalation | LLM06 | AML.T0050 | 3 (2+1 draft) | experimental |
 | Excessive Autonomy | LLM06/LLM10 | AML.T0046 | 2 | draft |
 | Skill Compromise | LLM03/LLM06 | AML.T0010 | 7 | experimental |
 
@@ -186,6 +186,22 @@ agent-threat-rules/
     types.ts                  # TypeScript type definitions
 ```
 
+## Known Limitations
+
+The reference engine (`src/engine.ts`) currently supports **regex-based pattern matching** only. The following operators referenced in draft rules are **not yet implemented**:
+
+| Operator | Used By | Status |
+|----------|---------|--------|
+| `pattern_frequency` | ATR-2026-005, 041 | Planned (Sprint 1) |
+| `behavioral_drift` | ATR-2026-005 | Planned (Sprint 4) |
+| `trend` / `threshold` | ATR-2026-050, 051, 041 | Planned (Sprint 2-3) |
+| `sequence` (ordered) | ATR-2026-063 | Planned (Sprint 1) |
+| Numeric comparison (`gt`/`lt`) | ATR-2026-050, 051 | Planned (Sprint 2) |
+
+**Draft rules** (status: `draft`) depend on these unimplemented operators and will not produce matches until the engine is extended. Production rules (status: `experimental`) use only regex-based detection and work correctly.
+
+Contributions to implement these operators are welcome -- see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Contributing
 
 We need the security community's expertise to make ATR useful.
@@ -220,7 +236,7 @@ reference TypeScript engine. Known platform support:
 ## Roadmap
 
 ### v0.1 (current)
-- 27 rules across 7 attack categories
+- 22 production rules + 5 draft rules across 7 attack categories
 - Pattern matching + behavioral threshold detection
 - OWASP LLM Top 10 + MITRE ATLAS mapping
 

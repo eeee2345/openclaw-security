@@ -79,6 +79,13 @@ const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
     categoryKey: 'productsIncluded',
     rows: [
       {
+        feature: 'Agent Threat Rules (ATR)',
+        community: true,
+        solo: true,
+        pro: true,
+        business: true,
+      },
+      {
         feature: 'Panguard Scan',
         community: 'Full',
         solo: 'Full',
@@ -427,9 +434,19 @@ export default function PricingCards() {
                         const featureLabel = t.has(`comparisonFeatures.${row.feature}`)
                           ? t(`comparisonFeatures.${row.feature}`)
                           : row.feature;
+                        const badge = t.has(`comparisonBadges.${row.feature}`)
+                          ? t(`comparisonBadges.${row.feature}`)
+                          : null;
                         return (
                         <tr key={row.feature} className="border-b border-border/50">
-                          <td className="py-3 pr-4 text-sm text-text-secondary">{featureLabel}</td>
+                          <td className="py-3 pr-4 text-sm text-text-secondary">
+                            {featureLabel}
+                            {badge && (
+                              <span className="ml-2 text-[10px] font-semibold text-brand-sage bg-brand-sage/10 border border-brand-sage/20 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                                {badge}
+                              </span>
+                            )}
+                          </td>
                           {tierKeys.map((key) => {
                             const raw = row[key];
                             const val = typeof raw === 'string' && t.has(`comparisonValues.${raw}`)

@@ -85,6 +85,12 @@ export default function HowItWorksContent() {
 
   return (
     <>
+      <p id="definition" className="sr-only">
+        Panguard&apos;s five-stage security pipeline — Detect, Analyze, Respond, Report, and Chat
+        — processes threats through a three-tier AI funnel where 90% of threats are caught by local
+        rules, 7% by local AI, and only 3% require cloud analysis.
+      </p>
+
       {/* ── Hero ── */}
       <section className="relative min-h-[60vh] flex items-center px-5 sm:px-6 lg:px-[120px] py-16 sm:py-28 border-b border-border overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-sage/5 rounded-full blur-[200px] pointer-events-none" />

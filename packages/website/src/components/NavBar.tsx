@@ -169,6 +169,7 @@ export default function NavBar() {
   const topLinks = [
     { label: t('howItWorks'), href: '/how-it-works' },
     { label: t('threatCloud'), href: '/threat-cloud' },
+    { label: t('atr'), href: '/atr' },
     { label: t('pricing'), href: '/pricing' },
     { label: t('docs'), href: '/docs' },
     { label: t('about'), href: '/about' },

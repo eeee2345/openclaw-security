@@ -20,6 +20,7 @@ import type {
   ATRBehavioralCondition,
 } from './types.js';
 import { loadRulesFromDirectory, loadRuleFile } from './loader.js';
+import type { SessionTracker } from './session-tracker.js';
 
 /** Map agent event types to ATR source types */
 const EVENT_TYPE_TO_SOURCE: Record<string, string> = {
@@ -48,6 +49,8 @@ export interface ATREngineConfig {
   rules?: ATRRule[];
   /** Enable hot-reload of rule files */
   hotReload?: boolean;
+  /** Optional session tracker for behavioral detection across events */
+  sessionTracker?: SessionTracker;
 }
 
 export class ATREngine {
@@ -108,6 +111,7 @@ export class ATREngine {
   evaluate(event: AgentEvent): ATRMatch[] {
     const matches: ATRMatch[] = [];
     const eventSourceType = EVENT_TYPE_TO_SOURCE[event.type];
+    const allMatchedPatterns: string[] = [];
 
     for (const rule of this.rules) {
       // Skip deprecated and draft rules
@@ -124,7 +128,14 @@ export class ATREngine {
       const matchResult = this.evaluateRule(rule, event);
       if (matchResult) {
         matches.push(matchResult);
+        allMatchedPatterns.push(...matchResult.matchedPatterns);
       }
+    }
+
+    // Record the event in the session tracker if available
+    const sessionId = event.sessionId;
+    if (this.config.sessionTracker && sessionId) {
+      this.config.sessionTracker.recordEvent(sessionId, event, allMatchedPatterns);
     }
 
     // Sort by severity (critical first) then confidence
@@ -391,12 +402,14 @@ export class ATREngine {
 
   /**
    * Evaluate a behavioral threshold condition.
+   * When a session tracker is available and the event has a sessionId,
+   * supports session-derived metrics: call_frequency, pattern_frequency, event_count.
    */
   private evaluateBehavioralCondition(
     cond: ATRBehavioralCondition,
     event: AgentEvent
   ): boolean {
-    const metricValue = event.metrics?.[cond.metric];
+    const metricValue = this.resolveMetricValue(cond, event);
     if (metricValue === undefined) return false;
 
     switch (cond.operator) {
@@ -409,6 +422,63 @@ export class ATREngine {
         return Math.abs(metricValue) > cond.threshold;
       default:
         return false;
+    }
+  }
+
+  /**
+   * Resolve a metric value from event metrics or session tracker.
+   * Session-derived metrics use the format: "call_frequency:toolName" or "pattern_frequency:pattern".
+   */
+  private resolveMetricValue(
+    cond: ATRBehavioralCondition,
+    event: AgentEvent
+  ): number | undefined {
+    // Check event-level metrics first
+    const directValue = event.metrics?.[cond.metric];
+    if (directValue !== undefined) return directValue;
+
+    // Try session tracker for session-derived metrics
+    const tracker = this.config.sessionTracker;
+    const sessionId = event.sessionId;
+    if (!tracker || !sessionId) return undefined;
+
+    const windowMs = this.parseWindowMs(cond.window);
+
+    if (cond.metric.startsWith('call_frequency:')) {
+      const toolName = cond.metric.slice('call_frequency:'.length);
+      return tracker.getCallFrequency(sessionId, toolName, windowMs);
+    }
+
+    if (cond.metric.startsWith('pattern_frequency:')) {
+      const pattern = cond.metric.slice('pattern_frequency:'.length);
+      return tracker.getPatternFrequency(sessionId, pattern, windowMs);
+    }
+
+    if (cond.metric === 'event_count') {
+      return tracker.getEventCount(sessionId, windowMs);
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Parse a window string (e.g. "5m", "1h", "30s") to milliseconds.
+   * Defaults to 5 minutes if not specified or unparseable.
+   */
+  private parseWindowMs(window: string | undefined): number {
+    if (!window) return 5 * 60 * 1000;
+
+    const match = window.match(/^(\d+)\s*(s|m|h)$/);
+    if (!match) return 5 * 60 * 1000;
+
+    const value = parseInt(match[1]!, 10);
+    const unit = match[2]!;
+
+    switch (unit) {
+      case 's': return value * 1000;
+      case 'm': return value * 60 * 1000;
+      case 'h': return value * 60 * 60 * 1000;
+      default: return 5 * 60 * 1000;
     }
   }
 

@@ -9,6 +9,8 @@
 
 export { ATREngine } from './engine.js';
 export type { ATREngineConfig } from './engine.js';
+export { SessionTracker } from './session-tracker.js';
+export type { SessionStateSnapshot } from './session-tracker.js';
 export { loadRuleFile, loadRulesFromDirectory, validateRule } from './loader.js';
 export type {
   ATRRule,

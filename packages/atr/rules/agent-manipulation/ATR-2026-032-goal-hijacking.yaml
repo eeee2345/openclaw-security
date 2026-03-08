@@ -1,6 +1,6 @@
 title: "Agent Goal Hijacking Detection"
 id: ATR-2026-032
-status: experimental
+status: draft
 description: >
   Detects when an agent's objective is being redirected away from its
   original task. Goal hijacking occurs when external input, adversarial

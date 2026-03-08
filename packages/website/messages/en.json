@@ -38,6 +38,7 @@
     "useCases": "Use Cases",
     "howItWorks": "How it Works",
     "threatCloud": "Threat Cloud",
+    "atr": "ATR",
     "about": "About",
     "blog": "Blog",
     "startFreeScan": "Start Free Scan",
@@ -117,6 +118,7 @@
     "legal": "Legal",
     "scan": "Scan",
     "threatCloud": "Threat Cloud",
+    "atr": "ATR",
     "guard": "Guard",
     "chat": "Chat",
     "trap": "Trap",
@@ -904,7 +906,11 @@
       "Log retention": "Log retention",
       "SSO & RBAC": "SSO & RBAC",
       "On-premise option": "On-premise option",
+      "Agent Threat Rules (ATR)": "Agent Threat Rules (ATR)",
       "Machines": "Machines"
+    },
+    "comparisonBadges": {
+      "Agent Threat Rules (ATR)": "Industry First"
     },
     "comparisonValues": {
       "Full": "Full",
@@ -5013,6 +5019,10 @@
       "title": "Billing",
       "description": "Manage your Panguard AI subscription, payment methods, and billing history."
     },
+    "atr": {
+      "title": "Agent Threat Rules (ATR) -- Panguard AI",
+      "description": "The first open detection standard for AI agent threats. 29 rules across 8 categories. OWASP LLM Top 10 mapped. Community-driven, YAML-based, machine-readable."
+    },
     "productMcp": {
       "title": "Panguard MCP Server",
       "description": "Control Panguard security tools from Claude Desktop, Cursor, or any MCP client. 11 tools via natural language."
@@ -5310,6 +5320,120 @@
         "Priority support",
         "Custom SLA"
       ]
+    }
+  },
+  "atrPage": {
+    "hero": {
+      "overline": "OPEN STANDARD",
+      "title": "Agent Threat Rules",
+      "titleHighlight": "(ATR)",
+      "subtitle": "The first open detection standard for AI agent threats. Machine-readable, community-driven, and designed for the threats that Sigma and YARA were never built to catch."
+    },
+    "problem": {
+      "overline": "THE PROBLEM",
+      "title": "Traditional rules can't see agent threats",
+      "desc1": "Sigma detects log-based IOCs. YARA matches file-level byte patterns. Neither understands prompt flows, tool calls, or multi-turn agent conversations.",
+      "desc2": "AI agents introduce a new attack surface: prompt injection, tool poisoning, context exfiltration, skill compromise. These threats live in the semantic layer -- invisible to pattern matchers designed for network packets and file hashes.",
+      "desc3": "ATR is the missing detection standard. Purpose-built for the AI agent era.",
+      "sigmaTitle": "Sigma Rules",
+      "sigmaDesc": "Log-based IOCs. No awareness of prompt context or tool interactions.",
+      "yaraTitle": "YARA Rules",
+      "yaraDesc": "File-level byte patterns. Cannot inspect agent conversation flows.",
+      "atrTitle": "ATR Rules",
+      "atrDesc": "Semantic-layer detection. Built for prompts, tools, and agent behavior."
+    },
+    "categories": {
+      "overline": "RULE CATEGORIES",
+      "title": "8 categories. 29 rules. Growing daily.",
+      "subtitle": "Covering the full spectrum of AI agent attack vectors, mapped to OWASP LLM Top 10.",
+      "items": {
+        "prompt-injection": {
+          "name": "Prompt Injection",
+          "count": "5 rules",
+          "desc": "Direct and indirect prompt injection, jailbreaks, system prompt override, multi-turn attacks"
+        },
+        "tool-poisoning": {
+          "name": "Tool Poisoning",
+          "count": "4 rules",
+          "desc": "Malicious MCP responses, tool output injection, unauthorized tool calls, SSRF via tools"
+        },
+        "context-exfiltration": {
+          "name": "Context Exfiltration",
+          "count": "3 rules",
+          "desc": "System prompt leaks, API key exposure, internal instruction theft"
+        },
+        "agent-manipulation": {
+          "name": "Agent Manipulation",
+          "count": "3 rules",
+          "desc": "Agent impersonation, cross-agent injection, goal hijacking"
+        },
+        "privilege-escalation": {
+          "name": "Privilege Escalation",
+          "count": "3 rules",
+          "desc": "Tool permission escalation, scope creep, admin function access"
+        },
+        "excessive-autonomy": {
+          "name": "Excessive Autonomy",
+          "count": "2 rules",
+          "desc": "Runaway agent loops, resource exhaustion through uncontrolled execution"
+        },
+        "skill-compromise": {
+          "name": "Skill Compromise",
+          "count": "7 rules",
+          "desc": "Skill impersonation, hidden capabilities, chain attacks, parameter injection, update attacks"
+        },
+        "data-poisoning": {
+          "name": "Data Poisoning",
+          "count": "2 rules",
+          "desc": "RAG retrieval poisoning, knowledge base contamination"
+        }
+      }
+    },
+    "howItWorks": {
+      "overline": "HOW IT WORKS",
+      "title": "YAML rules. Real-time engine.",
+      "subtitle": "Write human-readable rules. The ATR engine matches them against live agent telemetry in milliseconds.",
+      "step1": {
+        "name": "Define detection logic",
+        "desc": "Each rule specifies conditions on agent fields: user_input, tool_calls, model_output, context. Supports regex, keyword, and semantic operators."
+      },
+      "step2": {
+        "name": "Map to frameworks",
+        "desc": "Rules link to OWASP LLM Top 10 and MITRE ATLAS references, providing compliance coverage and threat context."
+      },
+      "step3": {
+        "name": "Engine evaluates in real-time",
+        "desc": "The ATR engine loads rules and matches them against agent events as they occur. Sub-millisecond evaluation per rule."
+      },
+      "step4": {
+        "name": "Automated response",
+        "desc": "When a rule triggers, configurable actions fire: block_input, alert, snapshot, escalate. Threshold-based auto-response prevents false positive fatigue."
+      },
+      "ruleExample": "Example: Direct Prompt Injection Detection"
+    },
+    "owasp": {
+      "overline": "COMPLIANCE MAPPING",
+      "title": "OWASP LLM Top 10 coverage",
+      "subtitle": "Every ATR rule maps to the OWASP Top 10 for LLM Applications, providing structured coverage of the most critical AI security risks.",
+      "items": [
+        { "id": "LLM01", "name": "Prompt Injection", "covered": true },
+        { "id": "LLM02", "name": "Insecure Output Handling", "covered": true },
+        { "id": "LLM03", "name": "Training Data Poisoning", "covered": true },
+        { "id": "LLM04", "name": "Model Denial of Service", "covered": true },
+        { "id": "LLM05", "name": "Supply Chain Vulnerabilities", "covered": true },
+        { "id": "LLM06", "name": "Sensitive Information Disclosure", "covered": true },
+        { "id": "LLM07", "name": "Insecure Plugin Design", "covered": true },
+        { "id": "LLM08", "name": "Excessive Agency", "covered": true },
+        { "id": "LLM09", "name": "Overreliance", "covered": false },
+        { "id": "LLM10", "name": "Model Theft", "covered": false }
+      ]
+    },
+    "cta": {
+      "title": "Join the ATR community",
+      "desc": "ATR is open source and community-driven. Contribute rules, report new threat patterns, or integrate ATR into your own agent security stack.",
+      "contribute": "Contribute on GitHub",
+      "getStarted": "Get Started",
+      "githubUrl": "https://github.com/panguard-ai/panguard-ai"
     }
   }
 }

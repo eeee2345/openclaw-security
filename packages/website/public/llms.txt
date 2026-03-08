@@ -1,8 +1,8 @@
 # Panguard AI
 
-> AI-powered endpoint security for developers and SMBs. One command installs
-> a lightweight agent that monitors your servers 24/7 with behavioral AI,
-> 3,155 Sigma rules, and 5,895 YARA signatures.
+> Panguard AI is an open-source, AI-powered endpoint security platform that
+> protects servers with behavioral AI, 3,155 Sigma rules, and 5,895 YARA
+> signatures — installable in 60 seconds via a single CLI command.
 
 ## Product
 
@@ -12,10 +12,14 @@
 - [Panguard Chat](https://panguard.ai/product/chat): AI security copilot for plain-language threat investigation
 - [Panguard Trap](https://panguard.ai/product/trap): Intelligent honeypots for attacker deception and intelligence
 - [Panguard Report](https://panguard.ai/product/report): Automated compliance reports for ISO 27001, SOC 2, TCSA
+- [Panguard Manager](https://panguard.ai/product/manager): Centralized multi-endpoint management dashboard
+- [Panguard MCP](https://panguard.ai/product/mcp): Model Context Protocol server for AI-native security workflows
+- [Skill Auditor](https://panguard.ai/product/skill-auditor): AI agent permission analysis and threat surface auditing
 
 ## Pricing
 
 - [Pricing](https://panguard.ai/pricing): Community (free), Solo ($9/mo), Pro ($29/mo), Business ($79/mo)
+- [Compare](https://panguard.ai/compare): Panguard vs manual audit vs SIEM vs no protection
 
 ## Solutions
 
@@ -25,7 +29,7 @@
 
 ## Technology
 
-- [How It Works](https://panguard.ai/how-it-works): Five layers of defense, three tiers of AI
+- [How It Works](https://panguard.ai/how-it-works): Five detection stages, three tiers of AI
 - [Technology](https://panguard.ai/technology): Detection engine architecture and AI models
 - [Threat Cloud](https://panguard.ai/threat-cloud): Collective threat intelligence network
 - [Integrations](https://panguard.ai/integrations): Slack, Teams, PagerDuty, Splunk, and more
@@ -33,9 +37,23 @@
 ## Documentation
 
 - [Getting Started](https://panguard.ai/docs/getting-started): Install Panguard in 60 seconds
+- [CLI Reference](https://panguard.ai/docs/cli): Command-line interface usage and flags
 - [API Reference](https://panguard.ai/docs/api): REST API and webhook documentation
+- [Scan Docs](https://panguard.ai/docs/scan): Scanner modules, scan types, and result interpretation
+- [Guard Docs](https://panguard.ai/docs/guard): 5-agent pipeline, detection engines, and AI funnel
+- [Chat Docs](https://panguard.ai/docs/chat): Notification channels and alert configuration
+- [Trap Docs](https://panguard.ai/docs/trap): Honeypot types and threat intelligence
+- [Report Docs](https://panguard.ai/docs/report): Compliance frameworks and PDF export
+- [Skill Auditor Docs](https://panguard.ai/docs/skill-auditor): AI agent permission analysis
+- [Benchmark](https://panguard.ai/docs/benchmark): Performance benchmarks and detection rates
 - [Deployment Guide](https://panguard.ai/docs/deployment): Multi-endpoint production deployment
 - [Advanced Setup](https://panguard.ai/docs/advanced-setup): Ollama, Falco, Suricata integration
+
+## Agent Threat Rules (ATR)
+
+- [ATR on GitHub](https://github.com/panguard/atr): Open-source threat detection rules for AI agents
+- ATR is a YAML-based rule format — like Sigma rules, but purpose-built for AI agent behaviors
+- 22 production rules (+ 5 draft) covering 7 attack categories: prompt injection, data exfiltration, privilege escalation, resource abuse, unauthorized access, supply chain attacks, and evasion techniques
 
 ## Compliance
 
