@@ -16,6 +16,9 @@ severity: high
 references:
   owasp_llm:
     - "LLM06:2025 - Excessive Agency"
+  owasp_agentic:
+    - "ASI02:2026 - Tool Misuse and Exploitation"
+    - "ASI03:2026 - Identity and Privilege Abuse"
   mitre_atlas:
     - "AML.T0053 - LLM Plugin Compromise"
   mitre_attack:

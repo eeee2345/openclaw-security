@@ -16,6 +16,9 @@ references:
   owasp_llm:
     - "LLM06:2025 - Excessive Agency"
     - "LLM08:2025 - Excessive Agency"
+  owasp_agentic:
+    - "ASI03:2026 - Identity and Privilege Abuse"
+    - "ASI10:2026 - Rogue Agents"
   mitre_atlas:
     - "AML.T0051.001 - Indirect Prompt Injection"
   mitre_attack:

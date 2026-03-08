@@ -16,6 +16,8 @@ severity: medium
 references:
   owasp_llm:
     - "LLM06:2025 - Excessive Agency"
+  owasp_agentic:
+    - "ASI03:2026 - Identity and Privilege Abuse"
   mitre_atlas:
     - "AML.T0040 - AI Model Inference API Access"
     - "AML.T0047 - ML-Enabled Product or Service"

@@ -19,6 +19,8 @@ references:
     - "LLM01:2025 - Prompt Injection"
     - "LLM03:2025 - Supply Chain Vulnerabilities"
     - "LLM08:2025 - Excessive Agency"
+  owasp_agentic:
+    - "ASI06:2026 - Memory and Context Poisoning"
   mitre_attack:
     - "T1565 - Data Manipulation"
   mitre_atlas:
