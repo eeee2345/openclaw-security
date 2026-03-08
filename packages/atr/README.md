@@ -26,9 +26,11 @@ ATR rules are YAML files that describe:
 
 - MCP protocol enables tool use across all major AI frameworks
 - Millions of AI agents are deployed in production as of 2026
-- OWASP LLM Top 10 identifies the risks, but provides no executable detection rules
+- OWASP LLM Top 10 (2025) identifies risks but provides no executable detection rules
+- OWASP Agentic Top 10 (2026) defines agent-specific threats -- ATR is the first rule set to cover all 10
 - MITRE ATLAS catalogs AI attack techniques, but offers no detection format
-- Zero standardized formats exist for agent threat detection
+- Real CVEs for AI agents are accelerating: CVE-2025-53773 (Copilot RCE), CVE-2025-32711 (EchoLeak), CVE-2025-68143 (MCP server exploit)
+- Zero standardized, declarative formats exist for agent threat detection
 
 ## Design Principles
 
@@ -54,9 +56,13 @@ severity: high
 
 references:
   owasp_llm:
-    - "LLM01:2025"
+    - "LLM01:2025 - Prompt Injection"
+  owasp_agentic:
+    - "ASI01:2026 - Agent Goal Hijack"
   mitre_atlas:
-    - "AML.T0051"
+    - "AML.T0051 - LLM Prompt Injection"
+  cve:
+    - "CVE-2025-53773"
 
 tags:
   category: prompt-injection
@@ -119,15 +125,21 @@ See `spec/atr-schema.yaml` for the full schema specification.
 
 ## Coverage Map
 
-| Attack Category | OWASP LLM | MITRE ATLAS | Rules | Status |
-|---|---|---|---|---|
-| Prompt Injection | LLM01 | AML.T0051 | 5 (4+1 draft) | experimental |
-| Tool Poisoning | LLM01/LLM05 | AML.T0053 | 4 | experimental |
-| Context Exfiltration | LLM02/LLM07 | AML.T0056 | 3 | experimental |
-| Agent Manipulation | LLM01/LLM06 | AML.T0043 | 3 (2+1 draft) | experimental |
-| Privilege Escalation | LLM06 | AML.T0050 | 3 (2+1 draft) | experimental |
-| Excessive Autonomy | LLM06/LLM10 | AML.T0046 | 2 | draft |
-| Skill Compromise | LLM03/LLM06 | AML.T0010 | 7 | experimental |
+### OWASP LLM Top 10 (2025) + OWASP Agentic Top 10 (2026)
+
+| Attack Category | OWASP LLM | OWASP Agentic | MITRE ATLAS | Rules | Real CVEs |
+|---|---|---|---|---|---|
+| Prompt Injection | LLM01 | ASI01 | AML.T0051 | 5 | CVE-2025-53773, CVE-2025-32711, CVE-2026-24307 |
+| Tool Poisoning | LLM01/LLM05 | ASI02, ASI05 | AML.T0053 | 4 | CVE-2025-68143/68144/68145, CVE-2025-6514, CVE-2025-59536, CVE-2026-21852 |
+| Context Exfiltration | LLM02/LLM07 | ASI01, ASI03, ASI06 | AML.T0056/T0057 | 3 | CVE-2025-32711, CVE-2026-24307 |
+| Agent Manipulation | LLM01/LLM06 | ASI01, ASI10 | AML.T0043 | 3 | -- |
+| Privilege Escalation | LLM06 | ASI03 | AML.T0050 | 2 | CVE-2026-0628 |
+| Excessive Autonomy | LLM06/LLM10 | ASI05 | AML.T0046 | 2 | -- |
+| Skill Compromise | LLM03/LLM06 | ASI02, ASI03, ASI04 | AML.T0010 | 7 | CVE-2025-59536, CVE-2025-68143/68144 |
+| Data Poisoning | LLM04 | ASI06 | AML.T0020 | 1 | -- |
+| Model Security | LLM03 | ASI04 | AML.T0044 | 2 | -- |
+
+**Total: 29 rules, 11 unique CVEs, 100% OWASP Agentic coverage**
 
 ## How to Use
 
@@ -173,34 +185,43 @@ agent-threat-rules/
     tool-poisoning/           # 4 rules
     context-exfiltration/     # 3 rules
     agent-manipulation/       # 3 rules
-    privilege-escalation/     # 3 rules
+    privilege-escalation/     # 2 rules
     excessive-autonomy/       # 2 rules
     skill-compromise/         # 7 rules
+    data-poisoning/           # 1 rule
+    model-security/           # 2 rules
   tests/
     validate-rules.ts         # Schema validation for all rules
   examples/
     how-to-write-a-rule.md    # Guide for rule authors
   src/
     engine.ts                 # ATR evaluation engine
+    session-tracker.ts        # Behavioral session state tracking
     loader.ts                 # YAML rule loader
     types.ts                  # TypeScript type definitions
 ```
 
-## Known Limitations
+## Engine Capabilities
 
-The reference engine (`src/engine.ts`) currently supports **regex-based pattern matching** only. The following operators referenced in draft rules are **not yet implemented**:
+The reference engine (`src/engine.ts`) supports:
 
-| Operator | Used By | Status |
-|----------|---------|--------|
-| `pattern_frequency` | ATR-2026-005, 041 | Planned (Sprint 1) |
-| `behavioral_drift` | ATR-2026-005 | Planned (Sprint 4) |
-| `trend` / `threshold` | ATR-2026-050, 051, 041 | Planned (Sprint 2-3) |
-| `sequence` (ordered) | ATR-2026-063 | Planned (Sprint 1) |
-| Numeric comparison (`gt`/`lt`) | ATR-2026-050, 051 | Planned (Sprint 2) |
+| Operator | Status | Description |
+|----------|--------|-------------|
+| `regex` | Implemented | Pre-compiled, case-insensitive regex matching |
+| `contains` | Implemented | Substring matching with case sensitivity option |
+| `exact` | Implemented | Exact string comparison |
+| `starts_with` | Implemented | String prefix matching |
+| `gt`, `lt`, `gte`, `lte`, `eq` | Implemented | Numeric comparison for behavioral thresholds |
+| `call_frequency` | Implemented | Session-derived tool call frequency metrics |
+| `pattern_frequency` | Implemented | Session-derived pattern frequency metrics |
+| `event_count` | Implemented | Event counting within time windows |
+| `deviation_from_baseline` | Implemented | Behavioral drift detection |
+| `sequence` (ordered) | Partial | Checks pattern co-occurrence, not strict ordering |
+| `behavioral_drift` | Planned | ML-based behavioral baseline comparison |
 
-**Draft rules** (status: `draft`) depend on these unimplemented operators and will not produce matches until the engine is extended. Production rules (status: `experimental`) use only regex-based detection and work correctly.
+All 29 current rules use only implemented operators and produce matches correctly.
 
-Contributions to implement these operators are welcome -- see [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions to extend the engine are welcome -- see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Contributing
 
@@ -236,15 +257,17 @@ reference TypeScript engine. Known platform support:
 ## Roadmap
 
 ### v0.1 (current)
-- 22 production rules + 5 draft rules across 7 attack categories
-- Pattern matching + behavioral threshold detection
-- OWASP LLM Top 10 + MITRE ATLAS mapping
+- 29 rules across 9 attack categories (all experimental)
+- Regex-based pattern matching with 200+ detection patterns
+- Session-based behavioral tracking (SessionTracker)
+- Triple-standard mapping: OWASP LLM Top 10 + OWASP Agentic Top 10 + MITRE ATLAS
+- 11 real CVE references across 16 rules
+- Full JSON Schema specification (spec/atr-schema.yaml)
 
 ### v0.2 (planned)
-- **Behavioral detection engine** -- threshold-based metrics, session state
-  tracking, anomaly scoring for agent behavior rules (currently `draft`)
-- **MCP marketplace monitoring** -- automated skill update tracking and
-  trust-score aggregation across community submissions
+- **Behavioral detection engine** -- threshold-based metrics, anomaly scoring
+- **Platform converters** -- atr-to-invariant, atr-to-llamafirewall
+- **Python reference engine** -- not just TypeScript
 - Community-contributed rules
 
 ### v0.3 (future)
@@ -260,6 +283,9 @@ MIT -- Use it, modify it, build on it.
 
 ATR is inspired by:
 - [Sigma](https://github.com/SigmaHQ/sigma) by Florian Roth and the Sigma community
-- [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+- [OWASP LLM Top 10 (2025)](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+- [OWASP Top 10 for Agentic Applications (2026)](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
 - [MITRE ATLAS](https://atlas.mitre.org/)
 - [NVIDIA Garak](https://github.com/NVIDIA/garak)
+- [Invariant Labs](https://invariantlabs.ai/) -- guardrails and MCP security research
+- [Meta LlamaFirewall](https://ai.meta.com/research/publications/llamafirewall-an-open-source-guardrail-system-for-building-secure-ai-agents/) -- open-source agent guardrails

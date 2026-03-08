@@ -15,6 +15,8 @@ references:
   owasp_llm:
     - "LLM10:2025 - Unbounded Consumption"
     - "LLM06:2025 - Excessive Agency"
+  owasp_agentic:
+    - "ASI04:2026 - Agentic Supply Chain Vulnerabilities"
   mitre_atlas:
     - "AML.T0044 - Full ML Model Access"
     - "AML.T0024 - Exfiltration via ML Inference API"

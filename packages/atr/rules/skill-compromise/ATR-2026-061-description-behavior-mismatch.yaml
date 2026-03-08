@@ -15,6 +15,8 @@ references:
   owasp_llm:
     - "LLM03:2025 - Supply Chain Vulnerabilities"
     - "LLM05:2025 - Improper Output Handling"
+  owasp_agentic:
+    - "ASI04:2026 - Agentic Supply Chain Vulnerabilities"
   mitre_atlas:
     - "AML.T0010 - ML Supply Chain Compromise"
     - "AML.T0056 - LLM Meta Prompt Extraction"

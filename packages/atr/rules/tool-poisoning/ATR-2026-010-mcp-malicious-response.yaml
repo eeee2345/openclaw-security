@@ -19,12 +19,22 @@ references:
   owasp_llm:
     - "LLM01:2025 - Prompt Injection"
     - "LLM05:2025 - Improper Output Handling"
+  owasp_agentic:
+    - "ASI02:2026 - Tool Misuse and Exploitation"
+    - "ASI05:2026 - Unexpected Code Execution"
   mitre_atlas:
     - "AML.T0051.001 - Indirect Prompt Injection"
     - "AML.T0056 - LLM Meta Prompt Extraction"
   mitre_attack:
     - "T1059 - Command and Scripting Interpreter"
     - "T1071 - Application Layer Protocol"
+  cve:
+    - "CVE-2025-68143"
+    - "CVE-2025-68144"
+    - "CVE-2025-68145"
+    - "CVE-2025-6514"
+    - "CVE-2025-59536"
+    - "CVE-2026-21852"
 
 tags:
   category: tool-poisoning

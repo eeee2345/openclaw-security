@@ -20,6 +20,8 @@ references:
   owasp_llm:
     - "LLM06:2025 - Excessive Agency"
     - "LLM05:2025 - Improper Output Handling"
+  owasp_agentic:
+    - "ASI02:2026 - Tool Misuse and Exploitation"
   mitre_atlas:
     - "AML.T0049 - Exploit Public-Facing Application"
   mitre_attack:

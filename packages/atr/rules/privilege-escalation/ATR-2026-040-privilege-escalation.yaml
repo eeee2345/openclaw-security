@@ -17,12 +17,16 @@ severity: critical
 references:
   owasp_llm:
     - "LLM06:2025 - Excessive Agency"
+  owasp_agentic:
+    - "ASI03:2026 - Identity and Privilege Abuse"
   mitre_atlas:
     - "AML.T0050 - Command and Scripting Interpreter"
     - "AML.T0040 - AI Model Inference API Access"
   mitre_attack:
     - "T1548 - Abuse Elevation Control Mechanism"
     - "T1611 - Escape to Host"
+  cve:
+    - "CVE-2026-0628"
 
 tags:
   category: privilege-escalation

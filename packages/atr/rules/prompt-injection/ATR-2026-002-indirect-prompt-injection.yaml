@@ -17,12 +17,17 @@ severity: high
 references:
   owasp_llm:
     - "LLM01:2025 - Prompt Injection"
+  owasp_agentic:
+    - "ASI01:2026 - Agent Goal Hijack"
+    - "ASI06:2026 - Memory and Context Poisoning"
   mitre_atlas:
     - "AML.T0051 - LLM Prompt Injection"
     - "AML.T0051.001 - Indirect"
   cve:
     - "CVE-2024-5184"
     - "CVE-2024-22524"
+    - "CVE-2025-32711"
+    - "CVE-2026-24307"
 
 tags:
   category: prompt-injection

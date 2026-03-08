@@ -18,12 +18,15 @@ severity: high
 references:
   owasp_llm:
     - "LLM01:2025 - Prompt Injection"
+  owasp_agentic:
+    - "ASI01:2026 - Agent Goal Hijack"
   mitre_atlas:
     - "AML.T0051 - LLM Prompt Injection"
     - "AML.T0054 - LLM Jailbreak"
   cve:
     - "CVE-2024-5184"
     - "CVE-2024-3402"
+    - "CVE-2025-53773"
 
 tags:
   category: prompt-injection
