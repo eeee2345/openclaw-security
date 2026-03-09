@@ -5604,8 +5604,8 @@
   "revolution": {
     "hero": {
       "eyebrow": "AGENT THREAT RULES",
-      "title": "AI Agent 是全新的攻擊面。我們寫了防禦它的標準。",
-      "subtitle": "每個運算時代都有屬於它的資安標準。Server 有 Sigma，網路有 Suricata，惡意程式有 YARA。Agent Threat Rules 是第一個為 AI Agent 打造的開放偵測標準 -- 涵蓋 Prompt Injection、Tool Poisoning 等 9 大威脅類別。一行指令部署。",
+      "title": "你的 AI Agent 擁有最高權限。誰在監控它？",
+      "subtitle": "MCP Skill 擁有完整系統權限。一個惡意 Skill 就能竊取資料、洩漏憑證、劫持你的 Agent。Agent Threat Rules 是第一個針對 AI Agent 威脅的開放偵測標準。安裝一次，每個 Skill、每次互動，都在防護下。",
       "viewATR": "GitHub 上的 Agent Threat Rules",
       "install": "開始使用",
       "copied": "已複製!",
@@ -5782,11 +5782,11 @@
       "quote": "每次 Panguard 部署都會將匿名化威脅模式回饋社群。AI 分析這些模式並產生新的偵測規則，再推送到每個部署環境。安裝的人越多，所有人的防護就越強。這不是產品，是集體防禦系統。"
     },
     "finalCta": {
-      "title": "一個標準。一行指令。",
-      "subtitle": "Agent Threat Rules 完全開源、MIT 授權、永久免費。29 條規則涵蓋 9 大威脅類別，3,000+ 測試案例驗證，13 個真實 CVE 對應。",
-      "starATR": "在 GitHub 上查看 Agent Threat Rules",
+      "title": "加入這個標準。",
+      "subtitle": "AI Agent 資安不該是專利。ATR 完全開源、社群驅動、永久免費。每次安裝都讓整個網路更強。和我們一起建立每個 AI Agent 都值得擁有的偵測標準。",
+      "starATR": "在 GitHub 上 Star ATR",
       "installPanguard": "安裝 Panguard",
-      "bottomLine": "台灣製造，面向世界。"
+      "bottomLine": "台灣製造，面向世界。歡迎你的貢獻。"
     }
   }
 }

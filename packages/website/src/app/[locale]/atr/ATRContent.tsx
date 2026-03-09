@@ -23,9 +23,6 @@ import {
 } from 'lucide-react';
 import {
   ShieldIcon,
-  ScanIcon,
-  LockIcon,
-  AlertIcon,
   CheckIcon,
 } from '@/components/ui/BrandIcons';
 
