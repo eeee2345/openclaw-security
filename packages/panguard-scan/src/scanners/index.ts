@@ -334,7 +334,7 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
 
   // Code SAST scan / 程式碼靜態安全分析
   if (config.codeDir) {
-    logger.info('Running SAST and secrets scan on source code directory', {
+    logger.info('Running SAST (Semgrep) and secrets scan on source code directory', {
       codeDir: config.codeDir,
     });
     const [codeFindings, secretFindings] = await Promise.all([
@@ -342,7 +342,7 @@ export async function runScan(config: ScanConfig): Promise<ScanResult> {
       checkHardcodedSecrets(config.codeDir),
     ]);
     logger.info(
-      `SAST scan: ${codeFindings.length} code finding(s), ${secretFindings.length} secret finding(s)`
+      `Code scan: ${codeFindings.length} SAST finding(s), ${secretFindings.length} secret finding(s)`
     );
     additionalFindings.push(...codeFindings, ...secretFindings);
   }

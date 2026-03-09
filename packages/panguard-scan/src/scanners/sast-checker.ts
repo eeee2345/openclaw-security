@@ -1,10 +1,11 @@
 /**
- * SAST (Static Application Security Testing) checker
- * 靜態應用程式安全測試檢查器
+ * SAST (Static Application Security Testing) - Semgrep integration
+ * 靜態應用程式安全測試 - Semgrep 整合
  *
- * Runs Semgrep-based SAST analysis when semgrep is installed, falling back to
- * a built-in regex pattern scanner for common vulnerability classes.
- * 當 semgrep 已安裝時執行基於 Semgrep 的 SAST 分析，否則退回使用內建正規表示式模式掃描器。
+ * Runs Semgrep-based SAST analysis when semgrep is installed.
+ * If Semgrep is not available, returns an empty result with an info message.
+ * 當 semgrep 已安裝時執行基於 Semgrep 的 SAST 分析。
+ * 若 Semgrep 不可用，回傳空結果並附帶提示訊息。
  *
  * @module @panguard-ai/panguard-scan/scanners/sast-checker
  */
@@ -21,150 +22,10 @@ const logger = createLogger('panguard-scan:sast');
 const execFileAsync = promisify(execFile);
 
 /**
- * Maximum file size in bytes to scan (500 KB)
- * 最大掃描檔案大小（500 KB）
- */
-const MAX_FILE_SIZE_BYTES = 500 * 1024;
-
-/**
  * Semgrep execution timeout in milliseconds (60 seconds)
  * Semgrep 執行逾時（毫秒，60 秒）
  */
 const SEMGREP_TIMEOUT_MS = 60_000;
-
-/**
- * Directories to skip when walking the source tree
- * 遍歷原始碼樹時要跳過的目錄
- */
-const SKIP_DIRS = new Set([
-  'node_modules',
-  '.git',
-  'dist',
-  'build',
-  'coverage',
-  'vendor',
-  '.next',
-  '__pycache__',
-]);
-
-/**
- * Source file extensions to scan
- * 要掃描的原始碼檔案副檔名
- */
-const SCANNABLE_EXTENSIONS = new Set([
-  '.ts',
-  '.tsx',
-  '.js',
-  '.jsx',
-  '.mjs',
-  '.cjs',
-  '.py',
-  '.go',
-  '.java',
-  '.php',
-  '.rb',
-  '.cs',
-  '.rs',
-  '.cpp',
-  '.c',
-  '.h',
-]);
-
-/**
- * Built-in regex pattern definition
- * 內建正規表示式模式定義
- */
-interface BuiltinPattern {
-  id: string;
-  pattern: RegExp;
-  title: string;
-  severity: Severity;
-  remediation: string;
-  complianceRef: string;
-}
-
-/**
- * Built-in security patterns for fallback scanning
- * 備用掃描的內建安全模式
- */
-const BUILTIN_PATTERNS: BuiltinPattern[] = [
-  {
-    id: 'SAST-HARDCODED-SECRET',
-    pattern:
-      /(?:password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|private[_-]?key)\s*[=:]\s*["'][^"']{8,}["']/gi,
-    title: 'Hardcoded secret detected / 偵測到硬編碼密鑰',
-    severity: 'critical',
-    remediation:
-      'Move secrets to environment variables or a secrets manager / 將密鑰移至環境變數或密鑰管理員',
-    complianceRef: '4.5',
-  },
-  {
-    id: 'SAST-EVAL-INJECTION',
-    pattern: /\beval\s*\([^)]*(?:req|input|user|param|query|body)[^)]*\)/gi,
-    title: 'eval() with user input / 使用者輸入的 eval()',
-    severity: 'critical',
-    remediation:
-      'Never use eval() with user-supplied data / 切勿使用包含使用者資料的 eval()',
-    complianceRef: '4.3',
-  },
-  {
-    id: 'SAST-SQL-INJECTION',
-    pattern:
-      /(?:query|execute|db\.run)\s*\([^)]*\+[^)]*(?:req|input|user|param|query|body)/gi,
-    title: 'Potential SQL injection / 潛在 SQL 注入',
-    severity: 'high',
-    remediation:
-      'Use parameterized queries instead of string concatenation / 使用參數化查詢',
-    complianceRef: '4.3',
-  },
-  {
-    id: 'SAST-CMD-INJECTION',
-    pattern:
-      /(?:exec|execSync|spawn|spawnSync)\s*\([^)]*(?:req|input|user|param|query|body)[^)]*\)/gi,
-    title: 'Command injection risk / 命令注入風險',
-    severity: 'critical',
-    remediation:
-      'Validate and sanitize all inputs before use in system commands / 在系統命令中使用前驗證並清理所有輸入',
-    complianceRef: '4.3',
-  },
-  {
-    id: 'SAST-INSECURE-RANDOM',
-    pattern: /Math\.random\s*\(\s*\)/g,
-    title: 'Insecure random number generator / 不安全的隨機數生成器',
-    severity: 'medium',
-    remediation:
-      'Use crypto.randomBytes() or crypto.getRandomValues() for security-sensitive random values / 使用 crypto.randomBytes() 生成安全隨機數',
-    complianceRef: '4.4',
-  },
-  {
-    id: 'SAST-MD5-USAGE',
-    pattern: /(?:createHash|md5)\s*\(\s*['"]md5['"]\s*\)/gi,
-    title: 'Weak MD5 hash function / 弱 MD5 雜湊函式',
-    severity: 'high',
-    remediation:
-      'Use SHA-256 or stronger: crypto.createHash("sha256") / 使用 SHA-256 或更強的演算法',
-    complianceRef: '4.4',
-  },
-  {
-    id: 'SAST-INNERHTML',
-    pattern: /\.innerHTML\s*=\s*(?!["'`])/g,
-    title: 'Potential XSS via innerHTML / 潛在 XSS 透過 innerHTML',
-    severity: 'high',
-    remediation:
-      'Use textContent or DOMPurify to sanitize HTML / 使用 textContent 或 DOMPurify 清理 HTML',
-    complianceRef: '4.3',
-  },
-  {
-    id: 'SAST-HARDCODED-IP',
-    pattern:
-      /["'](?:192\.168\.|10\.|172\.(?:1[6-9]|2\d|3[01])\.)\d+\.\d+["']/g,
-    title: 'Hardcoded IP address / 硬編碼 IP 位址',
-    severity: 'low',
-    remediation:
-      'Use configuration files or environment variables for IP addresses / 使用設定檔或環境變數',
-    complianceRef: '4.3',
-  },
-];
 
 /**
  * Semgrep JSON result item structure
@@ -456,7 +317,7 @@ async function runSemgrep(targetDir: string): Promise<Finding[]> {
       }
     }
 
-    logger.warn('Semgrep execution failed, falling back to built-in scanner', {
+    logger.warn('Semgrep execution failed', {
       error: err instanceof Error ? err.message : String(err),
     });
     return [];
@@ -464,222 +325,13 @@ async function runSemgrep(targetDir: string): Promise<Finding[]> {
 }
 
 /**
- * Recursively collect all scannable source files under targetDir
- * 遞迴收集 targetDir 下所有可掃描的原始碼檔案
- *
- * Skips directories in SKIP_DIRS and files exceeding MAX_FILE_SIZE_BYTES.
- * 跳過 SKIP_DIRS 中的目錄和超過 MAX_FILE_SIZE_BYTES 的檔案。
- *
- * @param dir - Directory to walk / 要遍歷的目錄
- * @returns Array of absolute file paths / 絕對檔案路徑陣列
- */
-async function collectSourceFiles(dir: string): Promise<string[]> {
-  const files: string[] = [];
-
-  async function walk(current: string): Promise<void> {
-    let entries: import('node:fs').Dirent<string>[];
-    try {
-      entries = await fs.readdir(current, { withFileTypes: true, encoding: 'utf-8' });
-    } catch (err) {
-      logger.debug(`Cannot read directory: ${current}`, {
-        error: err instanceof Error ? err.message : String(err),
-      });
-      return;
-    }
-
-    for (const entry of entries) {
-      const fullPath = path.join(current, entry.name);
-
-      if (entry.isDirectory()) {
-        if (SKIP_DIRS.has(entry.name)) {
-          logger.debug(`Skipping directory: ${fullPath}`);
-          continue;
-        }
-        await walk(fullPath);
-      } else if (entry.isFile()) {
-        const ext = path.extname(entry.name).toLowerCase();
-        if (!SCANNABLE_EXTENSIONS.has(ext)) continue;
-
-        try {
-          const stat = await fs.stat(fullPath);
-          if (stat.size > MAX_FILE_SIZE_BYTES) {
-            logger.debug(`Skipping large file (${stat.size} bytes): ${fullPath}`);
-            continue;
-          }
-          files.push(fullPath);
-        } catch {
-          logger.debug(`Cannot stat file: ${fullPath}`);
-        }
-      }
-    }
-  }
-
-  await walk(dir);
-  return files;
-}
-
-/**
- * Scan a single file with all built-in patterns
- * 使用所有內建模式掃描單個檔案
- *
- * @param filePath - Absolute path to file / 檔案絕對路徑
- * @param content - File content / 檔案內容
- * @returns Array of findings from this file / 此檔案的發現陣列
- */
-function scanFileWithBuiltinPatterns(filePath: string, content: string): Finding[] {
-  const findings: Finding[] = [];
-  const seen = new Set<string>();
-
-  for (const pattern of BUILTIN_PATTERNS) {
-    // Reset lastIndex for global regexes
-    // 重置全域正規表示式的 lastIndex
-    pattern.pattern.lastIndex = 0;
-
-    let match: RegExpExecArray | null;
-    while ((match = pattern.pattern.exec(content)) !== null) {
-      // Calculate approximate line number from match index
-      // 從匹配索引計算近似行號
-      const lineNum = content.slice(0, match.index).split('\n').length;
-      const matchedText = match[0].slice(0, 60);
-
-      const dedupeKey = `${pattern.id}:${filePath}:${lineNum}`;
-      if (seen.has(dedupeKey)) continue;
-      seen.add(dedupeKey);
-
-      findings.push({
-        id: `${pattern.id}-${lineNum}`,
-        title: pattern.title,
-        description:
-          `${pattern.title}\n\nFile: ${filePath}, Line: ${lineNum}\n` +
-          `Match: ${matchedText}${match[0].length > 60 ? '...' : ''}`,
-        severity: pattern.severity,
-        category: 'code',
-        remediation: pattern.remediation,
-        complianceRef: pattern.complianceRef,
-        details: `${filePath}:${lineNum}`,
-      });
-
-      // For non-global patterns, break to avoid infinite loop
-      // 對於非全域模式，中斷以避免無窮迴圈
-      if (!pattern.pattern.flags.includes('g')) break;
-    }
-
-    // Reset lastIndex after each file
-    // 每個檔案後重置 lastIndex
-    pattern.pattern.lastIndex = 0;
-  }
-
-  return findings;
-}
-
-/**
- * Check for .env files committed to the scanned directory
- * 檢查已提交到掃描目錄的 .env 檔案
- *
- * @param targetDir - Directory to check / 要檢查的目錄
- * @returns Array of findings for committed env files / 已提交 env 檔案的發現陣列
- */
-async function checkCommittedEnvFiles(targetDir: string): Promise<Finding[]> {
-  const findings: Finding[] = [];
-
-  const envFileNames = [
-    '.env',
-    '.env.local',
-    '.env.production',
-    '.env.staging',
-    '.env.development',
-    '.env.test',
-  ];
-
-  for (const envFile of envFileNames) {
-    const fullPath = path.join(targetDir, envFile);
-    try {
-      await fs.access(fullPath);
-      // File exists - check if it contains actual values (not just comments/blanks)
-      // 檔案存在 - 檢查是否包含實際值（不僅僅是注釋/空行）
-      const content = await fs.readFile(fullPath, 'utf-8');
-      const hasRealValues = content
-        .split('\n')
-        .some(
-          (line) =>
-            line.trim() !== '' &&
-            !line.trim().startsWith('#') &&
-            line.includes('=') &&
-            !line.includes('=your_') &&
-            !line.includes('=<') &&
-            !line.includes('=YOUR_')
-        );
-
-      if (hasRealValues) {
-        findings.push({
-          id: `SAST-ENV-FILE-${envFile.replace(/\./g, '_').toUpperCase()}`,
-          title: `Environment file with credentials found / 發現包含憑證的環境檔案: ${envFile}`,
-          description:
-            `The file "${envFile}" was found in the scanned directory and appears to contain ` +
-            `real credentials or configuration values. This file should not be committed to version control. / ` +
-            `在掃描目錄中發現檔案 "${envFile}"，且似乎包含真實憑證或配置值。此檔案不應提交到版本控制。`,
-          severity: 'high',
-          category: 'code',
-          remediation:
-            'Add .env files to .gitignore and use a secrets manager or CI/CD secret injection. / ' +
-            '將 .env 檔案加入 .gitignore，並使用密鑰管理員或 CI/CD 密鑰注入。',
-          complianceRef: '4.5',
-          details: fullPath,
-        });
-      }
-    } catch {
-      // File does not exist, skip
-      // 檔案不存在，跳過
-    }
-  }
-
-  return findings;
-}
-
-/**
- * Run built-in regex-based SAST on all source files in targetDir
- * 對 targetDir 中所有原始碼檔案執行內建正規表示式 SAST
- *
- * @param targetDir - Directory to scan / 要掃描的目錄
- * @returns Array of findings / 發現陣列
- */
-async function runBuiltinScanner(targetDir: string): Promise<Finding[]> {
-  logger.info('Running built-in regex SAST scanner', { targetDir });
-
-  const files = await collectSourceFiles(targetDir);
-  logger.info(`Built-in scanner: found ${files.length} source file(s) to scan`);
-
-  const allFindings: Finding[] = [];
-
-  for (const filePath of files) {
-    try {
-      const content = await fs.readFile(filePath, 'utf-8');
-      const findings = scanFileWithBuiltinPatterns(filePath, content);
-      allFindings.push(...findings);
-    } catch (err) {
-      logger.debug(`Cannot read file: ${filePath}`, {
-        error: err instanceof Error ? err.message : String(err),
-      });
-    }
-  }
-
-  // Check for committed .env files
-  // 檢查已提交的 .env 檔案
-  const envFindings = await checkCommittedEnvFiles(targetDir);
-  allFindings.push(...envFindings);
-
-  logger.info(`Built-in SAST scanner: ${allFindings.length} finding(s)`);
-  return allFindings;
-}
-
-/**
  * Scan source code for security vulnerabilities using SAST
  * 使用 SAST 掃描原始碼的安全漏洞
  *
- * Attempts to use Semgrep if available; falls back to built-in regex scanner.
- * Results from both built-in scanner and semgrep may be combined when semgrep
- * exits with code 1 (findings present).
- * 如果可用則嘗試使用 Semgrep；否則退回到內建正規表示式掃描器。
+ * Runs Semgrep if available. If Semgrep is not installed, returns an empty
+ * result array. Install Semgrep for full SAST coverage.
+ * 若 Semgrep 可用則執行。若 Semgrep 未安裝，回傳空結果陣列。
+ * 安裝 Semgrep 以取得完整 SAST 覆蓋。
  *
  * @param targetDir - Source code directory to scan / 要掃描的原始碼目錄
  * @returns Array of security findings / 安全發現陣列
@@ -701,26 +353,16 @@ export async function checkSourceCode(targetDir: string): Promise<Finding[]> {
   }
 
   const resolvedDir = path.resolve(targetDir);
-  logger.info('Starting SAST source code scan', { targetDir: resolvedDir });
 
   const semgrepAvailable = await isSemgrepAvailable();
 
   if (semgrepAvailable) {
-    logger.info('Semgrep is available, using Semgrep for SAST');
-    const semgrepFindings = await runSemgrep(resolvedDir);
-
-    // If semgrep returned results, use them; otherwise fall back
-    // 如果 semgrep 返回結果則使用它們；否則退回
-    if (semgrepFindings.length > 0) {
-      return semgrepFindings;
-    }
-
-    // No semgrep findings - run built-in as supplement
-    // 無 semgrep 發現 - 執行內建掃描作為補充
-    logger.info('Semgrep returned no findings, running built-in scanner as supplement');
-    return runBuiltinScanner(resolvedDir);
+    logger.info('Semgrep is available, running SAST scan', { targetDir: resolvedDir });
+    return runSemgrep(resolvedDir);
   }
 
-  logger.info('Semgrep not available, using built-in regex SAST scanner');
-  return runBuiltinScanner(resolvedDir);
+  logger.info(
+    'Semgrep is not installed. Install Semgrep for SAST scanning: https://semgrep.dev'
+  );
+  return [];
 }

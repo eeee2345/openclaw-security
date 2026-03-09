@@ -240,6 +240,41 @@ export class ThreatCloudClient {
   }
 
   /**
+   * Fetch ATR (Agent Threat Rules) from the cloud
+   * 從雲端取得 ATR（代理威脅規則）
+   *
+   * @param since - Optional ISO timestamp for incremental sync / 可選 ISO 時間戳用於增量同步
+   * @returns Array of ATR rule updates / ATR 規則更新陣列
+   */
+  async fetchATRRules(since?: string): Promise<ThreatCloudUpdate[]> {
+    if (this.status === 'offline' || !this.endpoint) {
+      logger.info('Returning empty ATR rules (offline mode) / 回傳空 ATR 規則（離線模式）');
+      return [];
+    }
+
+    try {
+      const sinceParam = since ?? this.cache.lastSync;
+      const url = `${this.endpoint}/api/atr-rules?since=${encodeURIComponent(sinceParam)}`;
+      const response = await this.httpGet(url);
+      const rules = JSON.parse(response) as ThreatCloudUpdate[];
+
+      this.status = 'connected';
+      logger.info(
+        `Fetched ${rules.length} ATR rules from cloud / 從雲端取得 ${rules.length} 條 ATR 規則`
+      );
+
+      return rules;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error(
+        `Fetch ATR rules failed: ${msg}, returning empty / 取得 ATR 規則失敗: ${msg}，回傳空陣列`
+      );
+      this.status = 'disconnected';
+      return [];
+    }
+  }
+
+  /**
    * Fetch IP blocklist from the cloud (plain text, one IP per line).
    * 從雲端取得 IP 封鎖清單（純文字，每行一個 IP）。
    *
