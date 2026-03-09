@@ -5584,6 +5584,31 @@
         }
       }
     },
+    "skillProtection": {
+      "title": "Every skill your agent installs gets audited. Automatically.",
+      "subtitle": "MCP skills are the new npm packages -- except there's no security scanning built in. One malicious skill can exfiltrate your data, hijack your agent, or leak credentials. Panguard audits every skill before it runs.",
+      "without": {
+        "label": "Without Panguard",
+        "items": [
+          "Skills execute immediately with full access",
+          "No visibility into what a skill actually does",
+          "Malicious updates run silently",
+          "You discover breaches after the damage",
+          "Manual review doesn't scale"
+        ]
+      },
+      "with": {
+        "label": "With Panguard",
+        "items": [
+          "Every skill scanned against 29 ATR rules before execution",
+          "Prompt injection, data exfiltration, hidden payloads -- caught automatically",
+          "Continuous monitoring catches malicious updates",
+          "Threats blocked before they reach your agent",
+          "One command. Zero configuration. Always on."
+        ]
+      },
+      "bottomLine": "Install once. Every skill, every update, every interaction -- protected."
+    },
     "threats": {
       "title": "Nine categories of agent threats. One standard.",
       "ruleCount": "{count, plural, one {# rule} other {# rules}}",
