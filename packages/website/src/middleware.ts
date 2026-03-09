@@ -11,7 +11,9 @@ export function middleware(request: NextRequest) {
 
   // get.panguard.ai → serve install script via API route
   if (host.startsWith('get.')) {
-    if (pathname === '/windows' || pathname === '/win' || pathname === '/install.ps1') {
+    // Strip any locale prefix that next-intl matcher may have added
+    const cleanPath = pathname.replace(/^\/(en|zh)/, '') || '/';
+    if (cleanPath === '/windows' || cleanPath === '/win' || cleanPath === '/install.ps1') {
       return NextResponse.rewrite(new URL('/api/install/windows', request.url));
     }
     return NextResponse.rewrite(new URL('/api/install', request.url));

@@ -86,11 +86,14 @@ detect_platform() {
 # Sets SKIP_BINARY_DOWNLOAD=true if musl libc is detected.
 # Returns 0 if musl detected, 1 otherwise.
 detect_musl() {
-  if [ "$PLATFORM_OS" = "linux" ] && (ldd --version 2>&1 | grep -qi musl); then
-    warn "Detected Alpine/musl Linux. Prebuilt binaries may not work."
-    info "Will use npm install method instead of prebuilt binary."
-    SKIP_BINARY_DOWNLOAD=true
-    return 0
+  if [ "$PLATFORM_OS" = "linux" ]; then
+    # Check multiple indicators for musl libc
+    if (ldd --version 2>&1 | grep -qi musl) || [ -f /etc/alpine-release ] || ls /lib/ld-musl-*.so* &>/dev/null; then
+      warn "Detected Alpine/musl Linux. Prebuilt binaries may not work."
+      info "Will try npm install instead of prebuilt binary."
+      SKIP_BINARY_DOWNLOAD=true
+      return 0
+    fi
   fi
   return 1
 }
@@ -539,23 +542,42 @@ main() {
   backup_existing
 
   BINARY_INSTALLED=false
+  NPM_INSTALLED=false
   if download_binary; then
     success "Prebuilt binary installed to ${INSTALL_DIR}"
     BINARY_INSTALLED=true
   else
-    warn "No prebuilt binary available for ${PLATFORM}. Falling back to source build..."
-    build_from_source
+    # Try npm global install before heavy source build
+    warn "No prebuilt binary available for ${PLATFORM}. Trying npm install..."
+    if command -v npm &>/dev/null; then
+      if npm install -g @panguard-ai/panguard 2>/dev/null; then
+        success "Panguard AI installed via npm"
+        NPM_INSTALLED=true
+      else
+        warn "npm global install failed. Falling back to source build..."
+        build_from_source
+      fi
+    else
+      warn "npm not found. Falling back to source build..."
+      build_from_source
+    fi
   fi
 
   # Determine binary location
   local bin_source
   if [ "$BINARY_INSTALLED" = "true" ]; then
     bin_source="${INSTALL_DIR}/bin/panguard"
+  elif [ "$NPM_INSTALLED" = "true" ]; then
+    # npm global install puts it in PATH already
+    bin_source="$(command -v panguard 2>/dev/null || echo "${INSTALL_DIR}/bin/panguard")"
   else
     bin_source="${INSTALL_DIR}/source/bin/panguard"
   fi
 
-  setup_path "$bin_source" "$SYMLINK_TARGET" "$BIN_DIR"
+  # npm global install already handles PATH; only run setup_path for binary/source installs
+  if [ "$NPM_INSTALLED" = "false" ]; then
+    setup_path "$bin_source" "$SYMLINK_TARGET" "$BIN_DIR"
+  fi
   verify_installation "$bin_source"
   print_quickstart
 }
