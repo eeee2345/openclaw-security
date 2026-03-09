@@ -164,13 +164,17 @@ export default function NavBar() {
       desc: t('productLinks.skillAuditorDesc'),
       href: '/product/skill-auditor',
     },
+    {
+      label: t('productLinks.devReview'),
+      desc: t('productLinks.devReviewDesc'),
+      href: '/product/dev-security-review',
+    },
   ];
 
   const topLinks = [
     { label: t('howItWorks'), href: '/how-it-works' },
     { label: t('threatCloud'), href: '/threat-cloud' },
     { label: t('atr'), href: '/atr' },
-    { label: t('pricing'), href: '/pricing' },
     { label: t('docs'), href: '/docs' },
     { label: t('about'), href: '/about' },
     { label: t('blog'), href: '/blog' },
@@ -203,6 +207,14 @@ export default function NavBar() {
               {link.label}
             </Link>
           ))}
+          <a
+            href="https://github.com/Agent-Threat-Rule/agent-threat-rules"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+          >
+            {t('community')}
+          </a>
         </div>
 
         {/* Desktop CTA + Locale Switcher */}
@@ -237,10 +249,10 @@ export default function NavBar() {
                 {t('login')}
               </Link>
               <Link
-                href="/register"
+                href="/docs/getting-started"
                 className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                {t('getStarted')}
+                {t('install')}
               </Link>
             </>
           )}
@@ -349,11 +361,11 @@ export default function NavBar() {
                     {t('login')}
                   </Link>
                   <Link
-                    href="/register"
+                    href="/docs/getting-started"
                     className="block text-center bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-3"
                     onClick={() => setMobileOpen(false)}
                   >
-                    {t('getStarted')}
+                    {t('install')}
                   </Link>
                 </>
               )}

@@ -27,6 +27,7 @@ export default function Footer() {
     {
       title: t('product'),
       links: [
+        { label: t('atrStandard'), href: 'https://github.com/Agent-Threat-Rule/agent-threat-rules', external: true },
         { label: t('guard'), href: '/product/guard' },
         { label: t('scan'), href: '/product/scan' },
         { label: t('threatCloud'), href: '/threat-cloud' },
@@ -34,6 +35,7 @@ export default function Footer() {
         { label: t('chat'), href: '/product/chat' },
         { label: t('trap'), href: '/product/trap' },
         { label: t('report'), href: '/product/report' },
+        { label: t('devReview'), href: '/product/dev-security-review' },
       ],
     },
     {
@@ -53,6 +55,7 @@ export default function Footer() {
         { label: t('documentation'), href: '/docs' },
         { label: t('cliReference'), href: '/docs/cli' },
         { label: 'GitHub', href: 'https://github.com/panguard-ai/panguard-ai', external: true },
+        { label: t('contribute'), href: 'https://github.com/Agent-Threat-Rule/agent-threat-rules', external: true },
         { label: t('openSource'), href: '/open-source' },
         { label: t('compliance'), href: '/compliance' },
         { label: t('security'), href: '/security' },

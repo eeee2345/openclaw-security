@@ -43,6 +43,8 @@
     "blog": "Blog",
     "startFreeScan": "Start Free Scan",
     "getStarted": "Get Started",
+    "install": "Install",
+    "community": "Community",
     "login": "Log In",
     "productLinks": {
       "overview": "Product Overview",
@@ -66,7 +68,9 @@
       "mcp": "MCP Server",
       "mcpDesc": "AI assistant integration",
       "skillAuditor": "Skill Auditor",
-      "skillAuditorDesc": "Pre-install skill security"
+      "skillAuditorDesc": "Pre-install skill security",
+      "devReview": "Dev Review",
+      "devReviewDesc": "AI agent security review"
     },
     "solutionLinks": {
       "developers": "For Developers",
@@ -123,6 +127,7 @@
     "chat": "Chat",
     "trap": "Trap",
     "report": "Report",
+    "devReview": "Dev Review",
     "compliance": "Compliance",
     "integrations": "Integrations",
     "documentation": "Documentation",
@@ -147,7 +152,9 @@
     "dpa": "DPA",
     "sla": "SLA",
     "responsibleDisclosure": "Responsible Disclosure",
-    "securityWhitepaper": "Security Whitepaper"
+    "securityWhitepaper": "Security Whitepaper",
+    "atrStandard": "ATR Standard",
+    "contribute": "Contribute"
   },
   "home": {
     "hero": {
@@ -1252,6 +1259,106 @@
           "title": "Multi-Server Fleet",
           "desc": "You manage 50 servers across multiple cloud providers. Install Panguard Guard once per server and get a unified security view. Collective intelligence means a threat seen on one server protects all of them."
         }
+      }
+    },
+    "devSecurityReview": {
+      "title": "Security Review for AI Agent Development",
+      "subtitle": "Catch prompt injection vulnerabilities, tool poisoning risks, and context leaks before your agent ships.",
+      "heroCta": "Get Started",
+      "heroCtaSecondary": "Learn about ATR",
+      "howItWorks": {
+        "overline": "How It Works",
+        "title": "Three steps to secure agents.",
+        "subtitle": "From code to production, Panguard watches your agent at every stage.",
+        "steps": {
+          "write": {
+            "title": "Write",
+            "desc": "Write your agent code as usual. Panguard scans for SAST patterns -- 16 code patterns plus secrets detection."
+          },
+          "review": {
+            "title": "Review",
+            "desc": "ATR rules evaluate your agent's behavior patterns in dev/staging. 29 rules across 9 threat categories catch issues before production."
+          },
+          "ship": {
+            "title": "Ship",
+            "desc": "Deploy with Guard watching. Runtime protection continues in production with the same ATR rules."
+          }
+        }
+      },
+      "checks": {
+        "overline": "Coverage",
+        "title": "What gets checked.",
+        "subtitle": "Six categories of AI agent risk, evaluated automatically.",
+        "items": {
+          "promptInjection": {
+            "title": "Prompt Injection Resistance",
+            "desc": "Tests if your agent can be hijacked via direct or indirect injection. Covers both user-input injection and data-source poisoning vectors."
+          },
+          "toolCallSafety": {
+            "title": "Tool Call Safety",
+            "desc": "Validates MCP tool calls don't execute arbitrary commands. Flags unrestricted shell access, file system writes, and network calls."
+          },
+          "contextWindow": {
+            "title": "Context Window Protection",
+            "desc": "Ensures system prompts and secrets aren't leaked in output. Detects context extraction attacks and instruction exfiltration."
+          },
+          "excessiveAutonomy": {
+            "title": "Excessive Autonomy",
+            "desc": "Flags agents that make too many tool calls without human approval. Enforces action limits and approval gates."
+          },
+          "skillSupplyChain": {
+            "title": "Skill Supply Chain",
+            "desc": "Audits MCP skills for known vulnerabilities against CVE databases. Checks skill integrity and source verification."
+          },
+          "secretExposure": {
+            "title": "Secret Exposure",
+            "desc": "Scans for API keys, tokens, and credentials in agent output. Catches accidental leaks in logs, responses, and tool call arguments."
+          }
+        }
+      },
+      "integration": {
+        "overline": "Workflow",
+        "title": "Fits your development pipeline.",
+        "subtitle": "From local development to production, security checks run at every stage.",
+        "pipeline": {
+          "write": {
+            "label": "Write Code",
+            "detail": "Developer"
+          },
+          "scan": {
+            "label": "panguard scan",
+            "detail": "SAST"
+          },
+          "guardWatch": {
+            "label": "guard --watch",
+            "detail": "Dev/Staging"
+          },
+          "atrValidate": {
+            "label": "ATR Validate",
+            "detail": "29 Rules"
+          },
+          "ship": {
+            "label": "Ship",
+            "detail": "Production"
+          },
+          "guardRuntime": {
+            "label": "Guard Runtime",
+            "detail": "24/7 Protection"
+          }
+        }
+      },
+      "stats": {
+        "title": "Built on ATR -- the open standard for AI agent threats.",
+        "desc": "Dev Security Review uses the same Agent Threat Rules that power Panguard Guard. Every rule is open source, peer-reviewed, and mapped to real-world attack patterns.",
+        "sastPatterns": "SAST Code Patterns",
+        "atrRules": "ATR Rules",
+        "threatCategories": "Threat Categories"
+      },
+      "cta": {
+        "title": "Ship agents you can trust.",
+        "desc": "Start scanning your agent code today. Free tier available.",
+        "primary": "Install Panguard",
+        "secondary": "Learn about Guard"
       }
     },
     "chat": {
@@ -4887,6 +4994,10 @@
       "title": "Panguard Guard",
       "description": "24/7 AI endpoint protection. One command to install. The always-on security agent that detects, analyzes, and responds to threats automatically."
     },
+    "devSecurityReview": {
+      "title": "Dev Security Review -- AI Agent Security",
+      "description": "Catch prompt injection vulnerabilities, tool poisoning risks, and context leaks before your AI agent ships. SAST scanning, ATR rules, and runtime protection."
+    },
     "productChat": {
       "title": "Panguard Chat",
       "description": "Your AI security copilot. Plain language, not alert codes. Security that speaks human, integrated with the tools you already use."
@@ -5434,6 +5545,169 @@
       "contribute": "Contribute on GitHub",
       "getStarted": "Get Started",
       "githubUrl": "https://github.com/panguard-ai/panguard-ai"
+    }
+  },
+  "revolution": {
+    "hero": {
+      "eyebrow": "AGENT THREAT RULES",
+      "title": "AI agents are the new attack surface. We wrote the standard to defend it.",
+      "subtitle": "Every era of computing gets the security standard it deserves. Servers got Sigma. Networks got Suricata. Malware got YARA. Agent Threat Rules is the first open detection standard for AI agents -- covering prompt injection, tool poisoning, and 7 more threat categories. One command to deploy.",
+      "viewATR": "Agent Threat Rules on GitHub",
+      "install": "Get Started",
+      "copied": "Copied!",
+      "badges": {
+        "mit": "MIT Licensed",
+        "rules": "29 Rules",
+        "tests": "3,000+ Tests",
+        "taiwan": "Built in Taiwan"
+      }
+    },
+    "atrShowcase": {
+      "title": "Open rules. Real tests. Immediate action.",
+      "githubCta": "View on GitHub",
+      "features": {
+        "agentNative": {
+          "title": "Agent-native",
+          "desc": "Monitors LLM I/O, MCP tool calls, and skill behavior. Purpose-built for the agent era -- not repurposed network rules."
+        },
+        "testable": {
+          "title": "Verifiable",
+          "desc": "Every rule ships with true positive and true negative test cases. Run them in CI. Trust what you deploy."
+        },
+        "actionable": {
+          "title": "Actionable",
+          "desc": "Block, alert, quarantine. Every rule defines the response -- not just the detection."
+        },
+        "collective": {
+          "title": "Collective",
+          "desc": "Every deployment contributes anonymized threat patterns back to the community. One install strengthens the entire ecosystem."
+        }
+      }
+    },
+    "threats": {
+      "title": "Nine categories of agent threats. One standard.",
+      "ruleCount": "{count, plural, one {# rule} other {# rules}}",
+      "categories": {
+        "promptInjection": "Prompt Injection",
+        "toolPoisoning": "Tool Poisoning",
+        "contextExfiltration": "Context Exfiltration",
+        "agentManipulation": "Agent Manipulation",
+        "privilegeEscalation": "Privilege Escalation",
+        "excessiveAutonomy": "Excessive Autonomy",
+        "skillCompromise": "Skill Compromise",
+        "dataPoisoning": "Data Poisoning",
+        "modelSecurity": "Model Security"
+      },
+      "statsLine": "13 real CVE mappings. OWASP Agentic Top 10: 8/10 categories covered. MIT licensed."
+    },
+    "howItWorks": {
+      "title": "Install. Protect. Contribute.",
+      "steps": {
+        "install": {
+          "title": "Install",
+          "desc": "One command. 29 detection rules. Zero configuration."
+        },
+        "protect": {
+          "title": "Protect",
+          "desc": "Real-time monitoring of every LLM input, output, tool call, and agent behavior. Threats are blocked automatically."
+        },
+        "contribute": {
+          "title": "Contribute",
+          "desc": "Anonymized attack patterns flow to Threat Cloud. AI generates new detection rules. Pushed to every deployment. You don't have to do anything -- installing is contributing."
+        }
+      }
+    },
+    "costDisruption": {
+      "title": "Most teams skip security entirely. We made it impossible to skip.",
+      "subtitle": "Startups and small teams don't have security engineers. They don't have six-figure budgets. So they ship agents with zero protection. We built Panguard so that's no longer a valid excuse.",
+      "comparison": {
+        "enterprise": {
+          "label": "The old model",
+          "items": [
+            "$50,000+/year for enterprise security tooling",
+            "Months of deployment and configuration",
+            "Requires a dedicated security team",
+            "No awareness of AI agent threats",
+            "Built for infrastructure, not intelligence"
+          ]
+        },
+        "panguard": {
+          "label": "Panguard",
+          "items": [
+            "Free and open source. MIT licensed.",
+            "One command. Immediate protection.",
+            "No security expertise required",
+            "Built from the ground up for AI agents",
+            "Gets stronger with every deployment"
+          ]
+        }
+      },
+      "punchline": "Good security shouldn't require a budget. It should require a single command."
+    },
+    "scenarios": {
+      "title": "How it works in practice.",
+      "subtitle": "Three scenarios. One command. Zero configuration.",
+      "items": {
+        "skillInstall": {
+          "label": "INSTALL",
+          "title": "Install a skill from OpenClaw. Panguard audits it automatically.",
+          "narrative": "Run npx panguard guard --watch before adding any skill. From that point, every MCP skill your agent installs is scanned against 29 Agent Threat Rules -- checking for data exfiltration patterns, embedded injection payloads, and excessive permission requests. Malicious skills are blocked before execution. Safe skills proceed normally.",
+          "before": "Without protection, a compromised skill executes immediately with full system access.",
+          "after": "With Panguard, every skill passes a 29-rule security audit before it touches your system."
+        },
+        "alwaysOn": {
+          "label": "MONITOR",
+          "title": "Your agent runs around the clock. Every interaction is monitored.",
+          "narrative": "An AI agent processing customer messages, managing workflows, calling external APIs -- every LLM input, every tool call, every response is analyzed in real time. When a prompt injection arrives hidden in user input, or a tool returns a poisoned payload designed to override instructions, it's caught and blocked immediately.",
+          "before": "Without protection, thousands of daily interactions run with no security oversight.",
+          "after": "With Panguard, threats are intercepted before they reach your agent's decision layer."
+        },
+        "supplyChain": {
+          "label": "DEFEND",
+          "title": "A trusted skill pushes a malicious update. Panguard catches it.",
+          "narrative": "A skill you've relied on for months ships a new version. Buried in its tool output is a hidden instruction that redirects your agent to exfiltrate data to an external endpoint. Panguard's continuous monitoring matches the pattern against ATR-2026-006 and blocks execution with a full forensic snapshot.",
+          "before": "Without protection, supply chain compromises run silently until damage is discovered.",
+          "after": "With Panguard, even previously trusted skills are continuously validated against known attack patterns."
+        }
+      }
+    },
+    "securityStack": {
+      "title": "Where Agent Threat Rules fits",
+      "intro": "Claude Code and OpenAI Codex scan your code for vulnerabilities before deployment. That's essential work.",
+      "but": "But they stop at the deployment boundary. They don't monitor your agent in production. They can't detect a prompt injection in progress, a malicious MCP response in real time, or a skill chain attack where three benign-looking tool calls combine into data exfiltration.",
+      "conclusion": "Code scanning is the pre-deployment layer. Agent Threat Rules is the runtime layer. You need both.",
+      "preDeployment": {
+        "label": "Pre-deployment",
+        "title": "Code Security",
+        "tools": "Claude Code / Codex",
+        "items": ["Static analysis and vulnerability scanning", "Code review automation", "Dependency auditing", "Pre-ship bug detection"]
+      },
+      "postDeployment": {
+        "label": "Post-deployment",
+        "title": "Runtime Protection",
+        "tools": "Agent Threat Rules + Panguard",
+        "items": ["Real-time LLM interaction monitoring", "Live prompt injection detection", "Malicious MCP response blocking", "Cross-tool skill chain attack detection"]
+      },
+      "bottomLine": "Pre-deployment finds bugs. Post-deployment stops attacks."
+    },
+    "flywheel": {
+      "title": "Collective defense.",
+      "nodes": {
+        "installPanguard": "Deploy",
+        "detectThreats": "Detect",
+        "uploadToCloud": "Share",
+        "generateRules": "Generate",
+        "distribute": "Distribute",
+        "betterProtection": "Strengthen"
+      },
+      "quote": "Every Panguard deployment anonymously contributes threat patterns to the community. AI analyzes those patterns and generates new detection rules. Those rules are pushed to every deployment. The more people who install it, the stronger everyone's protection becomes. This is not a product. It's a collective defense system."
+    },
+    "finalCta": {
+      "title": "One standard. One command.",
+      "subtitle": "Agent Threat Rules is open source, MIT licensed, and free. 29 rules across 9 threat categories, backed by 3,000+ tests and 13 real CVE mappings.",
+      "starATR": "Agent Threat Rules on GitHub",
+      "installPanguard": "Install Panguard",
+      "bottomLine": "Built in Taiwan. Open to the world."
     }
   }
 }

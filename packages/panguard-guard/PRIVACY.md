@@ -101,4 +101,4 @@ All anonymization logic is open source and auditable:
 
 - Anonymization: `src/agent/report-agent.ts` (`generateAnonymizedData()`)
 - Upload client: `src/threat-cloud/index.ts`
-- ATR rules: [github.com/panguard-ai/agent-threat-rules](https://github.com/panguard-ai/agent-threat-rules)
+- ATR rules: [github.com/Agent-Threat-Rule/agent-threat-rules](https://github.com/Agent-Threat-Rule/agent-threat-rules)
