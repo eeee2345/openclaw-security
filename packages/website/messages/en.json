@@ -5550,8 +5550,8 @@
   "revolution": {
     "hero": {
       "eyebrow": "AGENT THREAT RULES",
-      "title": "AI agents are the new attack surface. We wrote the standard to defend it.",
-      "subtitle": "Every era of computing gets the security standard it deserves. Servers got Sigma. Networks got Suricata. Malware got YARA. Agent Threat Rules is the first open detection standard for AI agents -- covering prompt injection, tool poisoning, and 7 more threat categories. One command to deploy.",
+      "title": "Your AI agent has root access. Who's watching it?",
+      "subtitle": "MCP skills run with full system permissions. One malicious skill can exfiltrate your data, leak credentials, or hijack your agent. Agent Threat Rules is the first open detection standard for AI agent threats. Install once. Every skill, every interaction -- protected.",
       "viewATR": "Agent Threat Rules on GitHub",
       "install": "Get Started",
       "copied": "Copied!",
@@ -5728,11 +5728,11 @@
       "quote": "Every Panguard deployment anonymously contributes threat patterns to the community. AI analyzes those patterns and generates new detection rules. Those rules are pushed to every deployment. The more people who install it, the stronger everyone's protection becomes. This is not a product. It's a collective defense system."
     },
     "finalCta": {
-      "title": "One standard. One command.",
-      "subtitle": "Agent Threat Rules is open source, MIT licensed, and free. 29 rules across 9 threat categories, backed by 3,000+ tests and 13 real CVE mappings.",
-      "starATR": "Agent Threat Rules on GitHub",
+      "title": "Join the standard.",
+      "subtitle": "AI agent security is too important to be proprietary. ATR is open source, community-driven, and free forever. Every install makes the entire network stronger. Help us build the detection standard every AI agent deserves.",
+      "starATR": "Star ATR on GitHub",
       "installPanguard": "Install Panguard",
-      "bottomLine": "Built in Taiwan. Open to the world."
+      "bottomLine": "Built in Taiwan. Open to the world. Yours to contribute."
     }
   }
 }
