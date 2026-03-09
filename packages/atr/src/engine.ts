@@ -224,34 +224,57 @@ export class ATREngine {
 
     if (!field || !operator || value === undefined) return false;
 
-    // Only support regex operator for now (other operators are conceptual/v0.2)
-    if (operator !== 'regex') return false;
+    const rawFieldValue = this.resolveField(field, event);
+    if (!rawFieldValue) return false;
+    const fieldValue = normalizeUnicode(rawFieldValue);
 
-    const fieldValue = this.resolveField(field, event);
-    if (!fieldValue) return false;
-
-    // Try pre-compiled pattern first
-    const compiled = this.compiledPatterns.get(ruleId)?.get(String(index));
-    if (compiled && compiled.length > 0) {
-      if (compiled[0]!.test(fieldValue)) {
-        matchedPatterns.push(value);
-        return true;
+    switch (operator) {
+      case 'regex': {
+        // Try pre-compiled pattern first
+        const compiled = this.compiledPatterns.get(ruleId)?.get(String(index));
+        if (compiled && compiled.length > 0) {
+          if (safeRegexTest(compiled[0]!, fieldValue)) {
+            matchedPatterns.push(value);
+            return true;
+          }
+          return false;
+        }
+        // Fallback: compile on the fly
+        try {
+          const regex = new RegExp(normalizeRegex(value), 'i');
+          if (safeRegexTest(regex, fieldValue)) {
+            matchedPatterns.push(value);
+            return true;
+          }
+        } catch {
+          // Invalid regex
+        }
+        return false;
       }
-      return false;
-    }
-
-    // Fallback: compile on the fly
-    try {
-      const regex = new RegExp(normalizeRegex(value), 'i');
-      if (regex.test(fieldValue)) {
-        matchedPatterns.push(value);
-        return true;
+      case 'contains': {
+        if (fieldValue.toLowerCase().includes(value.toLowerCase())) {
+          matchedPatterns.push(value);
+          return true;
+        }
+        return false;
       }
-    } catch {
-      // Invalid regex
+      case 'exact': {
+        if (fieldValue === value) {
+          matchedPatterns.push(value);
+          return true;
+        }
+        return false;
+      }
+      case 'starts_with': {
+        if (fieldValue.toLowerCase().startsWith(value.toLowerCase())) {
+          matchedPatterns.push(value);
+          return true;
+        }
+        return false;
+      }
+      default:
+        return false;
     }
-
-    return false;
   }
 
   /**
@@ -339,15 +362,16 @@ export class ATREngine {
     condName: string,
     matchedPatterns: string[]
   ): boolean {
-    const fieldValue = this.resolveField(cond.field, event);
-    if (!fieldValue) return false;
+    const rawFieldValue = this.resolveField(cond.field, event);
+    if (!rawFieldValue) return false;
+    const fieldValue = normalizeUnicode(rawFieldValue);
 
     // Get pre-compiled patterns
     const compiled = this.compiledPatterns.get(ruleId)?.get(condName);
 
     if (compiled) {
       for (let i = 0; i < compiled.length; i++) {
-        if (compiled[i]!.test(fieldValue)) {
+        if (safeRegexTest(compiled[i]!, fieldValue)) {
           matchedPatterns.push(cond.patterns[i] ?? 'unknown');
           return true;
         }
@@ -385,7 +409,7 @@ export class ATREngine {
           try {
             const flags = cond.case_sensitive ? '' : 'i';
             const regex = new RegExp(pattern, flags);
-            if (regex.test(fieldValue)) {
+            if (safeRegexTest(regex, fieldValue)) {
               matchedPatterns.push(pattern);
               return true;
             }
@@ -483,7 +507,12 @@ export class ATREngine {
   }
 
   /**
-   * Evaluate a sequence condition (simplified: checks content against all step patterns).
+   * Evaluate a sequence condition against the current event.
+   *
+   * Limitation (v0.1): This checks whether patterns from multiple steps
+   * co-occur in the current event's content. It does NOT track ordered
+   * execution across separate events or enforce time windows.
+   * Full session-aware sequence detection is planned for v0.2.
    */
   private evaluateSequenceCondition(
     cond: Record<string, unknown>,
@@ -492,14 +521,16 @@ export class ATREngine {
     const steps = cond['steps'] as Array<Record<string, unknown>>;
     if (!steps || steps.length === 0) return false;
 
+    const content = normalizeUnicode(event.content);
     let matchCount = 0;
+
     for (const step of steps) {
       const patterns = step['patterns'] as string[] | undefined;
       if (patterns) {
         for (const pattern of patterns) {
           try {
             const regex = new RegExp(pattern, 'i');
-            if (regex.test(event.content)) {
+            if (safeRegexTest(regex, content)) {
               matchCount++;
               break;
             }
@@ -569,13 +600,13 @@ export class ATREngine {
       return !this.evaluateExpression(inner, results);
     }
 
-    // Handle OR (lower precedence)
+    // Handle OR (lower precedence — split first so AND binds tighter)
     const orParts = this.splitByOperator(expr, 'OR');
     if (orParts.length > 1) {
       return orParts.some((part) => this.evaluateExpression(part, results));
     }
 
-    // Handle AND (higher precedence)
+    // Handle AND (higher precedence — evaluated within each OR branch)
     const andParts = this.splitByOperator(expr, 'AND');
     if (andParts.length > 1) {
       return andParts.every((part) => this.evaluateExpression(part, results));
@@ -710,4 +741,26 @@ function escapeRegex(str: string): string {
  */
 function normalizeRegex(pattern: string): string {
   return pattern.replace(/^\(\?[imsx]+\)/, '');
+}
+
+/**
+ * Normalize Unicode text to NFC form and strip zero-width characters.
+ * This prevents evasion via combining characters, zero-width joiners, etc.
+ */
+function normalizeUnicode(text: string): string {
+  return text
+    .normalize('NFC')
+    .replace(/[\u200B\u200C\u200D\uFEFF\u2060\u180E\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, '');
+}
+
+/** Maximum input length for regex evaluation to mitigate ReDoS */
+const MAX_EVAL_LENGTH = 100_000;
+
+/**
+ * Safely test a regex pattern against input with length limits.
+ * Returns false if input exceeds MAX_EVAL_LENGTH to prevent ReDoS.
+ */
+function safeRegexTest(regex: RegExp, input: string): boolean {
+  if (input.length > MAX_EVAL_LENGTH) return false;
+  return regex.test(input);
 }
