@@ -441,10 +441,37 @@ export class GuardEngine {
         if (count > 0) {
           logger.info(`ATR rules loaded: ${count} rules / ATR 規則已載入: ${count} 條`);
         }
+        this.atrEngine.startSessionCleanup();
       })
       .catch((err: unknown) => {
         logger.warn(
           `ATR rules load failed: ${err instanceof Error ? err.message : String(err)}`
+        );
+      });
+
+    // Load ATR rules from Threat Cloud / 從 Threat Cloud 載入 ATR 規則
+    this.threatCloud
+      .fetchATRRules()
+      .then((atrCloudRules) => {
+        let added = 0;
+        for (const rule of atrCloudRules) {
+          try {
+            const parsed = JSON.parse(rule.ruleContent) as import('agent-threat-rules').ATRRule;
+            if (parsed.id && parsed.title && parsed.detection) {
+              this.atrEngine.addCloudRule(parsed);
+              added++;
+            }
+          } catch {
+            // skip invalid
+          }
+        }
+        if (added > 0) {
+          logger.info(`ATR cloud rules loaded: ${added} rules / ATR 雲端規則已載入: ${added} 條`);
+        }
+      })
+      .catch((err: unknown) => {
+        logger.warn(
+          `ATR cloud rules fetch skipped: ${err instanceof Error ? err.message : String(err)}`
         );
       });
 
@@ -642,6 +669,7 @@ export class GuardEngine {
     }
 
     // Stop components / 停止元件
+    this.atrEngine.stop();
     this.feedManager.stop();
     setFeedManager(null);
     if (this.monitorEngine) this.monitorEngine.stop();
@@ -962,14 +990,38 @@ export class GuardEngine {
         }
       }
 
+      // Sync ATR rules from Threat Cloud / 從 Threat Cloud 同步 ATR 規則
+      let newATRRules = 0;
+      try {
+        const atrRules = await this.threatCloud.fetchATRRules();
+        for (const rule of atrRules) {
+          try {
+            const parsed = JSON.parse(rule.ruleContent) as import('agent-threat-rules').ATRRule;
+            if (parsed.id && parsed.title && parsed.detection) {
+              this.atrEngine.addCloudRule(parsed);
+              newATRRules++;
+            }
+          } catch {
+            // skip invalid ATR rules
+          }
+        }
+        if (newATRRules > 0) {
+          logger.info(
+            `ATR cloud sync: ${newATRRules} rules updated / ATR 雲端同步: ${newATRRules} 條規則更新`
+          );
+        }
+      } catch (err: unknown) {
+        logger.warn(`ATR cloud sync failed: ${err instanceof Error ? err.message : String(err)}`);
+      }
+
       // Refresh blocklist / 更新封鎖清單
       const ips = await this.threatCloud.fetchBlocklist();
       const added =
         ips.length > 0 ? this.feedManager.addExternalIPs(ips, 'threat_cloud_blocklist', 85) : 0;
 
       logger.info(
-        `Threat Cloud sync: ${newRules} rules, ${added} blocklist IPs / ` +
-          `Threat Cloud 同步: ${newRules} 條規則, ${added} 個封鎖 IP`
+        `Threat Cloud sync: ${newRules} Sigma rules, ${newATRRules} ATR rules, ${added} blocklist IPs / ` +
+          `Threat Cloud 同步: ${newRules} 條 Sigma 規則, ${newATRRules} 條 ATR 規則, ${added} 個封鎖 IP`
       );
     } catch (err: unknown) {
       logger.warn(`Threat Cloud sync failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -1092,6 +1144,18 @@ export class GuardEngine {
       licenseTier: license.tier,
       atrRuleCount: this.atrEngine.getRuleCount(),
       atrMatchCount: this.atrEngine.getMatchCount(),
+    };
+  }
+
+  /**
+   * Get loaded rule counts for each engine layer.
+   * 取得各引擎層已載入的規則數量。
+   */
+  getRuleCounts(): { sigma: number; atr: number; yara: number } {
+    return {
+      sigma: this.ruleEngine.getRules().length,
+      atr: this.atrEngine.getRuleCount(),
+      yara: this.yaraScanner.getRuleCount(),
     };
   }
 

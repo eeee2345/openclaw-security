@@ -12,8 +12,8 @@ import { join, dirname } from 'node:path';
 import { createRequire } from 'node:module';
 import { createLogger } from '@panguard-ai/core';
 import type { SecurityEvent } from '@panguard-ai/core';
-import { ATREngine } from 'agent-threat-rules';
-import type { ATRMatch, AgentEvent, AgentEventType } from 'agent-threat-rules';
+import { ATREngine, SessionTracker } from 'agent-threat-rules';
+import type { ATRMatch, ATRRule, AgentEvent, AgentEventType } from 'agent-threat-rules';
 
 const logger = createLogger('panguard-guard:atr-engine');
 
@@ -51,22 +51,31 @@ export interface GuardATREngineConfig {
 export class GuardATREngine {
   private readonly engine: ATREngine;
   private readonly bundledEngine: ATREngine | null;
+  private readonly cloudRuleIds = new Set<string>();
   private matchCount = 0;
+  private readonly sessionTracker: SessionTracker;
+  private cleanupTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor(config: GuardATREngineConfig = {}) {
+    // Shared session tracker for behavioral detection across events
+    const sessionTracker = new SessionTracker();
+
     // Primary engine for custom user rules
     this.engine = new ATREngine({
       rulesDir: config.rulesDir,
       hotReload: config.hotReload,
+      sessionTracker,
     });
 
     // Bundled rules from the agent-threat-rules package
     const bundledDir = config.bundledRulesDir ?? resolveBundledRulesDir();
     if (bundledDir) {
-      this.bundledEngine = new ATREngine({ rulesDir: bundledDir });
+      this.bundledEngine = new ATREngine({ rulesDir: bundledDir, sessionTracker });
     } else {
       this.bundledEngine = null;
     }
+
+    this.sessionTracker = sessionTracker;
   }
 
   /**
@@ -115,6 +124,16 @@ export class GuardATREngine {
     }
 
     return matches;
+  }
+
+  /**
+   * Add a rule from Threat Cloud. Skips if already loaded.
+   * 新增從 Threat Cloud 接收的規則（避免重複）
+   */
+  addCloudRule(rule: ATRRule): void {
+    if (this.cloudRuleIds.has(rule.id)) return;
+    this.engine.addRule(rule);
+    this.cloudRuleIds.add(rule.id);
   }
 
   /**
@@ -205,5 +224,34 @@ export class GuardATREngine {
   /** Get loaded rule count (bundled + custom) */
   getRuleCount(): number {
     return (this.bundledEngine?.getRuleCount() ?? 0) + this.engine.getRuleCount();
+  }
+
+  /**
+   * Start periodic session cleanup (evict sessions idle > 30 minutes).
+   * Call after loadRules() to begin maintenance.
+   */
+  startSessionCleanup(): void {
+    if (this.cleanupTimer) return;
+    const CLEANUP_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    const SESSION_MAX_AGE = 30 * 60 * 1000; // 30 minutes
+    this.cleanupTimer = setInterval(() => {
+      const evicted = this.sessionTracker.cleanup(SESSION_MAX_AGE);
+      if (evicted > 0) {
+        logger.info(`ATR session cleanup: evicted ${evicted} idle sessions`);
+      }
+    }, CLEANUP_INTERVAL);
+  }
+
+  /** Stop session cleanup timer */
+  stop(): void {
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+      this.cleanupTimer = null;
+    }
+  }
+
+  /** Get active session count */
+  getSessionCount(): number {
+    return this.sessionTracker.getSessionCount();
   }
 }

@@ -94,10 +94,26 @@ export class Scheduler {
     return { updated: result.updated };
   }
 
-  /** Run rule generation manually */
-  runRuleGeneration(): { rulesGenerated: number; rulesUpdated: number } {
-    const result = this.ruleGen.generateRules();
-    return { rulesGenerated: result.rulesGenerated, rulesUpdated: result.rulesUpdated };
+  /** Run rule generation manually (Sigma + ATR + YARA) */
+  runRuleGeneration(): {
+    rulesGenerated: number;
+    rulesUpdated: number;
+    atrRulesGenerated: number;
+    atrRulesUpdated: number;
+    yaraRulesGenerated: number;
+    yaraRulesUpdated: number;
+  } {
+    const sigma = this.ruleGen.generateRules();
+    const atr = this.ruleGen.generateATRRules();
+    const yara = this.ruleGen.generateYaraRules();
+    return {
+      rulesGenerated: sigma.rulesGenerated,
+      rulesUpdated: sigma.rulesUpdated,
+      atrRulesGenerated: atr.rulesGenerated,
+      atrRulesUpdated: atr.rulesUpdated,
+      yaraRulesGenerated: yara.rulesGenerated,
+      yaraRulesUpdated: yara.rulesUpdated,
+    };
   }
 
   /** Run data lifecycle cleanup */
