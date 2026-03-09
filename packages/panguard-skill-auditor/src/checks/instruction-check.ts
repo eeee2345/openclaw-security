@@ -75,8 +75,8 @@ const PATTERNS: Pattern[] = [
   {
     id: 'tp-curl-pipe-bash',
     title: 'Remote code execution via curl|bash',
-    regex: /\b(curl|wget)\s+.*\|\s*(bash|sh|zsh|python|node|perl)/i,
-    severity: 'high',
+    regex: /\b(curl|wget)\s+.*\|\s*(sudo\s+)?(bash|sh|zsh|python|node|perl)/i,
+    severity: 'critical',
     category: 'tool-poisoning',
   },
   {
