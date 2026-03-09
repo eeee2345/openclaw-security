@@ -5638,6 +5638,31 @@
         }
       }
     },
+    "skillProtection": {
+      "title": "Agent 安裝的每個 Skill，都會自動接受審計。",
+      "subtitle": "MCP Skill 就像新一代的 npm 套件 -- 但沒有內建的安全掃描機制。一個惡意 Skill 就能竊取你的資料、劫持你的 Agent、洩漏機密憑證。Panguard 在每個 Skill 執行前自動審計。",
+      "without": {
+        "label": "沒有 Panguard",
+        "items": [
+          "Skill 安裝後立即以完整權限執行",
+          "無法得知 Skill 實際在做什麼",
+          "惡意更新無聲無息地執行",
+          "損害發生後才發現被入侵",
+          "人工審查根本無法規模化"
+        ]
+      },
+      "with": {
+        "label": "有 Panguard",
+        "items": [
+          "每個 Skill 執行前都經過 29 條 ATR 規則掃描",
+          "Prompt Injection、資料外洩、隱藏 payload -- 自動攔截",
+          "持續監控捕捉惡意更新",
+          "威脅在到達 Agent 之前就被封鎖",
+          "一行指令。零設定。全天候守護。"
+        ]
+      },
+      "bottomLine": "安裝一次，每個 Skill、每次更新、每次互動 -- 都在防護之下。"
+    },
     "threats": {
       "title": "九大類 Agent 威脅，一個標準。",
       "ruleCount": "{count} 條規則",
