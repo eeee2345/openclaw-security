@@ -75,11 +75,11 @@ export default function SecurityStack() {
             <p className="text-sm text-panguard-green font-mono mt-1">
               {t('preDeployment.tools')}
             </p>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-4 space-y-3">
               {preItems.map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-text-muted mt-0.5 shrink-0" />
-                  <span className="text-sm text-text-secondary leading-relaxed">{item}</span>
+                  <span className="text-base text-text-secondary leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
@@ -102,11 +102,11 @@ export default function SecurityStack() {
             <p className="text-sm text-panguard-green font-mono mt-1">
               {t('postDeployment.tools')}
             </p>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-4 space-y-3">
               {postItems.map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-panguard-green mt-0.5 shrink-0" />
-                  <span className="text-sm text-text-secondary leading-relaxed">{item}</span>
+                  <span className="text-base text-text-secondary leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>

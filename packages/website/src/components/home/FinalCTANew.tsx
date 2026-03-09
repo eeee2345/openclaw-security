@@ -45,13 +45,13 @@ export default function FinalCTANew() {
             href="https://github.com/Agent-Threat-Rule/agent-threat-rules"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
+            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
           >
             {t('contributeATR')} <ArrowRight className="w-4 h-4" />
           </a>
           <Link
             href="/open-source"
-            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base transition-all duration-200"
+            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base transition-all duration-200"
           >
             {t('joinCommunity')}
           </Link>

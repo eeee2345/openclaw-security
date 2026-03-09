@@ -59,7 +59,7 @@ export default function ATRShowcase() {
                 <div className="w-3 h-3 rounded-full bg-green-500/60" />
                 <span className="ml-2 text-xs text-text-muted font-mono">ATR-2026-001.yaml</span>
               </div>
-              <pre className="p-4 sm:p-5 overflow-x-auto text-xs sm:text-sm leading-relaxed">
+              <pre className="p-4 sm:p-5 overflow-x-auto text-sm leading-relaxed">
                 <code className="text-text-secondary">
                   {YAML_CODE.split('\n').map((line, i) => {
                     const isKey = /^\s*\w[\w-]*:/.test(line);

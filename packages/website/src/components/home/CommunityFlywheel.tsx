@@ -32,7 +32,7 @@ export default function CommunityFlywheel() {
         </motion.h2>
 
         {/* Pipeline grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4">
           {STEPS.map(({ key, icon: Icon }, i) => (
             <motion.div
               key={key}

@@ -22,7 +22,7 @@ function InstallBar() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="relative flex items-center gap-2 sm:gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-3 sm:px-5 py-3 sm:py-3.5 font-mono text-xs sm:text-sm">
+      <div className="relative flex items-center gap-2 sm:gap-3 bg-surface-1/80 backdrop-blur-sm border border-border rounded-xl px-4 sm:px-5 py-3 sm:py-3.5 font-mono text-sm">
         <span className="text-panguard-green select-none shrink-0">$</span>
         <code className="text-text-secondary flex-1 select-all min-w-0 overflow-x-auto whitespace-nowrap scrollbar-none break-all">
           {INSTALL_CMD}
@@ -81,7 +81,7 @@ export default function RevolutionHero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1, ease }}
-          className="text-[11px] uppercase tracking-[0.2em] text-panguard-green font-semibold mb-6"
+          className="text-xs uppercase tracking-[0.2em] text-panguard-green font-semibold mb-6"
         >
           {t('eyebrow')}
         </motion.p>
@@ -135,13 +135,13 @@ export default function RevolutionHero() {
             href="https://github.com/Agent-Threat-Rule/agent-threat-rules"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base transition-all duration-200"
+            className="border border-border text-text-secondary hover:text-text-primary hover:border-panguard-green font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base transition-all duration-200"
           >
             {t('viewATR')}
           </a>
           <Link
             href="/docs/getting-started"
-            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
+            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
           >
             {t('install')} <ArrowRight className="w-4 h-4" />
           </Link>

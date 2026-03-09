@@ -44,7 +44,7 @@ export default function HowItWorksNew() {
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 {t(`steps.${key}.title`)}
               </h3>
-              <p className="text-sm text-text-muted leading-relaxed">
+              <p className="text-base text-text-secondary leading-relaxed">
                 {t(`steps.${key}.desc`)}
               </p>
             </motion.div>
