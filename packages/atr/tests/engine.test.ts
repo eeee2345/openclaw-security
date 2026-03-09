@@ -15,7 +15,7 @@ describe('ATREngine', () => {
   });
 
   it('loads all rule files without errors', () => {
-    expect(engine.getRuleCount()).toBe(29);
+    expect(engine.getRuleCount()).toBe(32);
   });
 
   it('skips draft rules during evaluation', () => {
