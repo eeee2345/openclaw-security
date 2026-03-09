@@ -1277,7 +1277,7 @@
           },
           "review": {
             "title": "Review",
-            "desc": "ATR rules evaluate your agent's behavior patterns in dev/staging. 29 rules across 9 threat categories catch issues before production."
+            "desc": "ATR rules evaluate your agent's behavior patterns in dev/staging. 32 rules across 9 threat categories catch issues before production."
           },
           "ship": {
             "title": "Ship",
@@ -1335,7 +1335,7 @@
           },
           "atrValidate": {
             "label": "ATR Validate",
-            "detail": "29 Rules"
+            "detail": "32 Rules"
           },
           "ship": {
             "label": "Ship",
@@ -5132,7 +5132,7 @@
     },
     "atr": {
       "title": "Agent Threat Rules (ATR) -- Panguard AI",
-      "description": "The first open detection standard for AI agent threats. 29 rules across 8 categories. OWASP LLM Top 10 mapped. Community-driven, YAML-based, machine-readable."
+      "description": "The first open detection standard for AI agent threats. 32 rules across 9 categories. OWASP LLM Top 10 mapped. Community-driven, YAML-based, machine-readable."
     },
     "productMcp": {
       "title": "Panguard MCP Server",
@@ -5455,7 +5455,7 @@
     },
     "categories": {
       "overline": "RULE CATEGORIES",
-      "title": "8 categories. 29 rules. Growing daily.",
+      "title": "9 categories. 32 rules. Growing daily.",
       "subtitle": "Covering the full spectrum of AI agent attack vectors, mapped to OWASP LLM Top 10.",
       "items": {
         "prompt-injection": {
@@ -5475,18 +5475,18 @@
         },
         "agent-manipulation": {
           "name": "Agent Manipulation",
-          "count": "3 rules",
-          "desc": "Agent impersonation, cross-agent injection, goal hijacking"
+          "count": "5 rules",
+          "desc": "Cross-agent attacks, goal hijacking, inter-agent message spoofing, human trust exploitation"
         },
         "privilege-escalation": {
           "name": "Privilege Escalation",
-          "count": "3 rules",
+          "count": "2 rules",
           "desc": "Tool permission escalation, scope creep, admin function access"
         },
         "excessive-autonomy": {
           "name": "Excessive Autonomy",
-          "count": "2 rules",
-          "desc": "Runaway agent loops, resource exhaustion through uncontrolled execution"
+          "count": "3 rules",
+          "desc": "Runaway agent loops, resource exhaustion, cascading pipeline failures"
         },
         "skill-compromise": {
           "name": "Skill Compromise",
@@ -5497,6 +5497,11 @@
           "name": "Data Poisoning",
           "count": "2 rules",
           "desc": "RAG retrieval poisoning, knowledge base contamination"
+        },
+        "model-security": {
+          "name": "Model Security",
+          "count": "2 rules",
+          "desc": "Model behavior extraction, malicious fine-tuning data detection"
         }
       }
     },
@@ -5524,19 +5529,19 @@
     },
     "owasp": {
       "overline": "COMPLIANCE MAPPING",
-      "title": "OWASP LLM Top 10 coverage",
-      "subtitle": "Every ATR rule maps to the OWASP Top 10 for LLM Applications, providing structured coverage of the most critical AI security risks.",
+      "title": "OWASP Agentic Top 10 coverage",
+      "subtitle": "Every ATR rule maps to the OWASP Top 10 for Agentic Applications, providing structured coverage of the most critical AI agent security risks.",
       "items": [
-        { "id": "LLM01", "name": "Prompt Injection", "covered": true },
-        { "id": "LLM02", "name": "Insecure Output Handling", "covered": true },
-        { "id": "LLM03", "name": "Training Data Poisoning", "covered": true },
-        { "id": "LLM04", "name": "Model Denial of Service", "covered": true },
-        { "id": "LLM05", "name": "Supply Chain Vulnerabilities", "covered": true },
-        { "id": "LLM06", "name": "Sensitive Information Disclosure", "covered": true },
-        { "id": "LLM07", "name": "Insecure Plugin Design", "covered": true },
-        { "id": "LLM08", "name": "Excessive Agency", "covered": true },
-        { "id": "LLM09", "name": "Overreliance", "covered": false },
-        { "id": "LLM10", "name": "Model Theft", "covered": false }
+        { "id": "ASI01", "name": "Agent Goal Hijack", "covered": true },
+        { "id": "ASI02", "name": "Tool Misuse & Exploitation", "covered": true },
+        { "id": "ASI03", "name": "Identity & Privilege Abuse", "covered": true },
+        { "id": "ASI04", "name": "Agentic Supply Chain Vulnerabilities", "covered": true },
+        { "id": "ASI05", "name": "Unexpected Code Execution", "covered": true },
+        { "id": "ASI06", "name": "Memory & Context Poisoning", "covered": true },
+        { "id": "ASI07", "name": "Insecure Inter-Agent Communication", "covered": true },
+        { "id": "ASI08", "name": "Cascading Failures", "covered": true },
+        { "id": "ASI09", "name": "Human-Agent Trust Exploitation", "covered": true },
+        { "id": "ASI10", "name": "Rogue Agents", "covered": true }
       ]
     },
     "cta": {
@@ -5557,7 +5562,7 @@
       "copied": "Copied!",
       "badges": {
         "mit": "MIT Licensed",
-        "rules": "29 Rules",
+        "rules": "32 Rules",
         "tests": "3,000+ Tests",
         "taiwan": "Built in Taiwan"
       }
@@ -5623,14 +5628,14 @@
         "dataPoisoning": "Data Poisoning",
         "modelSecurity": "Model Security"
       },
-      "statsLine": "13 real CVE mappings. OWASP Agentic Top 10: 8/10 categories covered. MIT licensed."
+      "statsLine": "13 real CVE mappings. OWASP Agentic Top 10: full coverage. MIT licensed."
     },
     "howItWorks": {
       "title": "Install. Protect. Contribute.",
       "steps": {
         "install": {
           "title": "Install",
-          "desc": "One command. 29 detection rules. Zero configuration."
+          "desc": "One command. 32 detection rules. Zero configuration."
         },
         "protect": {
           "title": "Protect",

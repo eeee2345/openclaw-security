@@ -37,6 +37,7 @@ const categoryKeys = [
   'excessive-autonomy',
   'skill-compromise',
   'data-poisoning',
+  'model-security',
 ] as const;
 
 const categoryIcons = [
@@ -48,6 +49,7 @@ const categoryIcons = [
   Zap,
   Lock,
   Database,
+  Cpu,
 ];
 
 /* -- How-it-works steps -- */

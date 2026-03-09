@@ -1559,7 +1559,7 @@
     },
     "atr": {
       "title": "Agent Threat Rules (ATR) -- Panguard AI",
-      "description": "首個 AI Agent 威脅的開放偵測標準。8 大類別、29 條規則。對應 OWASP LLM Top 10。社群驅動、YAML 格式、機器可讀。"
+      "description": "首個 AI Agent 威脅的開放偵測標準。9 大類別、32 條規則。OWASP Agentic Top 10 完整覆蓋。社群驅動、YAML 格式、機器可讀。"
     },
     "productMcp": {
       "title": "Panguard MCP Server",
@@ -2087,7 +2087,7 @@
           },
           "review": {
             "title": "審查",
-            "desc": "ATR 規則在 dev/staging 環境評估 agent 行為模式。9 大威脅類別、29 條規則，上線前就攔住問題。"
+            "desc": "ATR 規則在 dev/staging 環境評估 agent 行為模式。9 大威脅類別、32 條規則，上線前就攔住問題。"
           },
           "ship": {
             "title": "部署",
@@ -2145,7 +2145,7 @@
           },
           "atrValidate": {
             "label": "ATR 驗證",
-            "detail": "29 條規則"
+            "detail": "32 條規則"
           },
           "ship": {
             "label": "部署",
@@ -5509,7 +5509,7 @@
     },
     "categories": {
       "overline": "規則分類",
-      "title": "8 大類別。29 條規則。持續增長中。",
+      "title": "9 大類別。32 條規則。持續增長中。",
       "subtitle": "涵蓋 AI Agent 攻擊向量的完整光譜，對應 OWASP LLM Top 10。",
       "items": {
         "prompt-injection": {
@@ -5529,18 +5529,18 @@
         },
         "agent-manipulation": {
           "name": "Agent 操縱",
-          "count": "3 條規則",
-          "desc": "Agent 冒充、跨 Agent 注入、目標劫持"
+          "count": "5 條規則",
+          "desc": "跨 Agent 攻擊、目標劫持、跨 Agent 通訊欺騙、人機信任利用"
         },
         "privilege-escalation": {
           "name": "權限提升",
-          "count": "3 條規則",
+          "count": "2 條規則",
           "desc": "工具權限提升、範圍蔓延、管理員函式存取"
         },
         "excessive-autonomy": {
           "name": "過度自主",
-          "count": "2 條規則",
-          "desc": "失控 Agent 迴圈、不受控執行導致的資源耗盡"
+          "count": "3 條規則",
+          "desc": "失控 Agent 迴圈、資源耗盡、連鎖故障偵測"
         },
         "skill-compromise": {
           "name": "技能入侵",
@@ -5551,6 +5551,11 @@
           "name": "資料投毒",
           "count": "2 條規則",
           "desc": "RAG 檢索投毒、知識庫污染"
+        },
+        "model-security": {
+          "name": "模型安全",
+          "count": "2 條規則",
+          "desc": "模型行為萃取偵測、惡意微調資料偵測"
         }
       }
     },
@@ -5578,19 +5583,19 @@
     },
     "owasp": {
       "overline": "合規對應",
-      "title": "OWASP LLM Top 10 覆蓋",
-      "subtitle": "每條 ATR 規則對應到 OWASP LLM 應用程式 Top 10，提供最關鍵 AI 安全風險的結構化覆蓋。",
+      "title": "OWASP Agentic Top 10 覆蓋",
+      "subtitle": "每條 ATR 規則對應到 OWASP Agentic Top 10，提供最關鍵 AI Agent 安全風險的結構化覆蓋。",
       "items": [
-        { "id": "LLM01", "name": "提示詞注入", "covered": true },
-        { "id": "LLM02", "name": "不安全的輸出處理", "covered": true },
-        { "id": "LLM03", "name": "訓練資料投毒", "covered": true },
-        { "id": "LLM04", "name": "模型阻斷服務", "covered": true },
-        { "id": "LLM05", "name": "供應鏈漏洞", "covered": true },
-        { "id": "LLM06", "name": "敏感資訊洩漏", "covered": true },
-        { "id": "LLM07", "name": "不安全的插件設計", "covered": true },
-        { "id": "LLM08", "name": "過度代理", "covered": true },
-        { "id": "LLM09", "name": "過度依賴", "covered": false },
-        { "id": "LLM10", "name": "模型竊取", "covered": false }
+        { "id": "ASI01", "name": "Agent 目標劫持", "covered": true },
+        { "id": "ASI02", "name": "工具濫用與利用", "covered": true },
+        { "id": "ASI03", "name": "身份與權限濫用", "covered": true },
+        { "id": "ASI04", "name": "Agent 供應鏈漏洞", "covered": true },
+        { "id": "ASI05", "name": "非預期程式碼執行", "covered": true },
+        { "id": "ASI06", "name": "記憶體與上下文投毒", "covered": true },
+        { "id": "ASI07", "name": "不安全的跨 Agent 通訊", "covered": true },
+        { "id": "ASI08", "name": "連鎖故障", "covered": true },
+        { "id": "ASI09", "name": "人機信任利用", "covered": true },
+        { "id": "ASI10", "name": "失控 Agent", "covered": true }
       ]
     },
     "cta": {
@@ -5611,7 +5616,7 @@
       "copied": "已複製!",
       "badges": {
         "mit": "MIT 開源",
-        "rules": "29 條規則",
+        "rules": "32 條規則",
         "tests": "3,000+ 測試",
         "taiwan": "台灣製造"
       }
@@ -5654,7 +5659,7 @@
       "with": {
         "label": "有 Panguard",
         "items": [
-          "每個 Skill 執行前都經過 29 條 ATR 規則掃描",
+          "每個 Skill 執行前都經過 32 條 ATR 規則掃描",
           "Prompt Injection、資料外洩、隱藏 payload -- 自動攔截",
           "持續監控捕捉惡意更新",
           "威脅在到達 Agent 之前就被封鎖",
@@ -5677,14 +5682,14 @@
         "dataPoisoning": "Data Poisoning",
         "modelSecurity": "Model Security"
       },
-      "statsLine": "13 個真實 CVE 對應。OWASP Agentic Top 10：8/10 類別覆蓋。MIT 開源。"
+      "statsLine": "13 個真實 CVE 對應。OWASP Agentic Top 10：完整覆蓋。MIT 開源。"
     },
     "howItWorks": {
       "title": "安裝。防護。貢獻。",
       "steps": {
         "install": {
           "title": "安裝",
-          "desc": "一行指令。29 條偵測規則。零設定。"
+          "desc": "一行指令。32 條偵測規則。零設定。"
         },
         "protect": {
           "title": "防護",
@@ -5730,9 +5735,9 @@
         "skillInstall": {
           "label": "INSTALL",
           "title": "從 OpenClaw 安裝 Skill，Panguard 自動審計。",
-          "narrative": "在加入任何 Skill 前先執行 npx panguard guard --watch。從這一刻起，Agent 安裝的每個 MCP Skill 都會接受 29 條 Agent Threat Rules 掃描 -- 檢查資料外洩模式、嵌入式 Injection payload、過度權限請求。惡意 Skill 在執行前被封鎖，安全的 Skill 正常運作。",
+          "narrative": "在加入任何 Skill 前先執行 npx panguard guard --watch。從這一刻起，Agent 安裝的每個 MCP Skill 都會接受 32 條 Agent Threat Rules 掃描 -- 檢查資料外洩模式、嵌入式 Injection payload、過度權限請求。惡意 Skill 在執行前被封鎖，安全的 Skill 正常運作。",
           "before": "沒有防護，被入侵的 Skill 會立刻以完整系統權限執行。",
-          "after": "有了 Panguard，每個 Skill 在碰到系統前都經過 29 條規則審計。"
+          "after": "有了 Panguard，每個 Skill 在碰到系統前都經過 32 條規則審計。"
         },
         "alwaysOn": {
           "label": "MONITOR",

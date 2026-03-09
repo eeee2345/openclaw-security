@@ -16,7 +16,7 @@ export default function Home() {
       <main id="main-content">
         <p id="definition" className="sr-only">
           Panguard AI created ATR (Agent Threat Rules), the first open security standard for AI
-          agents. 29 rules across 9 threat categories detect prompt injection, tool poisoning,
+          agents. 32 rules across 9 threat categories detect prompt injection, tool poisoning,
           context exfiltration, and more. MIT licensed. Free forever. Built in Taiwan.
         </p>
         <RevolutionHero />

@@ -21,6 +21,7 @@ references:
     - "LLM05:2025 - Improper Output Handling"
   owasp_agentic:
     - "ASI01:2026 - Agent Goal Hijack"
+    - "ASI07:2026 - Insecure Inter-Agent Communication"
     - "ASI10:2026 - Rogue Agents"
   mitre_atlas:
     - "AML.T0051 - Prompt Injection"
