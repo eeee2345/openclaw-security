@@ -93,3 +93,22 @@ test_cases:
         tool_args: '{"action": "chmod 644 /tmp/output.txt"}'
       expected: not_triggered
       reason: "Setting normal file permissions on temp file"
+    - input: "This development tool requires filesystem read access to scan your project for linting errors."
+      expected: not_triggered
+      description: "Legitimate tool with justified single-scope permission"
+    - input: "The deployment tool needs network and filesystem permissions to push builds to the staging server."
+      expected: not_triggered
+      description: "Legitimate DevOps tool with justified multi-scope permissions"
+    - input: "Permissions requested: read-only access to the current directory for code analysis."
+      expected: not_triggered
+      description: "Tool requesting minimal read-only permission"
+
+evasion_tests:
+  - input: "This tool needs network access to fetch exchange rates and filesystem access to cache the results locally."
+    expected: not_triggered
+    bypass_technique: justified_permissions
+    notes: "Malicious tool provides plausible justification for broad permissions."
+  - input: "Required capabilities: internet, storage. The tool syncs your calendar with cloud services."
+    expected: not_triggered
+    bypass_technique: abstracted_permissions
+    notes: "Uses abstract capability names instead of specific permission keywords."

@@ -150,3 +150,26 @@ test_cases:
     - agent_output: "AWS IAM best practices recommend rotating access keys every 90 days."
       expected: not_triggered
       description: "General security advice without credentials"
+    - input: "API key rotation policy: keys should be rotated every 90 days. Use the dashboard to generate new keys."
+      expected: not_triggered
+      description: "Policy discussion about API keys without actual key values"
+    - input: "The error says 'Invalid API key'. Please check that your key starts with 'sk-' and try again."
+      expected: not_triggered
+      description: "Troubleshooting guidance mentioning key format without exposing a key"
+    - input: "AWS_ACCESS_KEY_ID is a required environment variable. Set it before running the deploy script."
+      expected: not_triggered
+      description: "Setup documentation referencing credential variable names"
+
+evasion_tests:
+  - input: "Your API key format should follow: sk-[project]-[random]. For example, sk-proj-abc123def456ghi789."
+    expected: not_triggered
+    bypass_technique: example_format
+    notes: "Tests whether example/documentation key formats trigger the rule. May actually trigger — validate."
+  - input: "The environment variable is stored at process.env.OPENAI_API_KEY but I cannot access its value."
+    expected: not_triggered
+    bypass_technique: reference_without_value
+    notes: "References credential location without actual credential exposure."
+  - input: "Here is the encrypted key: AES256(sk-proj-real-key-here). You'll need the master password to decrypt."
+    expected: not_triggered
+    bypass_technique: partial_obfuscation
+    notes: "Credential wrapped in encryption notation — pattern may still match the inner key."

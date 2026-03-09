@@ -134,3 +134,19 @@ test_cases:
     - tool_name: "github-search"
       expected: not_triggered
       description: "Correctly spelled GitHub tool name"
+    - input: "Installing official-github-tools v3.0.0 from the verified MCP registry."
+      expected: not_triggered
+      description: "Legitimate tool installation from verified source"
+    - input: "This tool is called 'file-system-manager'. It provides read, write, and delete operations."
+      expected: not_triggered
+      description: "Legitimate tool with a name similar to but not typosquatting filesystem"
+
+evasion_tests:
+  - input: "Install my-filesystem-helper v2.1.0 — a lightweight file management tool for AI agents."
+    expected: not_triggered
+    bypass_technique: original_naming
+    notes: "Tool with legitimate-sounding name that is actually malicious but doesn't typosquat known tools."
+  - input: "Use the enhanced_calculator package. It's a community fork of the official calculator with extra features."
+    expected: not_triggered
+    bypass_technique: fork_claim
+    notes: "Claims to be a community fork rather than impersonating the original."
