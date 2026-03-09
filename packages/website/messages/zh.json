@@ -43,6 +43,8 @@
     "blog": "部落格",
     "startFreeScan": "免費掃描",
     "getStarted": "立即開始",
+    "install": "安裝",
+    "community": "社群",
     "login": "登入",
     "productLinks": {
       "overview": "產品總覽",
@@ -66,7 +68,9 @@
       "mcp": "MCP Server",
       "mcpDesc": "AI 助手整合",
       "skillAuditor": "Skill Auditor",
-      "skillAuditorDesc": "安裝前技能安全審計"
+      "skillAuditorDesc": "安裝前技能安全審計",
+      "devReview": "Dev Review",
+      "devReviewDesc": "AI agent 開發資安審查"
     },
     "solutionLinks": {
       "developers": "開發者方案",
@@ -123,6 +127,7 @@
     "chat": "Chat",
     "trap": "Trap",
     "report": "Report",
+    "devReview": "Dev Review",
     "compliance": "合規",
     "integrations": "整合",
     "documentation": "技術文件",
@@ -147,7 +152,9 @@
     "dpa": "資料處理協議",
     "sla": "SLA",
     "responsibleDisclosure": "漏洞揭露",
-    "securityWhitepaper": "安全白皮書"
+    "securityWhitepaper": "安全白皮書",
+    "atrStandard": "ATR 標準",
+    "contribute": "參與貢獻"
   },
   "home": {
     "hero": {
@@ -1414,6 +1421,10 @@
       "title": "Panguard Guard",
       "description": "24/7 AI 端點防護。一行指令安裝。永不休息的安全代理，自動偵測、分析和回應威脅。"
     },
+    "devSecurityReview": {
+      "title": "Dev Security Review -- AI Agent 資安審查",
+      "description": "在 AI agent 上線前抓出 prompt injection 漏洞、tool poisoning 風險、context 洩露問題。SAST 掃描、ATR 規則、runtime 防護。"
+    },
     "productChat": {
       "title": "Panguard Chat",
       "description": "你的 AI 資安副駕。說人話，不是警報代碼。會說人話的安全防護，整合你已在使用的工具。"
@@ -2058,6 +2069,106 @@
           "title": "多伺服器叢集",
           "desc": "你管理分散在多個雲端供應商的 50 台伺服器。每台安裝一次 Panguard Guard，即可獲得統一的安全視圖。集體智慧意味著在一台伺服器上發現的威脅會保護所有伺服器。"
         }
+      }
+    },
+    "devSecurityReview": {
+      "title": "AI Agent 開發資安審查",
+      "subtitle": "在你的 agent 上線前，抓出 prompt injection 漏洞、tool poisoning 風險、context 洩露問題。",
+      "heroCta": "立即開始",
+      "heroCtaSecondary": "了解 ATR",
+      "howItWorks": {
+        "overline": "運作方式",
+        "title": "三步驟保護你的 agent。",
+        "subtitle": "從寫程式到上線，Panguard 在每個階段守護你的 agent。",
+        "steps": {
+          "write": {
+            "title": "撰寫",
+            "desc": "照常寫你的 agent 程式。Panguard 自動掃描 SAST pattern -- 16 種程式碼模式加上 secrets 偵測。"
+          },
+          "review": {
+            "title": "審查",
+            "desc": "ATR 規則在 dev/staging 環境評估 agent 行為模式。9 大威脅類別、29 條規則，上線前就攔住問題。"
+          },
+          "ship": {
+            "title": "部署",
+            "desc": "開啟 Guard 監控後部署。同一套 ATR 規則在生產環境持續提供 runtime 防護。"
+          }
+        }
+      },
+      "checks": {
+        "overline": "檢測範圍",
+        "title": "檢查哪些項目。",
+        "subtitle": "六大 AI agent 風險類別，全自動評估。",
+        "items": {
+          "promptInjection": {
+            "title": "Prompt Injection 防禦",
+            "desc": "測試 agent 能否被直接或間接 injection 劫持。涵蓋使用者輸入注入和資料來源投毒兩種攻擊向量。"
+          },
+          "toolCallSafety": {
+            "title": "Tool Call 安全性",
+            "desc": "驗證 MCP tool call 不會執行任意指令。標記不受限的 shell 存取、檔案系統寫入和網路呼叫。"
+          },
+          "contextWindow": {
+            "title": "Context Window 保護",
+            "desc": "確保 system prompt 和 secrets 不會洩露在輸出中。偵測 context 萃取攻擊和指令外洩。"
+          },
+          "excessiveAutonomy": {
+            "title": "過度自主行為",
+            "desc": "標記未經人類核准就大量呼叫 tool 的 agent。強制實施操作上限和核准關卡。"
+          },
+          "skillSupplyChain": {
+            "title": "Skill 供應鏈",
+            "desc": "比對 CVE 資料庫審計 MCP skill 已知漏洞。檢查 skill 完整性和來源驗證。"
+          },
+          "secretExposure": {
+            "title": "Secret 曝露",
+            "desc": "掃描 agent 輸出中的 API key、token、credential。攔截 log、回應內容、tool call 參數中的意外洩露。"
+          }
+        }
+      },
+      "integration": {
+        "overline": "工作流程",
+        "title": "融入你的開發流程。",
+        "subtitle": "從本機開發到生產環境，每個階段都有安全檢查。",
+        "pipeline": {
+          "write": {
+            "label": "寫程式",
+            "detail": "開發者"
+          },
+          "scan": {
+            "label": "panguard scan",
+            "detail": "SAST"
+          },
+          "guardWatch": {
+            "label": "guard --watch",
+            "detail": "Dev/Staging"
+          },
+          "atrValidate": {
+            "label": "ATR 驗證",
+            "detail": "29 條規則"
+          },
+          "ship": {
+            "label": "部署",
+            "detail": "生產環境"
+          },
+          "guardRuntime": {
+            "label": "Guard Runtime",
+            "detail": "24/7 防護"
+          }
+        }
+      },
+      "stats": {
+        "title": "基於 ATR -- AI agent 威脅開放標準。",
+        "desc": "Dev Security Review 使用跟 Panguard Guard 相同的 Agent Threat Rules。每條規則都是開源、經過同行審查、對應真實攻擊模式。",
+        "sastPatterns": "SAST 程式碼模式",
+        "atrRules": "ATR 規則",
+        "threatCategories": "威脅類別"
+      },
+      "cta": {
+        "title": "部署你信得過的 agent。",
+        "desc": "今天就開始掃描你的 agent 程式碼。免費方案可用。",
+        "primary": "安裝 Panguard",
+        "secondary": "了解 Guard"
       }
     },
     "chat": {
@@ -3985,6 +4096,10 @@
       "note": "獲取每週安全洞察直送你的收件匣。隨時退訂。"
     },
     "posts": {
+      "how-atr-protects-ai-agents": {
+        "title": "ATR 如何保護你的 AI Agent：實戰指南",
+        "excerpt": "AI Agent 面臨的威脅是傳統安全工具無法偵測的。ATR 是第一個專為 AI Agent 威脅設計的開放偵測標準。以下是它在實戰中的運作方式。"
+      },
       "why-99-percent-businesses-have-zero-security": {
         "title": "為什麼 99% 的企業毫無資安防護——以及我們正在做什麼",
         "excerpt": "每一家資安公司都在服務 Fortune 500。四億中小企業什麼都沒有。我們正在打造他們應得的安全基礎建設。"
@@ -5484,6 +5599,169 @@
       "contribute": "在 GitHub 上貢獻",
       "getStarted": "立即開始",
       "githubUrl": "https://github.com/panguard-ai/panguard-ai"
+    }
+  },
+  "revolution": {
+    "hero": {
+      "eyebrow": "AGENT THREAT RULES",
+      "title": "AI Agent 是全新的攻擊面。我們寫了防禦它的標準。",
+      "subtitle": "每個運算時代都有屬於它的資安標準。Server 有 Sigma，網路有 Suricata，惡意程式有 YARA。Agent Threat Rules 是第一個為 AI Agent 打造的開放偵測標準 -- 涵蓋 Prompt Injection、Tool Poisoning 等 9 大威脅類別。一行指令部署。",
+      "viewATR": "GitHub 上的 Agent Threat Rules",
+      "install": "開始使用",
+      "copied": "已複製!",
+      "badges": {
+        "mit": "MIT 開源",
+        "rules": "29 條規則",
+        "tests": "3,000+ 測試",
+        "taiwan": "台灣製造"
+      }
+    },
+    "atrShowcase": {
+      "title": "開放規則。真實測試。即時行動。",
+      "githubCta": "在 GitHub 上查看",
+      "features": {
+        "agentNative": {
+          "title": "Agent 原生",
+          "desc": "監控 LLM 輸入輸出、MCP 工具呼叫、Skill 行為。專為 Agent 時代設計，不是改裝的網路規則。"
+        },
+        "testable": {
+          "title": "可驗證",
+          "desc": "每條規則都附帶正向與反向測試案例。在 CI 裡跑。部署前驗證。"
+        },
+        "actionable": {
+          "title": "可執行",
+          "desc": "封鎖、告警、隔離。每條規則定義回應方式，不只是偵測。"
+        },
+        "collective": {
+          "title": "集體防禦",
+          "desc": "每次部署都會將匿名化威脅模式回饋社群。一次安裝，強化整個生態系。"
+        }
+      }
+    },
+    "threats": {
+      "title": "九大類 Agent 威脅，一個標準。",
+      "ruleCount": "{count} 條規則",
+      "categories": {
+        "promptInjection": "Prompt Injection",
+        "toolPoisoning": "Tool Poisoning",
+        "contextExfiltration": "Context Exfiltration",
+        "agentManipulation": "Agent Manipulation",
+        "privilegeEscalation": "Privilege Escalation",
+        "excessiveAutonomy": "Excessive Autonomy",
+        "skillCompromise": "Skill Compromise",
+        "dataPoisoning": "Data Poisoning",
+        "modelSecurity": "Model Security"
+      },
+      "statsLine": "13 個真實 CVE 對應。OWASP Agentic Top 10：8/10 類別覆蓋。MIT 開源。"
+    },
+    "howItWorks": {
+      "title": "安裝。防護。貢獻。",
+      "steps": {
+        "install": {
+          "title": "安裝",
+          "desc": "一行指令。29 條偵測規則。零設定。"
+        },
+        "protect": {
+          "title": "防護",
+          "desc": "即時監控每一筆 LLM 輸入、輸出、工具呼叫和 Agent 行為。威脅自動封鎖。"
+        },
+        "contribute": {
+          "title": "貢獻",
+          "desc": "匿名化攻擊模式自動上傳到 Threat Cloud，AI 產生新偵測規則，推送到每個部署環境。安裝就是貢獻。"
+        }
+      }
+    },
+    "costDisruption": {
+      "title": "多數團隊直接跳過資安。我們讓你沒辦法跳過。",
+      "subtitle": "新創和小型團隊沒有資安工程師，沒有六位數預算。所以他們的 Agent 在零防護下上線。Panguard 讓這個藉口不再成立。",
+      "comparison": {
+        "enterprise": {
+          "label": "傳統模式",
+          "items": [
+            "每年 $50,000+ 企業資安工具費用",
+            "數月的部署與設定週期",
+            "需要專屬資安團隊",
+            "對 AI Agent 威脅毫無感知",
+            "為基礎設施設計，不是為智慧體"
+          ]
+        },
+        "panguard": {
+          "label": "Panguard",
+          "items": [
+            "免費開源。MIT 授權。",
+            "一行指令。即時防護。",
+            "不需要資安專業背景",
+            "從底層為 AI Agent 打造",
+            "每次部署都讓防護更強"
+          ]
+        }
+      },
+      "punchline": "好的資安不該需要預算，只需要一行指令。"
+    },
+    "scenarios": {
+      "title": "實際運作的樣子。",
+      "subtitle": "三個場景。一行指令。零設定。",
+      "items": {
+        "skillInstall": {
+          "label": "INSTALL",
+          "title": "從 OpenClaw 安裝 Skill，Panguard 自動審計。",
+          "narrative": "在加入任何 Skill 前先執行 npx panguard guard --watch。從這一刻起，Agent 安裝的每個 MCP Skill 都會接受 29 條 Agent Threat Rules 掃描 -- 檢查資料外洩模式、嵌入式 Injection payload、過度權限請求。惡意 Skill 在執行前被封鎖，安全的 Skill 正常運作。",
+          "before": "沒有防護，被入侵的 Skill 會立刻以完整系統權限執行。",
+          "after": "有了 Panguard，每個 Skill 在碰到系統前都經過 29 條規則審計。"
+        },
+        "alwaysOn": {
+          "label": "MONITOR",
+          "title": "Agent 全天候運作，每次互動都被監控。",
+          "narrative": "一個處理客戶訊息、管理工作流程、呼叫外部 API 的 AI Agent -- 每一筆 LLM 輸入、每次工具呼叫、每個回應都被即時分析。當 Prompt Injection 藏在使用者輸入中，或工具回傳試圖覆蓋指令的惡意 payload，系統立即攔截。",
+          "before": "沒有防護，每天上千次互動在零資安監控下執行。",
+          "after": "有了 Panguard，威脅在到達 Agent 決策層之前就被攔截。"
+        },
+        "supplyChain": {
+          "label": "DEFEND",
+          "title": "信任的 Skill 推送了惡意更新。Panguard 抓到了。",
+          "narrative": "一個你用了好幾個月的 Skill 發布新版本。工具輸出中埋入隱藏指令，試圖將 Agent 重導向外部端點進行資料外洩。Panguard 持續監控比對到 ATR-2026-006 模式，立即封鎖並產生完整的鑑識快照。",
+          "before": "沒有防護，供應鏈入侵會無聲執行，直到損害被發現。",
+          "after": "有了 Panguard，即使過去信任的 Skill 也會持續接受已知攻擊模式驗證。"
+        }
+      }
+    },
+    "securityStack": {
+      "title": "Agent Threat Rules 在資安架構中的定位",
+      "intro": "Claude Code 和 OpenAI Codex 在部署前掃描程式碼漏洞。這是必要的工作。",
+      "but": "但它們止步於部署邊界。它們不會在 Production 監控你的 Agent，偵測不到正在進行的 Prompt Injection，看不到即時的惡意 MCP 回應，也抓不到三個看似無害的工具呼叫組合成資料外洩的 Skill Chain Attack。",
+      "conclusion": "程式碼掃描是部署前防線。Agent Threat Rules 是 Runtime 防線。兩者缺一不可。",
+      "preDeployment": {
+        "label": "部署前",
+        "title": "程式碼安全",
+        "tools": "Claude Code / Codex",
+        "items": ["靜態分析與漏洞掃描", "自動化程式碼審查", "依賴套件審計", "上線前 Bug 偵測"]
+      },
+      "postDeployment": {
+        "label": "部署後",
+        "title": "Runtime 防護",
+        "tools": "Agent Threat Rules + Panguard",
+        "items": ["即時 LLM 互動監控", "即時 Prompt Injection 偵測", "惡意 MCP 回應封鎖", "跨工具 Skill Chain Attack 偵測"]
+      },
+      "bottomLine": "部署前找 Bug，部署後擋攻擊。"
+    },
+    "flywheel": {
+      "title": "集體防禦。",
+      "nodes": {
+        "installPanguard": "部署",
+        "detectThreats": "偵測",
+        "uploadToCloud": "分享",
+        "generateRules": "產生",
+        "distribute": "分發",
+        "betterProtection": "強化"
+      },
+      "quote": "每次 Panguard 部署都會將匿名化威脅模式回饋社群。AI 分析這些模式並產生新的偵測規則，再推送到每個部署環境。安裝的人越多，所有人的防護就越強。這不是產品，是集體防禦系統。"
+    },
+    "finalCta": {
+      "title": "一個標準。一行指令。",
+      "subtitle": "Agent Threat Rules 完全開源、MIT 授權、永久免費。29 條規則涵蓋 9 大威脅類別，3,000+ 測試案例驗證，13 個真實 CVE 對應。",
+      "starATR": "在 GitHub 上查看 Agent Threat Rules",
+      "installPanguard": "安裝 Panguard",
+      "bottomLine": "台灣製造，面向世界。"
     }
   }
 }

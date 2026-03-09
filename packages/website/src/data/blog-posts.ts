@@ -103,7 +103,7 @@ export const blogPosts: BlogPost[] = [
       'You do not have to do anything. Installing Panguard is contributing. Running Guard is strengthening the entire network.',
       '## Join the Standard',
       'ATR is MIT licensed. The specification, the rule set, and the tooling are all open source. We believe AI agent security is too important to be proprietary.',
-      '- Read the full ATR specification on GitHub\n- Review and contribute rules to the community rule set\n- Integrate ATR evaluation into your own agent framework\n- Star the repo: github.com/panguard-ai/agent-threat-rules',
+      '- Read the full ATR specification on GitHub\n- Review and contribute rules to the community rule set\n- Integrate ATR evaluation into your own agent framework\n- Star the repo: github.com/Agent-Threat-Rule/agent-threat-rules',
       'The goal is simple: build the detection standard that every AI agent deserves. One rule format. One community. Complete coverage.',
     ],
   },

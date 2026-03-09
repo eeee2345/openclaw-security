@@ -1,20 +1,30 @@
 # ATR -- Agent Threat Rules
-### Sigma for AI Agents. An open detection standard for the agentic era.
+### The detection standard for the AI agent era.
+
+> Every era of computing gets the detection standard it deserves.
+> Servers got Sigma. Network traffic got Suricata. Malware got YARA.
+>
+> AI agents face prompt injection, tool poisoning, MCP exploitation,
+> skill supply-chain attacks, and context exfiltration --
+> and until now, there was no standardized way to detect any of them.
+>
+> ATR changes that.
 
 ![Rules](https://img.shields.io/badge/rules-29-green)
 ![Categories](https://img.shields.io/badge/categories-9-blue)
 ![CVEs](https://img.shields.io/badge/CVE_mappings-11-red)
+![OWASP](https://img.shields.io/badge/OWASP_Agentic_Top_10-100%25-brightgreen)
 ![Status](https://img.shields.io/badge/status-RFC-yellow)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen)
 
-> Status: RFC (Request for Comments) -- This is a draft proposal.
+> **Status: RFC (Request for Comments)** -- This is a draft proposal.
 > We're seeking feedback from the security community before stabilizing.
 
 ## Quick Start
 
 ```bash
 # Clone and validate all rules
-git clone https://github.com/panguard-ai/agent-threat-rules
+git clone https://github.com/Agent-Threat-Rule/agent-threat-rules
 cd agent-threat-rules
 npm install && npm test
 ```
@@ -32,13 +42,6 @@ const matches = engine.evaluate({
 });
 // => [{ rule: { id: 'ATR-2026-001', severity: 'high', ... }, confidence: 0.85 }]
 ```
-
-## The Problem
-
-Sigma rules detect system-level threats. YARA rules detect malware signatures.
-Suricata rules detect network intrusions. But AI agents face an entirely new
-class of attacks -- prompt injection, tool poisoning, context exfiltration --
-and **there is no standardized detection format for any of them**.
 
 ## What is ATR?
 
@@ -168,7 +171,7 @@ See `spec/atr-schema.yaml` for the full schema specification.
 | Data Poisoning | LLM04 | ASI06 | AML.T0020 | 1 | -- |
 | Model Security | LLM03 | ASI04 | AML.T0044 | 2 | -- |
 
-**Total: 29 rules, 11 unique CVEs, 100% OWASP Agentic coverage**
+**Total: 29 rules, 11 unique CVEs, 100% OWASP Agentic Top 10 coverage**
 
 ## How to Use
 
@@ -263,50 +266,20 @@ We need the security community's expertise to make ATR useful.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
-## FAQ
+## Adopters
 
-**Q: Who created this?**
-A: ATR was initiated by the Panguard AI team and is now a community-driven open standard.
-The rules are contributed by the security community. Anyone can participate.
+Organizations and projects using ATR. Add yours via PR.
 
-**Q: Why not extend Sigma?**
-A: Sigma's logsource model is designed for system logs (syslog, Windows EventLog).
-Agent behaviors (LLM I/O, tool calls, context windows) need a different source model.
-ATR's detection schema is Sigma-inspired but agent-native.
-
-**Q: Is this stable?**
-A: No. This is an RFC. We expect the schema to change based on community feedback.
-
-**Q: What platforms support ATR?**
-A: ATR rules are plain YAML files. Any tool can parse them. The repo includes a
-reference TypeScript engine. Known platform support:
-- **Panguard** -- native ATR integration
-- **Any platform** -- parse YAML, apply regex/threshold checks. See the Python example above.
+| Project | How they use ATR |
+|---------|-----------------|
+| *Your project here* | [Submit a PR](./CONTRIBUTING.md) |
 
 ## Roadmap
 
-### v0.1 (current)
-- 29 rules across 9 attack categories (all experimental)
-- Regex-based pattern matching with 200+ detection patterns
-- Session-based behavioral tracking (SessionTracker)
-- Triple-standard mapping: OWASP LLM Top 10 + OWASP Agentic Top 10 + MITRE ATLAS
-- 11 real CVE references across 16 rules
-- Full JSON Schema specification (spec/atr-schema.yaml)
-
-### v0.2 (planned)
-- **Behavioral detection engine** -- threshold-based metrics, anomaly scoring
-- **Platform converters** -- atr-to-invariant, atr-to-llamafirewall
-- **Python reference engine** -- not just TypeScript
-- Community-contributed rules
-
-### v0.3 (future)
-- ML-based behavioral baselines for agent normality
-- Cross-organization attack correlation
-- Automated rule generation from threat intelligence data
-
-## License
-
-MIT -- Use it, modify it, build on it.
+- [x] v0.1 -- 29 rules, 9 categories, TypeScript engine, OWASP Agentic Top 10 coverage
+- [ ] v0.2 -- Community-contributed rules, Python reference engine
+- [ ] v0.3 -- Auto-generation from Threat Cloud telemetry
+- [ ] v1.0 -- Stable schema, multi-framework validation
 
 ## Acknowledgments
 
@@ -318,3 +291,7 @@ ATR is inspired by:
 - [NVIDIA Garak](https://github.com/NVIDIA/garak)
 - [Invariant Labs](https://invariantlabs.ai/) -- guardrails and MCP security research
 - [Meta LlamaFirewall](https://ai.meta.com/research/publications/llamafirewall-an-open-source-guardrail-system-for-building-secure-ai-agents/) -- open-source agent guardrails
+
+## License
+
+MIT -- Use it, modify it, build on it.
