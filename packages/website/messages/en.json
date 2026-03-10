@@ -810,7 +810,7 @@
       "capabilities": "Key Capabilities",
       "cta": {
         "title": "Ready to secure your AI agents?",
-        "subtitle": "One command to deploy. Works with Claude Code, Cursor, OpenClaw, WorkBuddy, and any AI agent setup. 32 ATR rules + 8,000+ detection rules. Free to start.",
+        "subtitle": "One command to deploy. Works with Claude Code, Cursor, OpenClaw, WorkBuddy, NemoClaw, and any AI agent setup. 32 ATR rules + 8,000+ detection rules. Free to start.",
         "cta1": "Get Started",
         "cta2": "View ATR on GitHub"
       }

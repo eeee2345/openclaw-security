@@ -17,7 +17,7 @@ import {
 export function setupCommand(): Command {
   const cmd = new Command('setup')
     .description('Auto-detect AI agent platforms and configure Panguard MCP / 自動偵測 AI Agent 平台並設定 Panguard MCP')
-    .option('--platform <name>', 'Target a specific platform (claude-code, cursor, openclaw, codex, workbuddy, claude-desktop)')
+    .option('--platform <name>', 'Target a specific platform (claude-code, cursor, openclaw, codex, workbuddy, nemoclaw, claude-desktop)')
     .option('--remove', 'Remove Panguard MCP config from platforms / 移除設定', false)
     .option('--json', 'Output as JSON / 以 JSON 格式輸出', false)
     .option('--yes', 'Skip confirmation prompts / 跳過確認提示', false)
@@ -39,7 +39,7 @@ export function setupCommand(): Command {
       const allPlatforms = await detectPlatforms();
 
       // Filter to target platform if specified
-      const validIds = ['claude-code', 'claude-desktop', 'cursor', 'openclaw', 'codex', 'workbuddy'];
+      const validIds = ['claude-code', 'claude-desktop', 'cursor', 'openclaw', 'codex', 'workbuddy', 'nemoclaw'];
       let targets = allPlatforms;
       if (options.platform) {
         if (!validIds.includes(options.platform)) {
@@ -140,7 +140,7 @@ export function setupCommand(): Command {
 
       console.log();
       console.log(c.dim('  Next steps:'));
-      console.log(c.dim('    1. Restart your AI agent (Claude Code, Cursor, etc.)'));
+      console.log(c.dim('    1. Restart your AI agent (Claude Code, Cursor, NemoClaw, etc.)'));
       console.log(c.dim('    2. Ask your agent: "Run panguard_status to check security"'));
       console.log(c.dim('    3. Try: "Audit the skills in this project with panguard_audit_skill"'));
       console.log();

@@ -363,10 +363,10 @@ Control Panguard from AI assistants via Model Context Protocol.
 **11 tools:** `panguard_scan`, `panguard_scan_code`, `panguard_guard_start`, `panguard_guard_stop`, `panguard_status`, `panguard_alerts`, `panguard_block_ip`, `panguard_generate_report`, `panguard_init`, `panguard_deploy`, `panguard_audit_skill`
 
 ```bash
-panguard setup    # Auto-detect and configure Claude Code, Cursor, OpenClaw, Codex, WorkBuddy
+panguard setup    # Auto-detect and configure Claude Code, Cursor, OpenClaw, Codex, WorkBuddy, NemoClaw
 ```
 
-Works with Claude Desktop, Cursor, Claude Code, OpenClaw, Codex, WorkBuddy, and any MCP-compatible client.
+Works with Claude Desktop, Cursor, Claude Code, OpenClaw, Codex, WorkBuddy, NemoClaw, and any MCP-compatible client.
 
 ---
 

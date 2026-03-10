@@ -2,8 +2,8 @@
  * Platform Detector - Detect installed AI agent runtimes
  * 平台偵測器 - 偵測已安裝的 AI Agent 執行環境
  *
- * Detects Claude Code, Cursor, OpenClaw, Codex, and Workbuddy.
- * 偵測 Claude Code、Cursor、OpenClaw、Codex 和 Workbuddy。
+ * Detects Claude Code, Cursor, OpenClaw, Codex, Workbuddy, and NemoClaw.
+ * 偵測 Claude Code、Cursor、OpenClaw、Codex、Workbuddy 和 NemoClaw。
  *
  * @module @panguard-ai/panguard-mcp/config/platform-detector
  */
@@ -22,7 +22,8 @@ export type PlatformId =
   | 'cursor'
   | 'openclaw'
   | 'codex'
-  | 'workbuddy';
+  | 'workbuddy'
+  | 'nemoclaw';
 
 export interface DetectedPlatform {
   id: PlatformId;
@@ -87,7 +88,12 @@ function getCodexConfigPath(): string {
 
 /** Get the MCP config path for Workbuddy. */
 function getWorkbuddyConfigPath(): string {
-  return join(homedir(), '.workbuddy', 'mcp.json');
+  return join(homedir(), '.workbuddy', '.mcp.json');
+}
+
+/** Get the MCP config path for NemoClaw. */
+function getNemoClawConfigPath(): string {
+  return join(homedir(), '.nemoclaw', 'mcp.json');
 }
 
 /**
@@ -168,6 +174,17 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     alreadyConfigured: hasPanguardEntry(workbuddyPath),
   });
 
+  // NemoClaw
+  const nemoclawPath = getNemoClawConfigPath();
+  const nemoclawDetected = await commandExists('nemoclaw') || existsSync(join(homedir(), '.nemoclaw'));
+  platforms.push({
+    id: 'nemoclaw',
+    name: 'NemoClaw',
+    configPath: nemoclawPath,
+    detected: nemoclawDetected,
+    alreadyConfigured: hasPanguardEntry(nemoclawPath),
+  });
+
   const detected = platforms.filter((p) => p.detected);
   logger.info(`Detected ${detected.length} platform(s): ${detected.map((p) => p.name).join(', ') || 'none'}`);
   return platforms;
@@ -185,5 +202,6 @@ export function getConfigPath(platformId: PlatformId): string {
     case 'openclaw': return getOpenClawConfigPath();
     case 'codex': return getCodexConfigPath();
     case 'workbuddy': return getWorkbuddyConfigPath();
+    case 'nemoclaw': return getNemoClawConfigPath();
   }
 }

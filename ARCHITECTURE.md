@@ -205,7 +205,7 @@ Panguard exposes 11 tools via the Model Context Protocol (MCP):
 | `panguard_deploy`         | Full deployment pipeline                      |
 | `panguard_audit_skill`    | AI agent skill security audit                 |
 
-**Platform auto-detection:** `panguard setup` detects installed AI agent platforms (Claude Code, Cursor, OpenClaw, Codex, WorkBuddy, Claude Desktop) and injects MCP configuration automatically.
+**Platform auto-detection:** `panguard setup` detects installed AI agent platforms (Claude Code, Cursor, OpenClaw, Codex, WorkBuddy, NemoClaw, Claude Desktop) and injects MCP configuration automatically.
 
 ---
 

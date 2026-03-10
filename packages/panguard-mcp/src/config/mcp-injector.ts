@@ -2,7 +2,7 @@
  * MCP Config Injector - Write Panguard MCP config to AI agent platforms
  * MCP 設定注入器 - 將 Panguard MCP 設定寫入 AI Agent 平台
  *
- * Supports Claude Code, Claude Desktop, Cursor, OpenClaw, Codex, Workbuddy.
+ * Supports Claude Code, Claude Desktop, Cursor, OpenClaw, Codex, Workbuddy, NemoClaw.
  *
  * @module @panguard-ai/panguard-mcp/config/mcp-injector
  */
@@ -148,6 +148,7 @@ export function injectMCPConfig(platformId: PlatformId): InjectionResult {
       case 'openclaw':
       case 'codex':
       case 'workbuddy':
+      case 'nemoclaw':
         injectGenericMCP(configPath);
         break;
     }
