@@ -32,16 +32,16 @@ export const STATS = {
   responseActions: 6,
   complianceControls: 50,
   cliCommands: 22,
-  products: 8,
+  products: 3,
   aiAgents: 4,
   mcpTools: 11,
-  /** 8 SAST code patterns + 8 secrets patterns */
-  sastPatterns: 16,
+  /** Secrets detection patterns (SAST removed, use Semgrep) */
+  sastPatterns: 0,
   playbookTemplates: 3,
   logParsers: 4,
   license: 'MIT' as const,
-  skillAuditChecks: 5,
-  atrRules: 29,
+  skillAuditChecks: 7,
+  atrRules: 32,
   atrDraftRules: 0,
   /** Threat Intel Pipeline stats (auto-updated by CI every 6 hours) */
   threatIntel: {

@@ -465,7 +465,7 @@ SUMMARY: 1 critical, 1 high, 1 medium, 1 low`}
             <h3 className="text-xl font-bold text-text-primary mb-3">Start Scanning</h3>
             <p className="text-text-secondary mb-6 max-w-lg mx-auto">
               Install Panguard and run your first security scan in under a minute. The
-              Community plan includes unlimited local scans, free forever.
+              Open source with unlimited local scans. MIT licensed.
             </p>
             <CodeBlock code="curl -fsSL https://panguard.ai/api/install | bash && panguard scan" />
             <div className="flex flex-wrap justify-center gap-3 mt-6">

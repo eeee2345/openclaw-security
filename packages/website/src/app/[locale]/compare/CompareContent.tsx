@@ -117,7 +117,7 @@ const COMPARISON_CARDS: readonly ComparisonCard[] = [
     title: 'Panguard vs Manual Security Audit',
     bullets: [
       'Manual audits are point-in-time snapshots. Panguard monitors 24/7.',
-      'Cost: $20K\u2013$50K per engagement vs $29/mo.',
+      'Cost: $20K\u2013$50K per engagement vs $0 (open source).',
       'Output: Static PDF report vs live dashboard + auto-remediation.',
       'Best for: Annual compliance checks (manual) vs continuous protection (Panguard).',
     ],
@@ -136,7 +136,7 @@ const COMPARISON_CARDS: readonly ComparisonCard[] = [
     bullets: [
       'Average cost of a data breach: $4.88 M (IBM 2024).',
       'Mean time to detect without tools: 204 days (IBM 2024).',
-      'Panguard Community tier is free forever.',
+      'Panguard is 100% open source under the MIT license.',
       'The question isn\'t whether you can afford Panguard \u2014 it\'s whether you can afford not to use it.',
     ],
   },
@@ -296,7 +296,7 @@ function CTASection() {
             Start protecting your infrastructure today
           </h2>
           <p className="text-text-secondary mt-4 leading-relaxed">
-            Deploy Panguard in under five minutes. Community tier is free forever.
+            Deploy Panguard in under five minutes. 100% open source, MIT licensed.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link

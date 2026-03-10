@@ -185,7 +185,7 @@ export default function SMBContent() {
                 href="/docs/getting-started"
                 className="inline-flex items-center gap-2 bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
               >
-                Start 14-Day Free Trial
+                Install Free
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

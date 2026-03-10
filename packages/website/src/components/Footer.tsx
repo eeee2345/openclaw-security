@@ -35,7 +35,7 @@ export default function Footer() {
         { label: t('chat'), href: '/product/chat' },
         { label: t('trap'), href: '/product/trap' },
         { label: t('report'), href: '/product/report' },
-        { label: t('devReview'), href: '/product/dev-security-review' },
+        { label: t('mcp'), href: '/product/mcp' },
       ],
     },
     {

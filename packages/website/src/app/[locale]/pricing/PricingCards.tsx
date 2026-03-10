@@ -1,483 +1,85 @@
 'use client';
 
-import { useState, useCallback, Fragment } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/navigation';
-import { X } from 'lucide-react';
 import { CheckIcon } from '@/components/ui/BrandIcons';
-import { useAuth } from '@/lib/auth';
 import FadeInUp from '@/components/FadeInUp';
-import SectionTitle from '@/components/ui/SectionTitle';
+import { STATS } from '@/lib/stats';
 
-/* ── Plan keys and pricing data (4 tiers) ── */
+/* ── All-inclusive feature list ── */
 
-const CHECKOUT_ENABLED = process.env.NEXT_PUBLIC_CHECKOUT_ENABLED === 'true';
-
-const planKeys = ['community', 'solo', 'pro', 'business'] as const;
-
-type PlanKey = (typeof planKeys)[number];
-
-interface PlanMeta {
-  price: number;
-  unit: string;
-  ctaHref: string;
-  popular: boolean;
-  machines: string;
-  /** If set and checkout is enabled, clicking CTA triggers checkout for this tier */
-  checkoutTier?: string;
-}
-
-const planMeta: Record<PlanKey, PlanMeta> = {
-  community: {
-    price: 0,
-    unit: '',
-    ctaHref: '/register',
-    popular: false,
-    machines: '1',
-  },
-  solo: {
-    price: 9,
-    unit: '/mo',
-    ctaHref: '/early-access',
-    popular: false,
-    machines: '3',
-    checkoutTier: 'solo',
-  },
-  pro: {
-    price: 29,
-    unit: '/mo',
-    ctaHref: '/early-access',
-    popular: true,
-    machines: '10',
-    checkoutTier: 'pro',
-  },
-  business: {
-    price: 79,
-    unit: '/mo',
-    ctaHref: '/early-access',
-    popular: false,
-    machines: '25',
-    checkoutTier: 'business',
-  },
-};
-
-/* ── Feature comparison (4 columns) ── */
-
-type FeatureValue = boolean | string;
-type TierKey = 'community' | 'solo' | 'pro' | 'business';
-
-interface FeatureRow {
-  feature: string;
-  community: FeatureValue;
-  solo: FeatureValue;
-  pro: FeatureValue;
-  business: FeatureValue;
-}
-
-const comparisonCategories: { categoryKey: string; rows: FeatureRow[] }[] = [
-  {
-    categoryKey: 'productsIncluded',
-    rows: [
-      {
-        feature: 'Agent Threat Rules (ATR)',
-        community: true,
-        solo: true,
-        pro: true,
-        business: true,
-      },
-      {
-        feature: 'Panguard Scan',
-        community: 'Full',
-        solo: 'Full',
-        pro: 'Full',
-        business: 'Full + custom',
-      },
-      {
-        feature: 'Guard detection',
-        community: 'Layer 1',
-        solo: 'Layer 1+2+3',
-        pro: 'Layer 1+2+3',
-        business: 'Layer 1+2+3',
-      },
-      {
-        feature: 'Auto-block attacks',
-        community: 'Known patterns',
-        solo: 'All threats',
-        pro: 'All threats',
-        business: 'All threats',
-      },
-      {
-        feature: 'Auto-fix vulnerabilities',
-        community: 'Manual guide',
-        solo: 'One-click',
-        pro: 'One-click',
-        business: 'One-click',
-      },
-      {
-        feature: 'AI analysis',
-        community: false,
-        solo: true,
-        pro: true,
-        business: 'Full + BYOK',
-      },
-      {
-        feature: 'Panguard Chat',
-        community: false,
-        solo: 'Basic',
-        pro: 'Advanced',
-        business: 'Advanced + API',
-      },
-      {
-        feature: 'Panguard Report',
-        community: false,
-        solo: false,
-        pro: 'Full',
-        business: 'Full + custom',
-      },
-      { feature: 'Panguard Trap', community: false, solo: false, pro: true, business: true },
-    ],
-  },
-  {
-    categoryKey: 'alertsIntegrations',
-    rows: [
-      { feature: 'Email alerts', community: false, solo: true, pro: true, business: true },
-      { feature: 'Telegram', community: false, solo: true, pro: true, business: true },
-      { feature: 'Slack', community: false, solo: false, pro: true, business: true },
-      { feature: 'Webhook / API', community: false, solo: false, pro: false, business: true },
-      {
-        feature: 'SIEM integration',
-        community: false,
-        solo: false,
-        pro: false,
-        business: 'Roadmap',
-      },
-    ],
-  },
-  {
-    categoryKey: 'supportInfra',
-    rows: [
-      { feature: 'Community support', community: true, solo: true, pro: true, business: true },
-      { feature: 'Priority support', community: false, solo: false, pro: true, business: true },
-      {
-        feature: 'Support level',
-        community: 'Forum',
-        solo: 'Email',
-        pro: 'Priority',
-        business: 'Priority',
-      },
-      {
-        feature: 'Log retention',
-        community: 'Session only',
-        solo: '7 days',
-        pro: '30 days',
-        business: '90 days+',
-      },
-      { feature: 'SSO & RBAC', community: false, solo: false, pro: false, business: 'Roadmap' },
-      {
-        feature: 'On-premise option',
-        community: false,
-        solo: false,
-        pro: false,
-        business: 'Roadmap',
-      },
-      {
-        feature: 'Machines',
-        community: '1',
-        solo: '3',
-        pro: '10',
-        business: '25',
-      },
-    ],
-  },
+const features = [
+  `${STATS.totalRules.toLocaleString()}+ detection rules (Sigma + YARA + ATR)`,
+  '4-agent AI pipeline: Detect, Analyze, Respond, Report',
+  `${STATS.atrRules} Agent Threat Rules across 9 categories`,
+  'Threat Cloud collective intelligence network',
+  `Skill Auditor with ${STATS.skillAuditChecks}-layer security checks`,
+  `${STATS.honeypotProtocols} protocol honeypots (SSH, HTTP, MySQL, Redis, SMB, RDP, FTP, Telnet)`,
+  'Auto-response: IP Blocker, Process Killer, File Quarantine',
+  'Chat notifications: Telegram, Slack, Email, Webhook, LINE',
+  `Compliance reports: ${STATS.complianceControls} controls (ISO 27001, SOC 2, TCSA)`,
+  `${STATS.mcpTools} MCP tools for AI assistant integration`,
+  'Unlimited machines, unlimited scans',
+  'Full source code (MIT License)',
 ];
-
-const tierKeys: TierKey[] = ['community', 'solo', 'pro', 'business'];
-
-function ComparisonCell({ value }: { value: FeatureValue }) {
-  if (value === true) return <CheckIcon className="w-4 h-4 text-status-safe mx-auto" />;
-  if (value === false) return <X className="w-4 h-4 text-text-muted mx-auto" />;
-  return <span className="text-xs text-text-secondary text-center block">{value}</span>;
-}
-
-/* ── Main component ── */
 
 export default function PricingCards() {
   const t = useTranslations('pricingPage');
-  const tc = useTranslations('common');
-  const { token: authToken } = useAuth();
-  const [annual, setAnnual] = useState(true);
-  const [loading, setLoading] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
-
-  const displayPrice = (price: number) => {
-    if (price === 0) return '$0';
-    const effective = annual ? Math.round(price * 0.8 * 100) / 100 : price;
-    return `$${effective % 1 === 0 ? effective : effective.toFixed(2)}`;
-  };
-
-  const handleCheckout = useCallback(
-    async (tier: string) => {
-      setLoading(tier);
-      setCheckoutError(null);
-      try {
-        if (!authToken) {
-          window.location.href = `/login?redirect=/pricing`;
-          return;
-        }
-
-        const res = await fetch('/api/billing/checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ tier }),
-        });
-        const data = await res.json();
-        if (data.ok && data.data?.url) {
-          window.location.href = data.data.url;
-        } else if (res.status === 401) {
-          window.location.href = `/login?redirect=/pricing`;
-        } else {
-          setCheckoutError(data.error ?? t('checkoutUnavailable'));
-        }
-      } catch {
-        setCheckoutError(t('connectionError'));
-      } finally {
-        setLoading(null);
-      }
-    },
-    [authToken, t]
-  );
 
   return (
     <>
-      {/* Checkout error */}
-      {checkoutError && (
-        <div
-          role="alert"
-          className="max-w-xl mx-auto mb-6 bg-status-danger/10 border border-status-danger/20 rounded-xl px-5 py-3 flex items-center gap-3"
-        >
-          <X
-            className="w-4 h-4 text-status-danger shrink-0 cursor-pointer"
-            onClick={() => setCheckoutError(null)}
-          />
-          <p className="text-sm text-status-danger">{checkoutError}</p>
-        </div>
-      )}
-
-      {/* Annual toggle */}
       <FadeInUp>
-        <div className="flex items-center justify-center gap-3 mb-10">
-          <span
-            className={`text-sm ${!annual ? 'text-text-primary font-medium' : 'text-text-tertiary'}`}
-          >
-            {tc('monthly')}
-          </span>
-          <button
-            onClick={() => setAnnual(!annual)}
-            role="switch"
-            aria-checked={annual}
-            className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-sage focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 ${
-              annual ? 'bg-brand-sage' : 'bg-surface-3'
-            }`}
-            aria-label="Toggle annual billing"
-          >
-            <div
-              className={`absolute top-0.5 w-5 h-5 rounded-full bg-surface-0 transition-transform duration-200 ${
-                annual ? 'translate-x-6' : 'translate-x-0.5'
-              }`}
-            />
-          </button>
-          <span
-            className={`text-sm ${annual ? 'text-text-primary font-medium' : 'text-text-tertiary'}`}
-          >
-            {tc('annual')}
-          </span>
-          {annual && (
-            <span className="text-xs text-brand-sage font-semibold bg-brand-sage/10 px-2 py-0.5 rounded-full">
-              {tc('save20')}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-surface-1 rounded-2xl border border-brand-sage p-8 sm:p-10 relative">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-sage text-surface-0 text-[10px] font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">
+              {t('badge')}
             </span>
-          )}
+
+            <div className="text-center mb-8">
+              <p className="text-xs uppercase tracking-wider text-text-muted font-semibold">
+                {t('planName')}
+              </p>
+              <div className="mt-3">
+                <span className="text-5xl font-extrabold text-text-primary">$0</span>
+                <span className="text-xs uppercase tracking-wider text-brand-sage font-semibold ml-3">{t('badge')}</span>
+              </div>
+              <p className="text-sm text-text-secondary mt-2">{t('planDesc')}</p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mb-8">
+              {features.map((f) => (
+                <div key={f} className="flex items-start gap-2.5 text-sm text-text-secondary">
+                  <CheckIcon className="w-4 h-4 text-brand-sage mt-0.5 shrink-0" />
+                  {f}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/docs/getting-started"
+                className="bg-brand-sage text-surface-0 font-semibold rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98] text-center w-full sm:w-auto"
+              >
+                {t('ctaInstall')}
+              </Link>
+              <a
+                href="https://github.com/panguard-ai/panguard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-border text-text-secondary font-semibold rounded-full px-8 py-3.5 hover:border-brand-sage hover:text-text-primary transition-all duration-200 text-center w-full sm:w-auto"
+              >
+                {t('ctaGithub')}
+              </a>
+            </div>
+          </div>
         </div>
       </FadeInUp>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-        {planKeys.map((key, i) => {
-          const meta = planMeta[key];
-          const features = t.raw(`plans.${key}.features`) as string[];
-          return (
-            <FadeInUp key={key} delay={i * 0.05}>
-              <div
-                className={`relative bg-surface-1 rounded-2xl p-5 sm:p-7 border h-full flex flex-col ${
-                  meta.popular ? 'border-brand-sage' : 'border-border'
-                }`}
-              >
-                {meta.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-sage text-surface-0 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full whitespace-nowrap">
-                    {tc('mostPopular')}
-                  </span>
-                )}
-
-                <p className="text-xs uppercase tracking-wider text-text-muted font-semibold">
-                  {t(`plans.${key}.name`)}
-                </p>
-                <p className="text-xs text-text-tertiary mt-0.5 mb-3">
-                  {t(`plans.${key}.audience`)}
-                </p>
-
-                <div className="mb-1">
-                  <span className="text-3xl font-extrabold text-text-primary">
-                    {displayPrice(meta.price)}
-                  </span>
-                  {meta.unit && <span className="text-sm text-text-tertiary">{meta.unit}</span>}
-                </div>
-                <p className="text-xs text-text-muted mb-2">{t(`plans.${key}.machines`)}</p>
-                {annual && meta.price > 0 && (
-                  <p className="text-[11px] text-text-muted -mt-1 mb-2">{tc('billedAnnually')}</p>
-                )}
-
-                <div className="mb-4 space-y-1">
-                  <p className="text-[11px] text-text-tertiary leading-snug">
-                    <span className="font-semibold text-text-secondary">{t('bestFor')}</span>{' '}
-                    {t(`plans.${key}.bestFor`)}
-                  </p>
-                  <p className="text-[11px] text-text-tertiary leading-snug">
-                    <span className="font-semibold text-text-secondary">{t('whenToUpgrade')}</span>{' '}
-                    {t(`plans.${key}.upgrade`)}
-                  </p>
-                </div>
-
-                <ul className="space-y-2 flex-1">
-                  {features.map((f: string) => (
-                    <li key={f} className="flex items-start gap-2 text-xs text-text-secondary">
-                      <CheckIcon className="w-3.5 h-3.5 text-brand-sage mt-0.5 shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                {meta.checkoutTier && CHECKOUT_ENABLED ? (
-                  <button
-                    onClick={() => handleCheckout(meta.checkoutTier!)}
-                    disabled={loading === meta.checkoutTier}
-                    className={`mt-6 block w-full text-center font-semibold rounded-full px-5 py-3 text-sm transition-all duration-200 active:scale-[0.98] disabled:opacity-50 ${
-                      meta.popular
-                        ? 'bg-brand-sage text-surface-0 hover:bg-brand-sage-light'
-                        : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
-                    }`}
-                  >
-                    {loading === meta.checkoutTier ? '...' : t(`plans.${key}.cta`)}
-                  </button>
-                ) : (
-                  <Link
-                    href={meta.ctaHref}
-                    className={`mt-6 block text-center font-semibold rounded-full px-5 py-3 text-sm transition-all duration-200 active:scale-[0.98] ${
-                      meta.popular
-                        ? 'bg-brand-sage text-surface-0 hover:bg-brand-sage-light'
-                        : 'border border-border text-text-secondary hover:border-brand-sage hover:text-text-primary'
-                    }`}
-                  >
-                    {t(`plans.${key}.cta`)}
-                  </Link>
-                )}
-              </div>
-            </FadeInUp>
-          );
-        })}
-      </div>
-
-      <FadeInUp>
-        <p className="text-sm text-text-tertiary text-center mt-8">{t('allPaidPlansNote')}</p>
-      </FadeInUp>
-
-      {/* Feature Comparison */}
-      <div className="mt-20">
-        <SectionTitle
-          overline={t('comparison.overline')}
-          title={t('comparison.title')}
-          subtitle={t('comparison.subtitle')}
-        />
-        <FadeInUp>
-          <div className="relative mt-12">
-            <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <table className="w-full min-w-[480px] sm:min-w-[600px]">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left text-sm text-text-tertiary font-normal py-4 pr-4 w-[30%]" />
-                    {tierKeys.map((key) => (
-                      <th
-                        key={key}
-                        className={`text-center text-xs font-semibold uppercase tracking-wider py-4 ${
-                          key === 'pro' ? 'text-brand-sage' : 'text-text-muted'
-                        }`}
-                        style={{ width: `${70 / 4}%` }}
-                      >
-                        {t(`tierLabels.${key}`)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonCategories.map((cat) => (
-                    <Fragment key={cat.categoryKey}>
-                      <tr>
-                        <td
-                          colSpan={5}
-                          className="pt-8 pb-3 text-xs uppercase tracking-wider text-brand-sage font-semibold"
-                        >
-                          {t(`comparisonCategories.${cat.categoryKey}`)}
-                        </td>
-                      </tr>
-                      {cat.rows.map((row) => {
-                        const featureLabel = t.has(`comparisonFeatures.${row.feature}`)
-                          ? t(`comparisonFeatures.${row.feature}`)
-                          : row.feature;
-                        const badge = t.has(`comparisonBadges.${row.feature}`)
-                          ? t(`comparisonBadges.${row.feature}`)
-                          : null;
-                        return (
-                        <tr key={row.feature} className="border-b border-border/50">
-                          <td className="py-3 pr-4 text-sm text-text-secondary">
-                            {featureLabel}
-                            {badge && (
-                              <span className="ml-2 text-[10px] font-semibold text-brand-sage bg-brand-sage/10 border border-brand-sage/20 px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                                {badge}
-                              </span>
-                            )}
-                          </td>
-                          {tierKeys.map((key) => {
-                            const raw = row[key];
-                            const val = typeof raw === 'string' && t.has(`comparisonValues.${raw}`)
-                              ? t(`comparisonValues.${raw}`)
-                              : raw;
-                            return (
-                            <td
-                              key={key}
-                              className={`py-3 text-center ${key === 'pro' ? 'bg-brand-sage/[0.03]' : ''}`}
-                            >
-                              <ComparisonCell value={val} />
-                            </td>
-                            );
-                          })}
-                        </tr>
-                        );
-                      })}
-                    </Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {/* Mobile scroll hint */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-surface-0 to-transparent md:hidden" />
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-surface-0 to-transparent md:hidden" />
-          </div>
-        </FadeInUp>
-        <p className="text-xs text-text-muted text-center mt-6 max-w-2xl mx-auto leading-relaxed">
-          {t('betaDisclaimer')}
+      <FadeInUp delay={0.1}>
+        <p className="text-sm text-text-tertiary text-center mt-8 max-w-xl mx-auto">
+          {t('openSourceNote')}
         </p>
-      </div>
+      </FadeInUp>
     </>
   );
 }

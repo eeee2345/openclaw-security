@@ -4,13 +4,9 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/navigation';
 import { ArrowRight } from 'lucide-react';
 import {
-  ScanIcon,
   ShieldIcon,
-  TerminalIcon,
-  NetworkIcon,
   AnalyticsIcon,
-  IntegrationIcon,
-  CheckIcon,
+  GlobalIcon,
 } from '@/components/ui/BrandIcons';
 import BrandLogo from '@/components/ui/BrandLogo';
 import FadeInUp from '@/components/FadeInUp';
@@ -20,136 +16,54 @@ import { STATS } from '@/lib/stats';
 /* ────────────────────────────  Product config  ──────────────────────── */
 
 const productConfigs = [
+  /* ── Core Pillars ── */
   {
-    key: 'scan' as const,
-    icon: ScanIcon,
-    badgeColor: 'bg-status-safe/10 text-status-safe border-status-safe/20',
+    key: 'atr' as const,
+    icon: AnalyticsIcon,
+    badgeColor: 'bg-brand-sage/10 text-brand-sage border-brand-sage/20',
     description:
-      'Run a comprehensive AI security audit on any endpoint with a single command. Panguard Scan runs 7 independent scanner modules: password policies, open ports, SSL certificates, scheduled tasks, shared folders, environment discovery, and CVE vulnerability lookup. In under a minute, you receive a detailed PDF report with a risk score, prioritized findings, and actionable remediation steps -- no configuration, no agent installation required.',
+      `ATR (Agent Threat Rules) is the first open standard for detecting AI agent threats. ${STATS.atrRules} YAML-based rules across 9 categories cover prompt injection, tool poisoning, skill compromise, unauthorized access, data exfiltration, and more. Like Sigma for network attacks, ATR gives the security community a shared language for AI agent threats. Rules are open-source, human-readable, and machine-enforceable.`,
     features: [
-      'One-command execution -- no setup or agent needed',
-      '7 scanner modules including CVE vulnerability lookup',
-      'PDF report with risk score, findings, and fix instructions',
-      'Covers ports, services, permissions, CVEs, and misconfigurations',
-      'Unlimited scans on all plans, free forever',
-      'Compliance mapping to ISO 27001 and SOC 2 frameworks',
+      `${STATS.atrRules} rules across 9 threat categories`,
+      'YAML-based, human-readable rule format',
+      'Covers prompt injection, tool poisoning, skill compromise, data exfiltration',
+      'Open-source -- community-contributed and reviewed',
+      'Machine-enforceable by Guard and any compatible engine',
+      'Versioned rule lifecycle: draft, experimental, stable, deprecated',
     ],
-    href: '/product/scan',
+    href: '/atr',
+  },
+  {
+    key: 'threatCloud' as const,
+    icon: GlobalIcon,
+    badgeColor: 'bg-brand-sage/10 text-brand-sage border-brand-sage/20',
+    description:
+      `Threat Cloud is a self-hosted collective intelligence network. Every Panguard install contributes anonymized threat signals; the pipeline auto-generates Sigma, YARA, and ATR rules from real-world attacks. ${STATS.threatIntel.sources} threat intel sources, ${STATS.threatIntel.validatedRecords.toLocaleString()} validated IoC records, and ${STATS.threatIntel.promotedRules} community-promoted rules -- all synced every 6 hours. The more nodes participate, the stronger everyone's defense.`,
+    features: [
+      `${STATS.threatIntel.sources} threat intel sources with ${STATS.threatIntel.validatedRecords.toLocaleString()} validated records`,
+      'Auto-generates Sigma, YARA, and ATR rules from collective data',
+      `${STATS.threatIntel.promotedRules} community-promoted rules, synced every ${STATS.threatIntel.syncInterval}`,
+      'Self-hosted -- your data never leaves your infrastructure',
+      'Honeypot intelligence feeds from Trap deployments',
+      'Confidence scoring and rule lifecycle management',
+    ],
+    href: '/threat-cloud',
   },
   {
     key: 'guard' as const,
     icon: ShieldIcon,
-    badgeColor: 'bg-status-safe/10 text-status-safe border-status-safe/20',
+    badgeColor: 'bg-brand-sage/10 text-brand-sage border-brand-sage/20',
     description:
-      `Panguard Guard is the always-on AI agent that monitors your endpoints 24/7. A 5-agent pipeline (Detect, Analyze, Respond, Report, Chat) processes events through ${STATS.sigmaRules.toLocaleString()} Sigma rules and ${STATS.yaraRules.toLocaleString()} YARA signatures, with local LLM and cloud AI fallback. Three response modules auto-block IPs, kill processes, and quarantine files. An investigation engine correlates events across a sliding window for deep threat analysis.`,
+      `Panguard Guard is the enforcement engine. A 4-agent pipeline (Detect, Analyze, Respond, Report) processes OS-level events through ${STATS.sigmaRules.toLocaleString()} Sigma rules, ${STATS.yaraRules.toLocaleString()} YARA signatures, and ${STATS.atrRules} ATR rules. Built-in Skill Auditor runs ${STATS.skillAuditChecks} checks before any AI skill is installed. Three response modules auto-block IPs, kill processes, and quarantine files.`,
     features: [
-      '5-agent AI pipeline: Detect, Analyze, Respond, Report, Chat notifications',
+      '4-agent AI pipeline: Detect, Analyze, Respond, Report',
+      `${STATS.totalRules.toLocaleString()}+ detection rules (Sigma + YARA + ATR)`,
+      `Skill Auditor: ${STATS.skillAuditChecks}-layer pre-install security gate`,
       '3 auto-response modules: IP Blocker, Process Killer, File Quarantine',
-      'Investigation engine with event correlation and dynamic reasoning',
-      '5 notification channels: Telegram, Slack, Email, Webhook, LINE',
-      'Integration adapters: Windows Defender, Syslog, Wazuh',
+      'Works with Claude Code, Cursor, OpenClaw, WorkBuddy, and any AI agent',
       'Supports Linux, macOS, Windows, Docker, Kubernetes',
     ],
     href: '/product/guard',
-  },
-  {
-    key: 'chat' as const,
-    icon: TerminalIcon,
-    badgeColor: 'bg-status-safe/10 text-status-safe border-status-safe/20',
-    description:
-      'Security alerts are useless if nobody understands them. Panguard Chat translates every detection, every log entry, and every recommendation into plain language. With 13 built-in skills across 6 categories (scan, guard, trap, report, system, info), Chat understands security commands in English and Chinese. Integrates with Telegram, Slack, Email, and Webhook.',
-    features: [
-      'Natural language explanations of every security event',
-      '13 built-in skills: scan, block IP, trap status, generate report, and more',
-      'Multi-language support: English and Traditional Chinese',
-      '5 channels: Telegram, Slack, Email, Webhook, LINE',
-      'Role-adaptive tone: developer, business owner, IT admin',
-      'NLP skill matching with confidence-based routing',
-    ],
-    href: '/product/chat',
-  },
-  {
-    key: 'trap' as const,
-    icon: NetworkIcon,
-    badgeColor: 'bg-status-caution/10 text-status-caution border-status-caution/20',
-    description:
-      `Panguard Trap deploys ${STATS.honeypotProtocols} realistic protocol honeypots: SSH (full SSH-2.0), HTTP, MySQL (wire protocol), Redis (RESP), SMB (SMB2/NTLMSSP), RDP (X.224/CredSSP), FTP, and Telnet. Each captures credentials, commands, and attacker techniques with MITRE ATT&CK mapping. Intelligence feeds back into Guard and Threat Cloud automatically.`,
-    features: [
-      `${STATS.honeypotProtocols} real protocol honeypots: SSH, HTTP, MySQL, Redis, SMB, RDP, FTP, Telnet`,
-      'Binary protocol handlers: MySQL wire, Redis RESP, SMB2/NTLMSSP, RDP X.224',
-      'Attacker profiling: skill level, intent, tool signatures',
-      'MITRE ATT&CK technique detection per session',
-      'Collective intelligence sharing via Threat Cloud',
-      'Session recording with credential capture and command logging',
-    ],
-    href: '/product/trap',
-  },
-  {
-    key: 'report' as const,
-    icon: AnalyticsIcon,
-    badgeColor: 'bg-status-info/10 text-status-info border-status-info/20',
-    description:
-      'Generating compliance documentation used to take weeks and expensive consultants. Panguard Report evaluates your security posture against 3 frameworks: ISO 27001 (30 controls), SOC 2 (10 controls), and Taiwan Cyber Security Act (10 controls). Real-time assessors run system checks and generate audit-ready PDF reports with evidence, bilingual output (EN/zh-TW), and remediation guidance.',
-    features: [
-      'Auto-generated ISO 27001, SOC 2, and Taiwan TCSA reports',
-      `Real-time assessors: ${STATS.complianceControls} controls across 3 frameworks`,
-      'PDF export with cover page, executive summary, and findings',
-      'Bilingual output: English and Traditional Chinese',
-      'Evidence packages: logs, config snapshots, response records',
-      'Remediation guides with prioritized action items',
-    ],
-    href: '/product/report',
-  },
-  {
-    key: 'mcp' as const,
-    icon: IntegrationIcon,
-    badgeColor: 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20',
-    isBeta: true,
-    description:
-      `Panguard MCP Server exposes ${STATS.mcpTools} security tools via the Model Context Protocol, enabling AI assistants like Claude Desktop, Cursor, and Claude Code to control Panguard directly. Scan endpoints, start protection, block IPs, and generate reports -- all through natural language conversation with your AI assistant.`,
-    features: [
-      `${STATS.mcpTools} MCP tools: scan, scan_code, guard_start, guard_stop, status, alerts, block_ip, generate_report, init, deploy`,
-      'Works with Claude Desktop, Cursor, Claude Code, and any MCP-compatible client',
-      'Stdio transport for secure local communication',
-      'SAST code scanning via AI assistant conversation',
-      'Real-time guard status and alert monitoring',
-      'Zero configuration -- auto-discovers Panguard installation',
-    ],
-    href: '/product/mcp',
-  },
-  {
-    key: 'skillAuditor' as const,
-    icon: CheckIcon,
-    badgeColor: 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20',
-    isBeta: true,
-    description:
-      `Panguard Skill Auditor analyzes OpenClaw and AgentSkills SKILL.md files for security threats before you install them. It runs ${STATS.skillAuditChecks} automated checks: manifest validation, prompt injection detection (11 patterns + hidden Unicode + base64), tool poisoning detection, dependency analysis, and permission scope analysis. Get a 0-100 risk score in milliseconds.`,
-    features: [
-      'Prompt injection detection: 11 patterns including hidden Unicode and base64 payloads',
-      'Tool poisoning detection: sudo escalation, curl|bash RCE, file exfiltration, reverse shells',
-      'SAST + secrets scanning on all code files in the skill directory',
-      'Dependency analysis: external URLs, npm/pip packages, required binaries',
-      'Permission scope analysis: detects bash, network, database, credential usage',
-      'CLI and MCP integration: panguard audit skill <path> or ask your AI assistant',
-    ],
-    href: '/docs/cli',
-  },
-  {
-    key: 'sast' as const,
-    icon: ScanIcon,
-    badgeColor: 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20',
-    isBeta: true,
-    description:
-      `Panguard Code Scanner performs static application security testing (SAST) on your source code. It integrates with Semgrep for deep analysis and includes ${STATS.sastPatterns} built-in security patterns (8 SAST + 8 secrets detection) as a fallback. Detect SQL injection, XSS, command injection, hardcoded secrets, weak cryptography, and more -- directly from the CLI or through your AI assistant.`,
-    features: [
-      'Semgrep integration for deep SAST analysis',
-      `${STATS.sastPatterns} built-in security patterns: 8 SAST (OWASP Top 10) + 8 secrets detectors`,
-      'Secrets scanning: AWS keys, GitHub tokens, Stripe keys, RSA private keys',
-      'Supports JavaScript, TypeScript, Python, and more',
-      'CI/CD integration with --fail-on severity threshold',
-      'JSON output for pipeline automation',
-    ],
-    href: '/docs/cli',
   },
 ];
 
@@ -161,9 +75,9 @@ export default function ProductOverviewContent() {
   return (
     <>
       <p id="definition" className="sr-only">
-        Panguard provides five integrated security tools — Scan, Guard, Chat, Trap, and Report —
-        powered by a 5-agent AI pipeline with three-tier processing: local rules (90%), local AI
-        (7%), and cloud AI (3%).
+        Panguard AI secures AI agents through three pillars: ATR (the open standard for agent threat
+        rules), Threat Cloud (collective immunity network), and Guard (the enforcement engine with
+        skill audit and auto-response).
       </p>
 
       {/* ───────────── Hero ───────────── */}
@@ -248,16 +162,9 @@ export default function ProductOverviewContent() {
                     <product.icon className="w-5 h-5 text-brand-sage" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-2xl font-bold text-text-primary">
-                        {t(`products.${product.key}.name`)}
-                      </h2>
-                      {'isBeta' in product && product.isBeta && (
-                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-yellow-900/30 text-yellow-400">
-                          Beta
-                        </span>
-                      )}
-                    </div>
+                    <h2 className="text-2xl font-bold text-text-primary">
+                      {t(`products.${product.key}.name`)}
+                    </h2>
                     <span
                       className={`inline-block ${product.badgeColor} border text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full`}
                     >
@@ -321,7 +228,7 @@ export default function ProductOverviewContent() {
                 {t('cta.cta1')}
               </Link>
               <Link
-                href="/demo"
+                href="/atr"
                 className="border border-border text-text-secondary font-semibold rounded-full px-8 py-3.5 hover:border-brand-sage hover:text-text-primary transition-all duration-200"
               >
                 {t('cta.cta2')}

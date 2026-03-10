@@ -2,15 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Search, Shield, FileText, ArrowRight } from 'lucide-react';
+import { FileText, Globe, Shield, ArrowRight } from 'lucide-react';
 import { Link } from '@/navigation';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const PILLARS = [
-  { key: 'skillAuditor', icon: Search, href: '/product/skill-auditor' },
-  { key: 'runtimeGuard', icon: Shield, href: '/product/guard' },
   { key: 'atrStandard', icon: FileText, href: '/atr' },
+  { key: 'threatCloud', icon: Globe, href: '/threat-cloud' },
+  { key: 'guard', icon: Shield, href: '/product/guard' },
 ] as const;
 
 export default function ProductPillars() {

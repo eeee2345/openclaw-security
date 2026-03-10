@@ -53,13 +53,13 @@ export default function DevelopersContent() {
                   href="/register"
                   className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
                 >
-                  Start 14-Day Free Trial
+                  Install Free
                 </Link>
                 <Link
-                  href="/pricing"
+                  href="/atr"
                   className="border border-border text-text-secondary font-semibold text-sm rounded-full px-8 py-3.5 hover:border-brand-sage hover:text-text-primary transition-all duration-200"
                 >
-                  View Pricing
+                  Explore ATR Standard
                 </Link>
               </div>
             </FadeInUp>
@@ -99,32 +99,21 @@ export default function DevelopersContent() {
           </div>
         </section>
 
-        {/* Pricing Context */}
+        {/* Open Source */}
         <section className="px-6 lg:px-[120px] py-16 border-t border-border bg-surface-1">
           <FadeInUp>
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-2xl font-bold text-text-primary mb-3">{t('pricing.title')}</h2>
               <p className="text-text-secondary mb-8">{t('pricing.subtitle')}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
-                <div className="bg-surface-0 rounded-2xl p-6 border border-border text-center">
-                  <p className="text-xs uppercase tracking-wider text-text-muted font-semibold mb-2">
-                    Free Scan
-                  </p>
-                  <p className="text-3xl font-extrabold text-text-primary">$0</p>
-                  <p className="text-sm text-text-tertiary mt-2">{t('pricing.freeScanDesc')}</p>
-                </div>
-                <div className="bg-surface-0 rounded-2xl p-6 border border-brand-sage card-glow text-center">
-                  <p className="text-xs uppercase tracking-wider text-brand-sage font-semibold mb-2">
-                    Solo
-                  </p>
-                  <p className="text-3xl font-extrabold text-text-primary">
-                    $9<span className="text-sm text-text-tertiary font-normal">/mo</span>
-                  </p>
-                  <p className="text-sm text-text-tertiary mt-2">{t('pricing.soloDesc')}</p>
-                </div>
+              <div className="bg-surface-0 rounded-2xl p-6 border border-brand-sage card-glow text-center max-w-md mx-auto">
+                <p className="text-xs uppercase tracking-wider text-brand-sage font-semibold mb-2">
+                  MIT Open Source
+                </p>
+                <p className="text-4xl font-extrabold text-text-primary">$0</p>
+                <p className="text-sm text-text-tertiary mt-2">{t('pricing.freeScanDesc')}</p>
               </div>
               <Link
-                href="/pricing"
+                href="/docs/getting-started"
                 className="inline-flex items-center gap-1 text-sm text-brand-sage hover:text-brand-sage-light font-medium mt-6"
               >
                 {t('pricing.seeAllPlans')} <ArrowRight className="w-3.5 h-3.5" />

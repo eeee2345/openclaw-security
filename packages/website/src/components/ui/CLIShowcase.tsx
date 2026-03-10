@@ -51,7 +51,7 @@ const tabContent: Record<TabId, Line[]> = {
     { text: '' },
     { text: '  3 issues found \u00B7 0 auto-fixed', color: c.muted },
     { text: '' },
-    { text: '  \u26A1 Upgrade to Solo ($9/mo) \u2192 panguard scan --fix', color: c.sage },
+    { text: '  \u26A1 Auto-fix available \u2192 panguard scan --fix', color: c.sage },
   ],
   guard: [
     { text: '$ panguard guard start', color: c.cmd },

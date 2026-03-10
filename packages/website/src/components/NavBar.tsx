@@ -165,9 +165,9 @@ export default function NavBar() {
       href: '/product/skill-auditor',
     },
     {
-      label: t('productLinks.devReview'),
-      desc: t('productLinks.devReviewDesc'),
-      href: '/product/dev-security-review',
+      label: t('productLinks.atrStandard'),
+      desc: t('productLinks.atrStandardDesc'),
+      href: '/atr',
     },
   ];
 

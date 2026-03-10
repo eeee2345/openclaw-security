@@ -1,115 +1,95 @@
 ---
 title: "產品總覽"
-description: "全面了解 Panguard AI 產品套件、架構、技術堆疊與訂閱方案。"
+description: "Panguard AI -- AI Agent 安全的開放標準。三大支柱：ATR（標準）、Threat Cloud（集體免疫）、Guard（引擎）。"
 icon: "shield-check"
 ---
 
 ## 什麼是 Panguard AI？
 
-Panguard AI 是一個為沒有安全團隊的開發者與中小企業設計的開源網路安全平台。它將規則式偵測、本地 AI 與雲端 AI 整合為單一 CLI 工具，自動保護端點。
+Panguard AI 是一個專為 AI Agent 時代打造的開源安全平台。當 AI Agent（Claude Code、Cursor、OpenClaw、WorkBuddy）獲得系統最高權限，Panguard 提供第一個偵測和阻斷 Agent 層級威脅的開放標準。
 
-使用體驗類似 Claude Code 等工具：
+**三大支柱。一個使命：守護每一個 AI Agent。**
 
-1. **網站** -- 在 [panguard.ai](https://panguard.ai) 瀏覽方案、註冊、管理訂閱
-2. **CLI** -- `panguard login` 會開啟瀏覽器進行驗證；Token 儲存於本地
-3. **使用** -- 功能依訂閱層級開放；日常操作零負擔
+1. **ATR（Agent Threat Rules）** -- AI Agent 威脅偵測的開放標準
+2. **Threat Cloud** -- 每次安裝都讓所有人更安全的集體免疫網路
+3. **Guard** -- 技能審計 + 威脅阻斷 + 自動回應的執行引擎
 
-## 產品套件
+## 三大支柱
 
-Panguard AI 包含 8 項產品。每項可獨立運作，但組合起來便構成一行指令的完整安全營運中心。
-
-<CardGroup cols={2}>
-  <Card title="Panguard Scan" icon="magnifying-glass">
-    **60 秒安全稽核** -- 一次性掃描，產出風險分數（0-100，等級 A-F）與 PDF 報告。涵蓋連接埠、服務、防火牆、SSL/TLS、密碼策略等。
+<CardGroup cols={3}>
+  <Card title="ATR -- 標準" icon="file-code">
+    **32 條規則涵蓋 9 大威脅類別。** AI Agent 威脅的第一個開放標準 -- 如同 Sigma 偵測網路攻擊，ATR 偵測提示詞注入、工具投毒、技能入侵和 Agent 操縱。YAML 格式，人類可讀，機器可執行。
   </Card>
-  <Card title="Panguard Guard" icon="shield-halved">
-    **AI 即時監控** -- 全天候防護，搭載 4 代理 AI 流水線（偵測、分析、回應、報告）。7 天學習期、3,155 條 Sigma 規則、5,895 條 YARA 規則，以及自動回應功能。
+  <Card title="Threat Cloud -- 網路" icon="globe">
+    **集體免疫。** 每個 Panguard 安裝都貢獻匿名化威脅訊號。管線自動從真實攻擊中生成 Sigma、YARA 和 ATR 規則。11 個威脅情報來源、5,000+ 驗證過的 IoC 記錄，每 6 小時同步。
   </Card>
-  <Card title="Panguard Chat" icon="bell">
-    **AI 安全通知** -- 將技術警報翻譯成白話語言。透過 Telegram、Slack、Email、Webhook 或 LINE 傳送，支援三種語氣模式：boss、developer 與 it_admin。
-  </Card>
-  <Card title="Panguard Trap" icon="honey-pot">
-    **智慧蜜罐** -- 8 種誘餌服務（SSH、HTTP、FTP、SMB、MySQL、RDP、Telnet、Redis），引誘攻擊者、收集情報並分析攻擊者技術等級。
-  </Card>
-  <Card title="Panguard Report" icon="file-chart-column">
-    **合規報告** -- 60 秒內自動產生稽核等級報告，支援台灣資安法（10 項控制措施）、ISO 27001（30 項控制措施）與 SOC 2（10 項控制措施）。
-  </Card>
-  <Card title="Panguard MCP" icon="plug">
-    **Model Context Protocol** -- 透過 MCP 伺服器將 Panguard 安全資料整合至 AI 助手與 LLM 工作流程。
-  </Card>
-  <Card title="Panguard Manager" icon="grid-2">
-    **多端點管理** -- 集中化儀表板，管理跨機群的多個 Panguard 代理程式，支援策略執行與生命週期管理。
-  </Card>
-  <Card title="Threat Cloud" icon="cloud">
-    **集體威脅情報** -- 在 Panguard 網路中匿名分享威脅特徵。RESTful API 搭配 SQLite 後端、自動 Sigma 規則產生，以及 IP/網域信譽評分。
+  <Card title="Guard -- 引擎" icon="shield-halved">
+    **8,000+ 偵測規則。** 4-Agent AI 管線（偵測、分析、回應、報告）透過 Sigma、YARA 和 ATR 規則處理 OS 層級事件。內建技能審計器在安裝前把關每個 AI 技能。自動回應封鎖 IP、終止進程、隔離檔案。
   </Card>
 </CardGroup>
 
-## 三層式 AI 架構
+## 附加工具
 
-Panguard 採用分層 AI 漏斗架構，平衡速度、成本與準確度。每一層處理越來越少但更複雜的事件。
+<CardGroup cols={2}>
+  <Card title="Panguard Scan" icon="magnifying-glass">
+    **60 秒安全稽核。** 一次性掃描產出風險評分（0-100，A-F 等級）和 PDF 報告。涵蓋連接埠、服務、防火牆、SSL/TLS、密碼策略和 CVE 查詢。MIT 授權。
+  </Card>
+  <Card title="Panguard Chat" icon="bell">
+    **AI 安全通知。** 將技術警報翻譯成白話。透過 Telegram、Slack、Email、Webhook 或 LINE 傳送。三種語調模式：老闆、開發者、IT 管理員。
+  </Card>
+  <Card title="Panguard Trap" icon="honey-pot">
+    **8 種協定蜜罐。** SSH、HTTP、FTP、SMB、MySQL、RDP、Telnet、Redis -- 引誘攻擊者、收集情報，自動回饋訊號至 Threat Cloud。
+  </Card>
+  <Card title="Panguard Report" icon="file-chart-column">
+    **合規報告。** 一行指令自動產出 ISO 27001（30 控制項）、SOC 2（10 控制項）和資通安全管理法（10 控制項）稽核報告。
+  </Card>
+  <Card title="MCP 伺服器" icon="plug">
+    **AI 助手整合。** 11 個 MCP 工具讓 Claude Desktop、Cursor 和 Claude Code 直接透過自然語言控制 Panguard。
+  </Card>
+  <Card title="技能審計器" icon="clipboard-check">
+    **安裝前安全閘門。** 7 層檢查分析 AI 技能清單，偵測提示詞注入、工具投毒、秘密和不安全依賴。
+  </Card>
+</CardGroup>
+
+## 三層 AI 架構
+
+Panguard 使用分層 AI 漏斗，平衡速度、成本和準確度。每層處理的事件越少但越複雜。
 
 | 層級 | 技術 | 處理比例 | 延遲 | 成本 |
 | --- | --- | --- | --- | --- |
-| **Layer 1** | Sigma / YARA 規則引擎 | 90% 事件 | < 50ms | $0 |
+| **Layer 1** | Sigma / YARA / ATR 規則引擎 | 90% 事件 | < 50ms | $0 |
 | **Layer 2** | 本地 AI (Ollama) | 7% 事件 | ~2s | $0 |
 | **Layer 3** | 雲端 AI (Claude / OpenAI) | 3% 事件 | ~5s | ~$0.008/次 |
 
 <Info>
-  **設計即韌性。** 雲端 AI 不可用時，本地 AI 接手。本地 AI 停止時，規則引擎持續運作。防護永不中斷。
+  **韌性設計。** 雲端 AI 不可用時，本地 AI 接管。本地 AI 不可用時，規則引擎持續運行。防護永不中斷。
 </Info>
 
-深入了解 AI 架構，請參閱[三層式 AI](/concepts/three-layer-ai)。
+深入了解 AI 架構，請見 [三層 AI](/concepts/three-layer-ai)。
 
-## 技術堆疊
+## 技術架構
 
 | 類別 | 技術 |
 | --- | --- |
-| 語言 | TypeScript 5.7（strict 模式） |
+| 語言 | TypeScript 5.7（嚴格模式）|
 | 執行環境 | Node.js 20+ |
-| Monorepo | pnpm 10 workspaces |
-| 測試 | Vitest 3（3,017 個測試 / 142 個檔案） |
-| 偵測規則 | Sigma (3,155) + YARA (5,895) + Suricata + Falco |
-| AI 供應商 | Ollama（本地）+ Claude / OpenAI（雲端） |
-| 驗證 | Google OAuth (PKCE) + scrypt 雜湊 |
+| 單體倉庫 | pnpm 10 workspaces |
+| 測試 | Vitest 3（3,583 測試 / 165 檔案）|
+| 偵測規則 | Sigma (3,754) + YARA (4,369) + ATR (32) |
+| AI 提供者 | Ollama（本地）+ Claude / OpenAI（雲端）|
 | 國際化 | 英文 + 繁體中文 |
 | 加密 | AES-256-GCM |
+| 授權 | MIT |
 
-## 訂閱方案
+## 100% 開源
 
-| 功能 | Community | Solo | Pro | Business |
-| --- | --- | --- | --- | --- |
-| **價格** | 免費 | $9/月 | $29/月 | $79/月 |
-| **設備數** | 1 | 3 | 10 | 25 |
-| Scan（無限次） | 有 | 有 | 有 | 有 |
-| Guard（Layer 1 規則） | 有 | 有 | 有 | 有 |
-| Guard（完整三層 AI） | -- | 有 | 有 | 有 |
-| Chat 通知 | -- | 有 | 有 | 有 |
-| 本地 AI (Ollama) | -- | 有 | 有 | 有 |
-| 雲端 AI 分析 | -- | -- | 有 | 有 |
-| Trap（8 種蜜罐） | -- | -- | 有 | 有 |
-| 合規報告 | -- | -- | 有 | 有 |
-| SIEM 整合 | -- | -- | -- | 有 |
-| SSO 與 RBAC | -- | -- | -- | 有 |
-| 專屬支援 | -- | -- | -- | 有 |
+Panguard AI 以 [MIT 授權](https://github.com/panguard-ai/panguard-ai/blob/main/LICENSE) 發布。所有功能免費 -- 沒有付費版、沒有付費牆、沒有功能限制。完整原始碼。零黑箱。每一行都可稽核。
 
-### 合規報告定價
-
-合規報告可在 Pro 與 Business 方案上以單次購買方式取得：
-
-| 報告 | 價格 | 控制措施數 |
-| --- | --- | --- |
-| 台灣資安法 | $299 | 10 |
-| ISO 27001 | $499 | 30 |
-| SOC 2 | $699 | 10 |
-| 組合包（全部 3 項） | $999 | 50 |
-
-年繳方案享所有訂閱方案 8 折優惠。請至 [panguard.ai/pricing](https://panguard.ai/pricing) 管理您的訂閱。
-
-## 開源
-
-Panguard AI 以 [MIT 授權條款](https://github.com/panguard-ai/panguard-ai/blob/main/LICENSE)發布。完整原始碼。零黑箱。每一行程式碼都可供審計。
-
-<Card title="在 GitHub 上查看" icon="github" href="https://github.com/panguard-ai/panguard-ai">
-  瀏覽原始碼、回報問題或為專案貢獻。
-</Card>
+<CardGroup cols={2}>
+  <Card title="在 GitHub 上查看" icon="github" href="https://github.com/panguard-ai/panguard-ai">
+    瀏覽原始碼、回報問題或貢獻專案。
+  </Card>
+  <Card title="ATR 規則在 GitHub" icon="file-code" href="https://github.com/Agent-Threat-Rule/agent-threat-rules">
+    貢獻 ATR 規則 -- 每條新規則都強化所有使用者的集體免疫。
+  </Card>
+</CardGroup>

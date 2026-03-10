@@ -1,47 +1,53 @@
 ---
 title: "Product Overview"
-description: "A complete look at the Panguard AI product suite, architecture, technology stack, and subscription tiers."
+description: "Panguard AI -- the open standard for AI agent security. Three pillars: ATR (the standard), Threat Cloud (collective immunity), Guard (the engine)."
 icon: "shield-check"
 ---
 
 ## What is Panguard AI?
 
-Panguard AI is an open-source cybersecurity platform designed for developers and small businesses who do not have a security team. It combines rule-based detection, local AI, and cloud AI into a single CLI tool that protects endpoints automatically.
+Panguard AI is an open-source security platform purpose-built for the AI agent era. As AI agents (Claude Code, Cursor, OpenClaw, WorkBuddy) gain root access to systems, Panguard provides the first open standard for detecting and blocking agent-level threats.
 
-The user experience mirrors tools like Claude Code:
+**Three pillars. One mission: secure every AI agent.**
 
-1. **Website** -- Browse plans, sign up, manage subscriptions at [panguard.ai](https://panguard.ai)
-2. **CLI** -- `panguard login` opens the browser for authentication; the token is stored locally
-3. **Usage** -- Features are gated by subscription tier; daily operation is zero-effort
+1. **ATR (Agent Threat Rules)** -- The open standard for AI agent threat detection
+2. **Threat Cloud** -- Collective immunity network that gets stronger with every install
+3. **Guard** -- The enforcement engine with skill audit, threat blocking, and auto-response
 
-## Product Suite
+## Three Pillars
 
-Panguard AI includes 8 products. Each works independently, but together they form a complete Security Operations Center in one command.
+<CardGroup cols={3}>
+  <Card title="ATR -- The Standard" icon="file-code">
+    **32 rules across 9 threat categories.** The first open standard for AI agent threats -- like Sigma for network attacks, but for prompt injection, tool poisoning, skill compromise, and agent manipulation. YAML-based, human-readable, machine-enforceable.
+  </Card>
+  <Card title="Threat Cloud -- The Network" icon="globe">
+    **Collective immunity.** Every Panguard install contributes anonymized threat signals. The pipeline auto-generates Sigma, YARA, and ATR rules from real-world attacks. 11 threat intel sources, 5,000+ validated IoC records, synced every 6 hours.
+  </Card>
+  <Card title="Guard -- The Engine" icon="shield-halved">
+    **8,000+ detection rules.** A 4-agent AI pipeline (Detect, Analyze, Respond, Report) processes OS-level events through Sigma, YARA, and ATR rules. Built-in Skill Auditor gates every AI skill before install. Auto-response blocks IPs, kills processes, quarantines files.
+  </Card>
+</CardGroup>
+
+## Additional Tools
 
 <CardGroup cols={2}>
   <Card title="Panguard Scan" icon="magnifying-glass">
-    **60-Second Security Audit** -- One-time scan producing a risk score (0-100, grades A-F) and PDF report. Covers ports, services, firewall, SSL/TLS, password policy, and more.
-  </Card>
-  <Card title="Panguard Guard" icon="shield-halved">
-    **AI Real-Time Monitoring** -- Always-on protection with a 4-agent AI pipeline (Detect, Analyze, Respond, Report). 7-day learning period, 3,155 Sigma rules, 5,895 YARA rules, and auto-response capabilities.
+    **60-second security audit.** One-time scan producing a risk score (0-100, grades A-F) and PDF report. Covers ports, services, firewall, SSL/TLS, password policy, and CVE lookup. MIT licensed.
   </Card>
   <Card title="Panguard Chat" icon="bell">
-    **AI Security Notifications** -- Translates technical alerts into plain language. Delivers via Telegram, Slack, Email, Webhook, or LINE with three tone modes: boss, developer, and it_admin.
+    **AI security notifications.** Translates technical alerts into plain language. Delivers via Telegram, Slack, Email, Webhook, or LINE. Three tone modes: boss, developer, it_admin.
   </Card>
   <Card title="Panguard Trap" icon="honey-pot">
-    **Smart Honeypots** -- 8 decoy services (SSH, HTTP, FTP, SMB, MySQL, RDP, Telnet, Redis) that lure attackers, collect intelligence, and profile attacker skill levels.
+    **8 protocol honeypots.** SSH, HTTP, FTP, SMB, MySQL, RDP, Telnet, Redis -- lure attackers, collect intelligence, and feed signals back to Threat Cloud automatically.
   </Card>
   <Card title="Panguard Report" icon="file-chart-column">
-    **Compliance Reports** -- Auto-generate audit-ready reports for Taiwan TCSA (10 controls), ISO 27001 (30 controls), and SOC 2 (10 controls) in 60 seconds.
+    **Compliance reports.** Auto-generate audit-ready reports for ISO 27001 (30 controls), SOC 2 (10 controls), and Taiwan TCSA (10 controls) in one command.
   </Card>
-  <Card title="Panguard MCP" icon="plug">
-    **Model Context Protocol** -- Integrate Panguard security data with AI assistants and LLM-powered workflows through the MCP server.
+  <Card title="MCP Server" icon="plug">
+    **AI assistant integration.** 11 MCP tools let Claude Desktop, Cursor, and Claude Code control Panguard directly through natural language.
   </Card>
-  <Card title="Panguard Manager" icon="grid-2">
-    **Multi-Endpoint Management** -- Centralized dashboard for managing multiple Panguard agents across a fleet with policy enforcement and lifecycle management.
-  </Card>
-  <Card title="Threat Cloud" icon="cloud">
-    **Collective Threat Intelligence** -- Anonymized threat signature sharing across the Panguard network. RESTful API with SQLite backend, automatic Sigma rule generation, and IP/domain reputation scoring.
+  <Card title="Skill Auditor" icon="clipboard-check">
+    **Pre-install security gate.** 7-layer checks analyze AI skill manifests for prompt injection, tool poisoning, secrets, and unsafe dependencies before installation.
   </Card>
 </CardGroup>
 
@@ -51,7 +57,7 @@ Panguard uses a layered AI funnel that balances speed, cost, and accuracy. Each 
 
 | Layer | Technology | Handles | Latency | Cost |
 | --- | --- | --- | --- | --- |
-| **Layer 1** | Sigma / YARA rules engine | 90% of events | < 50ms | $0 |
+| **Layer 1** | Sigma / YARA / ATR rules engine | 90% of events | < 50ms | $0 |
 | **Layer 2** | Local AI (Ollama) | 7% of events | ~2s | $0 |
 | **Layer 3** | Cloud AI (Claude / OpenAI) | 3% of events | ~5s | ~$0.008/call |
 
@@ -68,48 +74,22 @@ For a deep dive into the AI architecture, see [Three-Layer AI](/concepts/three-l
 | Language | TypeScript 5.7 (strict mode) |
 | Runtime | Node.js 20+ |
 | Monorepo | pnpm 10 workspaces |
-| Testing | Vitest 3 (3,017 tests / 142 files) |
-| Detection Rules | Sigma (3,155) + YARA (5,895) + Suricata + Falco |
+| Testing | Vitest 3 (3,583 tests / 165 files) |
+| Detection Rules | Sigma (3,754) + YARA (4,369) + ATR (32) |
 | AI Providers | Ollama (local) + Claude / OpenAI (cloud) |
-| Authentication | Google OAuth (PKCE) + scrypt hashing |
 | Internationalization | English + Traditional Chinese |
 | Encryption | AES-256-GCM |
+| License | MIT |
 
-## Subscription Tiers
+## 100% Open Source
 
-| Feature | Community | Solo | Pro | Business |
-| --- | --- | --- | --- | --- |
-| **Price** | Free | $9/mo | $29/mo | $79/mo |
-| **Machines** | 1 | 3 | 10 | 25 |
-| Scan (unlimited) | Yes | Yes | Yes | Yes |
-| Guard (Layer 1 rules) | Yes | Yes | Yes | Yes |
-| Guard (Full 3-layer AI) | -- | Yes | Yes | Yes |
-| Chat notifications | -- | Yes | Yes | Yes |
-| Local AI (Ollama) | -- | Yes | Yes | Yes |
-| Cloud AI analysis | -- | -- | Yes | Yes |
-| Trap (8 honeypots) | -- | -- | Yes | Yes |
-| Compliance reports | -- | -- | Yes | Yes |
-| SIEM integration | -- | -- | -- | Yes |
-| SSO and RBAC | -- | -- | -- | Yes |
-| Dedicated support | -- | -- | -- | Yes |
+Panguard AI is released under the [MIT License](https://github.com/panguard-ai/panguard-ai/blob/main/LICENSE). Every feature is free -- no paid tiers, no paywalls, no feature gates. Full source code. Zero black boxes. Every line is auditable.
 
-### Compliance Report Pricing
-
-Compliance reports are available as one-time purchases on Pro and Business plans:
-
-| Report | Price | Controls |
-| --- | --- | --- |
-| Taiwan TCSA | $299 | 10 |
-| ISO 27001 | $499 | 30 |
-| SOC 2 | $699 | 10 |
-| Bundle (all 3) | $999 | 50 |
-
-Annual billing receives a 20% discount on all subscription plans. Manage your subscription at [panguard.ai/pricing](https://panguard.ai/pricing).
-
-## Open Source
-
-Panguard AI is released under the [MIT License](https://github.com/panguard-ai/panguard-ai/blob/main/LICENSE). Full source code. Zero black boxes. Every line is auditable.
-
-<Card title="View on GitHub" icon="github" href="https://github.com/panguard-ai/panguard-ai">
-  Browse the source code, report issues, or contribute to the project.
-</Card>
+<CardGroup cols={2}>
+  <Card title="View on GitHub" icon="github" href="https://github.com/panguard-ai/panguard-ai">
+    Browse the source code, report issues, or contribute to the project.
+  </Card>
+  <Card title="ATR Rules on GitHub" icon="file-code" href="https://github.com/Agent-Threat-Rule/agent-threat-rules">
+    Contribute ATR rules -- every new rule strengthens collective immunity for all users.
+  </Card>
+</CardGroup>

@@ -120,9 +120,9 @@ const TIER_LIMITS: Record<string, TierLimits> = {
 
 const TIER_PRICE: Record<string, string> = {
   community: '$0',
-  solo: '$9/mo',
-  pro: '$29/mo',
-  business: '$79/mo',
+  solo: '$0',
+  pro: '$0',
+  business: '$0',
 };
 
 export default function DashboardContent() {

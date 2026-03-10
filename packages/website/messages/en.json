@@ -2,7 +2,7 @@
   "common": {
     "getStarted": "Get Started",
     "signIn": "Sign In",
-    "startFreeTrial": "Start 14-Day Free Trial",
+    "startFreeTrial": "Install Free",
     "scanFree": "Scan Free",
     "contactSales": "Talk to Sales",
     "requestDemo": "Request a Demo",
@@ -69,8 +69,8 @@
       "mcpDesc": "AI assistant integration",
       "skillAuditor": "Skill Auditor",
       "skillAuditorDesc": "Pre-install skill security",
-      "devReview": "Dev Review",
-      "devReviewDesc": "AI agent security review"
+      "atrStandard": "ATR Standard",
+      "atrStandardDesc": "Open standard for AI agent threats"
     },
     "solutionLinks": {
       "developers": "For Developers",
@@ -127,7 +127,7 @@
     "chat": "Chat",
     "trap": "Trap",
     "report": "Report",
-    "devReview": "Dev Review",
+    "mcp": "MCP Server",
     "compliance": "Compliance",
     "integrations": "Integrations",
     "documentation": "Documentation",
@@ -575,97 +575,13 @@
       }
     },
     "homePricing": {
-      "overline": "Pricing",
-      "title": "Security that fits your budget.",
-      "subtitle": "Start free. Scale when you're ready.",
-      "recommended": "Most Popular",
-      "plans": {
-        "0": {
-          "name": "Community",
-          "price": "Free",
-          "period": "",
-          "desc": "1 machine. Perfect for trying out.",
-          "features": {
-            "0": "Full Scan + PDF report",
-            "1": "Guard basic detection + blocking",
-            "2": "Threat Cloud intelligence"
-          },
-          "cta": "Get Started"
-        },
-        "1": {
-          "name": "Solo",
-          "price": "$9",
-          "period": "/mo",
-          "desc": "Up to 3 machines. For developers.",
-          "features": {
-            "0": "Everything in Community",
-            "1": "Full auto-response",
-            "2": "Slack / Telegram / Email",
-            "3": "SSH + HTTP honeypots + Ollama AI"
-          },
-          "cta": "Start Solo"
-        },
-        "2": {
-          "name": "Pro",
-          "price": "$29",
-          "period": "/mo",
-          "desc": "Up to 10 machines. For teams.",
-          "features": {
-            "0": "Everything in Solo",
-            "1": "Cloud AI deep analysis",
-            "2": "All 8 honeypot protocols",
-            "3": "Dashboard",
-            "4": "Webhook integration"
-          },
-          "cta": "Start Pro"
-        },
-        "3": {
-          "name": "Business",
-          "price": "$79",
-          "period": "/mo",
-          "desc": "Up to 25 machines. For organizations.",
-          "features": {
-            "0": "Everything in Pro",
-            "1": "1 compliance report/month included",
-            "2": "Webhook API access",
-            "3": "Priority support",
-            "4": "Additional reports at 50% off"
-          },
-          "cta": "Start Business"
-        }
-      },
-      "reportTitle": "Compliance Reports — One-time Purchase",
-      "reports": {
-        "0": {
-          "name": "Taiwan Cyber Security Act",
-          "controls": "10 controls",
-          "price": "$299",
-          "market": "Typical consulting cost: $10,000+"
-        },
-        "1": {
-          "name": "ISO 27001",
-          "controls": "30 controls",
-          "price": "$499",
-          "market": "Typical consulting cost: $15,000+"
-        },
-        "2": {
-          "name": "SOC 2",
-          "controls": "10 controls",
-          "price": "$699",
-          "market": "Typical consulting cost: $20,000+"
-        },
-        "3": {
-          "name": "Bundle (All 3)",
-          "controls": "50 controls",
-          "price": "$999",
-          "market": "Typical consulting cost: $30,000+",
-          "badge": "SAVE 33%"
-        }
-      },
-      "reportNote": "One-time purchase. Generated in 60 seconds. PDF + evidence package.",
-      "reportCta": "View compliance options",
-      "disclaimer": "Readiness assessment, not official certification. Reports identify compliance gaps before formal audits.",
-      "priceNote": "All prices in USD. TWD pricing available on the Chinese version."
+      "overline": "Open Source",
+      "title": "100% free. 100% open source.",
+      "subtitle": "MIT License. Every feature. Every rule. No limits.",
+      "badge": "MIT Licensed",
+      "desc": "Everything included. Unlimited machines. Full source code on GitHub.",
+      "cta": "Install Now",
+      "ctaSecondary": "Explore ATR Standard"
     },
     "whyNow": {
       "title": "Why Now",
@@ -720,7 +636,7 @@
     },
     "finalCta": {
       "title": "You deploy. We defend.",
-      "subtitle": "One command to install. Free tier with full scanning. No account. No credit card. No sales call.",
+      "subtitle": "One command to install. Everything included. MIT open source. No account needed.",
       "manifesto": "We built Panguard because security shouldn't need a six-figure budget or a dedicated team. It should be one command away.",
       "btnGetStarted": "Free Server Scan",
       "btnGithub": "GitHub",
@@ -735,233 +651,41 @@
     }
   },
   "pricing": {
-    "overline": "Pricing",
-    "title": "Simple, transparent pricing",
-    "subtitle": "14-day free trial on every paid plan. No credit card required. Start protecting your endpoints with one command.",
-    "addonsOverline": "Add-ons",
-    "addonsTitle": "Compliance report add-ons",
-    "addonsSubtitle": "Available on Starter plans and above. Add compliance reporting to any plan.",
-    "iso27001": "ISO 27001",
-    "iso27001Price": "$5/endpoint/mo",
-    "iso27001Desc": "Gap analysis and audit-ready documentation",
-    "soc2": "SOC 2",
-    "soc2Price": "$5/endpoint/mo",
-    "soc2Desc": "Type II evidence and continuous monitoring",
-    "tcsa": "Taiwan Cyber Security Act",
-    "tcsaPrice": "$3/endpoint/mo",
-    "tcsaDesc": "Bilingual compliance reports (EN + zh-TW)",
-    "bundle": "Full Bundle",
-    "bundlePrice": "$10/endpoint/mo",
-    "bundleDesc": "All frameworks included, save 30%",
-    "faqOverline": "FAQ",
-    "faqTitle": "Frequently asked questions",
-    "faqSubtitle": "Everything you need to know about pricing and plans.",
-    "enterpriseTitle": "Need a custom solution?",
-    "enterpriseDesc": "Need more than 25 machines? Contact us for volume pricing and custom configurations.",
-    "guarantee": "14-day free trial on all paid plans. No credit card required."
+    "overline": "Open Source",
+    "title": "100% free. 100% open source.",
+    "subtitle": "MIT License. No paywalls, no tiers, no limits. Every feature included.",
+    "guarantee": "MIT License. Full source code available on GitHub."
   },
   "pricingPage": {
     "hero": {
-      "overline": "Pricing",
-      "title": "Simple, transparent pricing",
-      "subtitle": "Start free. Scale as you grow. Cancel anytime."
+      "overline": "Open Source",
+      "title": "100% free. 100% open source.",
+      "subtitle": "MIT License. No paywalls, no tiers, no limits. Every feature. Every rule. Every tool."
     },
-    "addons": {
-      "overline": "Compliance Add-ons",
-      "title": "Compliance reports. Save $5,000+ in consulting fees.",
-      "subtitle": "Traditional ISO 27001 gap analysis: $5,000-$15,000 per engagement. Panguard generates equivalent reports automatically.",
-      "bestValue": "Best Value",
-      "items": {
-        "taiwan": {
-          "name": "Taiwan Cyber Security Act",
-          "price": "$299",
-          "unit": "one-time",
-          "desc": "Full ISMS gap analysis. Control-by-control assessment with bilingual output (EN + zh-TW)."
-        },
-        "iso27001": {
-          "name": "ISO 27001",
-          "price": "$499",
-          "unit": "one-time",
-          "desc": "Complete 93-control gap analysis. Improvement recommendations with priority ranking."
-        },
-        "soc2": {
-          "name": "SOC 2 Type II",
-          "price": "$699",
-          "unit": "one-time",
-          "desc": "Trust Services Criteria assessment. Security, availability, and confidentiality controls."
-        },
-        "bundle": {
-          "name": "All Frameworks Bundle",
-          "price": "$999",
-          "unit": "one-time",
-          "desc": "All three frameworks. Save $498. Includes continuous monitoring for 3 months."
-        }
-      },
-      "requiresPro": "Available on Pro and Business plans. Reports delivered in PDF + JSON format.",
-      "disclaimer": "Panguard compliance reports are AI-powered gap analysis tools intended as a reference for compliance readiness. Reports do not constitute formal certification, legal advice, or audit conclusions. For formal certification, we recommend engaging an accredited certification body for final audit."
-    },
+    "badge": "MIT Open Source",
+    "planName": "Panguard AI",
+    "badge": "MIT Licensed",
+    "planDesc": "Everything included. Unlimited machines. Full source code on GitHub.",
+    "ctaInstall": "Install Now",
+    "ctaGithub": "View on GitHub",
+    "openSourceNote": "Panguard is fully open source under the MIT license. The entire codebase -- Guard, Threat Cloud, ATR rules, and all tools -- is available on GitHub.",
     "faqSection": {
       "overline": "FAQ",
       "title": "Frequently asked questions",
-      "subtitle": "Everything you need to know about pricing and plans."
+      "subtitle": "Everything you need to know about Panguard."
     },
-    "enterprise": {
-      "title": "Need more than 25 machines?",
-      "desc": "Contact us for volume pricing, custom configurations, and extended endpoint support.",
-      "ctaSales": "Contact Us",
-      "ctaDemo": "Try Free Scan"
-    },
-    "guarantee": "14-day free trial on all paid plans. No credit card required.",
-    "checkoutUnavailable": "Checkout is currently unavailable. Please try again later.",
-    "connectionError": "Unable to connect. Please check your connection and try again.",
-    "bestFor": "Best for:",
-    "whenToUpgrade": "Upgrade when:",
-    "plans": {
-      "community": {
-        "name": "Community",
-        "audience": "Open source. Free forever.",
-        "machines": "1 machine",
-        "bestFor": "Side projects, personal servers, learning security basics.",
-        "upgrade": "You need auto-fix, AI defense, or multi-machine support.",
-        "features": [
-          "Full security scan (unlimited)",
-          "PDF report with risk score",
-          "Guard real-time protection (Layer 1)",
-          "Auto-block known attacks",
-          "Manual fix instructions",
-          "Community support"
-        ],
-        "cta": "Get Started Free"
-      },
-      "solo": {
-        "name": "Solo",
-        "audience": "Solo developers & freelancers",
-        "machines": "Up to 3 machines",
-        "bestFor": "Freelancers and indie devs running 1-3 production servers.",
-        "upgrade": "You add a 4th machine or need compliance reports.",
-        "features": [
-          "Everything in Community",
-          "3-layer AI defense (Layer 1+2+3)",
-          "One-click auto-fix vulnerabilities",
-          "Telegram / Slack alerts",
-          "Chat AI assistant",
-          "7-day log retention"
-        ],
-        "cta": "Start 14-Day Free Trial"
-      },
-      "pro": {
-        "name": "Pro",
-        "audience": "Teams & growing businesses",
-        "machines": "Up to 10 machines",
-        "bestFor": "Growing teams that need compliance and advanced threat detection.",
-        "upgrade": "You exceed 10 machines or need SSO/SIEM integration.",
-        "features": [
-          "Everything in Solo",
-          "Trap (honeypots)",
-          "Slack integration",
-          "30-day log retention",
-          "Compliance report access",
-          "Priority support"
-        ],
-        "cta": "Start 14-Day Free Trial"
-      },
-      "business": {
-        "name": "Business",
-        "audience": "Organizations & enterprises",
-        "machines": "Up to 25 machines",
-        "bestFor": "Organizations needing advanced controls, team management, and priority support.",
-        "upgrade": "You exceed 25 machines -- contact us for volume pricing.",
-        "features": [
-          "Everything in Pro",
-          "Full AI + BYOK (bring your own key)",
-          "Webhook / API access",
-          "90-day+ log retention",
-          "Unlimited notifications",
-          "Up to 8 honeypot instances",
-          "Priority email support"
-        ],
-        "cta": "Start 14-Day Free Trial"
-      }
-    },
-    "comparison": {
-      "overline": "Compare Plans",
-      "title": "Feature comparison",
-      "subtitle": "Every feature at a glance."
-    },
-    "comparisonCategories": {
-      "productsIncluded": "Products Included",
-      "alertsIntegrations": "Alerts & Integrations",
-      "supportInfra": "Support & Infrastructure"
-    },
-    "comparisonFeatures": {
-      "Panguard Scan": "Panguard Scan",
-      "Guard detection": "Guard detection",
-      "Auto-block attacks": "Auto-block attacks",
-      "Auto-fix vulnerabilities": "Auto-fix vulnerabilities",
-      "AI analysis": "AI analysis",
-      "Panguard Chat": "Panguard Chat",
-      "Panguard Report": "Panguard Report",
-      "Panguard Trap": "Panguard Trap",
-      "Email alerts": "Email alerts",
-      "Telegram": "Telegram",
-      "Slack": "Slack",
-      "Webhook / API": "Webhook / API",
-      "SIEM integration": "SIEM integration",
-      "Community support": "Community support",
-      "Priority support": "Priority support",
-      "Support level": "Support level",
-      "Log retention": "Log retention",
-      "SSO & RBAC": "SSO & RBAC",
-      "On-premise option": "On-premise option",
-      "Agent Threat Rules (ATR)": "Agent Threat Rules (ATR)",
-      "Machines": "Machines"
-    },
-    "comparisonBadges": {
-      "Agent Threat Rules (ATR)": "Industry First"
-    },
-    "comparisonValues": {
-      "Full": "Full",
-      "Full + custom": "Full + custom",
-      "Known patterns": "Known patterns",
-      "All threats": "All threats",
-      "Manual guide": "Manual guide",
-      "One-click": "One-click",
-      "Custom models": "Custom models",
-      "Full + BYOK": "Full + BYOK",
-      "Forum": "Forum",
-      "Email": "Email",
-      "Priority": "Priority",
-      "Basic": "Basic",
-      "Advanced": "Advanced",
-      "Advanced + API": "Advanced + API",
-      "Session only": "Session only",
-      "Roadmap": "Roadmap"
-    },
-    "tierLabels": {
-      "community": "Community",
-      "solo": "Solo",
-      "pro": "Pro",
-      "business": "Business"
-    },
-    "allPaidPlansNote": "All paid plans include a 14-day free trial. No credit card required. Cancel anytime. Save 20% with annual billing.",
-    "betaDisclaimer": "Feature availability and limits may evolve during the beta period. Quantitative limits (scans, endpoints, reports, API calls) are actively enforced. Qualitative features (detection layers, log retention, notification channels) represent target specifications.",
+    "guarantee": "MIT License. Full source code available on GitHub.",
     "faq": {
-      "faq1q": "How does the trial work?",
-      "faq1a": "Every new account gets a 14-day free trial of the Solo plan with full access to all Solo features. No credit card required. After the trial ends, your account automatically downgrades to the free Community plan. You can upgrade to a paid plan at any time.",
-      "faq2q": "Can I switch plans at any time?",
-      "faq2a": "Absolutely. You can upgrade or downgrade your plan at any point. When upgrading, you get immediate access to the new features and we prorate the difference. When downgrading, the change takes effect at the start of your next billing cycle.",
+      "faq1q": "Is Panguard really free?",
+      "faq1a": "Yes, 100%. Panguard is MIT open source. Every feature -- Guard, Threat Cloud, ATR rules, Scan, Chat, Trap, Report, MCP, Skill Auditor -- is free with no limits on machines, scans, or features. No paid tiers, no paywalls.",
+      "faq2q": "How does Panguard sustain itself?",
+      "faq2a": "We believe AI agent security should be a public good, not a premium feature. Panguard is community-driven. We sustain through sponsorships, grants, and enterprise consulting partnerships.",
       "faq3q": "What counts as a machine?",
-      "faq3a": "A machine is any device or server running the Panguard agent. This includes workstations, laptops, cloud VMs, and bare-metal servers. Containers within a single host count as one machine. Deactivated agents do not count toward your limit.",
-      "faq4q": "Do you offer annual billing discounts?",
-      "faq4a": "Yes. Annual billing saves you 20% compared to monthly pricing. For example, Solo drops from $9/mo to $7.20/mo, Pro from $29/mo to $23.20/mo, and Business from $79/mo to $63.20/mo -- all billed annually.",
-      "faq5q": "Is the Community plan really free?",
-      "faq5a": "Yes, forever. Panguard is open source (MIT). The Community plan includes full security scanning, real-time Layer 1 protection, and community support for 1 machine. When you need multi-machine support, AI defense, or compliance reports, upgrade starting at $9/mo.",
-      "faq6q": "What are the compliance reports?",
-      "faq6a": "Available on Pro and Business plans. Generate Taiwan Cyber Security Act ($299), ISO 27001 ($499), SOC 2 ($699), or bundle all three ($999). Reports are AI-powered gap analysis delivered in PDF + JSON format.",
-      "faq7q": "What happens to my data if I cancel?",
-      "faq7a": "Your data remains accessible in read-only mode for 30 days after cancellation. During that window, you can export all reports, logs, and configurations. After 30 days, data is securely deleted in accordance with our data retention policy and GDPR requirements.",
-      "faq8q": "How does the compliance report quality compare to a human consultant?",
-      "faq8a": "Panguard compliance reports evaluate 30 ISO 27001 controls, 10 SOC 2 controls, and 10 TCSA controls, automatically scanning your system configuration and assessing each control. Report format meets audit standards. However, we recommend using the report as a starting point, working with your internal team or external consultant to complete the final certification process."
+      "faq3a": "A machine is any device or server running the Panguard agent. This includes workstations, laptops, cloud VMs, and bare-metal servers. Containers within a single host count as one machine. There is no limit on the number of machines.",
+      "faq4q": "Can I use Panguard commercially?",
+      "faq4a": "Yes. The MIT License allows full commercial use. You can deploy Panguard in production, embed it in your product, modify the source code, and redistribute it. The only requirement is including the MIT license notice.",
+      "faq5q": "How do I contribute?",
+      "faq5a": "Panguard welcomes contributions: ATR rules, Sigma/YARA rules, threat intelligence, code improvements, documentation, and translations. Visit our GitHub repository, fork it, and submit a pull request. ATR rules are especially valuable -- every new rule strengthens collective immunity for all users."
     }
   },
   "scan": {
@@ -1033,34 +757,44 @@
   "product": {
     "overview": {
       "overline": "Platform",
-      "title": "Eight products. One mission:",
-      "titleHighlight": "make security invisible.",
-      "subtitle": "Start with a free scan. Scale to 24/7 AI protection, intelligent honeypots, automated compliance, SAST code scanning, skill security auditing, and MCP integration -- all from a single platform that installs in one command.",
+      "title": "Three pillars. One mission:",
+      "titleHighlight": "secure every AI agent.",
+      "subtitle": "ATR defines the standard. Threat Cloud builds collective immunity. Guard enforces it all. One command to deploy -- works with Claude Code, Cursor, OpenClaw, and any AI agent.",
       "products": {
+        "atr": {
+          "name": "ATR -- The Standard",
+          "tagline": "The first open standard for AI agent threat detection.",
+          "badge": "Standard"
+        },
+        "threatCloud": {
+          "name": "Threat Cloud -- The Network",
+          "tagline": "Collective immunity. Every install makes everyone safer.",
+          "badge": "Network"
+        },
+        "guard": {
+          "name": "Guard -- The Engine",
+          "tagline": "Skill audit + known threat blocking + auto-response.",
+          "badge": "Engine"
+        },
         "scan": {
           "name": "Panguard Scan",
           "tagline": "Know your risk in 60 seconds.",
           "badge": "Free"
         },
-        "guard": {
-          "name": "Panguard Guard",
-          "tagline": "Protection that never sleeps.",
-          "badge": "Core"
-        },
         "chat": {
           "name": "Panguard Chat",
           "tagline": "Your AI security copilot.",
-          "badge": "Core"
+          "badge": "Feature"
         },
         "trap": {
           "name": "Panguard Trap",
-          "tagline": "Catch attackers before they reach you.",
-          "badge": "Advanced"
+          "tagline": "Honeypots that feed intelligence to Threat Cloud.",
+          "badge": "Feature"
         },
         "report": {
           "name": "Panguard Report",
-          "tagline": "Compliance without the consultant.",
-          "badge": "Compliance"
+          "tagline": "Compliance reports in one command.",
+          "badge": "Feature"
         },
         "mcp": {
           "name": "MCP Server",
@@ -1069,21 +803,16 @@
         },
         "skillAuditor": {
           "name": "Skill Auditor",
-          "tagline": "Audit AI skills before you install them.",
-          "badge": "OpenClaw"
-        },
-        "sast": {
-          "name": "Code Scanner",
-          "tagline": "Find vulnerabilities in your source code.",
-          "badge": "SAST"
+          "tagline": "Audit any AI skill before install. Built into Guard.",
+          "badge": "Built-in"
         }
       },
       "capabilities": "Key Capabilities",
       "cta": {
-        "title": "Ready to see it all in action?",
-        "subtitle": "Start with a free Panguard Scan to see your risk profile. When you are ready, upgrade to unlock Guard, Chat, Trap, and Report -- all with a 14-day free trial.",
-        "cta1": "Start 14-Day Free Trial",
-        "cta2": "Request a Demo"
+        "title": "Ready to secure your AI agents?",
+        "subtitle": "One command to deploy. Works with Claude Code, Cursor, OpenClaw, WorkBuddy, and any AI agent setup. 32 ATR rules + 8,000+ detection rules. Free to start.",
+        "cta1": "Get Started",
+        "cta2": "View ATR on GitHub"
       }
     },
     "scan": {
@@ -1145,7 +874,7 @@
         }
       },
       "cta": {
-        "title": "Try it now. Free forever.",
+        "title": "Try it now. Open source.",
         "desc": "Run your first scan in under a minute. If you like what you see, upgrade to Panguard Guard for continuous protection.",
         "cta1": "Get Early Access",
         "cta2": "Run Free Scan"
@@ -4028,7 +3757,7 @@
       "vsCicdManual": "No",
       "vsCicdPanguard": "JSON output + exit codes",
       "ctaTitle": "Get Started",
-      "ctaDesc": "Install Panguard and start auditing skills in under 2 minutes. Free forever on the Community plan.",
+      "ctaDesc": "Install Panguard and start auditing skills in under 2 minutes. MIT licensed, open source.",
       "ctaFullSetup": "Full Setup Guide",
       "ctaBlogPost": "Read the Blog Post"
     }
@@ -4715,12 +4444,12 @@
       ]
     },
     "tierNote": {
-      "title": "Free vs Paid",
-      "desc": "Threat Cloud activates automatically with every Panguard installation. The free tier receives full threat intelligence. Multi-endpoint management and advanced API access require a paid plan.",
-      "freeLabel": "Free (Free Scan / Solo)",
-      "freeDesc": "Single endpoint, full threat intel feed, basic API",
-      "paidLabel": "Starter plan and above",
-      "paidDesc": "Multi-endpoint management, centralized dashboard, advanced API, cross-endpoint correlation"
+      "title": "100% Open Source",
+      "desc": "Threat Cloud activates automatically with every Panguard installation. Every feature is free and open source under MIT license. No paid tiers, no feature gates.",
+      "freeLabel": "Every Installation",
+      "freeDesc": "Full threat intel feed, multi-endpoint management, complete API access",
+      "paidLabel": "Community Contribution",
+      "paidDesc": "Contribute ATR rules, threat intelligence, and detection patterns to strengthen collective immunity"
     },
     "cta": {
       "title": "Join the network",
@@ -5544,6 +5273,108 @@
         { "id": "ASI10", "name": "Rogue Agents", "covered": true }
       ]
     },
+    "comparison": {
+      "overline": "WHY ATR",
+      "title": "Three standards. Three eras.",
+      "subtitle": "Sigma defined network detection. YARA defined file detection. ATR defines agent detection.",
+      "headers": {
+        "feature": "Capability",
+        "sigma": "Sigma",
+        "yara": "YARA",
+        "atr": "ATR"
+      },
+      "rows": [
+        { "feature": "Detection target", "sigma": "Log events", "yara": "Files / memory", "atr": "Agent behavior" },
+        { "feature": "Prompt injection detection", "sigma": false, "yara": false, "atr": true },
+        { "feature": "Tool call monitoring", "sigma": false, "yara": false, "atr": true },
+        { "feature": "Multi-turn conversation analysis", "sigma": false, "yara": false, "atr": true },
+        { "feature": "Semantic-layer matching", "sigma": false, "yara": false, "atr": true },
+        { "feature": "OWASP Agentic Top 10 mapping", "sigma": false, "yara": false, "atr": true },
+        { "feature": "MITRE ATT&CK / ATLAS references", "sigma": true, "yara": false, "atr": true },
+        { "feature": "Machine-readable format", "sigma": true, "yara": true, "atr": true },
+        { "feature": "Automated response actions", "sigma": false, "yara": false, "atr": true },
+        { "feature": "Community rule repository", "sigma": true, "yara": true, "atr": true }
+      ]
+    },
+    "architecture": {
+      "overline": "INTEGRATION",
+      "title": "Where ATR fits in the stack",
+      "subtitle": "ATR rules are evaluated at the semantic layer -- between the LLM and the tools it invokes.",
+      "layers": [
+        { "name": "User Input", "desc": "Prompt text, uploaded files, conversation context", "position": "top" },
+        { "name": "ATR Engine", "desc": "32 rules evaluated in <1ms per event. Block, alert, or escalate.", "position": "middle", "highlighted": true },
+        { "name": "LLM / Agent", "desc": "Claude, GPT, Gemini, local models -- any provider", "position": "middle" },
+        { "name": "Tools & Skills", "desc": "MCP servers, OpenClaw skills, file system, shell, APIs", "position": "bottom" }
+      ],
+      "caption": "ATR intercepts at the semantic layer -- before malicious instructions reach the agent, and before compromised outputs reach the tools."
+    },
+    "moreExamples": {
+      "overline": "RULE EXAMPLES",
+      "title": "Rules for real threats",
+      "subtitle": "Each rule targets a specific attack pattern observed in production AI agent deployments.",
+      "rules": [
+        {
+          "title": "Tool Poisoning via MCP",
+          "id": "ATR-2026-008",
+          "severity": "critical",
+          "category": "Tool Poisoning"
+        },
+        {
+          "title": "Context Exfiltration via Markdown",
+          "id": "ATR-2026-012",
+          "severity": "high",
+          "category": "Context Exfiltration"
+        },
+        {
+          "title": "Excessive Agent Autonomy Loop",
+          "id": "ATR-2026-020",
+          "severity": "medium",
+          "category": "Excessive Autonomy"
+        }
+      ]
+    },
+    "ecosystem": {
+      "overline": "ECOSYSTEM",
+      "title": "Open standard. Community-driven growth.",
+      "subtitle": "ATR follows the same playbook that made Sigma and YARA industry standards -- open governance, community contributions, and vendor-neutral design.",
+      "stats": [
+        { "value": "32", "label": "Detection rules" },
+        { "value": "9", "label": "Threat categories" },
+        { "value": "10/10", "label": "OWASP Agentic coverage" },
+        { "value": "MIT", "label": "License" }
+      ],
+      "steps": {
+        "overline": "CONTRIBUTION FLOW",
+        "step1": { "name": "Identify a threat pattern", "desc": "Observe a new attack vector in production, research, or CTF. Document the behavior." },
+        "step2": { "name": "Write an ATR rule", "desc": "Define detection conditions in YAML. Map to OWASP and MITRE references. Add test cases." },
+        "step3": { "name": "Submit a pull request", "desc": "The community reviews, tests, and merges. Rules ship to all ATR users automatically." },
+        "step4": { "name": "Collective defense", "desc": "Every new rule strengthens the entire ecosystem. One contributor protects thousands of deployments." }
+      }
+    },
+    "roadmap": {
+      "overline": "ROADMAP",
+      "title": "The standard evolves",
+      "phases": [
+        {
+          "version": "v0.1",
+          "status": "current",
+          "title": "Foundation",
+          "items": ["32 rules across 9 categories", "YAML format specification", "OWASP Agentic Top 10 mapping", "Real-time evaluation engine", "CLI tooling"]
+        },
+        {
+          "version": "v0.2",
+          "status": "next",
+          "title": "Expansion",
+          "items": ["50+ rules with community contributions", "Semantic operator support", "Multi-agent correlation rules", "IDE integration (VS Code, Cursor)", "Threat Cloud auto-generated rules"]
+        },
+        {
+          "version": "v1.0",
+          "status": "future",
+          "title": "Industry Standard",
+          "items": ["100+ production-grade rules", "Formal specification document", "Vendor integration program", "Certification and compliance toolkit", "Governing body formation"]
+        }
+      ]
+    },
     "cta": {
       "title": "Join the ATR community",
       "desc": "ATR is open source and community-driven. Contribute rules, report new threat patterns, or integrate ATR into your own agent security stack.",
@@ -5554,45 +5385,45 @@
   },
   "revolution": {
     "hero": {
-      "eyebrow": "AGENT THREAT RULES",
-      "title": "Your AI agent has root access. Who's watching it?",
-      "subtitleLine1": "Your coding agent runs with full system permissions. One malicious skill can steal everything.",
-      "subtitleLine2": "Panguard scans every skill, monitors every interaction, blocks threats before they execute.",
-      "subtitleLine3": "Open source. One command. Zero configuration.",
-      "viewATR": "Agent Threat Rules on GitHub",
+      "eyebrow": "THE OPEN STANDARD FOR AI AGENT SECURITY",
+      "title": "AI agents have root access. There's no standard for watching them. Until now.",
+      "subtitleLine1": "Claude Code, Cursor, OpenClaw, WorkBuddy -- every AI agent runs with full system permissions. One malicious skill can steal everything.",
+      "subtitleLine2": "ATR is the first open standard that defines what an agent under attack looks like. Panguard enforces it.",
+      "subtitleLine3": "Open source. Community-driven. One command to deploy.",
+      "viewATR": "ATR Standard on GitHub",
       "install": "Get Started",
       "copied": "Copied!",
       "badges": {
         "mit": "MIT Licensed",
-        "rules": "32 Rules",
-        "tests": "3,000+ Tests",
+        "rules": "32 ATR Rules",
+        "tests": "3,500+ Tests",
         "taiwan": "Built in Taiwan"
       }
     },
     "productPillars": {
-      "skillAuditor": {
-        "title": "Skill Auditor",
-        "desc": "Scan any MCP skill before install. 7 automated security checks. 0-100 risk score in under a second.",
-        "link": "How it works"
-      },
-      "runtimeGuard": {
-        "title": "Runtime Guard",
-        "desc": "Monitor every LLM interaction, tool call, and skill execution in real time. Threats blocked before they reach your agent.",
-        "link": "How it works"
-      },
       "atrStandard": {
-        "title": "ATR Standard",
-        "desc": "32 open detection rules across 9 threat categories. Community-driven. MIT licensed. The Sigma of AI agents.",
-        "link": "View rules"
+        "title": "ATR -- The Standard",
+        "desc": "The first open detection format for AI agent threats. 32 rules across 9 categories. Sigma defined network attacks. ATR defines agent attacks.",
+        "link": "View the standard"
+      },
+      "threatCloud": {
+        "title": "Threat Cloud -- The Network",
+        "desc": "Every deployment contributes anonymized threat data. New rules are auto-generated and pushed to all users. One install strengthens the entire ecosystem.",
+        "link": "How it works"
+      },
+      "guard": {
+        "title": "Guard -- The Engine",
+        "desc": "Audits every skill before install. Blocks known threats with 3,700+ Sigma and 4,300+ YARA rules. Auto-responds: block, kill, quarantine.",
+        "link": "How it works"
       }
     },
     "atrShowcase": {
-      "title": "Open rules. Real tests. Immediate action.",
+      "title": "Sigma defined network attacks. ATR defines agent attacks.",
       "githubCta": "View on GitHub",
       "features": {
         "agentNative": {
           "title": "Agent-native",
-          "desc": "Monitors LLM I/O, MCP tool calls, and skill behavior. Purpose-built for the agent era -- not repurposed network rules."
+          "desc": "Purpose-built for the agent era. Defines threat signatures for prompt injection, tool poisoning, skill compromise, and cross-agent attacks."
         },
         "testable": {
           "title": "Verifiable",
@@ -5600,17 +5431,17 @@
         },
         "actionable": {
           "title": "Actionable",
-          "desc": "Block, alert, quarantine. Every rule defines the response -- not just the detection."
+          "desc": "Block, alert, quarantine, escalate. Every rule defines the response -- not just the detection."
         },
         "collective": {
           "title": "Collective",
-          "desc": "Every deployment contributes anonymized threat patterns back to the community. One install strengthens the entire ecosystem."
+          "desc": "Community-contributed rules. MIT licensed. Any tool can implement the ATR format. One standard for the entire ecosystem."
         }
       }
     },
     "skillProtection": {
-      "title": "Every skill your agent installs gets audited. Automatically.",
-      "subtitle": "OpenClaw and MCP skills are the new npm packages -- except there's no security scanning built in. One malicious skill can exfiltrate your data, hijack your agent, or leak credentials. Panguard's Skill Auditor scans every skill before it runs.",
+      "title": "Every skill gets audited before it touches your system.",
+      "subtitle": "AI agent skills (OpenClaw, MCP, custom) are the new npm packages -- except there's no security scanning. One malicious skill can exfiltrate data, hijack your agent, or leak credentials. Panguard audits every skill before install.",
       "without": {
         "label": "Without Panguard",
         "items": [
@@ -5624,14 +5455,14 @@
       "with": {
         "label": "With Panguard",
         "items": [
-          "Every skill scanned against 32 ATR rules before execution",
-          "Prompt injection, data exfiltration, hidden payloads -- caught automatically",
-          "Continuous monitoring catches malicious updates",
-          "Threats blocked before they reach your agent",
+          "Every skill scanned for prompt injection, tool poisoning, encoded payloads",
+          "Base64, Unicode, homoglyph attacks -- decoded and caught",
+          "0-100 risk score in under a second",
+          "Skills above threshold are blocked automatically",
           "One command. Zero configuration. Always on."
         ]
       },
-      "bottomLine": "Install once. Every skill, every update, every interaction -- protected."
+      "bottomLine": "Install once. Every skill, every update -- audited before execution."
     },
     "threats": {
       "title": "Nine categories of agent threats. One standard.",
@@ -5647,51 +5478,51 @@
         "dataPoisoning": "Data Poisoning",
         "modelSecurity": "Model Security"
       },
-      "statsLine": "15 CVE mappings. OWASP Agentic Top 10: 8 of 10 categories covered. MIT licensed."
+      "statsLine": "OWASP Agentic Top 10: 10 of 10 categories covered. 15 CVE mappings. MIT licensed."
     },
     "howItWorks": {
       "title": "Install. Protect. Contribute.",
       "steps": {
         "install": {
           "title": "Install",
-          "desc": "Works with any AI coding agent -- Claude Code, Cursor, CodeBuddy, or your own MCP setup. One command. 32 detection rules. Zero configuration."
+          "desc": "Works alongside any AI agent -- Claude Code, Cursor, OpenClaw, WorkBuddy, or your own setup. One command. 32 ATR rules + 8,000+ Sigma/YARA rules loaded. Zero configuration."
         },
         "protect": {
           "title": "Protect",
-          "desc": "Every LLM input, every tool call, every skill install -- monitored in real time. Prompt injection, data exfiltration, and malicious MCP responses are blocked before they reach your agent."
+          "desc": "Every skill audited before install. Known attack patterns blocked by Sigma and YARA rules. Suspicious activity flagged and auto-responded -- block IP, kill process, quarantine file."
         },
         "contribute": {
           "title": "Contribute",
-          "desc": "Every deployment anonymously contributes threat patterns to Threat Cloud. AI generates new detection rules. Pushed to every user. Installing is contributing -- you make everyone safer."
+          "desc": "Every deployment anonymously contributes threat data to Threat Cloud. New Sigma, YARA, and ATR rules are auto-generated from collective patterns. The more who install, the stronger everyone becomes."
         }
       }
     },
     "costDisruption": {
-      "title": "Most teams skip security entirely. We made it impossible to skip.",
-      "subtitle": "Startups and small teams don't have security engineers. They don't have six-figure budgets. So they ship agents with zero protection. We built Panguard so that's no longer a valid excuse.",
+      "title": "Most teams skip agent security entirely. We made it impossible to skip.",
+      "subtitle": "Every team uses AI agents now. Few have thought about securing them. There's no standard for what an agent attack looks like -- and no tool built for it. Until Panguard.",
       "comparison": {
         "enterprise": {
-          "label": "The old model",
+          "label": "The current reality",
           "items": [
-            "$50,000+/year for enterprise security tooling",
-            "Months of deployment and configuration",
-            "Requires a dedicated security team",
-            "No awareness of AI agent threats",
-            "Built for infrastructure, not intelligence"
+            "AI agents run with root access, zero oversight",
+            "Skills installed without any security review",
+            "No standard for agent threat detection",
+            "Traditional security tools don't understand agents",
+            "Breaches discovered after the damage"
           ]
         },
         "panguard": {
-          "label": "Panguard",
+          "label": "With Panguard",
           "items": [
-            "Free and open source. MIT licensed.",
-            "One command. Immediate protection.",
-            "No security expertise required",
-            "Built from the ground up for AI agents",
-            "Gets stronger with every deployment"
+            "ATR: the first open standard for agent threats",
+            "Every skill audited before install",
+            "Known threats blocked by 8,000+ detection rules",
+            "Threat Cloud: collective immunity across all deployments",
+            "Gets stronger with every user"
           ]
         }
       },
-      "punchline": "Good security shouldn't require a budget. It should require a single command."
+      "punchline": "AI agents changed how we build software. ATR changes how we secure them."
     },
     "scenarios": {
       "title": "How it works in practice.",
@@ -5700,31 +5531,31 @@
         "skillInstall": {
           "label": "INSTALL",
           "title": "Install a skill from OpenClaw. Panguard audits it automatically.",
-          "narrative": "Run npx panguard guard --watch before adding any skill. From that point, every MCP skill your agent installs is scanned against 32 Agent Threat Rules -- checking for data exfiltration patterns, embedded injection payloads, and excessive permission requests. Malicious skills are blocked before execution. Safe skills proceed normally.",
+          "narrative": "Before any skill runs, Panguard's Skill Auditor scans it -- checking for prompt injection patterns, encoded payloads, tool poisoning, excessive permissions, and hidden Unicode attacks. Skills above the risk threshold are blocked. Safe skills proceed normally. All results feed into Threat Cloud.",
           "before": "Without protection, a compromised skill executes immediately with full system access.",
-          "after": "With Panguard, every skill passes a 32-rule security audit before it touches your system."
+          "after": "With Panguard, every skill passes a 7-check security audit before it touches your system."
         },
         "alwaysOn": {
-          "label": "MONITOR",
-          "title": "Your agent runs around the clock. Every interaction is monitored.",
-          "narrative": "An AI agent processing customer messages, managing workflows, calling external APIs -- every LLM input, every tool call, every response is analyzed in real time. When a prompt injection arrives hidden in user input, or a tool returns a poisoned payload designed to override instructions, it's caught and blocked immediately.",
-          "before": "Without protection, thousands of daily interactions run with no security oversight.",
-          "after": "With Panguard, threats are intercepted before they reach your agent's decision layer."
+          "label": "DETECT",
+          "title": "A known attack pattern hits your server. Guard blocks it instantly.",
+          "narrative": "Guard runs 3,700+ Sigma rules and 4,300+ YARA rules against system events in real time. When a brute force attack, a reverse shell attempt, or a credential dump matches a known pattern, Guard auto-responds: block IP, kill process, quarantine file. No human intervention needed.",
+          "before": "Without protection, known attack patterns execute because nobody wrote the firewall rule.",
+          "after": "With Panguard, 8,000+ community-proven detection rules run continuously on your system."
         },
         "supplyChain": {
-          "label": "DEFEND",
-          "title": "A trusted skill pushes a malicious update. Panguard catches it.",
-          "narrative": "A skill you've relied on for months ships a new version. Buried in its tool output is a hidden instruction that redirects your agent to exfiltrate data to an external endpoint. Panguard's continuous monitoring matches the pattern against ATR-2026-006 and blocks execution with a full forensic snapshot.",
-          "before": "Without protection, supply chain compromises run silently until damage is discovered.",
-          "after": "With Panguard, even previously trusted skills are continuously validated against known attack patterns."
+          "label": "EVOLVE",
+          "title": "A new attack pattern emerges. Threat Cloud generates a rule. Everyone gets it.",
+          "narrative": "One Panguard user encounters a novel threat. Their Guard uploads anonymized data to Threat Cloud. The system detects the pattern, auto-generates a new Sigma rule, and pushes it to every connected Guard instance. What attacked one user can never attack another.",
+          "before": "Without collective defense, each team discovers the same attack independently.",
+          "after": "With Threat Cloud, one detection protects the entire network. Collective immunity."
         }
       }
     },
     "securityStack": {
-      "title": "Where Agent Threat Rules fits",
-      "intro": "Claude Code, Cursor, and CodeBuddy help you write secure code. That's the pre-deployment layer.",
-      "but": "But they stop at the deployment boundary. They don't monitor your agent at runtime. They can't detect a prompt injection in progress, a malicious MCP response in real time, or a skill chain attack where three benign-looking tool calls combine into data exfiltration.",
-      "conclusion": "Code scanning protects your code. Agent Threat Rules protects your agent. You need both.",
+      "title": "Where ATR fits in the security stack",
+      "intro": "Claude Code and Codex find bugs in your code before you ship. That's the pre-deployment layer.",
+      "but": "But what about after deployment? Who defines what an agent attack looks like? Who detects a prompt injection in a skill? Who blocks a supply chain compromise in an MCP tool? There was no standard for this. ATR fills that gap.",
+      "conclusion": "Pre-deployment tools protect your code. ATR protects your agents. You need both.",
       "preDeployment": {
         "label": "Pre-deployment",
         "title": "Code Security",
@@ -5733,14 +5564,14 @@
       },
       "postDeployment": {
         "label": "Post-deployment",
-        "title": "Runtime Protection",
-        "tools": "Agent Threat Rules + Panguard",
-        "items": ["Real-time LLM interaction monitoring", "Live prompt injection detection", "Malicious MCP response blocking", "Cross-tool skill chain attack detection"]
+        "title": "Agent Security",
+        "tools": "ATR + Panguard Guard",
+        "items": ["Skill audit before install (prompt injection, encoded payloads)", "Known threat blocking (3,700+ Sigma, 4,300+ YARA rules)", "Auto-response (block IP, kill process, quarantine)", "Collective defense via Threat Cloud"]
       },
-      "bottomLine": "Pre-deployment finds bugs. Post-deployment stops attacks."
+      "bottomLine": "Pre-deployment finds bugs in code. Post-deployment stops attacks on agents."
     },
     "flywheel": {
-      "title": "Collective defense.",
+      "title": "Collective immunity.",
       "nodes": {
         "installPanguard": "Deploy",
         "detectThreats": "Detect",
@@ -5749,14 +5580,14 @@
         "distribute": "Distribute",
         "betterProtection": "Strengthen"
       },
-      "quote": "Every deployment contributes anonymized threat data. AI generates new detection rules from the collective. The more who install, the stronger everyone becomes.",
+      "quote": "Every deployment contributes anonymized threat data. Threat Cloud auto-generates new Sigma, YARA, and ATR rules. The more who install, the stronger everyone becomes.",
       "quoteLine1": "Every deployment contributes anonymized threat data to Threat Cloud.",
-      "quoteLine2": "AI analyzes patterns and generates new detection rules.",
-      "quoteLine3": "The more who install, the stronger everyone becomes."
+      "quoteLine2": "Threat Cloud auto-generates new detection rules from collective patterns.",
+      "quoteLine3": "The more who install, the stronger everyone becomes. Collective immunity."
     },
     "finalCta": {
       "title": "Join the standard.",
-      "subtitle": "ATR is open source, community-driven, and free forever. Every install strengthens the network. Every contribution improves the standard.",
+      "subtitle": "ATR is the first open standard for AI agent security. Community-driven. MIT licensed. Every install strengthens the network.",
       "contributeATR": "Contribute to ATR",
       "joinCommunity": "Join the Community",
       "bottomLine": "Built in Taiwan. Open to the world. Yours to contribute."
