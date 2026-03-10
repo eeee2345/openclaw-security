@@ -19,11 +19,11 @@ export default function Home() {
       <NavBar />
       <main id="main-content">
         <p id="definition" className="sr-only">
-          Panguard AI is the App Store gatekeeper for AI agents. It reviews every skill before it
-          runs, blocks known threats with community ATR + Sigma + YARA rules, catches unknown threats
+          Panguard AI provides the first Skills Audit for AI agents. It audits every skill before it
+          runs, catches known threats with community ATR + Sigma + YARA rules, catches unknown threats
           with AI analysis, and shares new rules to protect everyone. MIT licensed. Open source.
         </p>
-        {/* 1. Hero: Your AI agent needs a gatekeeper */}
+        {/* 1. Hero: The first Skills Audit for AI agents */}
         <RevolutionHero />
         {/* 2. Pipeline: 6-step visual flow diagram */}
         <PipelineFlow />

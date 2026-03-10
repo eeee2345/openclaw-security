@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Copy, Check, ArrowRight } from 'lucide-react';
+import { Copy, Check, ArrowRight, KeyRound, MessageSquareOff, Bot, ShieldAlert } from 'lucide-react';
 import { Link } from '@/navigation';
 import BrandLogo from '@/components/ui/BrandLogo';
 import { CheckIcon } from '@/components/ui/BrandIcons';
@@ -45,6 +45,8 @@ function InstallBar() {
 }
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const threatIcons = [KeyRound, MessageSquareOff, Bot, ShieldAlert];
 
 export default function RevolutionHero() {
   const t = useTranslations('revolution.hero');
@@ -96,16 +98,56 @@ export default function RevolutionHero() {
           {t('title')}
         </motion.h1>
 
-        {/* Subtitle */}
-        <motion.div
+        {/* Subtitle line 1 — the problem */}
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3, ease }}
+          className="mt-8 max-w-2xl mx-auto text-lg sm:text-xl text-text-secondary leading-relaxed"
+        >
+          {t('subtitleLine1')}
+        </motion.p>
+
+        {/* Threat cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5, ease }}
+          className="mt-8 max-w-2xl mx-auto"
+        >
+          <p className="text-sm font-semibold text-red-400 uppercase tracking-wider mb-4">
+            {t('threats.title')}
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map((i) => {
+              const Icon = threatIcons[i];
+              return (
+                <div
+                  key={i}
+                  className="border border-red-500/20 bg-red-500/5 rounded-lg px-4 py-3 text-left"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Icon className="w-4 h-4 text-red-400 shrink-0" />
+                    <span className="text-sm font-semibold text-text-primary">
+                      {t(`threats.items.${i}.label`)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-text-muted leading-relaxed">
+                    {t(`threats.items.${i}.detail`)}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Subtitle line 2 + 3 — the solution */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.7, ease }}
           className="mt-8 max-w-2xl mx-auto space-y-3"
         >
-          <p className="text-lg sm:text-xl text-text-secondary leading-relaxed">
-            {t('subtitleLine1')}
-          </p>
           <p className="text-lg sm:text-xl text-text-primary font-medium leading-relaxed">
             {t('subtitleLine2')}
           </p>
@@ -118,7 +160,7 @@ export default function RevolutionHero() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8, ease }}
+          transition={{ duration: 0.5, delay: 1.0, ease }}
           className="mt-10"
         >
           <InstallBar />
@@ -128,7 +170,7 @@ export default function RevolutionHero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.0, ease }}
+          transition={{ duration: 0.5, delay: 1.2, ease }}
           className="flex flex-wrap gap-3 justify-center mt-8"
         >
           <a
@@ -151,7 +193,7 @@ export default function RevolutionHero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.1, ease }}
+          transition={{ duration: 0.5, delay: 1.3, ease }}
           className="flex flex-wrap gap-3 justify-center mt-6"
         >
           {(['mit', 'rules', 'tests', 'taiwan'] as const).map((key) => (

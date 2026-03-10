@@ -1413,6 +1413,10 @@
       "title": "更新日誌",
       "description": "Panguard 最新動態。每一次更新、改進和修復 -- 透明記錄。"
     },
+    "faq": {
+      "title": "常見問題 -- Panguard AI 安全",
+      "description": "關於 Panguard 如何保護 AI Agent、偵測威脅、處理隱私和保障系統安全的常見問題。"
+    },
     "resources": {
       "title": "資源中心",
       "description": "安全知識庫。白皮書、報告和指南，幫助你的團隊建立更強大的安全。"
@@ -5439,10 +5443,19 @@
   },
   "revolution": {
     "hero": {
-      "eyebrow": "AI AGENT 的 APP STORE 守門員",
-      "title": "你的 AI Agent 需要一個守門員。",
-      "subtitleLine1": "你的 AI Agent 安裝 Skill 時擁有完整系統權限。沒有審核流程、沒有安全檢查、惡意 Skill 和你的資料之間零防線。",
-      "subtitleLine2": "Panguard 就是那個缺失的守門員。每個 Skill 執行前先審核 -- 就像 App Store 審核，但專為 AI Agent 設計。",
+      "eyebrow": "AI AGENT 的 SKILLS STORE AUDIT",
+      "title": "npm 有 audit。Docker 有掃描。AI Agent Skills 什麼都沒有。",
+      "subtitleLine1": "你的 AI Agent 安裝 Skill 時擁有完整系統權限。沒有審計、沒有審核、沒有人在看。",
+      "threats": {
+        "title": "一個惡意 Skill 就夠了。",
+        "items": [
+          { "label": "竊取 API 金鑰", "detail": "讀取 .env，轉發給攻擊者" },
+          { "label": "外洩對話紀錄", "detail": "你的私密上下文，傳送到遠端伺服器" },
+          { "label": "劫持你的 Agent", "detail": "把它變成攻擊他人的工具" },
+          { "label": "洩漏憑證", "detail": "SSH 金鑰、Token、雲端密鑰 -- 全部可存取" }
+        ]
+      },
+      "subtitleLine2": "Panguard 為 AI Agent 生態系帶來 Skills Audit。每個 Skill 在執行前，都經過 8,000+ 社群規則與 AI 分析。每次安裝，更安心。",
       "subtitleLine3": "一行安裝。全天候守護。使用者越多越聰明。",
       "viewATR": "GitHub 上的 ATR 標準",
       "install": "開始使用",
@@ -5455,8 +5468,8 @@
       }
     },
     "pipeline": {
-      "title": "Panguard 怎麼保護你",
-      "subtitle": "每個 Skill 都要通過多層審核流水線，才能碰到你的系統。",
+      "title": "Skills Audit 怎麼運作",
+      "subtitle": "每個 Skill 都要通過多層審計流水線，才能碰到你的系統。",
       "steps": {
         "install": {
           "number": "1",
@@ -5472,8 +5485,8 @@
         },
         "knownCheck": {
           "number": "3",
-          "title": "新 Skill？先過規則審核。",
-          "desc": "每個新 Skill 同時接受社群 ATR 規則（AI Agent 威脅）、Sigma 規則（網路威脅）和 YARA 規則（檔案威脅）三重審核。",
+          "title": "新 Skill？先過審計。",
+          "desc": "每個新 Skill 同時接受社群 ATR 規則（AI Agent 威脅）、Sigma 規則（網路威脅）和 YARA 規則（檔案威脅）三重審計。",
           "detail": "32 ATR + 3,700 Sigma + 4,300 YARA 規則"
         },
         "llmAnalysis": {
@@ -5495,7 +5508,7 @@
           "detail": "集體免疫"
         }
       },
-      "bottomLine": "已知威脅靠規則阻擋。未知威脅靠 AI 阻擋。新規則保護所有人。"
+      "bottomLine": "已知威脅靠規則攔截。未知威脅靠 AI 攔截。新規則分享給所有人。"
     },
     "productPillars": {
       "atrStandard": {
@@ -5538,7 +5551,7 @@
     },
     "skillProtection": {
       "title": "每個 Skill 在碰到你的系統前，都先經過審計。",
-      "subtitle": "AI Agent 的 Skill（OpenClaw、MCP、自建）就像新一代的 npm 套件 -- 但沒有內建的安全掃描。一個惡意 Skill 就能竊取資料、劫持 Agent、洩漏憑證。Panguard 在安裝前自動審計每個 Skill。",
+      "subtitle": "AI Agent 的 Skill（OpenClaw、MCP、自建）就是新的軟體供應鏈 -- 但沒有 npm audit、沒有 image scanning、沒有任何審核機制。一個惡意 Skill 就能竊取資料、劫持 Agent、洩漏憑證。Panguard 為這個空白帶來第一個審計層。",
       "without": {
         "label": "沒有 Panguard",
         "items": [
@@ -5578,7 +5591,7 @@
       "statsLine": "OWASP Agentic Top 10：涵蓋 10/10 類別。15 個 CVE 對應。MIT 開源。"
     },
     "howItWorks": {
-      "title": "就像 App Store 一樣簡單。",
+      "title": "三步完成 Skills Audit。",
       "steps": {
         "install": {
           "title": "安裝",
@@ -5595,11 +5608,11 @@
       }
     },
     "costDisruption": {
-      "title": "AI Agent 沒有 App Store 審核。直到現在。",
-      "subtitle": "你從 App Store 下載 App 時，Apple 會先審核。但你的 AI Agent 安裝 Skill 時呢？什麼都沒有。不審核、不檢查、直接給完整系統權限。Panguard 改變了這件事。",
+      "title": "AI Agent Skills 沒有審計。直到現在。",
+      "subtitle": "npm 有 npm audit。Docker 有 image scanning。Chrome 有擴充審核。但你的 AI Agent 安裝 Skill 時呢？什麼都沒有。沒有審計、直接給完整系統權限。Panguard 改變了這件事。",
       "comparison": {
         "enterprise": {
-          "label": "沒有守門員",
+          "label": "沒有 Skills Audit",
           "items": [
             "Skill 安裝時擁有完整系統權限，零審核",
             "沒有人檢查 Prompt Injection 或資料竊取",
@@ -5619,18 +5632,18 @@
           ]
         }
       },
-      "punchline": "App Store 讓手機變安全。Panguard 讓 AI Agent 變安全。"
+      "punchline": "npm audit 改變了開發者對依賴的思維。Skills Audit 改變全世界對 AI Agent Skills 的思維。"
     },
     "scenarios": {
-      "title": "三層防護。一個守門員。",
-      "subtitle": "已知 AI 威脅、已知傳統威脅、未知威脅。Panguard 三者兼顧。",
+      "title": "三層防護。一次審計。",
+      "subtitle": "已知 AI 威脅、已知傳統威脅、未知威脅。Skills Audit 三者兼顧。",
       "items": {
         "skillInstall": {
           "label": "第一層：規則",
           "title": "新 Skill 來了。ATR + Sigma + YARA 規則即時審核。",
           "narrative": "你從 OpenClaw 或 MCP 安裝新 Skill。在它執行前，Panguard 同時用 32 條 ATR 規則（Prompt Injection、Tool Poisoning、Skill 入侵）、3,700 條 Sigma 規則（網路層威脅）和 4,300 條 YARA 規則（檔案層威脅）進行三重審核。已知威脅被阻擋，安全的 Skill 正常運作。",
-          "before": "沒有守門員，Skill 安裝後立刻擁有完整系統權限。",
-          "after": "有了 Panguard，每個 Skill 在碰到系統前都通過三層審核。"
+          "before": "沒有 Skills Audit，Skill 安裝後立刻擁有完整系統權限。",
+          "after": "有了 Skills Audit，每個 Skill 在碰到系統前都通過三層審計。"
         },
         "alwaysOn": {
           "label": "第二層：AI",
@@ -5650,8 +5663,8 @@
     },
     "securityStack": {
       "title": "你 AI Agent 的免疫系統",
-      "intro": "你的手機有 App Store。你的瀏覽器有擴充審核。你的套件管理器有 npm audit。",
-      "but": "你的 AI Agent 呢？什麼都沒有。Skill 安裝時擁有完整系統權限，零審核。Panguard 給你的 Agent 與其他平台相同的防護 -- 但專為 AI 時代打造。",
+      "intro": "npm 有 audit。Docker 有 image scanning。Chrome 有擴充審核。",
+      "but": "AI Agent Skills 呢？什麼都沒有。安裝時直接拿到完整系統權限，零審計。Panguard 推出 Skills Audit -- 把每個軟體生態系都有的安全審計層，帶進 AI 時代。",
       "conclusion": "規則攔截已知威脅。AI 攔截未知威脅。雲端讓所有人更強。",
       "preDeployment": {
         "label": "已知威脅",
@@ -5683,11 +5696,107 @@
       "quoteLine3": "安裝的人越多，威脅被捕獲的速度越快。集體免疫。"
     },
     "finalCta": {
-      "title": "給你的 AI Agent 一個守門員。",
-      "subtitle": "一行指令安裝。每個 Skill 都經過審核。已知威脅靠社群規則阻擋。未知威脅靠 AI 攔截。新規則分享給所有人。",
+      "title": "開始審計你的 AI Agent Skills。",
+      "subtitle": "一行指令安裝。每個 Skill 都經過審計。已知威脅靠社群規則攔截。未知威脅靠 AI 攔截。新規則分享給所有人。",
       "contributeATR": "貢獻規則",
       "joinCommunity": "安裝 Panguard",
       "bottomLine": "開源。MIT 授權。台灣製造。"
+    }
+  },
+  "faqPage": {
+    "hero": {
+      "overline": "常見問題",
+      "title": "Panguard 到底怎麼保護你",
+      "subtitle": "直接回答你最在意的問題。不說廢話。"
+    },
+    "security": {
+      "title": "安全與偵測",
+      "q1": {
+        "q": "安裝時沒問題，裝好之後才變惡意的 skill，抓得到嗎？",
+        "a": "抓得到。Panguard 有三層獨立防線專門對付這種情況：\n\n1. 行為指紋 -- 前幾次互動時，Panguard 會記錄每個 skill 的「正常行為」：呼叫哪些 API、連線哪些網址、存取哪些檔案。指紋穩定後，任何偏離都會觸發警報。一個天氣查詢工具突然去讀你的 API Key？直接擋。\n\n2. ATR 規則 -- 32 條以上的內建規則專門針對 AI Agent 威脅，包括安裝後攻擊：行為描述不符（skill 說自己唯讀但開始寫檔）、偷偷擴權（更新後靜默要求更多權限）。\n\n3. LLM 深度分析 -- 全新的攻擊手法繞過規則和指紋時，AI 分析器會語義檢查行為。一旦判定惡意，分析結果會自動蒸餾成新規則，下次同樣的攻擊直接擋，不再需要 AI。\n\n結論：就算攻擊者很有耐心等了 50 次才動手，只要做了指紋裡沒有的事情，立刻被抓。"
+      },
+      "q2": {
+        "q": "跟一般防毒軟體差在哪？",
+        "a": "傳統防毒掃描的是硬碟上的惡意檔案。Panguard 監控的是完全不同的東西 -- AI Agent 的即時行為。\n\nAI Agent 面對的威脅是防毒看不到的：提示注入、工具毒化、上下文竊取、透過 skill 串聯提權。這些不是磁碟上的檔案，而是 AI 工具溝通中的模式。\n\nPanguard 使用 ATR（Agent Threat Rules），這是專門為 AI 威脅設計的偵測語言。把它想像成 AI 版的 Sigma 規則。"
+      },
+      "q3": {
+        "q": "出現完全沒見過的新型攻擊怎麼辦？",
+        "a": "這正是三層防線發揮的時候：\n\n第一次遇到：LLM 分析器做語義深度分析，標記威脅。花一次 AI 呼叫。\n\n自動蒸餾：AI 的判斷結果馬上轉成輕量偵測規則（Sigma 或 ATR 格式），注入規則引擎。同一種攻擊第二次出現時，規則直接擋，AI 成本歸零。\n\n社群分發：多個 Panguard 用戶獨立偵測到同一個模式時，進入社群共識流程。至少 3 個獨立節點確認後，規則分發給全球所有用戶。\n\n結果：一個人遇到攻擊，所有人都被保護。第一次花 AI 呼叫，之後每次都免費。"
+      },
+      "q4": {
+        "q": "攻擊者慢慢來可以繞過嗎？",
+        "a": "慢速攻擊確實更難偵測，但 Panguard 有針對性防禦：\n\n行為指紋追蹤的是能力，不是速度。不管 skill 等 1 秒還是 1 週才動手，只要存取了指紋裡沒有的資源，就會觸發警報。\n\n多輪注入偵測（ATR-2026-005）專門追蹤跨對話回合的模式，抓到漸進式建立上下文再注入惡意指令的攻擊者。\n\nSession 級行為指標追蹤一段時間內的聚合模式，標記單一事件看不出來的微妙頻率變化。\n\n我們也坦白說：攻擊者花 20 個回合建立信任，然後在第 21 回合做微妙的單次攻擊，這是最難的場景。這在我們 v0.3 路線圖上，計劃用 LLM-as-Judge 定期審計完整對話歷史。"
+      }
+    },
+    "detection": {
+      "title": "偵測與規則",
+      "q1": {
+        "q": "ATR 規則是什麼？為什麼需要它？",
+        "a": "ATR（Agent Threat Rules）是我們為 AI 特有威脅建立的開放標準。就像 Sigma 規則偵測系統入侵、YARA 規則偵測惡意程式，ATR 規則偵測針對 AI Agent 的攻擊。\n\n範例：提示注入嘗試、工具回傳包含隱藏指令、skill 要求超出範圍的權限、跨 agent 的提權攻擊。\n\nPanguard 內建 32 條以上經過驗證的 ATR 規則，涵蓋 9 大威脅類別。它們是 YAML 格式、人類可讀、完全開源 -- 任何人都可以撰寫新規則。"
+      },
+      "q2": {
+        "q": "規則已經能抓已知威脅了，為什麼還要用 AI？",
+        "a": "規則快又便宜，但只能抓已知模式。AI 慢又貴，但能抓全新攻擊。\n\nPanguard 的核心設計：第一次靠 AI 分析，然後把 AI 學到的知識轉成規則，以後同樣的攻擊再也不需要 AI。\n\n知識蒸餾管線：AI 分析新威脅 -> 判定結果自動轉成 Sigma/ATR 規則 -> 注入規則引擎 -> 從此同一攻擊模式靠規則擋。\n\n所以你的 AI 成本會隨時間遞減，因為越來越多模式被蒸餾成規則。成熟的 Panguard 部署，絕大多數威脅靠規則就能搞定。"
+      },
+      "q3": {
+        "q": "規則怎麼更新？我需要手動操作嗎？",
+        "a": "自動更新，不需要任何操作。\n\nPanguard Guard 每小時跟 Threat Cloud 同步，拉取新規則（Sigma、ATR、YARA）和 IP 封鎖名單。本地 AI 蒸餾的規則立即生效。\n\n社群來源的規則經過安全管線：草稿 -> 同儕審查 -> 實驗階段（僅警報 7 天）-> 穩定版（可阻擋）。一條規則必須有至少 3 個獨立 Panguard 節點確認，且信任分數達標才會升級。\n\n你也可以寫自訂規則並回饋給社群。"
+      },
+      "q4": {
+        "q": "如果規則誤報怎麼辦？",
+        "a": "Panguard 每個偵測都附帶信心分數，動作分級：\n\n低信心：只記錄（你之後可以查看）\n中信心：警報 + 快照（保留證據，不阻擋）\n高信心：自動回應（阻擋 + 警報 + 詳細報告）\n\n如果社群規則造成誤報，用戶透過回饋系統回報。誤報率超過 20% 的規則自動被棄用。實驗階段誤報率超過 5% 的規則不會升級到穩定版。\n\n你也可以在本地設定中調整閾值或停用特定規則。"
+      }
+    },
+    "privacy": {
+      "title": "隱私與資料",
+      "q1": {
+        "q": "Panguard 會送什麼資料到雲端？",
+        "a": "只有匿名化的威脅情報。絕不會送你的檔案、程式碼、對話或個人資料。\n\n偵測到威脅時，Panguard 會去除所有識別資訊，只發送攻擊模式：類別、MITRE 技術 ID、嚴重等級和雜湊指紋。沒有 IP 地址、沒有使用者名稱、沒有檔案內容。\n\n你可以在 CLI 中啟用 --show-upload-data 來檢視上傳的確切內容。也可以完全停用雲端遙測 -- Panguard 支援完全離線運作。"
+      },
+      "q2": {
+        "q": "AI 分析會把我的資料送去 OpenAI/Anthropic 嗎？",
+        "a": "只有你設定才會。Panguard 支援三種 LLM 模式：\n\n1. Ollama（本地）-- 完全在你的機器上運行。資料不離開你的設備。這是預設的回退方案。\n2. 你自己的 API Key -- 你控制用哪個服務商（Anthropic、OpenAI），以及送什麼資料。LLM 只看到正在分析的特定事件，不是你整個系統。\n3. 不用 AI -- Panguard 用純規則模式一樣能正常運作。AI 增強偵測但不是必要的。\n\n加密的 LLM 設定（~/.panguard/llm.enc）儲存在本地，用你機器的身份加密。它永遠不會離開你的設備。"
+      },
+      "q3": {
+        "q": "Panguard 是開源的嗎？我可以審計程式碼嗎？",
+        "a": "是的。Panguard 是 100% 開源軟體，MIT 授權。每一行程式碼、每一條 ATR 規則、每一個偵測演算法都可以在 GitHub 上公開審計。\n\n沒有另外的閉源「企業版」隱藏功能。你在 repo 裡看到的，就是在你機器上執行的。\n\n我們相信安全工具必須透明。如果你無法驗證你的安全軟體在做什麼，它其實沒在保護你。"
+      }
+    },
+    "deployment": {
+      "title": "安裝與設定",
+      "q1": {
+        "q": "設定很複雜嗎？",
+        "a": "一行指令：\n\nnpx panguard scan     # 快速安全稽核（不用安裝）\nnpx panguard guard    # 完整 24/7 防護\n\n不需要設定檔、不需要帳號、不需要 API Key。Panguard 自動偵測你的環境，進入學習階段了解正常行為，然後切換到防護模式。\n\n如果你有 LLM API Key（Anthropic、OpenAI 或本地 Ollama），AI 增強分析會自動啟用。沒有的話，純規則模式也能提供紮實的基本防護。"
+      },
+      "q2": {
+        "q": "會拖慢我的系統嗎？",
+        "a": "影響極小。Panguard 是為全天候監控設計的：\n\n規則評估每個事件不到一毫秒（regex/模式比對，已知威脅不用 AI）。\nAI 分析只在規則無法分類的事件才觸發 -- 通常不到全部事件的 1%。\n記憶體佔用在大多數部署下低於 100MB。\n背景執行，可調整輪詢間隔。\n\nPanguard 還有 SmartRouter，評估事件複雜度，對高信心的規則匹配完全跳過 AI，減少不必要的運算。"
+      },
+      "q3": {
+        "q": "可以用在正式環境嗎？",
+        "a": "可以。Panguard 是為正式環境設計的：\n\n優雅降級 -- 任何元件故障（LLM 不可用、Threat Cloud 連不上、feed 逾時），其他層繼續獨立運作。\n離線模式 -- 本地規則和快取的威脅資料不需要網路就能運作。\nDaemon 模式 -- PID 檔案、看門狗重啟、跨重開機持久化基線。\n\nMIT 授權明確允許商業和正式環境使用。"
+      }
+    },
+    "general": {
+      "title": "一般問題",
+      "q1": {
+        "q": "Panguard 真的免費嗎？",
+        "a": "是的。100% 免費、開源、MIT 授權。沒有付費方案、沒有功能限制、沒有用量上限。\n\n所有功能 -- Guard、Scan、Chat、Trap、Report、Threat Cloud、ATR 規則、Skill Auditor -- 所有人都可以使用。不需信用卡、不需註冊。\n\n我們靠社群貢獻、贊助和企業顧問合作維持運作。"
+      },
+      "q2": {
+        "q": "誰在做 Panguard？",
+        "a": "Panguard 在台灣打造，由一群相信 AI Agent 安全應該是公共財而非進階功能的團隊開發。\n\n我們的核心理念：隨著 AI Agent 越來越自主，保護它們的安全工具必須開放、透明、由社群共同維護 -- 就像 AI 生態系的免疫系統。"
+      },
+      "q3": {
+        "q": "我可以怎麼貢獻？",
+        "a": "很多方式：\n\n撰寫 ATR 規則 -- 每條新規則都保護所有 Panguard 用戶。這是影響力最大的貢獻。\n回報威脅 -- 當 Panguard 在你系統上偵測到新東西時，匿名化的模式會自動強化社群防禦。\n程式碼貢獻 -- 修 bug、新功能、效能改善。\n翻譯 -- 幫助 Panguard 支援更多語言。\n回饋 -- 回報誤報、建議改善、分享你的使用情境。\n\n造訪我們的 GitHub 倉庫開始。"
+      }
+    },
+    "cta": {
+      "title": "還有問題？",
+      "subtitle": "查看我們的文件、在 GitHub 開 issue，或直接聯繫我們。",
+      "github": "GitHub 倉庫",
+      "contact": "聯繫我們"
     }
   }
 }
