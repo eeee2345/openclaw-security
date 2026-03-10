@@ -37,6 +37,10 @@ export default defineConfig({
       '@panguard-ai/panguard-auth': resolve(__dirname, './packages/panguard-auth/src'),
       '@panguard-ai/manager': resolve(__dirname, './packages/panguard-manager/src'),
       '@panguard-ai/panguard-mcp': resolve(__dirname, './packages/panguard-mcp/src'),
+      '@panguard-ai/panguard-skill-auditor': resolve(
+        __dirname,
+        './packages/panguard-skill-auditor/src'
+      ),
     },
   },
 });

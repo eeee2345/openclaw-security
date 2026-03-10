@@ -119,6 +119,9 @@ importers:
       '@panguard-ai/panguard-guard':
         specifier: workspace:*
         version: link:../panguard-guard
+      '@panguard-ai/panguard-mcp':
+        specifier: workspace:*
+        version: link:../panguard-mcp
       '@panguard-ai/panguard-report':
         specifier: workspace:*
         version: link:../panguard-report

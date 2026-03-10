@@ -16,7 +16,8 @@
     { "path": "../panguard-auth" },
     { "path": "../panguard-manager" },
     { "path": "../../security-hardening" },
-    { "path": "../panguard-skill-auditor" }
+    { "path": "../panguard-skill-auditor" },
+    { "path": "../panguard-mcp" }
   ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

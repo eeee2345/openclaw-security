@@ -5,6 +5,10 @@
   "description": "MCP server for Panguard AI — control security from Claude/Cursor / 透過 Claude/Cursor 控制 Panguard 的 MCP 伺服器",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./config": "./dist/config/index.js"
+  },
   "bin": {
     "panguard-mcp": "./dist/cli/index.js"
   },
