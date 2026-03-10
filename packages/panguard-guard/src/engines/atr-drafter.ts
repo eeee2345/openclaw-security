@@ -13,6 +13,7 @@
  */
 
 import { createHash } from 'node:crypto';
+import yaml from 'js-yaml';
 import { createLogger } from '@panguard-ai/core';
 import type { SecurityEvent } from '@panguard-ai/core';
 import type { AnalyzeLLM } from '../types.js';
@@ -69,6 +70,12 @@ const DEFAULT_CONFIG: ATRDrafterConfig = {
   llmProvider: 'unknown',
   llmModel: 'unknown',
 };
+
+/** LLM call timeout in milliseconds */
+const LLM_TIMEOUT_MS = 30_000;
+
+/** Required top-level fields in a valid ATR YAML rule */
+const ATR_REQUIRED_FIELDS = ['title', 'id', 'severity', 'detection'] as const;
 
 // ---------------------------------------------------------------------------
 // Drafter
@@ -259,18 +266,32 @@ export class ATRDrafter {
     patternHash: string,
     pattern: LocalPattern
   ): Promise<DraftResult | null> {
-    // Step 1: Draft using LLM
+    // Step 1: Draft using LLM (with timeout)
     const draftPrompt = this.buildDraftPrompt(pattern);
-    const draftResponse = await this.llm.analyze(draftPrompt);
+    const draftResponse = await this.callLLMWithTimeout(draftPrompt);
 
     const ruleContent = this.extractYaml(draftResponse.summary);
     if (!ruleContent || ruleContent.length < 100) {
+      logger.warn(
+        `ATR draft for ${patternHash}: LLM returned invalid/short YAML. ` +
+        `Raw response (first 500 chars): ${draftResponse.summary.slice(0, 500)}`
+      );
       return null;
     }
 
-    // Step 2: Self-review using same LLM
+    // Validate YAML schema before proceeding
+    const validationError = this.validateATRYaml(ruleContent);
+    if (validationError) {
+      logger.warn(
+        `ATR draft for ${patternHash}: YAML schema validation failed: ${validationError}. ` +
+        `Raw YAML (first 500 chars): ${ruleContent.slice(0, 500)}`
+      );
+      return null;
+    }
+
+    // Step 2: Self-review using same LLM (with timeout)
     const reviewPrompt = this.buildReviewPrompt(ruleContent);
-    const reviewResponse = await this.llm.analyze(reviewPrompt);
+    const reviewResponse = await this.callLLMWithTimeout(reviewPrompt);
 
     let selfReviewApproved = false;
     let selfReviewVerdict = '{}';
@@ -291,6 +312,65 @@ export class ATRDrafter {
       selfReviewApproved,
       selfReviewVerdict,
     };
+  }
+
+  /**
+   * Call LLM with an AbortController timeout.
+   * Throws if the LLM does not respond within LLM_TIMEOUT_MS.
+   */
+  private async callLLMWithTimeout(prompt: string) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
+
+    try {
+      const result = await Promise.race([
+        this.llm.analyze(prompt),
+        new Promise<never>((_, reject) => {
+          controller.signal.addEventListener('abort', () =>
+            reject(new Error(`LLM call timed out after ${LLM_TIMEOUT_MS}ms`))
+          );
+        }),
+      ]);
+      return result;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /**
+   * Validate that a YAML string is a well-formed ATR rule with required fields.
+   * Returns null on success, or an error description on failure.
+   */
+  validateATRYaml(ruleContent: string): string | null {
+    let parsed: unknown;
+    try {
+      parsed = yaml.load(ruleContent);
+    } catch (err) {
+      return `Invalid YAML: ${err instanceof Error ? err.message : String(err)}`;
+    }
+
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      return 'YAML root must be an object';
+    }
+
+    const doc = parsed as Record<string, unknown>;
+    const missing = ATR_REQUIRED_FIELDS.filter((field) => !(field in doc));
+    if (missing.length > 0) {
+      return `Missing required fields: ${missing.join(', ')}`;
+    }
+
+    // Validate severity is a known value
+    const validSeverities = ['critical', 'high', 'medium', 'low', 'informational'];
+    if (typeof doc['severity'] !== 'string' || !validSeverities.includes(doc['severity'])) {
+      return `Invalid severity: ${String(doc['severity'])} (expected: ${validSeverities.join(', ')})`;
+    }
+
+    // Validate detection is an object
+    if (typeof doc['detection'] !== 'object' || doc['detection'] === null) {
+      return 'detection must be an object';
+    }
+
+    return null;
   }
 
   private buildDraftPrompt(pattern: LocalPattern): string {
@@ -341,13 +421,40 @@ Output JSON only:
 {"approved": true/false, "falsePositiveRisk": "low"|"medium"|"high", "coverageScore": 0-100, "reasoning": "brief explanation"}`;
   }
 
-  private extractYaml(text: string): string {
-    const match = text.match(/```ya?ml\n([\s\S]*?)```/);
-    if (match?.[1]) return match[1].trim();
+  extractYaml(text: string): string {
+    // Strategy 1: Fenced code block (```yaml ... ``` or ```yml ... ```)
+    // Use a greedy match on the closing ``` to handle multiple blocks — take the first.
+    const fencedMatch = text.match(/```ya?ml\s*\n([\s\S]*?)```/);
+    if (fencedMatch?.[1]?.trim()) return fencedMatch[1].trim();
 
+    // Strategy 2: Generic fenced code block (``` ... ```) that looks like YAML
+    const genericFenced = text.match(/```\s*\n([\s\S]*?)```/);
+    if (genericFenced?.[1]?.trim()) {
+      const content = genericFenced[1].trim();
+      // Verify it looks like YAML (has key: value on the first line)
+      if (/^[a-zA-Z_][\w-]*\s*:/.test(content)) return content;
+    }
+
+    // Strategy 3: Find YAML content by locating known ATR top-level keys
     const lines = text.split('\n');
-    const start = lines.findIndex((l) => l.startsWith('title:') || l.startsWith('schema_version:'));
-    if (start >= 0) return lines.slice(start).join('\n').trim();
+    const atrKeys = ['title:', 'schema_version:', 'id:', 'severity:'];
+    const start = lines.findIndex((l) => {
+      const trimmed = l.trimStart();
+      return atrKeys.some((key) => trimmed.startsWith(key));
+    });
+    if (start >= 0) {
+      // Collect lines until we hit a non-YAML boundary (e.g., markdown fence or empty block)
+      const yamlLines: string[] = [];
+      for (let i = start; i < lines.length; i++) {
+        const line = lines[i]!;
+        if (line.startsWith('```') || line.startsWith('---') && i > start && yamlLines.length > 3) {
+          break;
+        }
+        yamlLines.push(line);
+      }
+      const result = yamlLines.join('\n').trim();
+      if (result.length > 0) return result;
+    }
 
     return '';
   }

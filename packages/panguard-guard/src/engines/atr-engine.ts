@@ -112,6 +112,14 @@ export class GuardATREngine {
       logger.info(`ATR custom rules loaded: ${custom} rules`);
     }
 
+    if (total === 0) {
+      logger.warn(
+        'ATR: No rules loaded from any source. Detection will not function. ' +
+        'Verify that agent-threat-rules package is installed and rules directory exists. / ' +
+        'ATR: 未從任何來源載入規則。偵測將無法運作。'
+      );
+    }
+
     logger.info(`ATR total rules: ${total}`);
     return total;
   }
@@ -317,6 +325,41 @@ export class GuardATREngine {
   }
 
   /**
+   * Compute confidence score for a behavioral anomaly.
+   * Uses severity as a base and applies a type-specific bonus that reflects
+   * how strong each anomaly type is as an indicator of compromise.
+   *
+   * Base scores: critical=80, high=65, medium=50, low=35
+   * Type bonuses: capability_expansion +15, new_process_exec +12,
+   *   new_network_target +10, new_env_access +8, new_filesystem_op +5,
+   *   new_output_pattern +3
+   * Final score capped at 99.
+   */
+  private computeAnomalyConfidence(anomaly: BehaviorAnomaly): number {
+    const baseScores: Record<string, number> = {
+      critical: 80,
+      high: 65,
+      medium: 50,
+      low: 35,
+    };
+
+    // Anomaly types ranked by threat signal strength
+    const typeBonus: Record<string, number> = {
+      capability_expansion: 15,
+      new_process_exec: 12,
+      new_network_target: 10,
+      new_env_access: 8,
+      new_filesystem_op: 5,
+      new_output_pattern: 3,
+    };
+
+    const base = baseScores[anomaly.severity] ?? 50;
+    const bonus = typeBonus[anomaly.anomalyType] ?? 0;
+
+    return Math.min(base + bonus, 99);
+  }
+
+  /**
    * Convert a behavioral anomaly into a synthetic ATR match
    * for the detection pipeline.
    * 將行為異常轉換為合成 ATR 匹配，進入偵測管線
@@ -356,8 +399,7 @@ export class GuardATREngine {
       },
       matchedConditions: [anomaly.anomalyType],
       matchedPatterns: [anomaly.newValue],
-      confidence: anomaly.severity === 'critical' ? 95 :
-        anomaly.severity === 'high' ? 85 : 70,
+      confidence: this.computeAnomalyConfidence(anomaly),
       timestamp: new Date().toISOString(),
     };
   }
