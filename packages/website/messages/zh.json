@@ -5443,9 +5443,9 @@
   },
   "revolution": {
     "hero": {
-      "eyebrow": "AI AGENT 的 SKILLS STORE AUDIT",
-      "title": "npm 有 audit。Docker 有掃描。AI Agent Skills 什麼都沒有。",
-      "subtitleLine1": "你的 AI Agent 安裝 Skill 時擁有完整系統權限。沒有審計、沒有審核、沒有人在看。",
+      "eyebrow": "AI AGENT 的 APP STORE 守門員",
+      "title": "你的 AI Agent 需要一個守門員。",
+      "subtitleLine1": "你的 AI Agent 安裝 Skill 時擁有完整系統權限。沒有審核流程、沒有安全檢查、惡意 Skill 和你的資料之間零防線。",
       "threats": {
         "title": "一個惡意 Skill 就夠了。",
         "items": [
@@ -5455,7 +5455,7 @@
           { "label": "洩漏憑證", "detail": "SSH 金鑰、Token、雲端密鑰 -- 全部可存取" }
         ]
       },
-      "subtitleLine2": "Panguard 為 AI Agent 生態系帶來 Skills Audit。每個 Skill 在執行前，都經過 {totalRules}+ 社群規則與 AI 分析。每次安裝，更安心。",
+      "subtitleLine2": "Panguard 就是那個缺失的守門員。每個 Skill 執行前先審核 -- 就像 App Store 審核，但專為 AI Agent 設計。{totalRules}+ 社群規則與 AI，全天候運作。",
       "subtitleLine3": "一行安裝。全天候守護。使用者越多越聰明。",
       "viewATR": "GitHub 上的 ATR 標準",
       "install": "開始使用",

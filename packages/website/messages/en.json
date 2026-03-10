@@ -5389,9 +5389,9 @@
   },
   "revolution": {
     "hero": {
-      "eyebrow": "SKILLS STORE AUDIT FOR AI AGENTS",
-      "title": "npm has audit. Docker has scanning. AI agent skills have nothing.",
-      "subtitleLine1": "Your AI agent installs skills with full system access. No review. No audit. No one watching.",
+      "eyebrow": "THE APP STORE GATEKEEPER FOR AI AGENTS",
+      "title": "Every AI agent needs a gatekeeper.",
+      "subtitleLine1": "Your AI agent installs skills with full system access. No review process. No security audit. Nothing between a malicious skill and your data.",
       "threats": {
         "title": "One malicious skill is all it takes.",
         "items": [
@@ -5401,7 +5401,7 @@
           { "label": "Leak credentials", "detail": "SSH keys, tokens, cloud secrets -- all accessible" }
         ]
       },
-      "subtitleLine2": "Panguard brings Skills Audit to the AI agent ecosystem. Every skill is analyzed by {totalRules}+ community rules and AI before it runs. Every install, safer.",
+      "subtitleLine2": "Panguard is the missing gatekeeper. It reviews every skill before it runs -- just like App Store review, but for AI agents. {totalRules}+ community rules and AI, always on.",
       "subtitleLine3": "One install. Always on. Gets smarter with every user.",
       "viewATR": "ATR Standard on GitHub",
       "install": "Get Started",
