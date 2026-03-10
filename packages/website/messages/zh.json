@@ -4520,7 +4520,7 @@
           "desc": "顯示目前已認證的使用者、方案等級和訂閱狀態。"
         },
         "upgrade": {
-          "desc": "查看可用的方案升級或開啟訂閱管理入口。"
+          "desc": "所有功能皆免費開源。"
         }
       }
     },
@@ -5184,8 +5184,8 @@
     "planIncludes": "方案包含",
     "renewsOn": "續約日期：{date}",
     "endsOn": "到期日期：{date}",
-    "upgradeHeading": "升級您的方案",
-    "upgradeDescription": "獲得更多掃描次數、端點及進階功能。",
+    "upgradeHeading": "所有功能已包含",
+    "upgradeDescription": "所有 Panguard 功能皆免費開源。",
     "viewPlans": "查看方案",
     "tierFeatures": {
       "community": [

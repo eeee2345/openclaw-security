@@ -3656,7 +3656,7 @@
           "desc": "Show current authenticated user, plan tier, and subscription status."
         },
         "upgrade": {
-          "desc": "View available plan upgrades or open the subscription management portal."
+          "desc": "All features are free and open source."
         }
       }
     },
@@ -5130,8 +5130,8 @@
     "planIncludes": "Plan includes",
     "renewsOn": "Renews on {date}",
     "endsOn": "Ends on {date}",
-    "upgradeHeading": "Upgrade your plan",
-    "upgradeDescription": "Get more scans, endpoints, and advanced features.",
+    "upgradeHeading": "All features included",
+    "upgradeDescription": "All Panguard features are free and open source.",
     "viewPlans": "View Plans",
     "tierFeatures": {
       "community": [

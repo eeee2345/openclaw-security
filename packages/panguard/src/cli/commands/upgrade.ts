@@ -1,9 +1,8 @@
 /**
- * `panguard upgrade` - Self-service plan upgrade via Lemon Squeezy
- * `panguard upgrade` - 透過 Lemon Squeezy 自助升級方案
+ * `panguard upgrade` - All features are free and open source
+ * `panguard upgrade` - 所有功能皆免費開源
  *
- * Shows current plan, lists available tiers, opens checkout in browser.
- * Also supports `panguard upgrade portal` for subscription management.
+ * Informs users that all features are available at no cost.
  *
  * @module @panguard-ai/panguard/cli/commands/upgrade
  */

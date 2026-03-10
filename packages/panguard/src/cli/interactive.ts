@@ -73,7 +73,7 @@ interface MenuDef {
   zh: string;
   enDesc: string;
   zhDesc: string;
-  tierBadge: string; // Display badge: '', '[STARTER]', '[PRO]', '[ENT]'
+  tierBadge: string; // Display badge (all features free, always '')
   featureKey: string; // Key for FEATURE_TIER gating
 }
 
@@ -108,7 +108,7 @@ const MENU_DEFS: MenuDef[] = [
     zh: '\u5408\u898F\u5831\u544A',
     enDesc: 'Generate ISO 27001, SOC 2, TW Cyber Security Act reports',
     zhDesc: '\u7522\u751F ISO 27001\u3001SOC 2\u3001\u8CC7\u5B89\u7BA1\u7406\u6CD5\u5408\u898F\u5831\u544A',
-    tierBadge: '[PRO]',
+    tierBadge: '',
     featureKey: 'report',
   },
   {
@@ -130,7 +130,7 @@ const MENU_DEFS: MenuDef[] = [
     zh: '\u871C\u7F50\u7CFB\u7D71',
     enDesc: 'Detect and profile attackers with decoy services',
     zhDesc: '\u5373\u770B\u5373\u8B58\u99ED\u5BA2\uFF0C\u5206\u6790\u653B\u64CA\u8005\u884C\u70BA',
-    tierBadge: '[PRO]',
+    tierBadge: '',
     featureKey: 'trap',
   },
   {
@@ -141,7 +141,7 @@ const MENU_DEFS: MenuDef[] = [
     zh: '\u901A\u77E5\u7CFB\u7D71',
     enDesc: 'LINE, Telegram, Slack, Email, Webhook channels',
     zhDesc: 'LINE\u3001Telegram\u3001Slack\u3001Email\u3001Webhook \u901A\u77E5\u7BA1\u9053',
-    tierBadge: '[STARTER]',
+    tierBadge: '',
     featureKey: 'notify',
   },
   {
@@ -152,7 +152,7 @@ const MENU_DEFS: MenuDef[] = [
     zh: '\u5A01\u8105\u60C5\u5831',
     enDesc: 'Threat intelligence REST API server',
     zhDesc: '\u5A01\u8105\u60C5\u5831 REST API \u4F3A\u670D\u52D9',
-    tierBadge: '[ENT]',
+    tierBadge: '',
     featureKey: 'threat-cloud',
   },
   {
@@ -288,7 +288,7 @@ function showHelp(): void {
     { cmd: 'login', en: 'Account login', zh: '\u5E33\u865F\u767B\u5165' },
     { cmd: 'logout', en: 'Account logout', zh: '\u767B\u51FA' },
     { cmd: 'config', en: 'Settings management', zh: '\u8A2D\u5B9A\u7BA1\u7406' },
-    { cmd: 'upgrade', en: 'Upgrade plan', zh: '\u5347\u7D1A\u65B9\u6848' },
+    { cmd: 'upgrade', en: 'All features are free', zh: '\u6240\u6709\u529F\u80FD\u514D\u8CBB' },
     { cmd: 'hardening', en: 'Security hardening', zh: '\u5B89\u5168\u52A0\u56FA' },
     { cmd: 'doctor', en: 'Health diagnostics', zh: '\u5065\u5EB7\u8A3A\u65B7' },
     { cmd: 'whoami', en: 'Current account info', zh: '\u986F\u793A\u7576\u524D\u5E33\u865F' },

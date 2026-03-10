@@ -586,7 +586,7 @@ export const blogPosts: BlogPost[] = [
       'The statistic that matters most: 60% of small businesses close within six months of a significant data breach. This is not because the breach itself is fatal. It is because the combination of direct costs, lost revenue, and operational disruption exceeds what a small company can absorb.',
       '## The Prevention Economics',
       'Here is the calculation that should change how every SMB thinks about security. The average breach costs $3.31 million. The annual cost of comprehensive server security monitoring with Panguard Guard starts at $108 per year for a solo developer.',
-      'Even at the Team tier -- $14 per endpoint per month for full protection including real-time monitoring, automated response, and compliance reporting -- a company with 10 servers would pay $1,680 per year. That is 0.05% of the average breach cost.',
+      'With Panguard -- which provides full protection including real-time monitoring, automated response, and compliance reporting completely free and open source -- the cost barrier to adequate security has been eliminated entirely.',
       'Proactive security is not an expense. It is insurance that costs a fraction of a percent of the risk it mitigates.',
       '## What Adequate Protection Looks Like',
       'At minimum, every business handling customer data needs continuous monitoring of server access and behavior, automated detection of known threat patterns, real-time alerting when anomalies are detected, automated response to confirmed threats, and audit logs for compliance and forensics.',

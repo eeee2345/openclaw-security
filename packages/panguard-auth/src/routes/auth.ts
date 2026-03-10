@@ -76,12 +76,8 @@ export function createAuthRoutes(ctx: RouteContext) {
     const passwordHash = await hashPassword(password);
     const user = db.createUser({ email, name: name.trim(), password }, passwordHash);
 
-    // Activate 14-day Solo trial for all new users
-    const trialExpiry = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .replace('T', ' ')
-      .split('.')[0]!;
-    db.updateUserTier(user.id, 'solo', trialExpiry);
+    // All features are free — assign community tier with no expiry
+    db.updateUserTier(user.id, 'community', undefined);
     // Re-fetch user to reflect trial tier in the response
     const trialUser = db.getUserById(user.id)!;
 

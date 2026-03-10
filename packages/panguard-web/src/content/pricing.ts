@@ -21,8 +21,8 @@ function feature(nameEn: string, nameZh: string, included: boolean, limit?: stri
 }
 
 // ---------------------------------------------------------------------------
-// Plan definitions (3 paid tiers + Community free)
-// 方案定義（3 個付費方案 + 社群免費版）
+// Plan definitions — Community plan (all features free)
+// 方案定義 — 社群方案（所有功能免費）
 // ---------------------------------------------------------------------------
 
 export const PRICING_PLANS: PricingPlanDetails[] = [

@@ -294,9 +294,15 @@ export class SkillWhitelistManager {
    * 從 JSON 匯入白名單
    */
   importJSON(json: string): number {
-    const data = JSON.parse(json) as {
+    let data: {
       skills?: Array<{ name: string; source?: string; fingerprintHash?: string }>;
     };
+    try {
+      data = JSON.parse(json) as typeof data;
+    } catch {
+      logger.warn('importJSON: failed to parse JSON input');
+      return 0;
+    }
     if (!data.skills || !Array.isArray(data.skills)) return 0;
 
     let imported = 0;

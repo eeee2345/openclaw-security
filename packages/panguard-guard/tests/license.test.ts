@@ -1,6 +1,10 @@
 /**
  * License validation tests
  * 授權驗證測試
+ *
+ * All features are now free (community model). These tests verify
+ * that the license key validation mechanism still works correctly,
+ * and that no key is required for full access.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -8,26 +12,26 @@ import { validateLicense, hasFeature, generateTestLicenseKey } from '../src/lice
 import { TIER_FEATURES } from '../src/types.js';
 
 describe('license', () => {
-  it('should return free tier for empty key', () => {
+  it('should return community (free) tier for empty key', () => {
     const license = validateLicense(undefined);
     expect(license.tier).toBe('free');
     expect(license.isValid).toBe(true);
     expect(license.features).toEqual(TIER_FEATURES.free);
   });
 
-  it('should return free tier for blank key', () => {
+  it('should return community (free) tier for blank key', () => {
     const license = validateLicense('');
     expect(license.tier).toBe('free');
     expect(license.isValid).toBe(true);
   });
 
-  it('should reject invalid format', () => {
+  it('should reject invalid format and fall back to community (free) tier', () => {
     const license = validateLicense('INVALID-KEY-FORMAT');
     expect(license.isValid).toBe(false);
     expect(license.tier).toBe('free');
   });
 
-  it('should generate and validate a free key', () => {
+  it('should generate and validate a community (free) key', () => {
     const key = generateTestLicenseKey('free');
     expect(key).toMatch(/^CLAW-FREE-/);
     const license = validateLicense(key);
@@ -35,7 +39,7 @@ describe('license', () => {
     expect(license.tier).toBe('free');
   });
 
-  it('should generate and validate a pro key', () => {
+  it('should still parse legacy pro keys', () => {
     const key = generateTestLicenseKey('pro');
     expect(key).toMatch(/^CLAW-PRO-/);
     const license = validateLicense(key);
@@ -44,7 +48,7 @@ describe('license', () => {
     expect(license.features).toEqual(TIER_FEATURES.pro);
   });
 
-  it('should generate and validate an enterprise key', () => {
+  it('should still parse legacy enterprise keys', () => {
     const key = generateTestLicenseKey('enterprise');
     expect(key).toMatch(/^CLAW-ENT-/);
     const license = validateLicense(key);
@@ -53,28 +57,16 @@ describe('license', () => {
     expect(license.maxEndpoints).toBe(1000);
   });
 
-  it('should check features correctly', () => {
-    const proKey = generateTestLicenseKey('pro');
-    const license = validateLicense(proKey);
-    expect(hasFeature(license, 'ai_analysis')).toBe(true);
+  it('should include all community features without a key', () => {
+    const license = validateLicense(undefined);
+    expect(hasFeature(license, 'basic_monitoring')).toBe(true);
+    expect(hasFeature(license, 'rule_matching')).toBe(true);
     expect(hasFeature(license, 'auto_respond')).toBe(true);
-    expect(hasFeature(license, 'threat_cloud')).toBe(false); // Pro doesn't have threat_cloud
   });
 
-  it('should check enterprise features', () => {
-    const entKey = generateTestLicenseKey('enterprise');
-    const license = validateLicense(entKey);
-    expect(hasFeature(license, 'threat_cloud')).toBe(true);
-    expect(hasFeature(license, 'threat_cloud_upload')).toBe(true);
-    expect(hasFeature(license, 'multi_endpoint')).toBe(true);
-  });
-
-  it('should reject key with wrong checksum', () => {
-    // Manually create a key with wrong checksum
+  it('should handle legacy key with checksum', () => {
     const license = validateLicense('CLAW-PRO-AAAA-BBBB-CCCC');
-    // This may or may not be valid depending on checksum - let's test with a known bad one
-    // The checksum is calculated, so we can't easily predict failure
-    // Instead, test that format is accepted
+    // Format is accepted, checksum may or may not pass
     expect(license.key).toBe('CLAW-PRO-AAAA-BBBB-CCCC');
   });
 });

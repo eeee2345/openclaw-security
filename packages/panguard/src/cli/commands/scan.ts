@@ -43,8 +43,8 @@ export function scanCommand(): Command {
         save?: string;
         target?: string;
       }) => {
-        // Auth: local scan = community (free), remote scan = solo
-        const tier = options.target ? 'solo' : 'community';
+        // Auth: all scans are free (community tier)
+        const tier = 'community';
         const check = requireAuth(tier);
         if (!check.authenticated || !check.authorized) {
           const { withAuth } = await import('../auth-guard.js');
@@ -345,30 +345,27 @@ export function scanCommand(): Command {
 
           console.log(table(columns, rows));
 
-          // Show manual fix commands for free tier
-          const check = requireAuth('solo');
-          if (!check.authorized) {
-            let fixableCount = 0;
-            console.log('');
-            for (const f of result.findings) {
-              if (f.manualFix && f.manualFix.length > 0) {
-                fixableCount++;
-                console.log(`  ${colorSeverity(f.severity).padEnd(10)} ${f.title}`);
-                console.log(c.dim('          Manual fix:'));
-                for (const cmd of f.manualFix) {
-                  console.log(c.dim(`          $ ${cmd}`));
-                }
-                console.log('');
+          // Show manual fix commands unconditionally
+          let fixableCount = 0;
+          console.log('');
+          for (const f of result.findings) {
+            if (f.manualFix && f.manualFix.length > 0) {
+              fixableCount++;
+              console.log(`  ${colorSeverity(f.severity).padEnd(10)} ${f.title}`);
+              console.log(c.dim('          Manual fix:'));
+              for (const cmd of f.manualFix) {
+                console.log(c.dim(`          $ ${cmd}`));
               }
+              console.log('');
             }
-            if (fixableCount > 0) {
-              console.log(
-                box(
-                  `Auto-fix available for ${fixableCount} issue(s):\n  $ panguard scan --fix`,
-                  { borderColor: c.sage, title: 'Panguard AI' }
-                )
-              );
-            }
+          }
+          if (fixableCount > 0) {
+            console.log(
+              box(
+                `Auto-fix available for ${fixableCount} issue(s):\n  $ panguard scan --fix`,
+                { borderColor: c.sage, title: 'Panguard AI' }
+              )
+            );
           }
           console.log('');
         } else {

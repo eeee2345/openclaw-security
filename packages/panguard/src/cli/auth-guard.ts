@@ -8,13 +8,12 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
-import { c, symbols, box, FEATURE_TIER as _CORE_FEATURE_TIER, isTierAtLeast, TIER_LEVEL } from '@panguard-ai/core';
+import { c, FEATURE_TIER as _CORE_FEATURE_TIER, isTierAtLeast, TIER_LEVEL } from '@panguard-ai/core';
 import type { Tier } from '@panguard-ai/core';
 import {
   loadCredentials,
   saveCredentials,
   isTokenExpired,
-  tierDisplayName,
 } from './credentials.js';
 import type { StoredCredentials } from './credentials.js';
 
@@ -117,38 +116,8 @@ export function refreshTierInBackground(): void {
     .then((body) => {
       if (!body?.data?.user?.tier) return;
       const serverTier = body.data.user.tier as Tier;
-      const serverPlanExpires = (body.data.user as Record<string, unknown>)['planExpiresAt'] as
-        | string
-        | null
-        | undefined;
 
-      // Check if plan has expired server-side (tier got downgraded to community)
-      if (serverTier === 'community' && creds.tier !== 'community') {
-        console.log('');
-        console.log(
-          c.caution(
-            `  [!] Your ${tierDisplayName(creds.tier)} plan has expired. Account downgraded to Community tier.`
-          )
-        );
-        console.log(c.dim(`      Renew at https://panguard.ai/pricing`));
-        console.log('');
-      }
-
-      // Warn if plan expiring soon (within 3 days)
-      if (serverPlanExpires) {
-        const expiresDate = new Date(serverPlanExpires);
-        const daysLeft = Math.ceil((expiresDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
-        if (daysLeft > 0 && daysLeft <= 3) {
-          console.log('');
-          console.log(
-            c.caution(
-              `  [!] Your ${tierDisplayName(serverTier)} plan expires in ${daysLeft} day(s).`
-            )
-          );
-          console.log(c.dim(`      Renew at https://panguard.ai/pricing`));
-          console.log('');
-        }
-      }
+      // All features are free — no expiry warnings needed
 
       if (serverTier !== creds.tier || body.data.user.name !== creds.name) {
         saveCredentials({
@@ -246,12 +215,14 @@ export function showGuardAIHint(_threatType: string, _confidence: number, _lang:
   // All features are free and open source — no upgrade needed
 }
 
-/* ── Pricing Constants ── */
+/* ── Pricing Constants (deprecated: all features are free) ── */
 
+/** @deprecated All features are free. Kept for backward compatibility. */
 export const PRICING_TIERS: Record<string, { price: number; unit: string; machines: string }> = {
   community: { price: 0, unit: '', machines: 'unlimited' },
 };
 
+/** @deprecated All features are free. Kept for backward compatibility. */
 export const COMPLIANCE_PRICING: Record<
   string,
   { price: number; unit: string; name: Record<string, string> }
