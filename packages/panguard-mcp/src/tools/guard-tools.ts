@@ -9,7 +9,10 @@
  * @module @panguard-ai/panguard-mcp/tools/guard-tools
  */
 
-import { promises as fs } from 'node:fs';
+import { promises as fs, existsSync, readFileSync, openSync, closeSync } from 'node:fs';
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -25,11 +28,9 @@ function resolveDataDir(args: Record<string, unknown>): string {
  * Execute panguard_guard_start — start the real-time threat monitoring daemon.
  * 執行 panguard_guard_start — 啟動即時威脅監控常駐程式。
  *
- * NOTE: The MCP server does not directly spawn daemon processes to avoid
- * interfering with the stdio transport. Instead it validates the data directory
- * and returns instructions for the user/agent to run panguard-guard CLI.
- * 注意：MCP 伺服器不直接生成常駐進程以避免干擾 stdio 傳輸。
- * 改為驗證資料目錄並返回讓用戶/代理執行 panguard-guard CLI 的指示。
+ * Spawns the guard daemon as a detached background process with stdio
+ * redirected to a log file, so it does not interfere with MCP stdio transport.
+ * 將守護常駐程式作為分離的背景進程啟動，stdio 重導向到日誌檔案。
  */
 export async function executeGuardStart(args: Record<string, unknown>) {
   const dataDir = resolveDataDir(args);
@@ -41,26 +42,187 @@ export async function executeGuardStart(args: Record<string, unknown>) {
     // Directory may already exist
   }
 
-  return {
-    content: [
-      {
-        type: 'text' as const,
-        text: JSON.stringify(
+  // Check if guard is already running
+  const pidFile = path.join(dataDir, 'panguard-guard.pid');
+  try {
+    const pidContent = await fs.readFile(pidFile, 'utf-8');
+    const existingPid = parseInt(pidContent.trim(), 10);
+    if (!isNaN(existingPid)) {
+      try {
+        process.kill(existingPid, 0);
+        // Process exists — guard is already running
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify(
+                {
+                  status: 'already_running',
+                  pid: existingPid,
+                  dataDir,
+                  mode,
+                  message: `Guard engine is already running (PID: ${existingPid}).`,
+                },
+                null,
+                2,
+              ),
+            },
+          ],
+        };
+      } catch {
+        // Process not found — stale PID file, continue to start
+        await fs.unlink(pidFile).catch(() => undefined);
+      }
+    }
+  } catch {
+    // No PID file — proceed to start
+  }
+
+  // Resolve the panguard-guard CLI script path
+  let guardCliScript: string;
+  try {
+    const _require = createRequire(import.meta.url);
+    const guardMainPath = _require.resolve('@panguard-ai/panguard-guard');
+    guardCliScript = path.join(path.dirname(guardMainPath), 'cli', 'index.js');
+  } catch {
+    // Fallback: try resolving via import.meta.resolve
+    try {
+      const guardMainUrl = import.meta.resolve('@panguard-ai/panguard-guard');
+      guardCliScript = path.join(fileURLToPath(guardMainUrl), '..', 'cli', 'index.js');
+    } catch {
+      return {
+        content: [
           {
-            status: 'ready',
-            dataDir,
-            mode,
-            message:
-              'Guard engine is ready to start. Run the following command in a terminal to start real-time monitoring:',
-            command: `panguard-guard start --mode ${mode} --data-dir "${dataDir}"`,
-            note: 'Use panguard_status to check current guard state after starting.',
+            type: 'text' as const,
+            text: JSON.stringify(
+              {
+                status: 'error',
+                message: 'Could not resolve @panguard-ai/panguard-guard package. Is it installed?',
+              },
+              null,
+              2,
+            ),
           },
-          null,
-          2,
-        ),
-      },
-    ],
-  };
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  // Spawn guard as a detached background process
+  const logPath = path.join(dataDir, 'guard.log');
+  let logFd: number;
+  try {
+    logFd = openSync(logPath, 'a');
+  } catch (err) {
+    return {
+      content: [
+        {
+          type: 'text' as const,
+          text: JSON.stringify(
+            {
+              status: 'error',
+              message: `Failed to open log file: ${err instanceof Error ? err.message : String(err)}`,
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+      isError: true,
+    };
+  }
+
+  try {
+    const child = spawn(process.execPath, [guardCliScript, 'start'], {
+      detached: true,
+      stdio: ['ignore', logFd, logFd],
+      env: { ...process.env },
+    });
+    child.unref();
+    closeSync(logFd);
+
+    // Wait for PID file to confirm startup (up to 5 seconds)
+    let started = false;
+    let newPid: number | null = null;
+    const deadline = Date.now() + 5000;
+    while (Date.now() < deadline) {
+      if (existsSync(pidFile)) {
+        try {
+          const content = readFileSync(pidFile, 'utf-8').trim();
+          const parsed = parseInt(content, 10);
+          if (!isNaN(parsed)) {
+            process.kill(parsed, 0);
+            started = true;
+            newPid = parsed;
+            break;
+          }
+        } catch {
+          // Not ready yet
+        }
+      }
+      await new Promise((r) => setTimeout(r, 300));
+    }
+
+    if (started) {
+      return {
+        content: [
+          {
+            type: 'text' as const,
+            text: JSON.stringify(
+              {
+                status: 'started',
+                pid: newPid,
+                dataDir,
+                mode,
+                logFile: logPath,
+                message: `Guard engine started successfully (PID: ${newPid}).`,
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    } else {
+      return {
+        content: [
+          {
+            type: 'text' as const,
+            text: JSON.stringify(
+              {
+                status: 'timeout',
+                dataDir,
+                mode,
+                logFile: logPath,
+                message: 'Guard engine was spawned but did not confirm startup within 5 seconds. Check the log file for details.',
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    }
+  } catch (err) {
+    closeSync(logFd);
+    return {
+      content: [
+        {
+          type: 'text' as const,
+          text: JSON.stringify(
+            {
+              status: 'error',
+              message: `Failed to spawn guard process: ${err instanceof Error ? err.message : String(err)}`,
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+      isError: true,
+    };
+  }
 }
 
 /**

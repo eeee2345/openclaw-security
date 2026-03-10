@@ -21,7 +21,8 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit",
     "dev": "tsc --build --watch",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "postinstall": "node -e \"console.log('\\n  Run: panguard setup\\n  to connect with Claude Code, Cursor, or other AI agents.\\n')\""
   },
   "dependencies": {
     "@panguard-ai/core": "workspace:*",

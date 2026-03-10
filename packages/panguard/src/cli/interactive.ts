@@ -1,7 +1,7 @@
 /**
  * Panguard AI - Interactive CLI Mode
  *
- * Number-key menu [0]-[7] with panguard > prompt for text commands.
+ * Number-key menu [0]-[8] with panguard > prompt for text commands.
  * Box-bordered status panel, breadcrumb navigation, no "press any key" interrupts.
  *
  * @module @panguard-ai/panguard/cli/interactive
@@ -62,7 +62,7 @@ function saveLang(lang: Lang): void {
 let currentLang: Lang = 'en';
 
 // ---------------------------------------------------------------------------
-// Menu definitions — 8 core items matching the redesigned UI
+// Menu definitions — 9 core items matching the redesigned UI
 // ---------------------------------------------------------------------------
 
 interface MenuDef {
@@ -165,6 +165,17 @@ const MENU_DEFS: MenuDef[] = [
     zhDesc: '\u81EA\u52D5\u57F7\u884C\u7D9C\u5408\u529F\u80FD\u5C55\u793A',
     tierBadge: '',
     featureKey: 'demo',
+  },
+  {
+    key: 'audit',
+    icon: '\u25A0',
+    number: 8,
+    en: 'Skill Auditor',
+    zh: '\u6280\u80FD\u5BE9\u8A08',
+    enDesc: 'Audit AI agent skills for security issues',
+    zhDesc: '\u5BE9\u8A08 AI \u4EE3\u7406\u6280\u80FD\u7684\u5B89\u5168\u554F\u984C',
+    tierBadge: '',
+    featureKey: 'audit',
   },
 ];
 
@@ -274,8 +285,8 @@ function showHelp(): void {
   console.log(
     c.dim(
       currentLang === 'zh-TW'
-        ? '  [0]-[7]  \u6309\u6578\u5B57\u9375\u5373\u523B\u9078\u64C7\uFF08\u4E0D\u9700\u6309 Enter\uFF09'
-        : '  [0]-[7]  Press number key to select instantly (no Enter needed)'
+        ? '  [0]-[8]  \u6309\u6578\u5B57\u9375\u5373\u523B\u9078\u64C7\uFF08\u4E0D\u9700\u6309 Enter\uFF09'
+        : '  [0]-[8]  Press number key to select instantly (no Enter needed)'
     )
   );
   console.log('');
@@ -287,6 +298,7 @@ function showHelp(): void {
     { cmd: 'status', en: 'System status overview', zh: '\u7CFB\u7D71\u72C0\u614B\u7E3D\u89BD' },
     { cmd: 'config', en: 'Settings management', zh: '\u8A2D\u5B9A\u7BA1\u7406' },
     { cmd: 'hardening', en: 'Security hardening', zh: '\u5B89\u5168\u52A0\u56FA' },
+    { cmd: 'audit', en: 'Audit AI agent skills', zh: '\u5BE9\u8A08 AI \u4EE3\u7406\u6280\u80FD' },
     { cmd: 'doctor', en: 'Health diagnostics', zh: '\u5065\u5EB7\u8A3A\u65B7' },
     { cmd: 'help', en: 'Show this help', zh: '\u986F\u793A\u6B64\u8AAA\u660E' },
   ];
@@ -356,6 +368,13 @@ export async function startInteractive(lang?: string): Promise<void> {
         ? `  ${c.sage('\u25C6')} \u9996\u6B21\u4F7F\u7528\uFF1F\u5EFA\u8B70\u6309 [0] \u57F7\u884C\u521D\u59CB\u8A2D\u5B9A\u6216\u6309 [7] \u529F\u80FD\u5C55\u793A`
         : `  ${c.sage('\u25C6')} First time? Press [0] for Setup Wizard or [7] for Auto Demo`;
     console.log(hint);
+
+    // MCP setup hint for AI agent integration
+    const mcpHint =
+      currentLang === 'zh-TW'
+        ? `  ${c.sage('\u25C6')} \u8981\u9023\u63A5 Claude Code\u3001Cursor \u7B49 AI \u4EE3\u7406\uFF1F\u57F7\u884C: ${c.sage('panguard setup')}`
+        : `  ${c.sage('\u25C6')} Connect with Claude Code, Cursor, or other AI agents: ${c.sage('panguard setup')}`;
+    console.log(mcpHint);
     console.log('');
   }
 
@@ -513,6 +532,13 @@ async function dispatchCommand(text: string): Promise<boolean> {
       return true;
     }
 
+    case 'audit':
+      console.clear();
+      await actionAudit();
+      await new Promise((r) => setTimeout(r, 500));
+      renderStartup();
+      return true;
+
     case 'help':
       showHelp();
       return true;
@@ -551,6 +577,9 @@ async function dispatch(key: string): Promise<void> {
       break;
     case 'demo':
       await actionDemo();
+      break;
+    case 'audit':
+      await actionAudit();
       break;
   }
 }
@@ -684,7 +713,8 @@ async function actionScan(): Promise<void> {
 
     const guardItems: MenuItem[] = [
       { key: '1', label: currentLang === 'zh-TW' ? '\u662F\uFF0C\u555F\u52D5 Guard \u9632\u8B77' : 'Yes, start Guard protection' },
-      { key: '2', label: currentLang === 'zh-TW' ? '\u4E0D\u7528\uFF0C\u56DE\u4E3B\u9078\u55AE' : 'No, return to main menu' },
+      { key: '2', label: currentLang === 'zh-TW' ? '\u5BE9\u8A08\u5DF2\u5B89\u88DD\u6280\u80FD\u7684\u5B89\u5168\u5A01\u8105' : 'Audit installed skills for threats' },
+      { key: '3', label: currentLang === 'zh-TW' ? '\u4E0D\u7528\uFF0C\u56DE\u4E3B\u9078\u55AE' : 'No, return to main menu' },
     ];
     renderCompactMenu('', guardItems);
     const guardChoice = await waitForCompactChoice(guardItems, currentLang);
@@ -692,14 +722,20 @@ async function actionScan(): Promise<void> {
       await actionGuard();
       return;
     }
+    if (guardChoice?.key === '2') {
+      await actionAudit();
+      return;
+    }
   } else {
     nextSteps(
       currentLang === 'zh-TW'
         ? [
+            { cmd: '[8] \u6280\u80FD\u5BE9\u8A08', desc: '\u5BE9\u8A08\u5DF2\u5B89\u88DD\u6280\u80FD\u7684\u5B89\u5168\u5A01\u8105' },
             { cmd: 'scan --full', desc: '\u57F7\u884C\u5B8C\u6574\u6383\u63CF' },
             { cmd: 'guard start', desc: '\u555F\u52D5\u5373\u6642\u9632\u8B77' },
           ]
         : [
+            { cmd: '[8] Skill Auditor', desc: 'Audit installed skills for threats' },
             { cmd: 'scan --full', desc: 'Run a comprehensive scan' },
             { cmd: 'guard start', desc: 'Enable real-time protection' },
           ],
@@ -1255,6 +1291,181 @@ async function actionDemo(): Promise<void> {
         ],
     currentLang
   );
+}
+
+// ---------------------------------------------------------------------------
+// [8] Skill Auditor
+// ---------------------------------------------------------------------------
+
+async function actionAudit(): Promise<void> {
+  breadcrumb(['Panguard', currentLang === 'zh-TW' ? '\u6280\u80FD\u5BE9\u8A08' : 'Skill Auditor']);
+  const title = currentLang === 'zh-TW' ? '\u6280\u80FD\u5BE9\u8A08' : 'Skill Auditor';
+  console.log(`  ${theme.brandBold(title)}`);
+  console.log('');
+  console.log(
+    c.dim(
+      currentLang === 'zh-TW'
+        ? '  \u6383\u63CF AI \u4EE3\u7406\u6280\u80FD\u76EE\u9304\uFF08\u5305\u542B SKILL.md\uFF09\u4EE5\u5075\u6E2C\u5B89\u5168\u554F\u984C\u3002'
+        : '  Scan an AI agent skill directory (containing SKILL.md) for security issues.'
+    )
+  );
+  console.log('');
+
+  // Ask for path to audit
+  const pathItems: MenuItem[] = [
+    {
+      key: '1',
+      label:
+        currentLang === 'zh-TW'
+          ? '\u5BE9\u8A08\u7576\u524D\u76EE\u9304 (.)'
+          : 'Audit current directory (.)',
+    },
+    {
+      key: '2',
+      label:
+        currentLang === 'zh-TW'
+          ? '\u8F38\u5165\u81EA\u5B9A\u8DEF\u5F91'
+          : 'Enter custom path',
+    },
+  ];
+
+  renderCompactMenu(
+    currentLang === 'zh-TW' ? '\u9078\u64C7\u76EE\u6A19' : 'Select target',
+    pathItems
+  );
+
+  const choice = await waitForCompactChoice(pathItems, currentLang);
+  if (!choice) return;
+
+  let targetPath = process.cwd();
+
+  if (choice.key === '2') {
+    // Read a custom path from the user via text prompt
+    const readline = await import('node:readline');
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    targetPath = await new Promise<string>((resolve) => {
+      const prompt = currentLang === 'zh-TW' ? '  \u8DEF\u5F91: ' : '  Path: ';
+      rl.question(prompt, (answer) => {
+        rl.close();
+        resolve(answer.trim() || process.cwd());
+      });
+    });
+  }
+
+  const path = await import('node:path');
+  const resolvedPath = path.resolve(targetPath);
+
+  console.log('');
+  const sp = spinner(
+    currentLang === 'zh-TW'
+      ? `\u6B63\u5728\u5BE9\u8A08 ${resolvedPath}...`
+      : `Auditing ${resolvedPath}...`
+  );
+
+  try {
+    const { auditSkill } = await import('@panguard-ai/panguard-skill-auditor');
+    const report = await auditSkill(resolvedPath);
+    sp.succeed(
+      currentLang === 'zh-TW' ? '\u5BE9\u8A08\u5B8C\u6210' : 'Audit complete'
+    );
+
+    // Display results
+    const levelColors: Record<string, (s: string) => string> = {
+      LOW: c.safe,
+      MEDIUM: c.caution,
+      HIGH: c.critical,
+      CRITICAL: (s: string) => c.bold(c.critical(s)),
+    };
+    const colorFn = levelColors[report.riskLevel] ?? c.dim;
+
+    console.log('');
+    console.log(
+      box(
+        [
+          `${c.bold(currentLang === 'zh-TW' ? '\u6280\u80FD\u5BE9\u8A08\u5831\u544A' : 'Skill Audit Report')}`,
+          '',
+          `${currentLang === 'zh-TW' ? '\u6280\u80FD' : 'Skill'}:      ${report.manifest?.name ?? 'Unknown'}${report.manifest?.metadata?.version ? ` v${report.manifest.metadata.version}` : ''}`,
+          `${currentLang === 'zh-TW' ? '\u4F5C\u8005' : 'Author'}:     ${report.manifest?.metadata?.author ?? 'Unknown'}`,
+          `${currentLang === 'zh-TW' ? '\u98A8\u96AA\u5206\u6578' : 'Risk Score'}: ${colorFn(`${report.riskScore}/100 (${report.riskLevel})`)}`,
+          `${currentLang === 'zh-TW' ? '\u6642\u9593' : 'Duration'}:   ${report.durationMs}ms`,
+        ].join('\n'),
+        { borderColor: c.sage }
+      )
+    );
+
+    console.log('');
+
+    for (const check of report.checks) {
+      const icon =
+        check.status === 'pass'
+          ? c.safe('\u2713')
+          : check.status === 'fail'
+            ? c.critical('\u2717')
+            : check.status === 'warn'
+              ? c.caution('~')
+              : c.dim('i');
+      const statusLabel =
+        check.status === 'pass'
+          ? 'PASS'
+          : check.status === 'fail'
+            ? 'FAIL'
+            : check.status === 'warn'
+              ? 'WARN'
+              : 'INFO';
+      console.log(`  ${icon} [${statusLabel}] ${check.label}`);
+    }
+
+    console.log('');
+
+    if (report.findings.length > 0) {
+      console.log(
+        c.bold(
+          currentLang === 'zh-TW'
+            ? `  \u767C\u73FE ${report.findings.length} \u500B\u554F\u984C:`
+            : `  ${report.findings.length} finding(s):`
+        )
+      );
+      console.log('');
+      for (const finding of report.findings) {
+        const sevColor =
+          finding.severity === 'critical'
+            ? c.critical
+            : finding.severity === 'high'
+              ? c.caution
+              : c.dim;
+        console.log(
+          `  ${sevColor(`[${finding.severity.toUpperCase()}]`)} ${finding.title}`
+        );
+        console.log(`    ${c.dim(finding.description)}`);
+        if (finding.location) console.log(`    ${c.dim(`at ${finding.location}`)}`);
+        console.log('');
+      }
+    }
+
+    nextSteps(
+      currentLang === 'zh-TW'
+        ? [
+            { cmd: 'scan', desc: '\u57F7\u884C\u7CFB\u7D71\u5B89\u5168\u6383\u63CF' },
+            { cmd: 'guard start', desc: '\u555F\u52D5 24/7 \u5B88\u8B77\u9632\u8B77' },
+          ]
+        : [
+            { cmd: 'scan', desc: 'Run a system security scan' },
+            { cmd: 'guard start', desc: 'Start 24/7 guard protection' },
+          ],
+      currentLang
+    );
+  } catch (err) {
+    sp.fail(
+      currentLang === 'zh-TW' ? '\u5BE9\u8A08\u5931\u6557' : 'Audit failed'
+    );
+    console.log(
+      formatError(
+        err instanceof Error ? err.message : String(err),
+        currentLang === 'zh-TW' ? '\u6280\u80FD\u5BE9\u8A08' : 'Skill Auditor',
+        currentLang === 'zh-TW' ? '\u8ACB\u78BA\u8A8D\u76EE\u9304\u5305\u542B SKILL.md' : 'Ensure the directory contains a SKILL.md file'
+      )
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -140,8 +140,8 @@ export function waitForMainInput(): Promise<MainInputResult> {
         const ch = data[0];
         if (!ch) return;
 
-        // Number keys 0-7 — instant trigger
-        if (ch >= '0' && ch <= '7') {
+        // Number keys 0-8 — instant trigger
+        if (ch >= '0' && ch <= '8') {
           cleanup();
           process.stdout.write(ch + '\n');
           resolve({ type: 'number', index: parseInt(ch, 10) });
