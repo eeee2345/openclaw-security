@@ -174,6 +174,13 @@ function loadFromMasterConfig(masterPath: string): GuardConfig {
       },
     };
 
+    // Map threat cloud API key from master config or env
+    const tcKey = (master['threatCloudApiKey'] as string | undefined)
+      ?? process.env['TC_API_KEY'];
+    if (tcKey) {
+      config.threatCloudApiKey = tcKey;
+    }
+
     // Map AI settings
     if (ai['provider']) {
       config.ai = {

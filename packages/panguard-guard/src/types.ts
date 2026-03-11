@@ -509,6 +509,7 @@ export interface GuardConfig {
   };
   dataDir: string;
   threatCloudEndpoint?: string;
+  threatCloudApiKey?: string;
   threatCloudUploadEnabled?: boolean;
   licenseKey?: string;
   /** CLI tier from panguard credentials (overrides key-based license) */

@@ -396,7 +396,11 @@ export class GuardEngine {
 
     // Initialize threat cloud - always enable upload for all tiers
     // Full threat cloud API access (rule fetching, stats) gated by enterprise
-    this.threatCloud = new ThreatCloudClient(config.threatCloudEndpoint, config.dataDir);
+    this.threatCloud = new ThreatCloudClient(
+      config.threatCloudEndpoint,
+      config.dataDir,
+      config.threatCloudApiKey,
+    );
 
     // Initialize threat intel feed manager
     this.feedManager = new ThreatIntelFeedManager({

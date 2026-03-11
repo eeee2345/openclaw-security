@@ -12,7 +12,8 @@
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { request } from 'node:https';
+import { request as httpsRequest } from 'node:https';
+import { request as httpRequest } from 'node:http';
 import { createLogger } from '@panguard-ai/core';
 import type { AnonymizedThreatData, ThreatCloudUpdate, ThreatCloudStatus } from '../types.js';
 import { getAnonymousClientId } from './client-id.js';
@@ -38,6 +39,7 @@ interface CacheData {
  */
 export class ThreatCloudClient {
   private readonly endpoint: string | undefined;
+  private readonly apiKey: string | undefined;
   private readonly dataDir: string;
   private readonly clientId: string;
   private status: ThreatCloudStatus = 'disconnected';
@@ -56,9 +58,11 @@ export class ThreatCloudClient {
   /**
    * @param endpoint - Cloud API endpoint URL (undefined = offline mode) / 雲端 API 端點 URL
    * @param dataDir - Local data directory for cache/queue / 本地資料目錄
+   * @param apiKey - API key for authentication / 認證用 API 金鑰
    */
-  constructor(endpoint: string | undefined, dataDir: string) {
+  constructor(endpoint: string | undefined, dataDir: string, apiKey?: string) {
     this.endpoint = endpoint;
+    this.apiKey = apiKey ?? process.env['TC_API_KEY'];
     this.dataDir = dataDir;
     this.clientId = getAnonymousClientId();
 
@@ -494,21 +498,39 @@ export class ThreatCloudClient {
   // HTTP helpers / HTTP 輔助函數
   // ---------------------------------------------------------------------------
 
+  /** Select http or https request function based on URL protocol */
+  private selectTransport(url: string) {
+    return url.startsWith('https') ? httpsRequest : httpRequest;
+  }
+
+  /** Build common headers including Authorization if API key is configured */
+  private baseHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'X-Panguard-Client-Id': this.clientId,
+    };
+    if (this.apiKey) {
+      headers['Authorization'] = `Bearer ${this.apiKey}`;
+    }
+    return headers;
+  }
+
   private httpPost(url: string, body: unknown): Promise<string> {
     return new Promise((resolve, reject) => {
       const payload = JSON.stringify(body);
       const parsed = new URL(url);
+      const transport = this.selectTransport(url);
+      const defaultPort = parsed.protocol === 'https:' ? 443 : 80;
 
-      const req = request(
+      const req = transport(
         {
           hostname: parsed.hostname,
-          port: parsed.port || 443,
+          port: parsed.port || defaultPort,
           path: parsed.pathname + parsed.search,
           method: 'POST',
           headers: {
+            ...this.baseHeaders(),
             'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(payload),
-            'X-Panguard-Client-Id': this.clientId,
+            'Content-Length': Buffer.byteLength(payload).toString(),
           },
           timeout: 10000,
         },
@@ -540,16 +562,16 @@ export class ThreatCloudClient {
   private httpGet(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const parsed = new URL(url);
+      const transport = this.selectTransport(url);
+      const defaultPort = parsed.protocol === 'https:' ? 443 : 80;
 
-      const req = request(
+      const req = transport(
         {
           hostname: parsed.hostname,
-          port: parsed.port || 443,
+          port: parsed.port || defaultPort,
           path: parsed.pathname + parsed.search,
           method: 'GET',
-          headers: {
-            'X-Panguard-Client-Id': this.clientId,
-          },
+          headers: this.baseHeaders(),
           timeout: 10000,
         },
         (res) => {
