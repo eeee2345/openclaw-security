@@ -93,7 +93,7 @@ export default function SkillAuditorContent() {
           <div className="space-y-4">
             <CodeBlock
               title={t('codeTitle1')}
-              code="curl -fsSL https://panguard.ai/api/install | bash"
+              code="curl -fsSL https://get.panguard.ai | bash"
             />
             <CodeBlock
               title={t('codeTitle2')}
@@ -380,7 +380,7 @@ VERDICT: DO NOT INSTALL - Critical security issues found`}
             <p className="text-text-secondary mb-6 max-w-lg mx-auto">
               {t('ctaDesc')}
             </p>
-            <CodeBlock code="curl -fsSL https://panguard.ai/api/install | bash" />
+            <CodeBlock code="curl -fsSL https://get.panguard.ai | bash" />
             <div className="flex flex-wrap justify-center gap-3 mt-6">
               <Link
                 href="/docs/installation"

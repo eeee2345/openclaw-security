@@ -1,6 +1,6 @@
 # Getting Started
 
-> From sign-up to your first security report in 5 minutes.
+> From install to your first security report in 5 minutes.
 
 ---
 
@@ -38,25 +38,7 @@
 
 ---
 
-## Step 1: Create Account
-
-Go to [panguard.ai](https://panguard.ai) and sign up:
-
-1. Click "Sign Up" - use Google or Email + Password
-2. Browse plans at [Pricing](https://panguard.ai/pricing)
-
-| Plan          | Price  | Includes                                                    |
-| ------------- | ------ | ----------------------------------------------------------- |
-| **Community** | Free   | Scan (unlimited) + Guard (Layer 1) + Threat Cloud           |
-| **Solo**      | $9/mo  | + Full Guard (3 layers) + Chat + Local AI, up to 3 machines |
-| **Pro**       | $29/mo | + Trap + Cloud AI + Compliance reports, up to 10 machines   |
-| **Business**  | $79/mo | + SIEM + SSO + Dedicated support, up to 25 machines         |
-
-Community plan is enough to get started. Compliance reports available as add-on purchases on Pro+ plans.
-
----
-
-## Step 2: Install
+## Step 1: Install
 
 ### One-Command Install (Recommended — Unix)
 
@@ -97,32 +79,7 @@ panguard --version
 
 ---
 
-## Step 3: CLI Login
-
-```bash
-panguard login
-```
-
-Browser opens automatically. After login, return to terminal:
-
-```
-  PANGUARD AI
-
-  -- Login Info ----------------------------------------
-
-  Email     user@example.com
-  Name      User Name
-  Plan      Solo
-  Expires   2026-04-27
-
-  Login successful!
-```
-
-> On SSH / headless servers: use `panguard login --no-browser`, copy URL to another device.
-
----
-
-## Step 4: First Scan
+## Step 2: First Scan
 
 ```bash
 panguard scan --quick
@@ -169,7 +126,7 @@ panguard scan --lang zh-TW
 
 ---
 
-## Step 5: Start Real-Time Protection
+## Step 3: Start Real-Time Protection
 
 Scan is a one-time check. For continuous protection, start Guard:
 
@@ -186,7 +143,7 @@ panguard guard start
 
   Mode:       Learning (Day 1/7)
   Monitoring: processes, network, files
-  Rules:      3,155 Sigma rules loaded
+  Rules:      3,760 Sigma rules loaded
   Score:      --/100 (building baseline)
 
   Guard is now protecting your system.
@@ -201,7 +158,7 @@ How Guard works:
 
 ---
 
-## Step 6: Set Up Notifications
+## Step 4: Set Up Notifications
 
 Let Panguard notify you when threats are detected:
 
@@ -242,7 +199,7 @@ panguard chat test
 
 ---
 
-## Step 7: Deploy Honeypots (Pro)
+## Step 5: Deploy Honeypots
 
 Catch attackers with decoy services:
 
@@ -256,7 +213,7 @@ All fully isolated from production. Zero risk to real data.
 
 ---
 
-## Step 8: Generate Compliance Report (Pro)
+## Step 6: Generate Compliance Report
 
 ```bash
 panguard report --framework iso27001 --output iso-report.pdf
@@ -274,13 +231,13 @@ Available frameworks:
 
 ## Next Steps
 
-| Want to...                             | Plan | Read                                                  |
-| -------------------------------------- | ---- | ----------------------------------------------------- |
-| Understand the 3-layer AI architecture | -    | [Concept: Three-Layer AI](concepts/three-layer-ai.md) |
-| Deep dive into Guard's 4 AI agents     | Solo | [Guide: Guard](guides/guard.md)                       |
-| Set up honeypots to catch attackers    | Pro  | [Guide: Trap](guides/trap.md)                         |
-| Generate compliance reports            | Pro  | [Guide: Report](guides/report.md)                     |
-| Deploy collective threat intelligence  | All  | [Guide: Threat Cloud](guides/threat-cloud.md)         |
-| View all CLI commands                  | -    | [Reference: CLI](reference/cli.md)                    |
-| Write custom Sigma rules               | -    | [Reference: Sigma Rules](reference/sigma-rules.md)    |
-| Troubleshoot issues                    | -    | [Troubleshooting](troubleshooting.md)                 |
+| Want to...                             | Read                                                  |
+| -------------------------------------- | ----------------------------------------------------- |
+| Understand the 3-layer AI architecture | [Concept: Three-Layer AI](concepts/three-layer-ai.md) |
+| Deep dive into Guard's 4 AI agents     | [Guide: Guard](guides/guard.md)                       |
+| Set up honeypots to catch attackers    | [Guide: Trap](guides/trap.md)                         |
+| Generate compliance reports            | [Guide: Report](guides/report.md)                     |
+| Deploy collective threat intelligence  | [Guide: Threat Cloud](guides/threat-cloud.md)         |
+| View all CLI commands                  | [Reference: CLI](reference/cli.md)                    |
+| Write custom Sigma rules               | [Reference: Sigma Rules](reference/sigma-rules.md)    |
+| Troubleshoot issues                    | [Troubleshooting](troubleshooting.md)                 |

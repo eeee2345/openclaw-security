@@ -298,6 +298,17 @@ export default function GettingStartedContent() {
               />
             </div>
 
+            {/* Setup step */}
+            <div className="mt-4">
+              <p className="text-sm text-text-secondary mb-3">
+                Run setup to auto-configure all detected AI platforms (Claude Code, Cursor, OpenClaw, Codex):
+              </p>
+              <CodeBlock
+                code="panguard setup"
+                label="Terminal"
+              />
+            </div>
+
             {/* Then start */}
             <div className="mt-4">
               <p className="text-sm text-text-secondary mb-3">

@@ -8,15 +8,15 @@
 
 Panguard AI is an open-source cybersecurity platform designed for developers and small businesses who don't have a security team.
 
-The core idea is simple: **sign up on the website, log in from CLI, and AI protects your machines automatically. It tells you when something happens. When nothing happens, you do nothing.**
+The core idea is simple: **install, and AI protects your machines automatically. It tells you when something happens. When nothing happens, you do nothing.**
 
 ### User Experience
 
 Like Claude Code:
 
-1. **Website** - Browse plans, sign up, manage subscriptions
-2. **CLI** - `panguard login` opens browser for auth, token stored locally
-3. **Usage** - Features gated by subscription tier, zero daily operation
+1. **Install** - One command install, zero configuration
+2. **CLI** - `panguard guard start` begins protection immediately
+3. **Usage** - Zero daily operation required
 
 ### Why Panguard AI?
 
@@ -71,7 +71,7 @@ panguard guard start
 
 - 4-agent AI pipeline: Detect -> Analyze -> Respond -> Report
 - 7-day learning period builds behavioral baseline
-- 3,155 Sigma rules + 5,895 YARA rules
+- 3,760 Sigma rules + 5,961 YARA rules
 - Real-time threat intelligence (ThreatFox / URLhaus / GreyNoise)
 - Auto-response: IP blocking, file quarantine, process termination
 - Investigation engine for root cause analysis
@@ -217,44 +217,11 @@ Cloud down? Local AI takes over. Local AI down? Rules engine keeps running. Prot
 | Runtime    | Node.js 20+                                     |
 | Monorepo   | pnpm 10 workspaces                              |
 | Testing    | Vitest 3 (3,017 tests / 142 files)              |
-| Rules      | Sigma (3,155) + YARA (5,895) + Suricata + Falco |
+| Rules      | Sigma (3,760) + YARA (5,961) + Suricata + Falco |
 | AI         | Ollama (local) + Claude / OpenAI (cloud)        |
 | Auth       | Google OAuth (PKCE) + scrypt hashing            |
 | i18n       | English + Traditional Chinese                   |
 | Encryption | AES-256-GCM                                     |
-
----
-
-## Subscription Tiers
-
-| Feature              | Community | Solo  | Pro    | Business |
-| -------------------- | --------- | ----- | ------ | -------- |
-| Price                | Free      | $9/mo | $29/mo | $79/mo   |
-| Machines             | 1         | 3     | 10     | 25       |
-| Scan (unlimited)     | v         | v     | v      | v        |
-| Guard (Layer 1)      | v         | v     | v      | v        |
-| Guard (Full 3-layer) | -         | v     | v      | v        |
-| Chat notifications   | -         | v     | v      | v        |
-| Local AI (Ollama)    | -         | v     | v      | v        |
-| Cloud AI analysis    | -         | -     | v      | v        |
-| Trap (8 honeypots)   | -         | -     | v      | v        |
-| Compliance reports   | -         | -     | v      | v        |
-| SIEM integration     | -         | -     | -      | v        |
-| SSO & RBAC           | -         | -     | -      | v        |
-| Dedicated support    | -         | -     | -      | v        |
-
-**Compliance reports** available as one-time purchase on Pro+ plans:
-
-| Report         | Price | Controls |
-| -------------- | ----- | -------- |
-| Taiwan TCSA    | $299  | 10       |
-| ISO 27001      | $499  | 30       |
-| SOC 2          | $699  | 10       |
-| Bundle (all 3) | $999  | 50       |
-
-Annual billing: 20% discount on all plans.
-
-Manage subscription: [panguard.ai/pricing](https://panguard.ai/pricing)
 
 ---
 

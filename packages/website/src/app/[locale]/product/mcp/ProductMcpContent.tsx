@@ -38,6 +38,8 @@ const clients = [
   { name: 'Claude Desktop', desc: 'Anthropic\'s desktop app with native MCP support' },
   { name: 'Cursor', desc: 'AI-first code editor with MCP tool integration' },
   { name: 'Claude Code', desc: 'CLI agent that can call MCP tools directly' },
+  { name: 'OpenClaw', desc: 'Native Skill (auto-installed via `panguard setup`)' },
+  { name: 'Codex CLI', desc: 'OpenAI\'s coding agent with MCP tool support' },
   { name: 'Any MCP Client', desc: 'Any app implementing the Model Context Protocol' },
 ];
 

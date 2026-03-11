@@ -14,7 +14,7 @@ npm has `audit`. Docker has scanning. Chrome has extension review.<br>
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933.svg?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6.svg?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-3%2C300%2B%20passed-22c55e.svg?style=flat-square)](packages/)
+[![Tests](https://img.shields.io/badge/tests-3%2C480%2B%20passed-22c55e.svg?style=flat-square)](packages/)
 [![Rules](https://img.shields.io/badge/detection%20rules-9%2C700%2B-f97316.svg?style=flat-square)](#detection-rules)
 [![ATR](https://img.shields.io/badge/ATR%20Standard-69%20rules-8b5cf6.svg?style=flat-square)](packages/atr/)
 [![Made in Taiwan](https://img.shields.io/badge/Made%20in-Taiwan-e11d48.svg?style=flat-square)](https://panguard.ai)
@@ -469,7 +469,7 @@ Control Panguard from any AI assistant via Model Context Protocol.
 | Claude Code | MCP native | `panguard setup` |
 | Cursor | MCP native | `panguard setup` |
 | Windsurf | MCP native | `panguard setup` |
-| OpenClaw | MCP native | `panguard setup` |
+| OpenClaw | Native Skill | `panguard setup` |
 | Codex | MCP native | `panguard setup` |
 | Any MCP client | stdio transport | Manual config |
 
@@ -581,7 +581,7 @@ panguard-web              110
 panguard-trap             107
 website                    91
 -------------------------------------
-Total                   3,330  (0 failures)
+Total                   3,480  (0 failures)
 ATR test cases            325  (190 TP + 135 TN)
 ```
 
@@ -601,7 +601,7 @@ ATR test cases            325  (190 TP + 135 TN)
 ```bash
 pnpm install          # Install all dependencies
 pnpm build            # Build all 17 packages
-pnpm -r run test      # Run all 3,330 tests
+pnpm -r run test      # Run all 3,480 tests
 pnpm -r run typecheck # TypeScript strict checking across all packages
 ```
 

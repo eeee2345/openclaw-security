@@ -42,15 +42,26 @@ function commandExists(cmd: string): Promise<boolean> {
   });
 }
 
-/** Check if a JSON file contains a panguard MCP entry. */
-function hasPanguardEntry(filePath: string): boolean {
+/** Check if a JSON config file has a panguard MCP server entry. */
+function hasPanguardMCPEntry(filePath: string): boolean {
   if (!existsSync(filePath)) return false;
   try {
-    const content = readFileSync(filePath, 'utf-8');
-    return content.includes('panguard');
+    const parsed: unknown = JSON.parse(readFileSync(filePath, 'utf-8'));
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      const servers = (parsed as Record<string, unknown>)['mcpServers'];
+      if (servers && typeof servers === 'object' && !Array.isArray(servers)) {
+        return 'panguard' in (servers as Record<string, unknown>);
+      }
+    }
+    return false;
   } catch {
     return false;
   }
+}
+
+/** Check if OpenClaw has the panguard skill installed. */
+function hasOpenClawSkill(): boolean {
+  return existsSync(getOpenClawSkillPath());
 }
 
 /** Get the MCP config path for Claude Desktop based on OS. */
@@ -76,9 +87,14 @@ function getCursorConfigPath(): string {
   return join(homedir(), '.cursor', 'mcp.json');
 }
 
-/** Get the MCP config path for OpenClaw. */
-function getOpenClawConfigPath(): string {
-  return join(homedir(), '.openclaw', 'mcp.json');
+/** Get the OpenClaw skill installation path for Panguard. */
+function getOpenClawSkillPath(): string {
+  return join(homedir(), '.openclaw', 'skills', 'panguard', 'SKILL.md');
+}
+
+/** Get the OpenClaw skills directory for Panguard. */
+function getOpenClawSkillDir(): string {
+  return join(homedir(), '.openclaw', 'skills', 'panguard');
 }
 
 /** Get the MCP config path for Codex. */
@@ -113,7 +129,7 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     name: 'Claude Code',
     configPath: claudeCodePath,
     detected: claudeCodeDetected,
-    alreadyConfigured: hasPanguardEntry(claudeCodePath),
+    alreadyConfigured: hasPanguardMCPEntry(claudeCodePath),
   });
 
   // Claude Desktop
@@ -125,7 +141,7 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     name: 'Claude Desktop',
     configPath: claudeDesktopPath,
     detected: claudeDesktopDetected,
-    alreadyConfigured: hasPanguardEntry(claudeDesktopPath),
+    alreadyConfigured: hasPanguardMCPEntry(claudeDesktopPath),
   });
 
   // Cursor
@@ -138,18 +154,18 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     name: 'Cursor',
     configPath: cursorPath,
     detected: cursorDetected,
-    alreadyConfigured: hasPanguardEntry(cursorPath),
+    alreadyConfigured: hasPanguardMCPEntry(cursorPath),
   });
 
-  // OpenClaw
-  const openclawPath = getOpenClawConfigPath();
+  // OpenClaw (uses native skill system, not MCP)
+  const openclawSkillDir = getOpenClawSkillDir();
   const openclawDetected = await commandExists('openclaw') || existsSync(join(homedir(), '.openclaw'));
   platforms.push({
     id: 'openclaw',
     name: 'OpenClaw',
-    configPath: openclawPath,
+    configPath: openclawSkillDir,
     detected: openclawDetected,
-    alreadyConfigured: hasPanguardEntry(openclawPath),
+    alreadyConfigured: hasOpenClawSkill(),
   });
 
   // Codex
@@ -160,7 +176,7 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     name: 'Codex CLI',
     configPath: codexPath,
     detected: codexDetected,
-    alreadyConfigured: hasPanguardEntry(codexPath),
+    alreadyConfigured: hasPanguardMCPEntry(codexPath),
   });
 
   // Workbuddy
@@ -171,7 +187,7 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     name: 'Workbuddy',
     configPath: workbuddyPath,
     detected: workbuddyDetected,
-    alreadyConfigured: hasPanguardEntry(workbuddyPath),
+    alreadyConfigured: hasPanguardMCPEntry(workbuddyPath),
   });
 
   // NemoClaw
@@ -182,7 +198,7 @@ export async function detectPlatforms(): Promise<DetectedPlatform[]> {
     name: 'NemoClaw',
     configPath: nemoclawPath,
     detected: nemoclawDetected,
-    alreadyConfigured: hasPanguardEntry(nemoclawPath),
+    alreadyConfigured: hasPanguardMCPEntry(nemoclawPath),
   });
 
   const detected = platforms.filter((p) => p.detected);
@@ -199,7 +215,7 @@ export function getConfigPath(platformId: PlatformId): string {
     case 'claude-code': return getClaudeCodeConfigPath();
     case 'claude-desktop': return getClaudeDesktopConfigPath();
     case 'cursor': return getCursorConfigPath();
-    case 'openclaw': return getOpenClawConfigPath();
+    case 'openclaw': return getOpenClawSkillDir();
     case 'codex': return getCodexConfigPath();
     case 'workbuddy': return getWorkbuddyConfigPath();
     case 'nemoclaw': return getNemoClawConfigPath();

@@ -185,7 +185,7 @@ export default function GuardDocsContent() {
                 </tr>
                 <tr>
                   <td className="px-4 py-3 text-panguard-green font-medium">ATR</td>
-                  <td className="px-4 py-3 text-text-primary">27</td>
+                  <td className="px-4 py-3 text-text-primary">69</td>
                   <td className="px-4 py-3 text-text-secondary">
                     AI Agent Threat Rules. Purpose-built for prompt injection, tool poisoning, MCP server abuse, and credential exfiltration by autonomous agents.
                   </td>

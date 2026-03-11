@@ -122,6 +122,8 @@ export async function discoverAllSkills(): Promise<readonly MCPServerEntry[]> {
   const allSkills: MCPServerEntry[] = [];
 
   for (const platform of detected) {
+    // OpenClaw uses native skills, not MCP JSON config
+    if (platform.id === 'openclaw') continue;
     const configPath = getConfigPath(platform.id);
     const servers = parseMCPServers(configPath, platform.id);
 

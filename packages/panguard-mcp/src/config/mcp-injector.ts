@@ -7,8 +7,9 @@
  * @module @panguard-ai/panguard-mcp/config/mcp-injector
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createLogger } from '@panguard-ai/core';
 import type { PlatformId } from './platform-detector.js';
 import { getConfigPath } from './platform-detector.js';
@@ -109,7 +110,7 @@ function injectCursor(configPath: string): void {
 }
 
 /**
- * Inject Panguard MCP config for OpenClaw/Codex/Workbuddy.
+ * Inject Panguard MCP config for Codex/Workbuddy/NemoClaw.
  * Generic MCP JSON format: { "mcpServers": { "panguard": { ... } } }
  */
 function injectGenericMCP(configPath: string): void {
@@ -118,6 +119,46 @@ function injectGenericMCP(configPath: string): void {
   servers['panguard'] = { ...PANGUARD_MCP_ENTRY };
   config['mcpServers'] = servers;
   writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
+}
+
+/**
+ * Inject Panguard as an OpenClaw native skill.
+ * OpenClaw uses its own skill system (not MCP), so we copy SKILL.md
+ * to ~/.openclaw/skills/panguard/.
+ */
+function injectOpenClawSkill(skillDir: string): void {
+  mkdirSync(skillDir, { recursive: true });
+
+  // Resolve the bundled SKILL.md from this package
+  const thisDir = dirname(fileURLToPath(import.meta.url));
+  const bundledSkill = join(thisDir, '..', '..', 'openclaw-skill', 'SKILL.md');
+
+  if (existsSync(bundledSkill)) {
+    copyFileSync(bundledSkill, join(skillDir, 'SKILL.md'));
+  } else {
+    // Fallback: write a minimal SKILL.md inline
+    const skillContent = [
+      '---',
+      'name: panguard',
+      'description: AI agent security platform -- audit skills, scan threats, run 24/7 protection',
+      'homepage: https://panguard.ai',
+      'license: MIT',
+      'metadata: { "openclaw": { "requires": { "bins": ["npx"] }, "install": [{ "id": "node", "kind": "node", "package": "@panguard-ai/panguard", "bins": ["panguard"], "label": "Install Panguard AI" }] } }',
+      '---',
+      '',
+      '# Panguard AI',
+      '',
+      'Security platform for AI agents with 9,700+ detection rules.',
+      '',
+      '## Commands',
+      '- `panguard audit skill .` -- Audit skills for threats',
+      '- `panguard scan` -- Security scan',
+      '- `panguard guard start` -- Start real-time protection',
+      '- `panguard status` -- Show status dashboard',
+      '',
+    ].join('\n');
+    writeFileSync(join(skillDir, 'SKILL.md'), skillContent, 'utf-8');
+  }
 }
 
 /**
@@ -146,6 +187,8 @@ export function injectMCPConfig(platformId: PlatformId): InjectionResult {
         injectCursor(configPath);
         break;
       case 'openclaw':
+        injectOpenClawSkill(configPath);
+        break;
       case 'codex':
       case 'workbuddy':
       case 'nemoclaw':
@@ -154,14 +197,25 @@ export function injectMCPConfig(platformId: PlatformId): InjectionResult {
     }
 
     // Verify the write succeeded
-    const verify = readJsonSafe(configPath);
-    const servers = verify['mcpServers'] as Record<string, unknown> | undefined;
-    if (servers && servers['panguard']) {
-      result.success = true;
-      logger.info(`Injected Panguard MCP config into ${platformId} at ${configPath}`);
+    if (platformId === 'openclaw') {
+      // OpenClaw uses SKILL.md, not JSON
+      if (existsSync(join(configPath, 'SKILL.md'))) {
+        result.success = true;
+        logger.info(`Installed Panguard skill for OpenClaw at ${configPath}`);
+      } else {
+        result.error = 'Verification failed: SKILL.md not found after write';
+        logger.error(result.error);
+      }
     } else {
-      result.error = 'Verification failed: panguard entry not found after write';
-      logger.error(result.error);
+      const verify = readJsonSafe(configPath);
+      const servers = verify['mcpServers'] as Record<string, unknown> | undefined;
+      if (servers && servers['panguard']) {
+        result.success = true;
+        logger.info(`Injected Panguard MCP config into ${platformId} at ${configPath}`);
+      } else {
+        result.error = 'Verification failed: panguard entry not found after write';
+        logger.error(result.error);
+      }
     }
   } catch (err) {
     result.error = err instanceof Error ? err.message : String(err);
@@ -180,6 +234,17 @@ export function removeMCPConfig(platformId: PlatformId): InjectionResult {
   const result: InjectionResult = { platformId, success: false, configPath };
 
   try {
+    if (platformId === 'openclaw') {
+      // Remove OpenClaw skill directory
+      const skillMd = join(configPath, 'SKILL.md');
+      if (existsSync(skillMd)) {
+        rmSync(configPath, { recursive: true, force: true });
+        logger.info(`Removed Panguard skill from OpenClaw`);
+      }
+      result.success = true;
+      return result;
+    }
+
     if (!existsSync(configPath)) {
       result.success = true;
       return result;
