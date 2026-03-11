@@ -1254,7 +1254,15 @@ async function actionThreat(): Promise<void> {
   );
   console.log('');
 
-  const { ThreatCloudServer } = await import('@panguard-ai/threat-cloud');
+  let ThreatCloudServer: Awaited<typeof import('@panguard-ai/threat-cloud')>['ThreatCloudServer'];
+  try {
+    const tc = await import('@panguard-ai/threat-cloud');
+    ThreatCloudServer = tc.ThreatCloudServer;
+  } catch {
+    console.log(c.red('  Threat Cloud server package is not available.'));
+    console.log(c.dim('  Your Guard client connects to Threat Cloud automatically.'));
+    return;
+  }
   const sp = spinner(
     currentLang === 'zh-TW'
       ? '\u6B63\u5728\u555F\u52D5 Threat Cloud API...'

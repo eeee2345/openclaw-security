@@ -40,7 +40,6 @@
     "@panguard-ai/panguard-report": "workspace:*",
     "@panguard-ai/panguard-chat": "workspace:*",
     "@panguard-ai/panguard-trap": "workspace:*",
-    "@panguard-ai/threat-cloud": "workspace:*",
     "@panguard-ai/panguard-auth": "workspace:*",
     "@panguard-ai/manager": "workspace:*",
     "@panguard-ai/security-hardening": "workspace:*",

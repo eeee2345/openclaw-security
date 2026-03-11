@@ -9,15 +9,34 @@
 import { Command } from 'commander';
 import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  HackerOneAdapter,
-  AttackExtractor,
-  SigmaRuleGenerator,
-  RuleValidator,
-} from '@panguard-ai/threat-cloud';
-import type { StoredReport, GeneratedRule } from '@panguard-ai/threat-cloud';
 import { c, spinner, statusPanel, divider, table, symbols } from '@panguard-ai/core';
 import { withAuth } from '../auth-guard.js';
+
+// Dynamic import — threat-cloud server package is not published to npm
+type StoredReport = {
+  id: string; title: string; url: string; severity: 'none' | 'low' | 'medium' | 'high' | 'critical';
+  cweId: string | null; cweName: string | null; cveIds: string[];
+  summary: string | null; disclosedAt: string; programHandle: string | null;
+  programName: string | null; reporterUsername: string | null; fetchedAt: string;
+};
+type GeneratedRule = {
+  id: string; yamlContent: string; sourceReportId: string; sourceReportUrl: string;
+  attackType: string; confidence: number; status: string; generatedAt: string;
+  reviewed: boolean; reviewDecision: string | null;
+};
+
+async function loadThreatCloud() {
+  try {
+    return await import('@panguard-ai/threat-cloud');
+  } catch {
+    console.error(
+      `\n  ${c.red('Threat Cloud server package is not available.')}\n` +
+      `  This command is for Panguard operators only.\n`
+    );
+    process.exitCode = 1;
+    return null;
+  }
+}
 
 /** Default directory for auto-generated rules */
 const RULES_DIR = './config/sigma-rules/auto-generated';
@@ -58,8 +77,10 @@ export function hacktivityCommand(): Command {
     .option('--severity <level>', 'Min severity (low|medium|high|critical)', 'medium')
     .action(
       withAuth('solo', async (opts: { max: string; severity: string }) => {
+        const tc = await loadThreatCloud();
+        if (!tc) return;
         const meta = loadMeta();
-        const adapter = new HackerOneAdapter({
+        const adapter = new tc.HackerOneAdapter({
           maxReports: parseInt(opts.max, 10),
           minSeverity: opts.severity as 'low' | 'medium' | 'high' | 'critical',
         });
@@ -136,12 +157,14 @@ export function hacktivityCommand(): Command {
           return;
         }
 
-        const extractor = new AttackExtractor({
+        const tc = await loadThreatCloud();
+        if (!tc) return;
+        const extractor = new tc.AttackExtractor({
           ollamaBaseUrl: opts.ollamaUrl,
           model: opts.model,
         });
-        const generator = new SigmaRuleGenerator();
-        const validator = new RuleValidator();
+        const generator = new tc.SigmaRuleGenerator();
+        const validator = new tc.RuleValidator();
 
         // Register existing rules for dedup
         validator.registerExistingRules(meta.rules);

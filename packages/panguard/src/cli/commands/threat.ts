@@ -1,13 +1,27 @@
 /**
  * panguard threat - Threat intelligence API management
  * panguard threat - 威脅情報 API 管理
+ *
+ * Requires @panguard-ai/threat-cloud (server-side, not published to npm).
+ * This command is for Panguard operators only.
  */
 
 import { Command } from 'commander';
-import { ThreatCloudServer, ThreatCloudDB } from '@panguard-ai/threat-cloud';
-import type { ServerConfig } from '@panguard-ai/threat-cloud';
 import { c, spinner, statusPanel, divider, table, symbols } from '@panguard-ai/core';
-import { withAuth } from '../auth-guard.js';
+
+async function loadThreatCloud() {
+  try {
+    return await import('@panguard-ai/threat-cloud');
+  } catch {
+    console.error(
+      `\n  ${c.red('Threat Cloud server package is not available.')}\n` +
+      `  This command is for Panguard operators only.\n` +
+      `  Your Guard client connects to Threat Cloud automatically — no action needed.\n`
+    );
+    process.exitCode = 1;
+    return null;
+  }
+}
 
 export function threatCommand(): Command {
   const cmd = new Command('threat').description(
@@ -27,18 +41,19 @@ export function threatCommand(): Command {
       './threat-cloud.db'
     )
     .action(
-      withAuth('enterprise', async (opts: { port: string; host: string; db: string }) => {
-        const config: ServerConfig = {
+      async (opts: { port: string; host: string; db: string }) => {
+        const tc = await loadThreatCloud();
+        if (!tc) return;
+
+        const sp = spinner('Starting Threat Cloud API server...');
+        const server = new tc.ThreatCloudServer({
           port: parseInt(opts.port, 10),
           host: opts.host,
           dbPath: opts.db,
           apiKeyRequired: false,
           apiKeys: [],
           rateLimitPerMinute: 120,
-        };
-
-        const sp = spinner('Starting Threat Cloud API server...');
-        const server = new ThreatCloudServer(config);
+        });
 
         const shutdown = async () => {
           console.log(`\n  ${symbols.info} Shutting down Threat Cloud server...`);
@@ -72,7 +87,7 @@ export function threatCommand(): Command {
 
         // Keep process alive
         await new Promise(() => {});
-      })
+      }
     );
 
   cmd
@@ -80,9 +95,12 @@ export function threatCommand(): Command {
     .description('Show threat intelligence statistics / 顯示威脅情報統計')
     .option('--db <path>', 'SQLite database path / 資料庫路徑', './threat-cloud.db')
     .action(
-      withAuth('solo', async (opts: { db: string }) => {
+      async (opts: { db: string }) => {
+        const tc = await loadThreatCloud();
+        if (!tc) return;
+
         const sp = spinner('Loading threat intelligence data...');
-        const db = new ThreatCloudDB(opts.db);
+        const db = new tc.ThreatCloudDB(opts.db);
         const stats = db.getStats();
         db.close();
         sp.succeed('Threat intelligence loaded');
@@ -116,7 +134,7 @@ export function threatCommand(): Command {
             { header: 'Attack Type', key: 'type', width: 30 },
             { header: 'Count', key: 'count', width: 10, align: 'right' as const },
           ];
-          const attackRows = stats.topAttackTypes.map((a, i) => ({
+          const attackRows = stats.topAttackTypes.map((a: { type: string; count: number }, i: number) => ({
             rank: String(i + 1),
             type: a.type,
             count: String(a.count),
@@ -151,7 +169,7 @@ export function threatCommand(): Command {
           console.log(`  ${symbols.info} ${c.dim('尚無威脅資料。啟動 Threat Cloud 以收集情報。')}`);
           console.log('');
         }
-      })
+      }
     );
 
   return cmd;

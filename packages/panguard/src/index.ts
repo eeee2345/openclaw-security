@@ -34,8 +34,8 @@ export { ChatAgent, WebhookChannel } from '@panguard-ai/panguard-chat';
 // Honeypot
 export { TrapEngine } from '@panguard-ai/panguard-trap';
 
-// Threat Intelligence
-export { ThreatCloudServer, ThreatCloudDB } from '@panguard-ai/threat-cloud';
+// Threat Intelligence (server-side, not published — available only in monorepo)
+// Use dynamic import: const tc = await import('@panguard-ai/threat-cloud');
 
 // Bridges
 export { scanFindingsToComplianceFindings } from './bridges/scan-to-report.js';
