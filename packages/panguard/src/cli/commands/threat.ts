@@ -9,9 +9,11 @@
 import { Command } from 'commander';
 import { c, spinner, statusPanel, divider, table, symbols } from '@panguard-ai/core';
 
-async function loadThreatCloud() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function loadThreatCloud(): Promise<any> {
   try {
-    return await import('@panguard-ai/threat-cloud');
+    const mod = '@panguard-ai/threat-cloud';
+    return await import(/* webpackIgnore: true */ mod);
   } catch {
     console.error(
       `\n  ${c.red('Threat Cloud server package is not available.')}\n` +

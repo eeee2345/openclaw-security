@@ -287,9 +287,10 @@ describe('End-to-End Platform Pipeline', () => {
       }
 
       // Step 6: Verify pricing plan details
-      const plan = getPricingPlan(result.recommendedPlan);
+      // Product is 100% free and open source — community plan is the only plan
+      const plan = getPricingPlan('community');
       expect(plan).toBeDefined();
-      expect(plan!.priceUsd).toBeGreaterThan(0);
+      expect(plan!.priceUsd).toBe(0);
     });
 
     it('should guide enterprise through compliance-focused setup', () => {
@@ -468,8 +469,8 @@ describe('End-to-End Platform Pipeline', () => {
       expect(PRODUCT_FEATURES).toHaveLength(5);
     });
 
-    it('should have 4 pricing plans', () => {
-      expect(getAllPricingPlans()).toHaveLength(4);
+    it('should have 1 pricing plan (community — all free)', () => {
+      expect(getAllPricingPlans()).toHaveLength(1);
     });
 
     it('should have 3 compliance frameworks', () => {

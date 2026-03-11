@@ -140,9 +140,6 @@ importers:
       '@panguard-ai/security-hardening':
         specifier: workspace:*
         version: link:../../security-hardening
-      '@panguard-ai/threat-cloud':
-        specifier: workspace:*
-        version: link:../threat-cloud
       commander:
         specifier: ^12.0.0
         version: 12.1.0
@@ -355,22 +352,6 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
-      '@types/node':
-        specifier: ^22.14.0
-        version: 22.19.13
-      typescript:
-        specifier: ~5.7.3
-        version: 5.7.3
-
-  packages/threat-cloud:
-    dependencies:
-      better-sqlite3:
-        specifier: ^11.0.0
-        version: 11.10.0
-    devDependencies:
-      '@types/better-sqlite3':
-        specifier: ^7.6.8
-        version: 7.6.13
       '@types/node':
         specifier: ^22.14.0
         version: 22.19.13

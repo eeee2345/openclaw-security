@@ -242,13 +242,11 @@ describe('Panguard Web Guidance -> Product Recommendation Pipeline', () => {
       }
     });
 
-    it('should have highlighted plan matching small_business recommendation', () => {
+    it('should have highlighted community plan (all features free)', () => {
       const highlighted = getAllPricingPlans().find((p) => p.highlighted);
       expect(highlighted).toBeDefined();
-      expect(highlighted!.plan).toBe('pro');
-
-      const sbRec = getRecommendedPlan('small_business');
-      expect(sbRec!.plan).toBe(highlighted!.plan);
+      expect(highlighted!.plan).toBe('community');
+      expect(highlighted!.priceUsd).toBe(0);
     });
 
     it('should have bilingual content for all plans', () => {

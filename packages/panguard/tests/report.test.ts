@@ -1,28 +1,11 @@
 /**
  * Tests for `panguard report` command
- * Tests command structure, subcommand registration, and argument forwarding
+ * Tests command structure and subcommand registration.
+ * The report command is a "Coming Soon" stub — subcommands print COMING_SOON_MSG.
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { reportCommand } from '../src/cli/commands/report.js';
-
-// Mock the report CLI
-vi.mock('@panguard-ai/panguard-report', () => ({
-  executeCli: vi.fn().mockResolvedValue(undefined),
-}));
-
-// Mock auth-guard to bypass authentication for testing
-vi.mock('../src/cli/auth-guard.js', () => ({
-  withAuth: vi.fn((_tier: string, handler: (opts: Record<string, string | undefined>) => Promise<void>) => {
-    return async (opts: Record<string, string | undefined>) => {
-      await handler(opts);
-    };
-  }),
-}));
-
-import { executeCli } from '@panguard-ai/panguard-report';
-
-const mockedExecuteCli = vi.mocked(executeCli);
 
 describe('reportCommand', () => {
   beforeEach(() => {
@@ -56,87 +39,12 @@ describe('reportCommand', () => {
   });
 
   describe('report generate', () => {
-    it('should forward "generate" to executeCli', async () => {
+    it('should run "generate" without error', async () => {
       const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       await cmd.parseAsync(['generate'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['generate']);
-    });
-
-    it('should forward --framework option', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(['generate', '--framework', 'iso27001'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['generate', '--framework', 'iso27001']);
-    });
-
-    it('should forward --language option', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(['generate', '--language', 'zh-TW'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['generate', '--language', 'zh-TW']);
-    });
-
-    it('should forward --format option', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(['generate', '--format', 'pdf'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['generate', '--format', 'pdf']);
-    });
-
-    it('should forward --output-dir option', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(['generate', '--output-dir', '/tmp/reports'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith([
-        'generate',
-        '--output-dir',
-        '/tmp/reports',
-      ]);
-    });
-
-    it('should forward --org option', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(['generate', '--org', 'Acme Corp'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['generate', '--org', 'Acme Corp']);
-    });
-
-    it('should forward --input option', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(['generate', '--input', './findings.json'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['generate', '--input', './findings.json']);
-    });
-
-    it('should forward all generate options combined', async () => {
-      const cmd = reportCommand();
-      await cmd.parseAsync(
-        [
-          'generate',
-          '--framework',
-          'soc2',
-          '--language',
-          'en',
-          '--format',
-          'json',
-          '--output-dir',
-          '/out',
-          '--org',
-          'Test Inc',
-          '--input',
-          'data.json',
-        ],
-        { from: 'user' }
-      );
-      expect(mockedExecuteCli).toHaveBeenCalledWith([
-        'generate',
-        '--framework',
-        'soc2',
-        '--language',
-        'en',
-        '--format',
-        'json',
-        '--output-dir',
-        '/out',
-        '--org',
-        'Test Inc',
-        '--input',
-        'data.json',
-      ]);
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
     });
 
     it('should have generate subcommand with expected options', () => {
@@ -151,84 +59,160 @@ describe('reportCommand', () => {
       expect(optionNames).toContain('--org');
       expect(optionNames).toContain('--input');
     });
+
+    it('should accept --framework option', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['generate', '--framework', 'iso27001'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
+
+    it('should accept --language option', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['generate', '--language', 'zh-TW'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
+
+    it('should accept --format option', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['generate', '--format', 'pdf'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
+
+    it('should accept --output-dir option', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['generate', '--output-dir', '/tmp/reports'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
+
+    it('should accept --org option', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['generate', '--org', 'Acme Corp'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
+
+    it('should accept --input option', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['generate', '--input', './findings.json'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
+
+    it('should accept all generate options combined', async () => {
+      const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(
+          [
+            'generate',
+            '--framework',
+            'soc2',
+            '--language',
+            'en',
+            '--format',
+            'json',
+            '--output-dir',
+            '/out',
+            '--org',
+            'Test Inc',
+            '--input',
+            'data.json',
+          ],
+          { from: 'user' }
+        )
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
+    });
   });
 
   describe('report summary', () => {
-    it('should forward "summary" to executeCli', async () => {
+    it('should run "summary" without error', async () => {
       const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       await cmd.parseAsync(['summary'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['summary']);
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
     });
 
-    it('should forward --framework and --language options', async () => {
+    it('should accept --framework and --language options', async () => {
       const cmd = reportCommand();
-      await cmd.parseAsync(
-        ['summary', '--framework', 'tw_cyber_security_act', '--language', 'zh-TW'],
-        { from: 'user' }
-      );
-      expect(mockedExecuteCli).toHaveBeenCalledWith([
-        'summary',
-        '--framework',
-        'tw_cyber_security_act',
-        '--language',
-        'zh-TW',
-      ]);
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(
+          ['summary', '--framework', 'tw_cyber_security_act', '--language', 'zh-TW'],
+          { from: 'user' }
+        )
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
     });
 
-    it('should forward --input option', async () => {
+    it('should accept --input option', async () => {
       const cmd = reportCommand();
-      await cmd.parseAsync(['summary', '--input', 'scan-results.json'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith([
-        'summary',
-        '--input',
-        'scan-results.json',
-      ]);
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['summary', '--input', 'scan-results.json'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
     });
   });
 
   describe('report list-frameworks', () => {
-    it('should forward "list-frameworks" to executeCli', async () => {
+    it('should run "list-frameworks" without error', async () => {
       const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       await cmd.parseAsync(['list-frameworks'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['list-frameworks']);
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
     });
   });
 
   describe('report validate', () => {
-    it('should forward "validate" to executeCli', async () => {
+    it('should run "validate" without error', async () => {
       const cmd = reportCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       await cmd.parseAsync(['validate'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['validate']);
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
     });
 
-    it('should forward --input option', async () => {
+    it('should accept --input option', async () => {
       const cmd = reportCommand();
-      await cmd.parseAsync(['validate', '--input', 'findings.json'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['validate', '--input', 'findings.json']);
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      await expect(
+        cmd.parseAsync(['validate', '--input', 'findings.json'], { from: 'user' })
+      ).resolves.not.toThrow();
+      consoleSpy.mockRestore();
     });
   });
 
-  describe('auth tier requirements', () => {
-    it('should require "pro" tier for generate subcommand', async () => {
-      const { withAuth } = vi.mocked(await import('../src/cli/auth-guard.js'));
-      reportCommand();
-      const proCalls = withAuth.mock.calls.filter((c) => c[0] === 'pro');
-      // generate and summary both require 'pro'
-      expect(proCalls.length).toBeGreaterThanOrEqual(2);
-    });
-
-    it('should not require auth for list-frameworks', async () => {
-      // list-frameworks does not use withAuth; it directly calls executeCli
-      const cmd = reportCommand();
-      await cmd.parseAsync(['list-frameworks'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['list-frameworks']);
-    });
-
-    it('should not require auth for validate', async () => {
-      // validate also does not use withAuth
-      const cmd = reportCommand();
-      await cmd.parseAsync(['validate'], { from: 'user' });
-      expect(mockedExecuteCli).toHaveBeenCalledWith(['validate']);
+  describe('coming soon behavior', () => {
+    it('should print a coming soon message for all subcommands', async () => {
+      const subcommands = ['generate', 'summary', 'list-frameworks', 'validate'];
+      for (const sub of subcommands) {
+        const cmd = reportCommand();
+        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+        await cmd.parseAsync([sub], { from: 'user' });
+        expect(consoleSpy).toHaveBeenCalled();
+        const output: string = consoleSpy.mock.calls.map((c) => String(c[0])).join('');
+        expect(output.toLowerCase()).toMatch(/coming soon|即將推出/i);
+        consoleSpy.mockRestore();
+      }
     });
   });
 });

@@ -1254,9 +1254,10 @@ async function actionThreat(): Promise<void> {
   );
   console.log('');
 
-  let ThreatCloudServer: Awaited<typeof import('@panguard-ai/threat-cloud')>['ThreatCloudServer'];
+  let ThreatCloudServer: any;
   try {
-    const tc = await import('@panguard-ai/threat-cloud');
+    const mod = '@panguard-ai/threat-cloud';
+    const tc = await import(/* webpackIgnore: true */ mod);
     ThreatCloudServer = tc.ThreatCloudServer;
   } catch {
     console.log(c.red('  Threat Cloud server package is not available.'));

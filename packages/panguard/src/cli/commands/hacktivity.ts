@@ -25,9 +25,11 @@ type GeneratedRule = {
   reviewed: boolean; reviewDecision: string | null;
 };
 
-async function loadThreatCloud() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function loadThreatCloud(): Promise<any> {
   try {
-    return await import('@panguard-ai/threat-cloud');
+    const mod = '@panguard-ai/threat-cloud';
+    return await import(/* webpackIgnore: true */ mod);
   } catch {
     console.error(
       `\n  ${c.red('Threat Cloud server package is not available.')}\n` +
@@ -97,8 +99,8 @@ export function hacktivityCommand(): Command {
           }
 
           // Merge with existing reports (dedup by id)
-          const existingIds = new Set(meta.reports.map((r) => r.id));
-          const newReports = reports.filter((r) => !existingIds.has(r.id));
+          const existingIds = new Set(meta.reports.map((r: StoredReport) => r.id));
+          const newReports = (reports as StoredReport[]).filter((r: StoredReport) => !existingIds.has(r.id));
 
           meta.reports = [...meta.reports, ...newReports];
           meta.lastSyncAt = new Date().toISOString();
