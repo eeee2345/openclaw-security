@@ -5,11 +5,20 @@
   "description": "60-second security scanning CLI tool / 60 \u79d2\u8cc7\u5b89\u5065\u6aa2\u5de5\u5177",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "panguard-scan": "./dist/cli/index.js"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "files": [
     "dist",
