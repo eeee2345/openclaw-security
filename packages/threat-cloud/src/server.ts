@@ -270,19 +270,26 @@ export class ThreatCloudServer {
     this.sendJson(res, 200, rules);
   }
 
-  /** POST /api/rules - Publish a new community rule */
+  /** POST /api/rules - Publish rules (single or batch) */
   private async handlePostRule(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const body = await this.readBody(req);
-    const rule = JSON.parse(body) as ThreatCloudRule;
+    const parsed = JSON.parse(body) as ThreatCloudRule | { rules: ThreatCloudRule[] };
 
-    if (!rule.ruleId || !rule.ruleContent || !rule.source) {
-      this.sendJson(res, 400, { ok: false, error: 'Missing required fields: ruleId, ruleContent, source' });
-      return;
+    // Support both single object and batch { rules: [...] } format
+    const rules: ThreatCloudRule[] = 'rules' in parsed && Array.isArray(parsed.rules)
+      ? parsed.rules
+      : [parsed as ThreatCloudRule];
+
+    const now = new Date().toISOString();
+    let count = 0;
+    for (const rule of rules) {
+      if (!rule.ruleId || !rule.ruleContent || !rule.source) continue;
+      rule.publishedAt = rule.publishedAt || now;
+      this.db.upsertRule(rule);
+      count++;
     }
 
-    rule.publishedAt = rule.publishedAt || new Date().toISOString();
-    this.db.upsertRule(rule);
-    this.sendJson(res, 201, { ok: true, data: { message: 'Rule published', ruleId: rule.ruleId } });
+    this.sendJson(res, 201, { ok: true, data: { message: `${count} rule(s) published`, count } });
   }
 
   /** GET /api/stats */
@@ -446,7 +453,7 @@ export class ThreatCloudServer {
     return new Promise((resolve, reject) => {
       const chunks: Buffer[] = [];
       let size = 0;
-      const MAX_BODY = 1_048_576; // 1MB
+      const MAX_BODY = 52_428_800; // 50MB (for batch rule uploads)
 
       req.on('data', (chunk: Buffer) => {
         size += chunk.length;
