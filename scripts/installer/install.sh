@@ -227,12 +227,18 @@ download_binary() {
   # Trap to clean up temp files on exit/error
   trap 'rm -f "$tmp_tarball" "$tmp_checksums"' EXIT
 
-  # Download the tarball to a temp file
-  download_file "$download_url" "$tmp_tarball"
+  # Download the tarball to a temp file (non-fatal — fallback to npm if unavailable)
+  if ! curl -fsSL -o "$tmp_tarball" "$download_url" 2>/dev/null; then
+    info "Prebuilt binary not available for ${PLATFORM} (download failed)."
+    rm -f "$tmp_tarball" "$tmp_checksums"
+    return 1
+  fi
 
   # Verify tarball is non-empty
   if [ ! -s "$tmp_tarball" ]; then
-    fail "Downloaded tarball is empty or corrupted: ${download_url}"
+    info "Prebuilt binary not available (empty response)."
+    rm -f "$tmp_tarball" "$tmp_checksums"
+    return 1
   fi
 
   # Attempt checksum verification
@@ -550,13 +556,16 @@ auto_setup() {
   esac
 
   echo ""
-  printf "  ${BOLD}Launch Panguard interactive mode?${NC} [Y/n] "
+  printf "  ${BOLD}Start Guard with Dashboard? (opens browser)${NC} [Y/n] "
   read -r answer </dev/tty 2>/dev/null || answer="n"
   case "$answer" in
-    [nN]*) info "Run 'panguard' to start the interactive dashboard." ;;
+    [nN]*) info "Run 'panguard guard start --dashboard' later to launch." ;;
     *)
       echo ""
-      exec panguard </dev/tty
+      info "Starting Guard with dashboard..."
+      panguard guard start --dashboard </dev/tty &
+      success "Guard started! Dashboard opening in your browser."
+      info "Run 'panguard guard start --dashboard' anytime to restart."
       ;;
   esac
 }

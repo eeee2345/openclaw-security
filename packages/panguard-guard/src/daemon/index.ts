@@ -187,6 +187,13 @@ export async function uninstallService(): Promise<string> {
 async function installLaunchd(execPath: string, dataDir: string): Promise<string> {
   const plistPath = join(homedir(), 'Library', 'LaunchAgents', `${SERVICE_NAME}.plist`);
 
+  // execPath may be "node /path/to/script.js" — split for ProgramArguments
+  const execParts = execPath.split(/\s+/).filter(Boolean);
+  const programArgs = execParts
+    .concat(['start', '--data-dir', dataDir])
+    .map((arg) => `    <string>${arg}</string>`)
+    .join('\n');
+
   const plist = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -195,10 +202,7 @@ async function installLaunchd(execPath: string, dataDir: string): Promise<string
   <string>${SERVICE_NAME}</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${execPath}</string>
-    <string>start</string>
-    <string>--data-dir</string>
-    <string>${dataDir}</string>
+${programArgs}
   </array>
   <key>RunAtLoad</key>
   <true/>

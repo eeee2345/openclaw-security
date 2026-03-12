@@ -1,7 +1,12 @@
 {
   "name": "@panguard-ai/panguard-guard",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "type": "module",
   "description": "AI real-time endpoint monitoring and auto-response / AI 即時端點監控與自動回應",
   "main": "./dist/index.js",

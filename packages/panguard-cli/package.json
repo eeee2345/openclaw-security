@@ -1,6 +1,6 @@
 {
   "name": "panguard",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "MIT",
   "description": "AI security for agents and servers -- one command to protect everything",
   "bin": {
@@ -11,7 +11,7 @@
     "package.json"
   ],
   "dependencies": {
-    "@panguard-ai/panguard": "0.3.3"
+    "@panguard-ai/panguard": ">=0.3.3"
   },
   "engines": {
     "node": ">=18.0.0"
