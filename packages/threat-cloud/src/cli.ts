@@ -53,9 +53,9 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
 
   const config: ServerConfig = {
-    port: args.port ?? 8080,
-    host: args.host ?? '127.0.0.1',
-    dbPath: args.dbPath ?? './threat-cloud.db',
+    port: args.port ?? Number(process.env['PORT'] ?? '8080'),
+    host: args.host ?? '0.0.0.0',
+    dbPath: args.dbPath ?? process.env['DB_PATH'] ?? './threat-cloud.db',
     apiKeyRequired: args.apiKeyRequired ?? false,
     apiKeys: args.apiKeys ?? [],
     rateLimitPerMinute: 120,
