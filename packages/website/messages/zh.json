@@ -5833,7 +5833,7 @@
       },
       "q2": {
         "q": "裝好之後可以做什麼？",
-        "a": "四個主要用途：\n\n(a) 安裝前審計任何 MCP skill -- 對你的 AI Agent 說「審計這個 skill」，或直接執行 `panguard audit skill <path>`。Skill Auditor 用 ATR 規則和社群白名單檢查。\n\n(b) 掃描你的系統 -- `panguard scan` 同時執行三種規則引擎（ATR、Sigma、YARA）掃描你的環境。\n\n(c) 啟動 24/7 守護 -- `panguard guard start` 啟動 daemon。持續監控，規則評估亞毫秒級。\n\n(d) 你的 AI Agent 變得有安全意識 -- setup 之後，你的 AI Agent 可以透過自然對話掃描、審計、查看威脅。它把 Panguard 工具當 MCP skill 呼叫。\n\n合規報告和蜜罐陷阱即將推出。"
+        "a": "四個主要用途：\n\n(a) 安裝前審計任何 MCP skill -- 對你的 AI Agent 說「審計這個 skill」，或直接執行 panguard audit skill。Skill Auditor 用 ATR 規則和社群白名單檢查。\n\n(b) 掃描你的系統 -- panguard scan 同時執行三種規則引擎（ATR、Sigma、YARA）掃描你的環境。\n\n(c) 啟動 24/7 守護 -- panguard guard start 啟動 daemon。持續監控，規則評估亞毫秒級。\n\n(d) 你的 AI Agent 變得有安全意識 -- setup 之後，你的 AI Agent 可以透過自然對話掃描、審計、查看威脅。它把 Panguard 工具當 MCP skill 呼叫。\n\n合規報告和蜜罐陷阱即將推出。"
       },
       "q3": {
         "q": "會拖慢我的系統嗎？",

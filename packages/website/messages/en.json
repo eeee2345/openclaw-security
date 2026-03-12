@@ -5820,7 +5820,7 @@
       },
       "q2": {
         "q": "What can I do after installing?",
-        "a": "Four main use cases:\n\n(a) Audit any MCP skill before installing -- say \"audit this skill\" to your AI agent, or run `panguard audit skill <path>` directly. Skill Auditor checks it against ATR rules and the community whitelist.\n\n(b) Scan your system -- `panguard scan` runs all three rule engines (ATR, Sigma, YARA) across your environment.\n\n(c) Start 24/7 guard -- `panguard guard start` launches the daemon. Continuous monitoring with sub-millisecond rule evaluation.\n\n(d) Your AI agent becomes security-aware -- after setup, your AI agent can scan, audit, and check threats through natural conversation. It calls Panguard tools as MCP skills.\n\nCompliance Report and Honeypot Trap are coming soon."
+        "a": "Four main use cases:\n\n(a) Audit any MCP skill before installing -- say \"audit this skill\" to your AI agent, or run panguard audit skill directly. Skill Auditor checks it against ATR rules and the community whitelist.\n\n(b) Scan your system -- panguard scan runs all three rule engines (ATR, Sigma, YARA) across your environment.\n\n(c) Start 24/7 guard -- panguard guard start launches the daemon. Continuous monitoring with sub-millisecond rule evaluation.\n\n(d) Your AI agent becomes security-aware -- after setup, your AI agent can scan, audit, and check threats through natural conversation. It calls Panguard tools as MCP skills.\n\nCompliance Report and Honeypot Trap are coming soon."
       },
       "q3": {
         "q": "Does it slow down my system?",
