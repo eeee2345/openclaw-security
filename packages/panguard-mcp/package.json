@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/panguard-mcp",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "license": "MIT",
   "type": "module",
   "description": "MCP server for Panguard AI — control security from Claude/Cursor / 透過 Claude/Cursor 控制 Panguard 的 MCP 伺服器",
@@ -19,7 +19,12 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "files": ["dist", "openclaw-skill", "package.json", "README.md"],
+  "files": [
+    "dist",
+    "openclaw-skill",
+    "package.json",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",

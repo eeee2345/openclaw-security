@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/panguard-skill-auditor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "type": "module",
   "description": "Security auditor for OpenClaw/AgentSkills SKILL.md files",

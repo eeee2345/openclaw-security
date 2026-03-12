@@ -1,9 +1,9 @@
 {
   "name": "@panguard-ai/panguard-guard",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "license": "MIT",
   "type": "module",
-  "description": "AI real-time endpoint monitoring and auto-response / AI \u5373\u6642\u7aef\u9ede\u76e3\u63a7\u8207\u81ea\u52d5\u56de\u61c9",
+  "description": "AI real-time endpoint monitoring and auto-response / AI 即時端點監控與自動回應",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

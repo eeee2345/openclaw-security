@@ -1,0 +1,33 @@
+{
+  "name": "panguard",
+  "version": "0.3.3",
+  "license": "MIT",
+  "description": "AI security for agents and servers -- one command to protect everything",
+  "bin": {
+    "panguard": "./bin/panguard.js"
+  },
+  "files": [
+    "bin",
+    "package.json"
+  ],
+  "dependencies": {
+    "@panguard-ai/panguard": "0.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "security",
+    "ai",
+    "agent",
+    "mcp",
+    "guard",
+    "scan",
+    "panguard"
+  ],
+  "homepage": "https://panguard.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  }
+}

@@ -1,9 +1,9 @@
 {
   "name": "@panguard-ai/panguard-scan",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "type": "module",
-  "description": "60-second security scanning CLI tool / 60 \u79d2\u8cc7\u5b89\u5065\u6aa2\u5de5\u5177",
+  "description": "60-second security scanning CLI tool / 60 秒資安健檢工具",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

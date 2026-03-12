@@ -1,9 +1,9 @@
 {
   "name": "@panguard-ai/panguard-trap",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "type": "module",
-  "description": "Smart honeypot for attacker profiling / \u667a\u6167\u871c\u7f50\uff0c\u8a98\u6355\u4e26\u5206\u6790\u653b\u64ca\u8005",
+  "description": "Smart honeypot for attacker profiling / 智慧蜜罐，誘捕並分析攻擊者",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

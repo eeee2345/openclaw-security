@@ -1,9 +1,9 @@
 {
   "name": "@panguard-ai/panguard-chat",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "type": "module",
-  "description": "AI security assistant via messaging platforms / \u900f\u904e\u901a\u8a0a\u8edf\u9ad4\u7ba1\u7406\u8cc7\u5b89\u7684 AI \u52a9\u624b",
+  "description": "AI security assistant via messaging platforms / 透過通訊軟體管理資安的 AI 助手",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

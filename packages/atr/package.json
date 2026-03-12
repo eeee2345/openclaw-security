@@ -1,6 +1,6 @@
 {
   "name": "@panguard-ai/atr",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Open detection rules for AI agent threats. Like Sigma, but for prompt injection, tool poisoning, and agent manipulation.",
   "main": "./dist/index.js",
