@@ -112,7 +112,7 @@ function getEventFieldValue(event: SecurityEvent, fieldName: string): string | u
   }
 
   // Then check metadata / 然後檢查 metadata
-  const metaValue = event.metadata[fieldName];
+  const metaValue = event.metadata?.[fieldName];
   if (metaValue === undefined || metaValue === null) return undefined;
   return String(metaValue);
 }
@@ -246,6 +246,11 @@ function evaluateSelection(
   event: SecurityEvent,
   selection: Record<string, string | string[]>
 ): { matched: boolean; fields: string[] } {
+  // Empty selection should never match -- it means the parser couldn't extract fields
+  if (Object.keys(selection).length === 0) {
+    return { matched: false, fields: [] };
+  }
+
   const matchedFields: string[] = [];
 
   for (const [rawFieldName, expectedValues] of Object.entries(selection)) {
@@ -462,6 +467,33 @@ function evaluateCondition(condition: string, selectionResults: Map<string, bool
  * @returns A RuleMatch if the event matches, or null / 事件比對時回傳 RuleMatch，否則回傳 null
  */
 export function matchEvent(event: SecurityEvent, rule: SigmaRule): RuleMatch | null {
+  // Logsource filtering: skip rules whose product doesn't match the event's OS.
+  // Windows-specific rules (product: "windows") should not fire on non-Windows events.
+  // We infer OS from event source/host metadata when available.
+  if (rule.logsource.product) {
+    const product = rule.logsource.product.toLowerCase();
+    const eventSource = (event.source ?? '').toLowerCase();
+    const eventHost = (event.host ?? '').toLowerCase();
+    const eventDesc = (event.description ?? '').toLowerCase();
+    const hasDarwinSignal = eventSource === 'syslog' || eventSource === 'network' || eventSource === 'process'
+      ? (event.raw as Record<string, unknown>)?.['source'] === 'macOS-log-stream'
+        || eventHost.includes('mac')
+        || eventHost.includes('darwin')
+      : false;
+    const hasLinuxSignal = eventHost.includes('linux') || eventDesc.includes('linux');
+
+    if (product === 'windows' && (hasDarwinSignal || hasLinuxSignal)) {
+      return null;
+    }
+    if (product === 'linux' && hasDarwinSignal) {
+      return null;
+    }
+    if (product === 'macos' && !hasDarwinSignal) {
+      // Only match macOS rules to macOS events
+      if (hasLinuxSignal || eventHost.includes('windows')) return null;
+    }
+  }
+
   const detection = rule.detection;
   const selectionResults = new Map<string, boolean>();
   const allMatchedFields: string[] = [];

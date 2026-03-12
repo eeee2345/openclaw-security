@@ -137,13 +137,45 @@ export function parseSigmaYaml(yamlContent: string): SigmaRule | null {
   for (const [key, value] of Object.entries(rawDetection)) {
     if (key === 'condition') continue;
 
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    if (Array.isArray(value)) {
+      // Array-of-maps selection (OR of field conditions):
+      //   filter_x:
+      //     - Image: ['System', 'Registry']
+      //     - CommandLine: ['Registry']
+      // Flatten into a single selection map. Each array element is a field-map
+      // whose values are OR-ed. Multiple array elements are also OR-ed.
+      // We merge all field-value pairs; if the same field appears in multiple
+      // elements, combine the values into a single array (OR semantics).
+      const merged: Record<string, string[]> = {};
+      for (const item of value) {
+        if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+          for (const [fieldName, fieldValue] of Object.entries(item as Record<string, unknown>)) {
+            if (!merged[fieldName]) merged[fieldName] = [];
+            if (Array.isArray(fieldValue)) {
+              merged[fieldName].push(...fieldValue.filter((v) => v != null).map(String));
+            } else if (fieldValue != null) {
+              merged[fieldName].push(String(fieldValue));
+            }
+          }
+        }
+      }
+      if (Object.keys(merged).length > 0) {
+        const selectionMap: Record<string, string | string[]> = {};
+        for (const [fn, vals] of Object.entries(merged)) {
+          selectionMap[fn] = vals.length === 1 ? (vals[0] ?? '') : vals;
+        }
+        detection[key] = selectionMap;
+      }
+    } else if (typeof value === 'object' && value !== null) {
       const selectionMap: Record<string, string | string[]> = {};
       for (const [fieldName, fieldValue] of Object.entries(value as Record<string, unknown>)) {
-        if (typeof fieldValue === 'string') {
+        if (fieldValue == null) {
+          // null means "field must be absent or empty" -- use empty string sentinel
+          selectionMap[fieldName] = '';
+        } else if (typeof fieldValue === 'string') {
           selectionMap[fieldName] = fieldValue;
         } else if (Array.isArray(fieldValue)) {
-          selectionMap[fieldName] = fieldValue.map(String);
+          selectionMap[fieldName] = fieldValue.filter((v) => v != null).map(String);
         } else {
           selectionMap[fieldName] = String(fieldValue);
         }
