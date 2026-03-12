@@ -1,0 +1,143 @@
+---
+title: "安裝到 OpenClaw & QClaw"
+description: "OpenClaw 和 QClaw（騰訊）一鍵安裝指南。無需帳號。"
+icon: "bolt"
+---
+
+60 秒內將 Panguard 安裝到你的 Claw AI Agent。不需帳號、不需登入、不需設定。
+
+## 快速開始（所有平台）
+
+最快的方式 -- 一行指令自動偵測並配置所有平台：
+
+```bash
+npx panguard setup
+```
+
+自動偵測 OpenClaw、QClaw 及所有其他 AI 平台，並注入正確設定。
+
+---
+
+## OpenClaw
+
+OpenClaw 使用**原生 Skill 系統**（非 MCP）。Panguard 以 Skill 形式安裝到 `~/.openclaw/skills/panguard/`。
+
+### 自動安裝
+
+```bash
+npx panguard setup --platform openclaw
+```
+
+### 手動安裝
+
+```bash
+mkdir -p ~/.openclaw/skills/panguard
+npx panguard setup --platform openclaw
+```
+
+安裝完成後重啟 OpenClaw，即可直接使用 Panguard 指令：
+
+```
+> 審計這個專案的 skills
+> 掃描我的機器是否有漏洞
+> 啟動即時防護
+> 顯示安全狀態
+```
+
+### 驗證安裝
+
+```bash
+ls ~/.openclaw/skills/panguard/SKILL.md
+```
+
+檔案存在即表示安裝成功。
+
+---
+
+## QClaw（騰訊）
+
+QClaw 使用標準 **MCP 協議**。Panguard 會將 MCP 伺服器設定加入 `~/.qclaw/mcp.json`。
+
+### 自動安裝
+
+```bash
+npx panguard setup --platform qclaw
+```
+
+### 手動安裝
+
+如果你偏好手動設定，將以下內容加入 `~/.qclaw/mcp.json`：
+
+```json
+{
+  "mcpServers": {
+    "panguard": {
+      "command": "npx",
+      "args": ["-y", "@panguard-ai/panguard-mcp"]
+    }
+  }
+}
+```
+
+安裝後重啟 QClaw。Panguard 的 11 個 MCP 工具即可使用：
+
+| 工具 | 功能 |
+| --- | --- |
+| `panguard_audit_skill` | 安裝前審計 Skill |
+| `panguard_scan` | 執行安全掃描 |
+| `panguard_status` | 顯示 Guard 狀態 |
+| `panguard_guard_start` | 啟動 24/7 防護 |
+| `panguard_threat_search` | 搜尋威脅情報 |
+
+### 驗證安裝
+
+```bash
+cat ~/.qclaw/mcp.json
+```
+
+你應該會在 `mcpServers` 下看到 `panguard` 項目。
+
+---
+
+## 疑難排解
+
+<AccordionGroup>
+  <Accordion title="偵測不到平台">
+    如果 `panguard setup` 顯示 OpenClaw 或 QClaw「未找到」：
+
+    1. 確認應用程式已安裝且至少開啟過一次
+    2. 檢查設定目錄是否存在：`ls ~/.openclaw` 或 `ls ~/.qclaw`
+    3. 使用 `--platform` 強制指定：`npx panguard setup --platform openclaw`
+  </Accordion>
+
+  <Accordion title="QClaw 中看不到 MCP 工具">
+    1. 完全重啟 QClaw（關閉後重新開啟）
+    2. 驗證設定：`cat ~/.qclaw/mcp.json`
+    3. 確認 `npx` 在 PATH 中：`which npx`
+  </Accordion>
+
+  <Accordion title="OpenClaw Skill 無法運作">
+    1. 重啟 OpenClaw
+    2. 驗證：`ls ~/.openclaw/skills/panguard/SKILL.md`
+    3. 確認 `panguard` CLI 可用：`npx panguard --version`
+  </Accordion>
+
+  <Accordion title="移除 Panguard">
+    ```bash
+    npx panguard setup --remove --platform openclaw
+    npx panguard setup --remove --platform qclaw
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## 總覽
+
+| | OpenClaw | QClaw |
+| --- | --- | --- |
+| **協議** | 原生 Skill | MCP |
+| **設定路徑** | `~/.openclaw/skills/panguard/SKILL.md` | `~/.qclaw/mcp.json` |
+| **安裝指令** | `npx panguard setup` | `npx panguard setup` |
+| **需要帳號** | 否 | 否 |
+| **需要重啟** | 是 | 是 |

@@ -1,0 +1,143 @@
+---
+title: "Install on OpenClaw & QClaw"
+description: "One-command setup guide for OpenClaw and QClaw (Tencent). No account required."
+icon: "bolt"
+---
+
+Install Panguard on your Claw-based AI agent in under 60 seconds. No account, no login, no configuration.
+
+## Quick Start (All Platforms)
+
+The fastest way -- one command detects and configures everything:
+
+```bash
+npx panguard setup
+```
+
+This auto-detects OpenClaw, QClaw, and all other AI platforms on your machine, then injects the correct configuration for each.
+
+---
+
+## OpenClaw
+
+OpenClaw uses a **native Skill system** (not MCP). Panguard installs as a skill at `~/.openclaw/skills/panguard/`.
+
+### Auto Setup
+
+```bash
+npx panguard setup --platform openclaw
+```
+
+### Manual Setup
+
+```bash
+mkdir -p ~/.openclaw/skills/panguard
+npx panguard setup --platform openclaw
+```
+
+After setup, restart OpenClaw. You can then use Panguard commands directly in OpenClaw:
+
+```
+> Audit the skills in this project
+> Scan my machine for vulnerabilities
+> Start real-time protection
+> Show security status
+```
+
+### Verify
+
+```bash
+ls ~/.openclaw/skills/panguard/SKILL.md
+```
+
+If the file exists, Panguard is installed.
+
+---
+
+## QClaw (Tencent)
+
+QClaw uses the standard **MCP protocol**. Panguard adds an MCP server entry to `~/.qclaw/mcp.json`.
+
+### Auto Setup
+
+```bash
+npx panguard setup --platform qclaw
+```
+
+### Manual Setup
+
+If you prefer to configure manually, add this to `~/.qclaw/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "panguard": {
+      "command": "npx",
+      "args": ["-y", "@panguard-ai/panguard-mcp"]
+    }
+  }
+}
+```
+
+After setup, restart QClaw. Panguard's 11 MCP tools are now available:
+
+| Tool | What It Does |
+| --- | --- |
+| `panguard_audit_skill` | Audit a skill before installing |
+| `panguard_scan` | Run a security scan |
+| `panguard_status` | Show Guard status |
+| `panguard_guard_start` | Start 24/7 protection |
+| `panguard_threat_search` | Search threat intelligence |
+
+### Verify
+
+```bash
+cat ~/.qclaw/mcp.json
+```
+
+You should see the `panguard` entry under `mcpServers`.
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Platform not detected">
+    If `panguard setup` says "not found" for OpenClaw or QClaw:
+
+    1. Make sure the app is installed and has been opened at least once
+    2. Check the config directory exists: `ls ~/.openclaw` or `ls ~/.qclaw`
+    3. Use `--platform` flag to force: `npx panguard setup --platform openclaw`
+  </Accordion>
+
+  <Accordion title="MCP tools not showing in QClaw">
+    1. Restart QClaw completely (quit and reopen)
+    2. Verify config: `cat ~/.qclaw/mcp.json`
+    3. Make sure `npx` is on your PATH: `which npx`
+  </Accordion>
+
+  <Accordion title="OpenClaw skill not working">
+    1. Restart OpenClaw
+    2. Verify: `ls ~/.openclaw/skills/panguard/SKILL.md`
+    3. Check that `panguard` CLI is available: `npx panguard --version`
+  </Accordion>
+
+  <Accordion title="Remove Panguard">
+    ```bash
+    npx panguard setup --remove --platform openclaw
+    npx panguard setup --remove --platform qclaw
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Summary
+
+| | OpenClaw | QClaw |
+| --- | --- | --- |
+| **Protocol** | Native Skill | MCP |
+| **Config path** | `~/.openclaw/skills/panguard/SKILL.md` | `~/.qclaw/mcp.json` |
+| **Setup command** | `npx panguard setup` | `npx panguard setup` |
+| **Account required** | No | No |
+| **Restart needed** | Yes | Yes |

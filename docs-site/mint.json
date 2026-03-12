@@ -76,6 +76,7 @@
         "guides/honeypots",
         "guides/compliance-reports",
         "guides/threat-cloud-deployment",
+        "guides/claw-setup",
         "guides/mcp-integration",
         "guides/multi-endpoint",
         "guides/system-service",
