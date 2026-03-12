@@ -208,14 +208,14 @@ Everything is **free and open source**. MIT licensed. No tiers, no limits, no ve
 
 | Product | What It Does | Status |
 | ------- | ------------ | ------ |
-| **[Skill Auditor](docs/overview.md)** | Multi-check security gate for AI agent skills before install | Beta |
+| **[Skill Auditor](docs/overview.md)** | Multi-check security gate for AI agent skills before install | GA |
 | **[Scan](docs/DETECTION.md)** | 60-second security audit with PDF report | GA |
 | **[Guard](docs/ARCHITECTURE.md)** | 24/7 AI monitoring with 4-agent pipeline and auto-response | GA |
 | **[Chat](docs/OPERATIONS.md)** | Security alerts via Telegram, Slack, Discord, LINE, Email, Webhook | GA |
 | **[Trap](docs/DETECTION.md)** | 8 honeypot services for attacker profiling | Coming Soon |
 | **[Report](docs/DETECTION.md)** | Compliance gap analysis: ISO 27001, SOC 2, Taiwan CMA | Coming Soon |
 | **[Threat Cloud](#threat-cloud)** | Collective threat intelligence from all Panguard instances | GA |
-| **[MCP Server](docs/API.md)** | 11 tools for Claude, Cursor, Windsurf, and any MCP client | Beta |
+| **[MCP Server](docs/API.md)** | 11 tools for Claude, Cursor, Windsurf, and any MCP client | GA |
 | **[Manager](docs/OPERATIONS.md)** | Distributed coordinator for up to 500 guard agents | GA |
 
 ---
