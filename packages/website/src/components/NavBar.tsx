@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Star } from 'lucide-react';
 import { Link, usePathname, useRouter } from '@/navigation';
 import type { Locale } from '@/navigation';
 import BrandLogo from './ui/BrandLogo';
@@ -211,8 +211,16 @@ export default function NavBar() {
         </div>
 
         {/* Desktop CTA + Locale Switcher */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-3">
           <LocaleSwitcher />
+          <a
+            href="https://github.com/panguard-ai/panguard-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary border border-border hover:border-text-tertiary rounded-full px-4 py-2 transition-all duration-200"
+          >
+            <Star className="w-3.5 h-3.5" /> GitHub
+          </a>
           <Link
             href="/docs/getting-started"
             className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
