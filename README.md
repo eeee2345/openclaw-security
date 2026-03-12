@@ -57,20 +57,6 @@ Panguard 是我們的答案 -- 安裝前審計 skill、24/7 監控 agent、跨�
 
 ---
 
-## Screenshots
-
-<div align="center">
-
-| CLI -- Scan & Guard | Dashboard (Coming Soon) |
-|:---:|:---:|
-| <img src="assets/screenshot-cli.png" width="450" alt="Panguard CLI"> | <img src="assets/screenshot-dashboard.png" width="450" alt="Panguard Dashboard"> |
-
-| Notifications -- Telegram / Slack / Email | Flywheel -- How Panguard Gets Smarter |
-|:---:|:---:|
-| <img src="assets/screenshot-notifications.png" width="450" alt="Panguard Notifications"> | Every user's threat discovery becomes a protection rule for everyone via [Threat Cloud](#threat-cloud). |
-
-</div>
-
 ---
 
 ## Table of Contents

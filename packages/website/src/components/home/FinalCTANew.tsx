@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import { Link } from '@/navigation';
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -55,6 +55,14 @@ export default function FinalCTANew() {
           >
             {t('joinCommunity')}
           </Link>
+          <a
+            href="https://github.com/panguard-ai/panguard-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary hover:border-text-tertiary font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base transition-all duration-200"
+          >
+            <Star className="w-4 h-4" /> Star on GitHub
+          </a>
         </motion.div>
 
         {/* Bottom text */}

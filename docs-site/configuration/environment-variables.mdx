@@ -69,7 +69,7 @@ export MANAGER_PORT=8443
 export MANAGER_AUTH_TOKEN=$(openssl rand -hex 32)
 export MANAGER_MAX_AGENTS=100
 export MANAGER_HEARTBEAT_TIMEOUT_MS=120000
-export CORS_ALLOWED_ORIGINS=https://dashboard.panguard.ai  # Dashboard is Coming Soon
+export CORS_ALLOWED_ORIGINS=https://dashboard.panguard.ai
 ```
 
 ```bash Docker
@@ -159,7 +159,7 @@ services:
       - NODE_ENV=production
       - MANAGER_PORT=8443
       - MANAGER_AUTH_TOKEN=${MANAGER_AUTH_TOKEN}
-      - CORS_ALLOWED_ORIGINS=https://dashboard.panguard.ai  # Dashboard is Coming Soon
+      - CORS_ALLOWED_ORIGINS=https://dashboard.panguard.ai
 
   auth:
     image: panguard/auth

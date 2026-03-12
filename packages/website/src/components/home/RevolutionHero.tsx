@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Copy, Check, ArrowRight } from 'lucide-react';
+import { Copy, Check, ArrowRight, Star } from 'lucide-react';
 import { Link } from '@/navigation';
 import BrandLogo from '@/components/ui/BrandLogo';
 import { CheckIcon } from '@/components/ui/BrandIcons';
@@ -131,6 +131,12 @@ export default function RevolutionHero() {
           transition={{ duration: 0.5, delay: 1.0, ease }}
           className="flex flex-wrap gap-3 justify-center mt-8"
         >
+          <Link
+            href="/docs/getting-started"
+            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
+          >
+            {t('install')} <ArrowRight className="w-4 h-4" />
+          </Link>
           <a
             href="https://github.com/Agent-Threat-Rule/agent-threat-rules"
             target="_blank"
@@ -139,12 +145,14 @@ export default function RevolutionHero() {
           >
             {t('viewATR')}
           </a>
-          <Link
-            href="/docs/getting-started"
-            className="inline-flex items-center gap-2 bg-panguard-green text-white font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base hover:bg-panguard-green-light transition-all duration-200 active:scale-[0.98]"
+          <a
+            href="https://github.com/panguard-ai/panguard-ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary hover:border-text-tertiary font-semibold rounded-full px-6 sm:px-8 py-3.5 text-sm sm:text-base transition-all duration-200"
           >
-            {t('install')} <ArrowRight className="w-4 h-4" />
-          </Link>
+            <Star className="w-4 h-4" /> Star on GitHub
+          </a>
         </motion.div>
 
         {/* Supported platforms */}
