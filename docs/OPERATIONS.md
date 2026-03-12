@@ -16,7 +16,7 @@
 8. [環境變數完整參考](#8-環境變數完整參考)
 9. [資料庫管理](#9-資料庫管理)
 10. [Google OAuth 設定](#10-google-oauth-設定)
-11. [Lemon Squeezy 付款設定](#11-lemon-squeezy-付款設定)
+11. (已移除)
 12. [通知系統](#12-通知系統-emailtelegramslack)
 13. [CI/CD 管線](#13-cicd-管線)
 14. [Docker 部署](#14-docker-部署)
@@ -44,7 +44,7 @@ panguard-ai/
 │   ├── panguard-chat/         # 通知系統 (Telegram/Slack/Email/LINE/Webhook)
 │   ├── panguard-trap/         # 蜜罐 (8 honeypot protocols)
 │   ├── panguard-report/       # 合規報告 (ISO 27001/SOC 2/TCSA)
-│   ├── panguard-auth/         # 認證系統 (OAuth/TOTP/billing)
+│   ├── panguard-auth/         # 認證系統 (OAuth/TOTP)
 │   ├── panguard-manager/      # 分散式代理管理 (最多 500 agents)
 │   ├── panguard-mcp/          # MCP Server (11 tools)
 │   ├── panguard-skill-auditor/# Skill 安全審計
@@ -163,8 +163,7 @@ node --env-file=.env packages/panguard/dist/cli/index.js serve --port 3002
 
 - `/api/auth/*` — Auth API
 - `/api/admin/*` — Admin API
-- `/api/billing/*` — Billing API
-- `/api/usage/*` — Usage & Quota API
+- `/api/usage/*` — Usage API
 - `/api/manager/*` — Manager API
 - `/health` — Health check
 - `/docs/api` — Swagger UI
@@ -225,7 +224,7 @@ cd packages/website && npx next dev -p 3001
 | Chat         | `/product/chat`   | 通知產品頁              |
 | Trap         | `/product/trap`   | 蜜罐產品頁              |
 | Report       | `/product/report` | 報告產品頁              |
-| 定價         | `/pricing`        | 4 方案 + FAQ + 功能比較 |
+| 定價         | `/pricing`        | 免費開源方案說明        |
 | 技術原理     | `/how-it-works`   | 運作方式                |
 | 技術         | `/technology`     | 技術細節                |
 | Threat Cloud | `/threat-cloud`   | 威脅情報                |
@@ -300,7 +299,7 @@ cd packages/website && npx next dev -p 3001
 | 頁面     | 路徑                | 狀態       |
 | -------- | ------------------- | ---------- |
 | 帳號設定 | `/account/settings` | **未實作** |
-| 帳單管理 | `/account/billing`  | **未實作** |
+| (已移除)  | -                   | -          |
 
 ### 前端環境變數
 
@@ -358,7 +357,7 @@ node --env-file=.env packages/panguard/dist/cli/index.js serve \
 
 | Method | 路徑                        | Auth | 說明                        |
 | ------ | --------------------------- | ---- | --------------------------- |
-| POST   | `/api/auth/register`        | No   | 註冊 (自動 14 天 Solo 試用) |
+| POST   | `/api/auth/register`        | No   | 註冊                         |
 | POST   | `/api/auth/login`           | No   | 登入 (返回 session token)   |
 | POST   | `/api/auth/logout`          | Yes  | 登出                        |
 | GET    | `/api/auth/me`              | Yes  | 取得目前用戶資料            |
@@ -394,7 +393,7 @@ node --env-file=.env packages/panguard/dist/cli/index.js serve \
 | GET    | `/api/admin/users`                | 用戶列表       |
 | GET    | `/api/admin/users/search`         | 搜尋用戶       |
 | GET    | `/api/admin/users/:id`            | 用戶詳情       |
-| PATCH  | `/api/admin/users/:id/tier`       | 更新方案等級   |
+| PATCH  | `/api/admin/users/:id/tier`       | 更新用戶角色   |
 | PATCH  | `/api/admin/users/:id/role`       | 更新角色       |
 | PATCH  | `/api/admin/users/:id/suspend`    | 停用帳號       |
 | POST   | `/api/admin/users/bulk-action`    | 批次操作       |
@@ -420,21 +419,12 @@ node --env-file=.env packages/panguard/dist/cli/index.js serve \
 | GET    | `/api/admin/threats`    | 威脅摘要         |
 | GET    | `/api/admin/overview`   | Manager 總覽     |
 
-#### Billing Routes (`/api/billing/`)
-
-| Method | 路徑                    | Auth      | 說明                  |
-| ------ | ----------------------- | --------- | --------------------- |
-| POST   | `/api/billing/webhook`  | No (HMAC) | Lemon Squeezy webhook |
-| POST   | `/api/billing/checkout` | Yes       | 建立結帳 URL          |
-| POST   | `/api/billing/portal`   | Yes       | 建立客戶入口 URL      |
-| GET    | `/api/billing/status`   | Yes       | 訂閱狀態              |
-
 #### Usage Routes (`/api/usage/`)
 
 | Method | 路徑                | Auth | 說明              |
 | ------ | ------------------- | ---- | ----------------- |
-| GET    | `/api/usage`        | Yes  | 目前使用量 + 方案 |
-| GET    | `/api/usage/limits` | Yes  | 方案配額限制      |
+| GET    | `/api/usage`        | Yes  | 目前使用量     |
+| GET    | `/api/usage/limits` | Yes  | 配額限制       |
 | POST   | `/api/usage/check`  | Yes  | 檢查配額          |
 | POST   | `/api/usage/record` | Yes  | 記錄使用量        |
 
@@ -509,8 +499,7 @@ node --env-file=.env packages/panguard/dist/cli/index.js serve \
 
 ### 背景排程
 
-- **每小時**: 檢查過期方案，自動降級為 community
-- **每小時**: 發送 3 天內到期的警告 email
+- **每小時**: 清理過期 sessions
 
 ---
 
@@ -518,42 +507,43 @@ node --env-file=.env packages/panguard/dist/cli/index.js serve \
 
 ### 全部 22 個指令
 
-| 指令                                            | 說明                | 方案要求  |
-| ----------------------------------------------- | ------------------- | --------- |
-| `panguard`                                      | 互動式 TUI 模式     | Community |
-| `panguard scan`                                 | 安全掃描            | Community |
-| `panguard scan --quick`                         | 快速掃描 (~30s)     | Community |
-| `panguard scan --output report.pdf`             | 產生 PDF 報告       | Community |
-| `panguard scan --target 1.2.3.4`                | 遠端掃描            | Solo+     |
-| `panguard scan --json`                          | JSON 輸出           | Community |
-| `panguard guard start`                          | 啟動即時防護        | Solo+     |
-| `panguard guard stop`                           | 停止防護            | Solo+     |
-| `panguard guard restart`                        | 重啟防護            | Solo+     |
-| `panguard guard status`                         | 防護狀態            | Solo+     |
-| `panguard guard config`                         | 防護設定            | Solo+     |
-| `panguard report generate --framework iso27001` | 產生合規報告        | Pro+      |
-| `panguard report summary`                       | 報告摘要            | Pro+      |
-| `panguard report list-frameworks`               | 列出合規框架        | Pro+      |
-| `panguard chat setup`                           | 通知設定精靈        | Solo+     |
-| `panguard chat test`                            | 測試通知            | Solo+     |
-| `panguard trap start --services ssh,http,mysql` | 啟動蜜罐            | Pro+      |
-| `panguard login`                                | OAuth 登入          | All       |
-| `panguard login --no-browser`                   | 無瀏覽器登入 (SSH)  | All       |
-| `panguard logout`                               | 登出                | All       |
-| `panguard whoami`                               | 顯示目前用戶        | All       |
-| `panguard serve`                                | 啟動 HTTP 伺服器    | All       |
-| `panguard admin init`                           | 建立初始 admin 帳號 | All       |
-| `panguard admin create-user`                    | 建立用戶            | Admin     |
-| `panguard status`                               | 系統狀態            | All       |
-| `panguard config`                               | 設定管理            | All       |
-| `panguard doctor`                               | 診斷工具            | All       |
-| `panguard deploy`                               | 部署工具            | All       |
-| `panguard hardening`                            | 安全強化            | All       |
-| `panguard init`                                 | 專案初始化          | All       |
-| `panguard threat`                               | 威脅分析            | All       |
-| `panguard upgrade`                              | 升級方案            | All       |
-| `panguard demo`                                 | Demo 模式           | All       |
-| `panguard audit skill <path>`                   | Skill 安全審計      | All       |
+| 指令                                            | 說明                |
+| ----------------------------------------------- | ------------------- |
+| `panguard`                                      | 互動式 TUI 模式     |
+| `panguard scan`                                 | 安全掃描            |
+| `panguard scan --quick`                         | 快速掃描 (~30s)     |
+| `panguard scan --output report.pdf`             | 產生 PDF 報告       |
+| `panguard scan --target 1.2.3.4`                | 遠端掃描            |
+| `panguard scan --json`                          | JSON 輸出           |
+| `panguard guard start`                          | 啟動即時防護        |
+| `panguard guard stop`                           | 停止防護            |
+| `panguard guard restart`                        | 重啟防護            |
+| `panguard guard status`                         | 防護狀態            |
+| `panguard guard config`                         | 防護設定            |
+| `panguard report generate --framework iso27001` | 產生合規報告        |
+| `panguard report summary`                       | 報告摘要            |
+| `panguard report list-frameworks`               | 列出合規框架        |
+| `panguard chat setup`                           | 通知設定精靈        |
+| `panguard chat test`                            | 測試通知            |
+| `panguard trap start --services ssh,http,mysql` | 啟動蜜罐            |
+| `panguard login`                                | OAuth 登入          |
+| `panguard login --no-browser`                   | 無瀏覽器登入 (SSH)  |
+| `panguard logout`                               | 登出                |
+| `panguard whoami`                               | 顯示目前用戶        |
+| `panguard serve`                                | 啟動 HTTP 伺服器    |
+| `panguard admin init`                           | 建立初始 admin 帳號 |
+| `panguard admin create-user`                    | 建立用戶            |
+| `panguard status`                               | 系統狀態            |
+| `panguard config`                               | 設定管理            |
+| `panguard doctor`                               | 診斷工具            |
+| `panguard deploy`                               | 部署工具            |
+| `panguard hardening`                            | 安全強化            |
+| `panguard init`                                 | 專案初始化          |
+| `panguard threat`                               | 威脅分析            |
+| `panguard demo`                                 | Demo 模式           |
+| `panguard audit skill <path>`                   | Skill 安全審計      |
+
+所有指令均免費提供，無付費門檻。
 
 ### CLI 認證流程
 
@@ -580,7 +570,6 @@ Callback 收到 auth code
 {
   "email": "user@example.com",
   "name": "User Name",
-  "tier": "solo",
   "token": "session-token-hash",
   "expiresAt": "2026-03-13T19:35:00Z"
 }
@@ -618,7 +607,7 @@ curl -X POST http://localhost:3002/api/auth/register \
 
 # 升級為 admin
 sqlite3 ~/.panguard/auth.db \
-  "UPDATE users SET role='admin', tier='business' WHERE email='admin@panguard.ai';"
+  "UPDATE users SET role='admin' WHERE email='admin@panguard.ai';"
 ```
 
 ### 功能總覽
@@ -716,7 +705,7 @@ user.role === 'user'   → 重導至 /dashboard
 └─────────────────────────────────────────────────────────────────────┘
        ↓
 ┌─────────────────────────────────────────────────────────────────────┐
-│ 第五階段: 進階功能 (Pro+)                                            │
+│ 第五階段: 進階功能                                                    │
 │                                                                     │
 │  panguard trap start --services ssh,http,mysql (蜜罐)               │
 │  panguard report generate --framework iso27001 (合規報告)            │
@@ -724,18 +713,7 @@ user.role === 'user'   → 重導至 /dashboard
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 定價方案
-
-| 方案          | 月費   | Endpoints | 主要功能                        |
-| ------------- | ------ | --------- | ------------------------------- |
-| **Community** | $0     | 1         | Scan + Layer 1 Guard            |
-| **Solo**      | $9/mo  | 3         | Full Guard (3 layers) + Chat    |
-| **Pro**       | $29/mo | 10        | + Trap + Report + Advanced Chat |
-| **Business**  | $79/mo | 25        | + Custom models + SIEM + SSO    |
-
-年付享 20% 折扣。
-
-### 合規報告加購 (Pro+)
+### 合規報告
 
 | 框架        | 控制項 | 指令                   |
 | ----------- | ------ | ---------------------- |
@@ -779,12 +757,6 @@ SMTP_USER=your@email.com
 SMTP_PASS=your-app-password
 SMTP_FROM=noreply@panguard.ai
 
-# ── Lemon Squeezy (付款) ───────────────────────────
-LEMON_SQUEEZY_API_KEY=eyJ...                     # API Key
-LEMON_SQUEEZY_STORE_ID=<your-store-id>           # Store ID
-LEMON_SQUEEZY_WEBHOOK_SECRET=<your-secret>       # Webhook Secret
-LEMON_SQUEEZY_VARIANT_MAP={"<id>":"solo","<id>":"pro","<id>":"business"}
-
 # ── AI Provider ─────────────────────────────────────
 ANTHROPIC_API_KEY=sk-ant-...                     # Claude API Key
 OPENAI_API_KEY=sk-...                            # OpenAI API Key
@@ -814,7 +786,6 @@ PANGUARD_CREDENTIAL_KEY=32-byte-hex              # 認證加密金鑰
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:3002         # 後端 API URL
-NEXT_PUBLIC_CHECKOUT_ENABLED=true                 # 啟用結帳
 NEXT_PUBLIC_PLAUSIBLE_DOMAIN=panguard.ai          # 分析 (選用)
 ```
 
@@ -839,12 +810,12 @@ CREATE TABLE users (
   name TEXT NOT NULL,
   password_hash TEXT,
   role TEXT DEFAULT 'user',        -- user | admin
-  tier TEXT DEFAULT 'community',   -- community | solo | pro | business | enterprise
+  tier TEXT DEFAULT 'community',   -- legacy column, all users have full access
   verified INTEGER DEFAULT 0,
   suspended INTEGER DEFAULT 0,
   created_at TEXT DEFAULT (datetime('now')),
   last_login TEXT,
-  plan_expires_at TEXT
+  plan_expires_at TEXT             -- legacy column, unused
 );
 ```
 
@@ -860,24 +831,6 @@ CREATE TABLE sessions (
 );
 ```
 
-#### subscriptions (Lemon Squeezy)
-
-```sql
-CREATE TABLE subscriptions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER REFERENCES users(id),
-  ls_subscription_id TEXT UNIQUE,
-  ls_customer_id TEXT,
-  ls_variant_id TEXT,
-  tier TEXT,
-  status TEXT,
-  renews_at TEXT,
-  ends_at TEXT,
-  created_at TEXT DEFAULT (datetime('now')),
-  updated_at TEXT
-);
-```
-
 #### 其他表
 
 - **totp_secrets** — 2FA TOTP 密鑰 (AES-256-GCM 加密)
@@ -885,19 +838,15 @@ CREATE TABLE subscriptions (
 - **usage_meters** — 使用量計量 (user_id + resource + period)
 - **audit_log** — 稽核日誌 (action, actor_id, target_id, details)
 - **waitlist** — 候補名單 (email, status, verify_token hash)
-- **report_purchases** — 報告加購紀錄
 
 ### 常用管理指令
 
 ```bash
 # 查看所有用戶
-sqlite3 ~/.panguard/auth.db "SELECT id, email, name, role, tier FROM users;"
+sqlite3 ~/.panguard/auth.db "SELECT id, email, name, role FROM users;"
 
 # 升級用戶為 admin
 sqlite3 ~/.panguard/auth.db "UPDATE users SET role='admin' WHERE email='xxx@example.com';"
-
-# 變更用戶方案
-sqlite3 ~/.panguard/auth.db "UPDATE users SET tier='pro' WHERE email='xxx@example.com';"
 
 # 查看活躍 sessions
 sqlite3 ~/.panguard/auth.db "SELECT s.id, u.email, s.expires_at FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.expires_at > datetime('now');"
@@ -961,7 +910,7 @@ Google callback → GET /api/auth/google/callback?code=xxx&state=yyy
     ↓
 取得 Google 用戶資料 (email, name, picture)
     ↓
-建立/查找用戶 (新用戶自動 14 天 Solo 試用)
+建立/查找用戶
     ↓
 產生一次性 exchange code
     ↓
@@ -980,48 +929,9 @@ Google callback → GET /api/auth/google/callback?code=xxx&state=yyy
 
 ---
 
-## 11. Lemon Squeezy 付款設定
+## 11. (已移除 - 付款設定)
 
-### 設定流程
-
-1. 前往 https://app.lemonsqueezy.com/settings/api 取得 API Key
-2. 建立 Products & Variants (Solo, Pro, Business)
-3. 設定 Webhook URL: `https://api.panguard.ai/api/billing/webhook`
-4. 設定 Webhook Secret
-5. 記錄 Variant ID → Tier 對應
-
-### 環境變數
-
-```bash
-LEMON_SQUEEZY_API_KEY=eyJ...           # from LemonSqueezy dashboard
-LEMON_SQUEEZY_STORE_ID=<your-store-id>
-LEMON_SQUEEZY_WEBHOOK_SECRET=<your-webhook-secret>
-LEMON_SQUEEZY_VARIANT_MAP={"<variant-id>":"solo","<variant-id>":"pro","<variant-id>":"business"}
-```
-
-### Webhook 事件
-
-| 事件                     | 處理邏輯         |
-| ------------------------ | ---------------- |
-| `order.created`          | 升級用戶方案     |
-| `order.refunded`         | 降級為 community |
-| `subscription.created`   | 記錄訂閱         |
-| `subscription.updated`   | 更新方案/到期日  |
-| `subscription.cancelled` | 排程降級         |
-
-### 結帳流程
-
-```
-前端: POST /api/billing/checkout { tier: "pro" }
-    ↓
-後端: 呼叫 Lemon Squeezy API 建立 checkout session
-    ↓
-回傳: { ok: true, data: { url: "https://panguard.lemonsqueezy.com/checkout/..." } }
-    ↓
-前端: window.location.href = url (重導至付款頁)
-    ↓
-付款完成 → Webhook → 自動升級方案
-```
+Panguard AI 是 100% 免費、MIT 授權的開源軟體。無付費方案、無訂閱、無結帳流程。
 
 ---
 
@@ -1223,7 +1133,7 @@ panguard --version  # 應該顯示新版本
 - [x] SSRF: 遠端掃描私有 IP 阻擋
 - [x] No eval/Function: 禁止動態程式碼執行
 - [x] Input validation: Zod schema 驗證
-- [x] Webhook: HMAC 簽名驗證 (Lemon Squeezy)
+- [x] Webhook: HMAC 簽名驗證
 
 ### 程式碼安全
 
@@ -1321,11 +1231,8 @@ VERCEL_TOKEN expired
 
 ### Guard 不啟動
 
-```
-Tier check failed: requires solo or above
-```
-
-→ 確認 CLI 已登入且方案為 Solo 以上: `panguard whoami`
+→ 確認 CLI 已登入: `panguard whoami`
+→ 查看詳細錯誤: `panguard guard start --verbose`
 
 ---
 
@@ -1376,7 +1283,7 @@ curl http://localhost:3002/health | python3 -m json.tool
 
 ```bash
 # 查看用戶
-sqlite3 ~/.panguard/auth.db "SELECT id, email, role, tier FROM users;"
+sqlite3 ~/.panguard/auth.db "SELECT id, email, role FROM users;"
 
 # 升級為 admin
 sqlite3 ~/.panguard/auth.db "UPDATE users SET role='admin' WHERE email='xxx';"
@@ -1423,7 +1330,7 @@ panguard doctor                   # 診斷
 | 4   | Admin Policies   | 頁面未實作 (Coming Soon)                       | Low    | 實作政策管理 UI                                   |
 | 5   | Admin Settings   | 頁面未實作 (Coming Soon)                       | Low    | 實作系統設定 UI                                   |
 | 6   | Account Settings | `/account/settings` 路由存在但無內容           | Medium | 實作帳號設定頁                                    |
-| 7   | Account Billing  | `/account/billing` 路由存在但無內容            | Medium | 實作帳單管理頁                                    |
+| 7   | (已移除)         | 付款功能已移除 -- 100% 免費開源                | N/A    | N/A                                               |
 | 8   | User Dashboard   | 使用 mock usage data                           | Low    | 串接 `/api/usage`                                 |
 | 9   | ENV 更新         | 前端需重啟 dev server 才能套用 .env.local 變更 | Low    | Next.js 限制，無法熱更新                          |
 | 10  | Google OAuth     | 新用戶自動 role=user，需手動 DB 升級為 admin   | Low    | 加入 admin invite flow                            |
@@ -1443,7 +1350,7 @@ panguard doctor                   # 診斷
 | OAuth 路由       | `packages/panguard-auth/src/routes/oauth.ts`                             |
 | TOTP 路由        | `packages/panguard-auth/src/routes/totp.ts`                              |
 | Admin 路由       | `packages/panguard-auth/src/routes/admin.ts`                             |
-| Billing 路由     | `packages/panguard-auth/src/routes/billing.ts`                           |
+| (已移除)         | 付款路由已移除                                                           |
 | Usage 路由       | `packages/panguard-auth/src/routes/usage.ts`                             |
 | Waitlist 路由    | `packages/panguard-auth/src/routes/waitlist.ts`                          |
 | DB Schema        | `packages/panguard-auth/src/database.ts`                                 |
@@ -1455,7 +1362,7 @@ panguard doctor                   # 診斷
 | Login Form       | `packages/website/src/app/[locale]/login/LoginForm.tsx`                  |
 | Register Form    | `packages/website/src/app/[locale]/register/RegisterForm.tsx`            |
 | User Dashboard   | `packages/website/src/app/[locale]/dashboard/DashboardContent.tsx`       |
-| Pricing Cards    | `packages/website/src/app/[locale]/pricing/PricingCards.tsx`             |
+| (已移除)         | 定價卡片已移除                                                           |
 | CLI 入口         | `packages/panguard/src/cli/index.ts`                                     |
 | CLI 互動模式     | `packages/panguard/src/cli/interactive.ts`                               |
 | Guard 引擎       | `packages/panguard-guard/src/guard-engine.ts`                            |

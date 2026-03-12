@@ -1,8 +1,8 @@
-# Threat Cloud / 集體威脅情報部署指南 `[ENTERPRISE]`
+# Threat Cloud / 集體威脅情報部署指南
 
 > 你的 Panguard 偵測到的威脅，自動保護所有 Panguard 用戶。
 >
-> 啟動 Threat Cloud API 伺服器需要 **Enterprise** 方案。
+> 公共 Threat Cloud 免費使用。私有 Threat Cloud 可自行部署（self-host）。
 
 ---
 
@@ -20,9 +20,9 @@ Threat Cloud 是一個集體威脅情報平台。每個 Panguard Guard 偵測到
 
 不需要任何設定。Guard 啟動後自動連接公共 Threat Cloud。
 
-### 部署私有 Threat Cloud
+### 部署私有 Threat Cloud（Self-Host）
 
-企業可以部署私有的 Threat Cloud 伺服器：
+任何人都可以自行部署私有的 Threat Cloud 伺服器：
 
 ```bash
 # 啟動伺服器

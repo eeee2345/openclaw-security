@@ -37,18 +37,6 @@ panguard whoami
 panguard login
 ```
 
-### 「等級不足」錯誤
-
-**可能原因：** 你的訂閱方案不支援該功能。
-
-```bash
-# 查看目前方案
-panguard whoami
-
-# 到網站升級
-# https://panguard.ai/pricing
-```
-
 ### credentials.json 權限錯誤
 
 ```bash
@@ -182,14 +170,12 @@ ls ~/.panguard-guard/rules/sigma/
 
 **可能原因：**
 
-1. 你可能使用 Free 版（不支援自動回應，需要 Starter 以上）
-2. 信心度低於 90%，需要你確認
+1. 信心度低於 90%，需要你確認
+2. Guard 在學習模式中（不執行自動回應）
 
 ```bash
-# 檢查登入狀態和訂閱等級
-panguard whoami
-
-# 如果需要升級，到 panguard.ai/pricing
+# 檢查 Guard 狀態
+panguard guard status
 ```
 
 ---

@@ -1,8 +1,8 @@
-# Panguard Report / 合規報告指南 `[PRO]`
+# Panguard Report / 合規報告指南（Coming Soon）
 
 > 自動產生符合法規框架的安全合規報告，讓稽核不再痛苦。
 >
-> 產生報告和摘要需要 **Pro** 以上方案。
+> 此功能尚在開發中，即將推出。所有使用者皆可使用。
 
 ---
 
@@ -89,16 +89,16 @@ panguard report generate --framework iso27001 --format pdf --output-dir ./report
 
 每份合規報告包含：
 
-1. **組織資訊** — 組織名稱、報告日期、評估範圍
-2. **框架概覽** — 適用的合規框架說明
-3. **控制項評估** — 每個控制項的合規狀態
+1. **組織資訊** -- 組織名稱、報告日期、評估範圍
+2. **框架概覽** -- 適用的合規框架說明
+3. **控制項評估** -- 每個控制項的合規狀態
    - Compliant（合規）
    - Partially Compliant（部分合規）
    - Non-Compliant（不合規）
    - Not Assessed（未評估）
-4. **發現明細** — 不合規項目的具體問題和證據
-5. **修復建議** — 針對每個不合規項目的改善步驟
-6. **合規摘要** — 整體合規率和風險評估
+4. **發現明細** -- 不合規項目的具體問題和證據
+5. **修復建議** -- 針對每個不合規項目的改善步驟
+6. **合規摘要** -- 整體合規率和風險評估
 
 ---
 
@@ -140,7 +140,7 @@ panguard report summary --framework iso27001
 ```
 
 ```
-  ── ISO 27001 Compliance Summary ───────
+  -- ISO 27001 Compliance Summary -------
 
   Overall:    72% compliant
   Compliant:  8/12 controls

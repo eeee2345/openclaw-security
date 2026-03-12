@@ -25,7 +25,7 @@ Traditional security tools:
 - Require expertise to install and configure
 - Interfaces full of Sigma, YARA, IOC, MITRE ATT&CK jargon
 - Generate thousands of alerts with no prioritization
-- Enterprise tools cost six figures; free tools are unusable
+- Enterprise tools cost six figures; free alternatives are hard to use
 
 Panguard AI:
 
@@ -163,7 +163,7 @@ panguard threat start --port 8080
 - Rate limiting and API key authentication
 - Encrypted transport (TLS 1.3)
 
-Privacy: only anonymized threat signatures leave your machine. Zero raw data. Zero telemetry. Can be turned off anytime. Community tier works fully offline.
+Privacy: only anonymized threat signatures leave your machine. Zero raw data. Zero telemetry. Can be turned off anytime. Fully functional offline.
 
 Best for: private enterprise deployment, community threat intelligence sharing.
 

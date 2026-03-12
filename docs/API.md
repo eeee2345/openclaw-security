@@ -490,7 +490,7 @@ All auth endpoints use the same `{ ok, data/error }` envelope format. Rate limit
 
 ### POST /api/auth/register
 
-Register a new user account. Automatically activates a 14-day Solo trial.
+Register a new user account.
 
 **Request Body**:
 
@@ -518,7 +518,6 @@ Register a new user account. Automatically activates a 14-day Solo trial.
       "id": 1,
       "email": "user@example.com",
       "name": "John Doe",
-      "tier": "solo",
       "role": "user"
     },
     "token": "session-token-here",
@@ -680,7 +679,7 @@ All admin endpoints require `role: "admin"` authentication.
 | `GET`    | `/api/admin/users`             | List all users                        |
 | `GET`    | `/api/admin/users/search?q=`   | Search users                          |
 | `GET`    | `/api/admin/users/:id`         | User detail with usage/sessions/audit |
-| `PATCH`  | `/api/admin/users/:id/tier`    | Update user tier                      |
+| `PATCH`  | `/api/admin/users/:id/tier`    | Update user role level                |
 | `PATCH`  | `/api/admin/users/:id/role`    | Update user role                      |
 | `PATCH`  | `/api/admin/users/:id/suspend` | Suspend/unsuspend user                |
 | `GET`    | `/api/admin/stats`             | User and waitlist statistics          |
@@ -694,17 +693,15 @@ All admin endpoints require `role: "admin"` authentication.
 | `GET`    | `/api/admin/usage/:userId`     | Per-user usage detail                 |
 | `POST`   | `/api/admin/bulk-action`       | Bulk operations (max 100 users)       |
 
-**Tier Values**: `community`, `solo`, `pro`, `business`, `enterprise`
-
-**Bulk Action Types**: `change_tier`, `change_role`, `suspend`, `unsuspend`
+**Bulk Action Types**: `change_role`, `suspend`, `unsuspend`
 
 **Bulk Action Request**:
 
 ```json
 {
   "userIds": [1, 2, 3],
-  "action": "change_tier",
-  "value": "pro"
+  "action": "change_role",
+  "value": "admin"
 }
 ```
 

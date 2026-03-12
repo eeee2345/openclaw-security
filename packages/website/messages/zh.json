@@ -704,7 +704,7 @@
     },
     "finalCta": {
       "title": "你部署，我們防守。",
-      "subtitle": "一行指令安裝，免費版就有完整掃描。不用帳號、不用信用卡、不用跟業務講電話。",
+      "subtitle": "一行指令安裝，完整功能免費。不用帳號、不用信用卡、不用跟業務講電話。",
       "manifesto": "我們做 Panguard，是因為資安不該需要六位數預算或一整支團隊。一行指令就夠了。",
       "btnGetStarted": "免費掃描我的伺服器",
       "btnGithub": "GitHub",
@@ -725,20 +725,20 @@
     "guarantee": "MIT 授權。完整原始碼公開於 GitHub。"
   },
   "earlyAccess": {
-    "overline": "Pro 搶先體驗",
+    "overline": "搶先體驗",
     "title1": "搶先使用",
-    "title2": "Pro 與 Enterprise 進階功能。",
-    "subtitle": "Panguard 免費版已開放安裝。加入搶先體驗，率先使用即將推出的 Pro 與 Enterprise 功能、取得直接回饋管道，並鎖定創始會員定價。",
+    "title2": "即將推出的功能。",
+    "subtitle": "Panguard 是 100% 免費開源。加入搶先體驗，率先使用即將推出的功能、取得直接回饋管道。",
     "whatYouGet": "搶先體驗會員專屬權益",
-    "priority": "優先使用進階功能",
-    "priorityDesc": "率先體驗 Pro 與 Enterprise 功能——多端點管理、進階合規報告、團隊協作儀表板等。",
+    "priority": "優先使用新功能",
+    "priorityDesc": "率先體驗即將推出的功能——Report、Trap、Dashboard 等。全部免費開源。",
     "feedback": "直接回饋管道",
     "feedbackDesc": "加入我們的私人 Slack 社群。直接與工程師對話。你的回饋決定我們下一步開發什麼功能。",
-    "founding": "創始會員定價",
-    "foundingDesc": "鎖定任何付費方案的永久折扣。創始會員的費率終身不變，即使未來調漲價格。",
+    "founding": "搶先預覽新功能",
+    "foundingDesc": "在正式發布前搶先預覽即將推出的功能。所有功能永遠免費。",
     "timeline": "功能上線時程",
     "now": "現在",
-    "nowLabel": "免費版已開放安裝 -- Pro 搶先體驗報名中",
+    "nowLabel": "所有功能免費開源 -- 搶先體驗報名中",
     "q2": "2026 Q2",
     "q2Label": "Pro 功能搶先體驗",
     "q3": "2026 Q3",
@@ -1282,7 +1282,7 @@
       "items": [
         {
           "name": "panguard-ai",
-          "desc": "核心平台：Scan、Guard、Chat、Trap、Report、Threat Cloud",
+          "desc": "核心平台：Scan、Guard、Chat、Skill Auditor、Threat Cloud",
           "lang": "TypeScript",
           "stars": "開源"
         },
@@ -1334,7 +1334,7 @@
       "completed": {
         "title": "已完成",
         "items": [
-          "核心平台（Scan + Guard + Chat + Trap + Report）",
+          "核心平台（Scan + Guard + Chat + Skill Auditor）",
           "Threat Cloud v1",
           "3,760條 Sigma + 5,961 條 YARA 規則",
           "3,017 個自動化測試"
@@ -1342,7 +1342,7 @@
       },
       "inProgress": {
         "title": "進行中",
-        "items": ["Web Dashboard UI", "Windows 支援", "Kubernetes 整合"]
+        "items": ["Report + Trap", "Web Dashboard UI", "Windows 支援", "Kubernetes 整合"]
       },
       "planned": {
         "title": "規劃中",
@@ -1366,8 +1366,8 @@
       "description": "AI 端點安全防護。所有功能免費開源。"
     },
     "earlyAccess": {
-      "title": "Pro 搶先體驗",
-      "description": "率先使用 Panguard Pro 與 Enterprise 進階功能。免費版已開放安裝。加入搶先體驗，鎖定創始會員定價及直接回饋管道。"
+      "title": "搶先體驗",
+      "description": "率先使用 Panguard 即將推出的功能。100% 免費開源。加入搶先體驗，取得直接回饋管道及新功能預覽。"
     },
     "scan": {
       "title": "免費安全掃描",
@@ -1375,7 +1375,7 @@
     },
     "productOverview": {
       "title": "產品總覽",
-      "description": "七大 AI 安全產品，一個平台。Scan、Guard、Chat、Trap、Report、MCP 和 Code Scanner -- 從免費 60 秒稽核到完整企業合規。"
+      "description": "七大 AI 安全產品，一個平台。Scan、Guard、Chat、Trap（即將推出）、Report（即將推出）、MCP 和 Code Scanner -- 全部免費開源。"
     },
     "productScan": {
       "title": "Panguard Scan",
@@ -1503,7 +1503,7 @@
     },
     "login": {
       "title": "Login",
-      "description": "登入你的 Panguard AI 帳號，管理安全儀表板和設定。"
+      "description": "登入你的 Panguard AI 帳號，管理安全設定。"
     },
     "register": {
       "title": "建立帳號",
@@ -1514,8 +1514,8 @@
       "description": "重設你的 Panguard AI 帳號密碼。"
     },
     "dashboard": {
-      "title": "儀表板",
-      "description": "你的 Panguard AI 安全儀表板。監控威脅、管理端點、查看報告。"
+      "title": "儀表板（即將推出）",
+      "description": "Panguard AI 安全儀表板。即將推出。監控威脅、管理端點、查看報告。"
     },
     "accountSettings": {
       "title": "帳號設定",
@@ -1535,7 +1535,7 @@
     },
     "productManager": {
       "title": "Panguard Manager",
-      "description": "分散式 Guard 代理的中央管控。從單一儀表板管理 25 台以上端點。"
+      "description": "分散式 Guard 代理的中央管控。從單一介面管理端點。"
     }
   },
   "pricingPage": {
@@ -1559,7 +1559,7 @@
     "guarantee": "MIT 授權。完整原始碼公開於 GitHub。",
     "faq": {
       "faq1q": "Panguard 真的免費嗎？",
-      "faq1a": "是的，100% 免費。Panguard 是 MIT 開源軟體。所有功能 -- Guard、Threat Cloud、ATR 規則、Scan、Chat、Trap、Report、MCP、Skill Auditor -- 完全免費，無機器數、掃描次數或功能限制。沒有付費版，沒有付費牆。",
+      "faq1a": "是的，100% 免費。Panguard 是 MIT 開源軟體。所有功能 -- Guard、Threat Cloud、ATR 規則、Scan、Chat、MCP、Skill Auditor -- 完全免費，無機器數、掃描次數或功能限制。Trap 和 Report 即將推出，同樣免費。沒有付費版，沒有付費牆。",
       "faq2q": "Panguard 如何維持運作？",
       "faq2a": "我們相信 AI Agent 安全應該是公共財，不是進階功能。Panguard 由社群驅動，透過贊助、補助和企業顧問合作維持運作。",
       "faq3q": "什麼算一台機器？",
@@ -2627,7 +2627,7 @@
         },
         "item4": {
           "title": "保護你的副專案",
-          "desc": "用大型組織使用的相同企業級安全保護你的個人伺服器、VPS 和雲端部署，價格合理。"
+          "desc": "用大型組織使用的相同企業級安全保護你的個人伺服器、VPS 和雲端部署。100% 免費開源。"
         },
         "item5": {
           "title": "開發者優先 API",
@@ -2635,11 +2635,11 @@
         }
       },
       "pricing": {
-        "title": "為開發者定價，不是企業",
-        "subtitle": "從免費的 Panguard Scan 開始。升級至 Solo 獲得完整防護。",
-        "freeScanDesc": "1 端點，基礎掃描 + PDF 報告",
+        "title": "對開發者免費。對所有人免費。",
+        "subtitle": "100% 免費開源。MIT 授權。全功能包含。",
+        "freeScanDesc": "無限端點，完整掃描 + 所有功能",
         "soloDesc": "Guard + Chat + Scan，Telegram/Slack 通知",
-        "seeAllPlans": "查看全部方案"
+        "seeAllPlans": "在 GitHub 上查看"
       },
       "workflow": {
         "title": "適合你的工作流",
@@ -2647,7 +2647,7 @@
       },
       "cta": {
         "title": "一行指令保護你的技術棧",
-        "desc": "免費版適用個人專案。付費方案享 14 天免費試用。"
+        "desc": "100% 免費開源。無需帳號。"
       }
     },
     "smb": {
@@ -2688,7 +2688,7 @@
           "desc": "自動生成 SOC 2、ISO 27001 和 GDPR 的合規報告。一鍵報告向客戶和合作夥伴展示你的安全態勢。"
         },
         "item5": {
-          "title": "完全免費",
+          "title": "完全免費開源",
           "desc": "100% 免費開源。無隱藏費用、無意外超支、無供應商鎖定。安裝一次，保護一切。"
         }
       },
@@ -2697,9 +2697,9 @@
         "subtitle": "所有功能皆包含。無分層、無每用戶授權、無意外。",
         "teamPlanDesc": "無限端點。所有產品包含。",
         "teamFeatures": [
-          "Guard + Chat + Scan + Report + Trap",
+          "Guard + Chat + Scan + Skill Auditor",
           "Slack / Telegram / Email 通知",
-          "團隊儀表板 & 30 天日誌"
+          "Report + Trap（即將推出）"
         ]
       },
       "integrations": {
@@ -2708,7 +2708,7 @@
       },
       "cta": {
         "title": "今天就保護你的企業",
-        "desc": "14 天免費試用。不需信用卡。"
+        "desc": "100% 免費開源。立即安裝。"
       }
     },
     "enterprise": {
@@ -2758,9 +2758,9 @@
         }
       },
       "pricing": {
-        "title": "為你的組織客製定價",
-        "subtitle": "25 台以上端點大量授權報價。自帶 API 金鑰、延伸日誌保留及 Webhook 整合。",
-        "volumeDiscounts": "500 端點起享量價折扣"
+        "title": "對你的組織免費",
+        "subtitle": "所有功能皆包含，無端點限制。自帶 API 金鑰、延伸日誌保留及 Webhook 整合。",
+        "volumeDiscounts": "無數量限制。100% 免費開源。"
       },
       "integrations": {
         "title": "企業整合",
@@ -2777,7 +2777,7 @@
       },
       "cta": {
         "title": "看 Panguard 實際運作",
-        "desc": "立即開始免費試用，探索所有功能。"
+        "desc": "立即安裝，探索所有功能。100% 免費。"
       }
     }
   },
@@ -2808,7 +2808,7 @@
       },
       "step3": {
         "title": "問答與後續",
-        "desc": "盡管提問。我們將討論定價、部署方案，以及讓 Panguard 在你的端點上運行的時間表。"
+        "desc": "盡管提問。我們將討論部署方案，以及讓 Panguard 在你的端點上運行的時間表。"
       }
     }
   },
@@ -3191,7 +3191,7 @@
       "hipaa": {
         "name": "HIPAA 就緒",
         "status": "進行中",
-        "desc": "醫療客戶可取得 BAA。加密控制已實施。存取稽核日誌和自動工作階段管理已強制執行。"
+        "desc": "BAA 規劃中。加密控制已實施。存取稽核日誌和自動工作階段管理已強制執行。"
       }
     },
     "architecture": {
@@ -3292,7 +3292,7 @@
         "purpose": "交易郵件",
         "location": "美國"
       },
-      "updateNote": "最後更新：2026 年 2 月。我們在新增次處理者前至少 30 天通知客戶。透過你的帳戶儀表板訂閱更新。"
+      "updateNote": "最後更新：2026 年 2 月。我們在新增次處理者前至少 30 天通知客戶。透過我們的 GitHub 儲存庫訂閱更新。"
     },
     "dataRetention": {
       "overline": "資料生命週期",
@@ -3504,30 +3504,30 @@
         "0": {
           "metric": "威脅雲 API 可用性",
           "target": "99.9%",
-          "scope": "企業方案"
+          "scope": "所有使用者"
         },
         "1": {
           "metric": "嚴重弱點回應",
           "target": "< 24 小時",
-          "scope": "所有方案"
+          "scope": "所有使用者"
         },
         "2": {
           "metric": "安全事件通知",
           "target": "< 24 小時",
-          "scope": "所有方案"
+          "scope": "所有使用者"
         },
         "3": {
-          "metric": "支援回應（企業）",
+          "metric": "支援回應",
           "target": "< 4 小時",
-          "scope": "企業方案"
+          "scope": "所有使用者"
         },
         "4": {
-          "metric": "支援回應（專業）",
+          "metric": "社群支援回應",
           "target": "< 24 小時",
-          "scope": "專業方案"
+          "scope": "所有使用者"
         }
       },
-      "note": "完整 SLA 條款請見企業合約。詳情請聯繫銷售團隊。"
+      "note": "Panguard 是 100% 免費開源。社群支援透過 GitHub issues。"
     },
     "trustCenter": {
       "overline": "Trust Center",
@@ -4088,14 +4088,14 @@
       "step7Desc": "從外部掃描任何伺服器或網域。Panguard 會檢查開放的 port、SSL 憑證、HTTP 標頭和 DNS 記錄。",
       "step7Note": "遠端掃描只使用 Node.js 內建模組，不需要 nmap。搭配 --json 可用於自動化監控。",
       "step8Title": "步驟八：合規報告",
-      "step8Desc": "自動產生 ISO 27001、SOC 2 或台灣資通安全管理法合規報告。需要 Pro 方案。",
+      "step8Desc": "自動產生 ISO 27001、SOC 2 或台灣資通安全管理法合規報告。即將推出。",
       "step8Frameworks": "支援框架：ISO 27001 附錄 A、SOC 2 信任服務準則、台灣 TCSA（ISMS）。",
       "step8Note": "報告可以用英文或繁體中文產生，支援 PDF 匯出。",
       "step9Title": "更多 CLI 指令",
       "step9Desc": "Panguard 有完整的 CLI 工具組。以下是 scan 和 guard 以外最常用的指令。",
       "step9Whoami": "查看帳號和訂閱狀態：",
       "step9Chat": "設定通知管道（Telegram、Slack、email）：",
-      "step9Trap": "部署蜜罐服務來分析攻擊者（Pro 方案）：",
+      "step9Trap": "部署蜜罐服務來分析攻擊者（即將推出）：",
       "step9Report": "列出支援的合規框架：",
       "step9Status": "查看 Guard 引擎狀態：",
       "nextTitle": "接下來呢？",
@@ -4763,8 +4763,8 @@
       "msp": {
         "title": "MSP 合作夥伴",
         "subtitle": "託管安全服務供應商",
-        "desc": "將 Panguard 的 AI 安全防護加入你的託管服務組合。多租戶儀表板、白標選項、量價定價。",
-        "highlights": ["多租戶管理主控台", "白標部署選項", "量價定價層級", "自動化佈建 API"]
+        "desc": "將 Panguard 的 AI 安全防護加入你的託管服務組合。多租戶管理、白標選項、開源。",
+        "highlights": ["多租戶管理主控台", "白標部署選項", "100% 免費開源", "自動化佈建 API"]
       },
       "technology": {
         "title": "技術合作夥伴",
@@ -4947,10 +4947,10 @@
     "checks": {
       "priority": "優先使用權",
       "feedback": "直接回饋管道",
-      "founding": "創始會員定價"
+      "founding": "搶先預覽新功能"
     },
     "successTitle": "你已在名單中。",
-    "successDesc": "我們已發送確認信至 {email}。團隊將在 24 小時內審核你的申請。審核通過後，你會收到一封包含註冊連結的 email，即可開始 14 天免費試用。",
+    "successDesc": "我們已發送確認信至 {email}。團隊將在 24 小時內審核你的申請。審核通過後，你會收到一封包含加入社群連結的 email。",
     "betaNote": "私人測試 2026 Q2 啟動"
   },
   "errorValidation": {
@@ -5226,11 +5226,11 @@
     "upgradeDescription": "所有 Panguard 功能皆免費開源。",
     "viewPlans": "查看方案",
     "tierFeatures": {
-      "community": ["每月 100 次掃描", "1 個端點", "1,000 次 API 呼叫"],
-      "solo": ["無限次掃描", "3 個端點", "10,000 次 API 呼叫", "1 個蜜罐"],
-      "pro": ["無限次掃描", "10 個端點", "50,000 次 API 呼叫", "5 份報告", "3 個蜜罐"],
-      "business": ["無限次掃描", "25 個端點", "無限次 API 呼叫", "20 份報告", "8 個蜜罐"],
-      "enterprise": ["全功能無限制", "優先技術支援", "客製化 SLA"]
+      "community": ["無限次掃描", "無限端點", "無限次 API 呼叫"],
+      "solo": ["無限次掃描", "無限端點", "無限次 API 呼叫"],
+      "pro": ["無限次掃描", "無限端點", "無限次 API 呼叫"],
+      "business": ["無限次掃描", "無限端點", "無限次 API 呼叫", "所有功能包含"],
+      "enterprise": ["所有功能包含", "社群支援", "MIT 授權"]
     }
   },
   "atrPage": {

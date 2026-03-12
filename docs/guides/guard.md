@@ -1,8 +1,8 @@
-# Panguard Guard / AI 即時監控指南 `[STARTER]`
+# Panguard Guard / AI 即時監控指南
 
 > 5 個 AI Agent 24/7 守護你的系統。學習你的環境，偵測異常，自動回應威脅。
 >
-> 啟動和停止 Guard 需要 **Starter** 以上方案。狀態查詢和設定檢視為 Free。
+> 所有 Guard 功能對所有使用者免費開放。
 
 ---
 
@@ -12,10 +12,10 @@
 # 登入（如果還沒有）
 panguard login
 
-# 啟動 Guard（需要 Starter）
+# 啟動 Guard
 panguard guard start
 
-# 查看狀態（Free）
+# 查看狀態
 panguard guard status
 
 # 停止 Guard
@@ -88,8 +88,9 @@ Guard 的核心是 5 個串聯的 AI Agent，形成完整的偵測-分析-回應
 
 監控系統事件，用規則引擎即時比對：
 
-- Sigma 規則匹配（42 條內建規則）
-- YARA 檔案掃描
+- Sigma 規則匹配（3,760 條規則）
+- YARA 檔案掃描（5,961 條規則）
+- ATR 規則偵測（69 條規則）
 - 行為基線偏離偵測
 - 威脅情報關聯
 
@@ -130,7 +131,7 @@ Guard 的核心是 5 個串聯的 AI Agent，形成完整的偵測-分析-回應
 - 產生每日/每週安全摘要
 - 更新安全分數
 
-### Investigation Agent（Enterprise）
+### Investigation Agent
 
 攻擊事件的深度調查：
 
@@ -148,12 +149,12 @@ panguard guard status
 ```
 
 ```
-  ╔══════════════════════════════════════╗
-  ║       PANGUARD [▣] AI               ║
-  ║       Guard Engine                  ║
-  ╚══════════════════════════════════════╝
+  +======================================+
+  |       PANGUARD [#] AI               |
+  |       Guard Engine                  |
+  +======================================+
 
-  ── Guard Status ───────────────────────
+  -- Guard Status -------------------
 
   Status:     Running
   Mode:       Protection
@@ -162,10 +163,10 @@ panguard guard status
   Score:      85/100 (Grade: A)
   Threats:    0 active
   Events:     134,567 processed
-  Rules:      42 Sigma + 15 YARA
+  Rules:      3,760 Sigma + 5,961 YARA + 69 ATR
   Feeds:      5 active
 
-  ── Recent Activity ────────────────────
+  -- Recent Activity ----------------
 
   [14:23] Blocked IP 203.0.113.50 (ThreatFox match)
   [12:01] Score updated: 83 -> 85 (improving)
@@ -178,7 +179,7 @@ panguard guard status
 
 ### Sigma 規則
 
-Guard 內建 42 條 Sigma 規則，覆蓋常見攻擊模式。你也可以自訂規則：
+Guard 內建 3,760 條 Sigma 規則，覆蓋常見攻擊模式。你也可以自訂規則：
 
 ```yaml
 # 自訂規則範例：偵測大量失敗 SSH 登入
@@ -200,7 +201,7 @@ level: high
 
 ### YARA 規則
 
-用於偵測惡意檔案：
+用於偵測惡意檔案（內建 5,961 條規則）：
 
 ```yara
 rule WebShell {
@@ -213,6 +214,10 @@ rule WebShell {
 ```
 
 詳見 [YARA 規則撰寫指南](../reference/yara-rules.md)。
+
+### ATR 規則
+
+Agent Threat Rules 偵測 AI Agent 威脅（69 條規則）。詳見 [ATR 規則](../reference/atr-rules.md)。
 
 ---
 
@@ -251,26 +256,6 @@ Guard 引擎內建 WebSocket 監控介面，供進階除錯使用：
 
 ---
 
-## 訂閱等級
-
-Guard 功能依訂閱等級分級：
-
-| 功能          | Free | Starter | Pro | Enterprise |
-| ------------- | ---- | ------- | --- | ---------- |
-| 狀態查詢      | v    | v       | v   | v          |
-| 基本偵測      | -    | v       | v   | v          |
-| Sigma 規則    | -    | v       | v   | v          |
-| Chat 通知     | -    | v       | v   | v          |
-| AI 深度分析   | -    | v       | v   | v          |
-| 自動回應      | -    | v       | v   | v          |
-| YARA 掃描     | -    | v       | v   | v          |
-| Threat Cloud  | -    | -       | -   | v          |
-| Investigation | -    | -       | -   | v          |
-
-管理訂閱：[panguard.ai/pricing](https://panguard.ai/pricing)
-
----
-
 ## 系統服務
 
 將 Guard 安裝為開機自動啟動的系統服務：
@@ -289,12 +274,12 @@ panguard guard install
 panguard guard <command> [options]
 
 Commands:
-  start              啟動 Guard 引擎（Starter）
-  stop               停止 Guard 引擎（Starter）
-  status             顯示狀態（Free）
-  install            安裝為系統服務（Starter）
-  uninstall          移除系統服務（Starter）
-  config             顯示目前設定（Free）
+  start              啟動 Guard 引擎
+  stop               停止 Guard 引擎
+  status             顯示狀態
+  install            安裝為系統服務
+  uninstall          移除系統服務
+  config             顯示目前設定
   help               顯示說明
 
 Options:

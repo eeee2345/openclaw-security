@@ -95,9 +95,9 @@ panguard init [options]
 
 ## 安全掃描
 
-### panguard scan `[FREE / STARTER]`
+### panguard scan
 
-60 秒安全掃描工具。快速掃描（`--quick`）為 Free，完整掃描需要 Starter。
+60 秒安全掃描工具。所有掃描功能均免費提供。
 
 ```bash
 panguard scan [options]
@@ -105,16 +105,16 @@ panguard scan [options]
 
 | 選項              | 類型    | 預設值                     | 說明                          |
 | ----------------- | ------- | -------------------------- | ----------------------------- |
-| `--quick`         | boolean | `false`                    | 快速模式（~30 秒，Free 可用） |
+| `--quick`         | boolean | `false`                    | 快速模式（~30 秒）            |
 | `--output <path>` | string  | `panguard-scan-report.pdf` | PDF 報告輸出路徑              |
 | `--lang <lang>`   | string  | `en`                       | 語言（`en` 或 `zh-TW`）       |
 | `--verbose`       | boolean | `false`                    | 詳細輸出                      |
 
 ```bash
-# 快速掃描（Free）
+# 快速掃描
 panguard scan --quick
 
-# 完整掃描 + 繁體中文 PDF 報告（Starter）
+# 完整掃描 + 繁體中文 PDF 報告
 panguard scan --output report.pdf --lang zh-TW
 ```
 
@@ -122,9 +122,9 @@ panguard scan --output report.pdf --lang zh-TW
 
 ## 即時防護
 
-### panguard guard `[FREE / STARTER]`
+### panguard guard
 
-AI 即時監控守護引擎。狀態查詢為 Free，啟動/停止需要 Starter。
+AI 即時監控守護引擎。所有功能均免費提供。
 
 ```bash
 panguard guard <command> [options]
@@ -132,15 +132,15 @@ panguard guard <command> [options]
 
 #### 子指令
 
-| 子指令      | 等級    | 說明            |
-| ----------- | ------- | --------------- |
-| `start`     | Starter | 啟動 Guard 引擎 |
-| `stop`      | Starter | 停止 Guard 引擎 |
-| `status`    | Free    | 顯示引擎狀態    |
-| `install`   | Starter | 安裝為系統服務  |
-| `uninstall` | Starter | 移除系統服務    |
-| `config`    | Free    | 顯示目前設定    |
-| `help`      | -       | 顯示說明        |
+| 子指令      | 說明            |
+| ----------- | --------------- |
+| `start`     | 啟動 Guard 引擎 |
+| `stop`      | 停止 Guard 引擎 |
+| `status`    | 顯示引擎狀態    |
+| `install`   | 安裝為系統服務  |
+| `uninstall` | 移除系統服務    |
+| `config`    | 顯示目前設定    |
+| `help`      | 顯示說明        |
 
 #### 選項
 
@@ -149,10 +149,10 @@ panguard guard <command> [options]
 | `--data-dir <path>` | string | `~/.panguard-guard` | 資料目錄 |
 
 ```bash
-# 啟動 Guard（Starter）
+# 啟動 Guard
 panguard guard start
 
-# 查看狀態（Free）
+# 查看狀態
 panguard guard status
 
 # 自訂資料目錄
@@ -166,9 +166,9 @@ panguard guard install
 
 ## 通知管理
 
-### panguard chat `[STARTER]`
+### panguard chat
 
-AI 安全通知管理工具。setup/test 需要 Starter。
+AI 安全通知管理工具。所有功能均免費提供。
 
 ```bash
 panguard chat <command> [options]
@@ -176,13 +176,13 @@ panguard chat <command> [options]
 
 #### 子指令
 
-| 子指令   | 等級    | 說明               |
-| -------- | ------- | ------------------ |
-| `setup`  | Starter | 互動式通知設定精靈 |
-| `test`   | Starter | 發送測試通知       |
-| `status` | Free    | 顯示管道狀態       |
-| `config` | Free    | 顯示目前設定       |
-| `prefs`  | Starter | 查看/更新通知偏好  |
+| 子指令   | 說明               |
+| -------- | ------------------ |
+| `setup`  | 互動式通知設定精靈 |
+| `test`   | 發送測試通知       |
+| `status` | 顯示管道狀態       |
+| `config` | 顯示目前設定       |
+| `prefs`  | 查看/更新通知偏好  |
 
 #### 選項
 
@@ -213,7 +213,7 @@ panguard chat prefs --critical on --daily off
 
 ## 部署
 
-### panguard deploy `[STARTER]`
+### panguard deploy
 
 部署已配置的服務。需要先執行 `panguard init`。
 
@@ -239,7 +239,7 @@ panguard deploy
 
 ## 系統狀態
 
-### panguard status `[FREE]`
+### panguard status
 
 顯示系統整體狀態。
 
@@ -265,9 +265,9 @@ panguard status --json
 
 ## 合規報告
 
-### panguard report `[PRO]`
+### panguard report
 
-合規報告產生工具。
+合規報告產生工具。所有功能均免費提供。
 
 ```bash
 panguard report <command> [options]
@@ -275,13 +275,13 @@ panguard report <command> [options]
 
 #### 子指令
 
-| 子指令            | 等級 | 說明               |
-| ----------------- | ---- | ------------------ |
-| `generate`        | Pro  | 產生合規報告       |
-| `summary`         | Pro  | 顯示合規摘要       |
-| `list-frameworks` | Free | 列出支援的合規框架 |
-| `validate`        | Free | 驗證輸入檔案       |
-| `config`          | Free | 顯示目前設定       |
+| 子指令            | 說明               |
+| ----------------- | ------------------ |
+| `generate`        | 產生合規報告       |
+| `summary`         | 顯示合規摘要       |
+| `list-frameworks` | 列出支援的合規框架 |
+| `validate`        | 驗證輸入檔案       |
+| `config`          | 顯示目前設定       |
 
 #### 選項
 
@@ -308,9 +308,9 @@ panguard report summary --framework soc2
 
 ## 蜜罐系統
 
-### panguard trap `[PRO]`
+### panguard trap
 
-智慧蜜罐管理工具。start/stop 需要 Pro，status/config/profiles/intel 不需要。
+智慧蜜罐管理工具。所有功能均免費提供。
 
 ```bash
 panguard trap <command> [options]
@@ -318,14 +318,14 @@ panguard trap <command> [options]
 
 #### 子指令
 
-| 子指令     | 等級 | 說明             |
-| ---------- | ---- | ---------------- |
-| `start`    | Pro  | 啟動蜜罐服務     |
-| `stop`     | Pro  | 停止蜜罐服務     |
-| `status`   | Free | 顯示狀態和統計   |
-| `config`   | Free | 顯示目前設定     |
-| `profiles` | Free | 顯示攻擊者側寫   |
-| `intel`    | Free | 顯示威脅情報摘要 |
+| 子指令     | 說明             |
+| ---------- | ---------------- |
+| `start`    | 啟動蜜罐服務     |
+| `stop`     | 停止蜜罐服務     |
+| `status`   | 顯示狀態和統計   |
+| `config`   | 顯示目前設定     |
+| `profiles` | 顯示攻擊者側寫   |
+| `intel`    | 顯示威脅情報摘要 |
 
 #### 選項
 
@@ -350,9 +350,9 @@ panguard trap start --services ssh --no-cloud
 
 ## 威脅情報
 
-### panguard threat `[ENTERPRISE]`
+### panguard threat
 
-威脅情報 API 伺服器管理。
+威脅情報 API 伺服器管理。所有功能均免費提供。
 
 ```bash
 panguard threat <command> [options]
@@ -360,10 +360,10 @@ panguard threat <command> [options]
 
 #### 子指令
 
-| 子指令  | 等級       | 說明                         |
-| ------- | ---------- | ---------------------------- |
-| `start` | Enterprise | 啟動 Threat Cloud API 伺服器 |
-| `stats` | Solo       | 顯示威脅情報統計             |
+| 子指令  | 說明                         |
+| ------- | ---------------------------- |
+| `start` | 啟動 Threat Cloud API 伺服器 |
+| `stats` | 顯示威脅情報統計             |
 
 #### 選項
 
@@ -388,7 +388,7 @@ panguard threat stats
 
 ## 功能展示
 
-### panguard demo `[FREE]`
+### panguard demo
 
 展示 Panguard AI 品牌渲染和功能。不需要登入。
 
@@ -409,19 +409,6 @@ panguard demo
 
 ---
 
-## 功能等級總覽
+## 功能總覽
 
-| 指令                      | Free | Starter | Pro | Enterprise |
-| ------------------------- | ---- | ------- | --- | ---------- |
-| `login / logout / whoami` | v    | v       | v   | v          |
-| `init`                    | v    | v       | v   | v          |
-| `status`                  | v    | v       | v   | v          |
-| `demo`                    | v    | v       | v   | v          |
-| `scan --quick`            | v    | v       | v   | v          |
-| `scan` (full)             | -    | v       | v   | v          |
-| `guard start`             | -    | v       | v   | v          |
-| `chat setup`              | -    | v       | v   | v          |
-| `deploy`                  | -    | v       | v   | v          |
-| `report generate`         | -    | -       | v   | v          |
-| `trap start`              | -    | -       | v   | v          |
-| `threat start`            | -    | -       | -   | v          |
+Panguard AI 是 100% 免費、MIT 授權的開源軟體。所有指令和功能均免費提供，無付費門檻。

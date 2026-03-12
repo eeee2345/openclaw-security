@@ -1,8 +1,8 @@
-# Panguard Trap / 蜜罐指南 `[PRO]`
+# Panguard Trap / 蜜罐指南（Coming Soon）
 
 > 部署假服務引誘攻擊者，收集情報，了解誰在攻擊你。
 >
-> 啟動和停止蜜罐服務需要 **Pro** 以上方案。狀態查詢、設定檢視和情報查看為 Free。
+> 此功能尚在開發中，即將推出。所有使用者皆可使用。
 
 ---
 
@@ -20,16 +20,16 @@ Panguard Trap 不只記錄連線，還會分析攻擊者的行為，判斷他的
 # 登入（如果還沒有）
 panguard login
 
-# 啟動蜜罐（SSH + HTTP）（需要 Pro）
+# 啟動蜜罐（SSH + HTTP）
 panguard trap start --services ssh,http
 
-# 查看狀態（Free）
+# 查看狀態
 panguard trap status
 
-# 查看攻擊者側寫（Free）
+# 查看攻擊者側寫
 panguard trap profiles
 
-# 查看威脅情報（Free）
+# 查看威脅情報
 panguard trap intel
 ```
 
@@ -79,12 +79,12 @@ Panguard Trap 最強大的功能是自動分析攻擊者行為：
 
 Trap 會分析攻擊者的行為模式來推測其意圖：
 
-- **偵察** — 掃描 port、收集系統資訊
-- **暴力破解** — 大量密碼嘗試
-- **漏洞利用** — 嘗試已知 CVE exploit
-- **橫向移動** — 嘗試存取內網其他主機
-- **資料竊取** — 嘗試下載或傳輸檔案
-- **持久化** — 嘗試安裝後門或 cron job
+- **偵察** -- 掃描 port、收集系統資訊
+- **暴力破解** -- 大量密碼嘗試
+- **漏洞利用** -- 嘗試已知 CVE exploit
+- **橫向移動** -- 嘗試存取內網其他主機
+- **資料竊取** -- 嘗試下載或傳輸檔案
+- **持久化** -- 嘗試安裝後門或 cron job
 
 ### 查看側寫報告
 
@@ -93,7 +93,7 @@ panguard trap profiles
 ```
 
 ```
-  ── Attacker Profiles ──────────────────
+  -- Attacker Profiles ------------------
 
   Attacker #1: 203.0.113.50
     Level:     Script Kiddie
@@ -121,7 +121,7 @@ panguard trap profiles
 記錄攻擊者嘗試的所有帳號密碼組合：
 
 ```
-  ── Captured Credentials ───────────────
+  -- Captured Credentials ---------------
 
   SSH:
     root / password       (847 attempts)
@@ -135,7 +135,7 @@ panguard trap profiles
 記錄攻擊者登入後執行的所有指令：
 
 ```
-  ── Command Log ────────────────────────
+  -- Command Log ------------------------
 
   Session: 203.0.113.50 @ 2024-01-15 14:23
     $ uname -a
@@ -173,9 +173,9 @@ panguard trap start --services ssh,http --no-cloud
 
 ## 安全注意事項
 
-1. **蜜罐 port 應與真實服務不同** — SSH 蜜罐用 2222，不要用 22
-2. **蜜罐是隔離的** — 攻擊者無法從蜜罐存取你的真實系統
-3. **限制資源** — 蜜罐有記憶體和 CPU 限制，不會被濫用
+1. **蜜罐 port 應與真實服務不同** -- SSH 蜜罐用 2222，不要用 22
+2. **蜜罐是隔離的** -- 攻擊者無法從蜜罐存取你的真實系統
+3. **限制資源** -- 蜜罐有記憶體和 CPU 限制，不會被濫用
 
 ---
 
@@ -185,12 +185,12 @@ panguard trap start --services ssh,http --no-cloud
 panguard trap <command> [options]
 
 Commands:
-  start              啟動蜜罐服務（Pro）
-  stop               停止蜜罐服務（Pro）
-  status             顯示狀態和統計（Free）
-  config             顯示目前設定（Free）
-  profiles           顯示攻擊者側寫（Free）
-  intel              顯示威脅情報摘要（Free）
+  start              啟動蜜罐服務
+  stop               停止蜜罐服務
+  status             顯示狀態和統計
+  config             顯示目前設定
+  profiles           顯示攻擊者側寫
+  intel              顯示威脅情報摘要
 
 Options:
   --services <types>     服務類型（逗號分隔：ssh,http,ftp,...）

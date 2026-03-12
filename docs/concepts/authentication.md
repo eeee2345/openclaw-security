@@ -1,6 +1,6 @@
 # Authentication / 認證架構
 
-> 了解 Panguard AI 的認證流程：網站註冊、CLI 登入、功能分級。
+> 了解 Panguard AI 的認證流程：網站註冊、CLI 登入。
 
 ---
 
@@ -8,23 +8,23 @@
 
 Panguard AI 採用與 Claude Code 相似的認證模式：
 
-1. **在網站註冊帳號** — 瀏覽方案、建立帳號、管理訂閱
-2. **在 CLI 登入** — `panguard login` 開瀏覽器完成 OAuth → 本地儲存 token
-3. **使用功能** — CLI 根據訂閱等級自動解鎖對應功能
+1. **在網站註冊帳號** -- 建立帳號
+2. **在 CLI 登入** -- `panguard login` 開瀏覽器完成 OAuth，本地儲存 token
+3. **使用功能** -- 所有功能對所有使用者免費開放
 
 ```
   使用者
     |
     v
-  [panguard.ai]  ← 註冊 / 瀏覽方案 / 管理訂閱
+  [panguard.ai]  <- 註冊 / 建立帳號
     |
     | OAuth
     v
-  [panguard login]  ← 開瀏覽器 → 完成登入 → 回到終端機
+  [panguard login]  <- 開瀏覽器 -> 完成登入 -> 回到終端機
     |
     | token 儲存在 ~/.panguard/credentials.json
     v
-  [panguard scan / guard / trap ...]  ← 依等級使用功能
+  [panguard scan / guard / trap ...]  <- 所有功能皆可使用
 ```
 
 ---
@@ -79,7 +79,6 @@ CLI 會印出認證 URL，你可以複製到有瀏覽器的裝置開啟：
   "token": "session-token-string",
   "expiresAt": "2026-04-27T00:00:00.000Z",
   "email": "user@example.com",
-  "tier": "team",
   "name": "User Name",
   "savedAt": "2026-02-26T12:00:00.000Z",
   "apiUrl": "https://panguard.ai"
@@ -94,43 +93,24 @@ CLI 會印出認證 URL，你可以複製到有瀏覽器的裝置開啟：
 
 ---
 
-## 功能分級
+## CLI 功能一覽
 
-### 6 個訂閱等級
+所有功能對所有使用者免費開放（MIT 授權）：
 
-| 等級           | 月費     | 定位                                       |
-| -------------- | -------- | ------------------------------------------ |
-| **Scan**       | $0       | 快速掃描、了解安全狀況（轉換入口）         |
-| **Solo**       | $9       | 防護 + 1 通知管道（個人開發者）            |
-| **Starter**    | $19      | 防護 + 3 通知管道（小團隊、最多 5 端點）   |
-| **Team**       | $14/端點 | 全功能含蜜罐（中型團隊、5-50 端點）        |
-| **Business**   | $10/端點 | 全功能 + 基礎合規報告（企業、50-500 端點） |
-| **Enterprise** | 聯繫我們 | 500+ 端點 + 專屬支援                       |
-
-### CLI 功能對照
-
-| 指令                               | 最低等級 | 說明                                 |
-| ---------------------------------- | -------- | ------------------------------------ |
-| `panguard init`                    | 無需登入 | 設定精靈                             |
-| `panguard login / logout / whoami` | 無需等級 | 認證指令                             |
-| `panguard status`                  | Scan     | 狀態查詢                             |
-| `panguard demo`                    | Scan     | 功能展示                             |
-| `panguard scan --quick`            | Scan     | 快速掃描                             |
-| `panguard scan`                    | Solo     | 完整掃描                             |
-| `panguard guard start`             | Solo     | 即時防護                             |
-| `panguard chat setup`              | Solo     | 通知設定                             |
-| `panguard deploy`                  | Solo     | 部署服務                             |
-| `panguard trap`                    | Team     | 蜜罐系統                             |
-| `panguard report`                  | Team     | 合規報告（需加價購或 Business 方案） |
-| `panguard threat`                  | Business | 威脅情報 API                         |
-
-### 等級檢查機制
-
-CLI 使用 `withAuth()` 裝飾器檢查登入狀態和訂閱等級：
-
-- **未登入** → 提示「請執行 panguard login」
-- **等級不足** → 提示「此功能需要 {tier}，升級請見 panguard.ai/pricing」
-- **已登入且等級足夠** → 正常執行
+| 指令                               | 說明                 |
+| ---------------------------------- | -------------------- |
+| `panguard init`                    | 設定精靈             |
+| `panguard login / logout / whoami` | 認證指令             |
+| `panguard status`                  | 狀態查詢             |
+| `panguard demo`                    | 功能展示             |
+| `panguard scan --quick`            | 快速掃描             |
+| `panguard scan`                    | 完整掃描             |
+| `panguard guard start`             | 即時防護             |
+| `panguard chat setup`              | 通知設定             |
+| `panguard deploy`                  | 部署服務             |
+| `panguard trap`                    | 蜜罐系統（Coming Soon） |
+| `panguard report`                  | 合規報告（Coming Soon） |
+| `panguard threat`                  | 威脅情報 API         |
 
 ---
 
@@ -169,7 +149,7 @@ panguard login --api-url http://localhost:3100
 
 ## 相關文件
 
-- [帳號設定指南](../guides/account-setup.md) — 從零開始建立帳號
-- [快速開始](../getting-started.md) — 5 分鐘上手指南
-- [CLI 指令參考](../reference/cli.md) — 完整 CLI 文件
-- [設定檔格式](../reference/configuration.md) — credentials.json 說明
+- [帳號設定指南](../guides/account-setup.md) -- 從零開始建立帳號
+- [快速開始](../getting-started.md) -- 5 分鐘上手指南
+- [CLI 指令參考](../reference/cli.md) -- 完整 CLI 文件
+- [設定檔格式](../reference/configuration.md) -- credentials.json 說明

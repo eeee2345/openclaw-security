@@ -125,7 +125,7 @@ graph LR
 | 1   | `core`             | `@panguard-ai/core`             | Rule engine, monitor engine, AI providers (Ollama/Claude/OpenAI), FunnelRouter, YARA scanner, threat intel feed manager, i18n, structured logger                                |
 | 2   | `panguard-guard`   | `@panguard-ai/panguard-guard`   | 4-agent pipeline, event correlation, baseline memory, 6 advanced monitors, response execution, dashboard server, agent client                                                   |
 | 3   | `panguard-manager` | `@panguard-ai/panguard-manager` | Agent registry (max 500), threat aggregation with cross-agent correlation, policy engine, SSE broadcasting, optional SQLite persistence                                         |
-| 4   | `panguard-auth`    | `@panguard-ai/panguard-auth`    | User registration, login, TOTP 2FA, Google OAuth, password reset, rate limiting, GDPR (delete/export), admin routes, usage metering, LemonSqueezy billing                       |
+| 4   | `panguard-auth`    | `@panguard-ai/panguard-auth`    | User registration, login, TOTP 2FA, Google OAuth, password reset, rate limiting, GDPR (delete/export), admin routes, usage metering                                              |
 | 5   | `panguard-scan`    | `@panguard-ai/panguard-scan`    | CVE checker, SSL/TLS scanner, open port scanner, password policy auditor, shared folder scanner, scheduled tasks scanner, remote scanning, PDF report generation                |
 | 6   | `panguard-chat`    | `@panguard-ai/panguard-chat`    | Multi-channel notifications (Telegram, Slack, Email, LINE, Webhook), AI chat agent, user-type tone adaptation (developer/boss/IT admin), confirmation flows, follow-up Q&A      |
 | 7   | `panguard-report`  | `@panguard-ai/panguard-report`  | Compliance report generation (Taiwan Cyber Security Act, ISO 27001, SOC 2), PDF/JSON output, control evaluation, finding mapping, executive summaries                           |
@@ -303,8 +303,8 @@ Panguard uses a cascading "funnel" approach for AI-assisted analysis, reducing l
 ```mermaid
 graph TB
     subgraph Layer1["Layer 1: Rules -- Cost: $0 -- Latency: <1ms"]
-        SIGMA["Sigma Rules<br/>3000+ bundled + custom + community"]
-        YARA["YARA Rules<br/>900+ file pattern matching rules"]
+        SIGMA["Sigma Rules<br/>3,760 bundled + custom + community"]
+        YARA["YARA Rules<br/>5,961 file pattern matching rules"]
         BUILTIN["Built-in Pattern Matching<br/>20 built-in regex-based rules"]
         TI["Threat Intelligence<br/>5 feed sources + Threat Cloud blocklist"]
     end
