@@ -32,6 +32,10 @@ import type {
 import { ManagerServer, DEFAULT_MANAGER_CONFIG } from '@panguard-ai/manager';
 import type { ManagerConfig } from '@panguard-ai/manager';
 
+// Threat Cloud types (dynamically loaded — not published to npm)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ThreatCloudDBInstance = any;
+
 export function serveCommand(): Command {
   return new Command('serve')
     .description('Start unified HTTP server / 啟動統一 HTTP 伺服器')
@@ -112,6 +116,63 @@ export function serveCommand(): Command {
 
       // Initialize database
       const db = new AuthDB(options.db);
+
+      // Initialize Threat Cloud database (optional — graceful if unavailable)
+      let threatDb: ThreatCloudDBInstance = null;
+      try {
+        const tcMod = '@panguard-ai/threat-cloud';
+        const tc = await import(/* webpackIgnore: true */ tcMod);
+        const threatDbPath = join(dirname(options.db), 'threat-cloud.db');
+        threatDb = new tc.ThreatCloudDB(threatDbPath);
+        console.log(`  ${c.safe('Threat Cloud DB')} initialized at ${c.dim(threatDbPath)}`);
+
+        // Auto-seed rules on first startup if rules table is empty
+        const stats = threatDb.getStats();
+        if (stats.totalRules === 0) {
+          console.log(`  ${c.sage('Seeding rules...')} (first startup detected)`);
+          const seeded = await seedRulesFromBundled(threatDb);
+          console.log(`  ${c.safe(`Seeded ${seeded} rules`)} into Threat Cloud DB`);
+        } else {
+          console.log(`  ${c.dim(`Threat Cloud: ${stats.totalRules} rules, ${stats.totalThreats} threats`)}`);
+        }
+        console.log('');
+      } catch {
+        console.log(`  ${c.dim('Threat Cloud DB not available — threat API routes disabled')}`);
+        console.log('');
+      }
+
+      // Periodic database backup (every 6 hours)
+      let backupTimer: ReturnType<typeof setInterval> | null = null;
+      if (threatDb) {
+        try {
+          const tcMod2 = '@panguard-ai/threat-cloud';
+          const tc2 = await import(/* webpackIgnore: true */ tcMod2);
+          const backupDir = join(dirname(options.db), 'backups');
+          const threatBackup = new tc2.BackupManager(
+            join(dirname(options.db), 'threat-cloud.db'), backupDir, 7
+          );
+          const authBackup = new tc2.BackupManager(options.db, backupDir, 7);
+
+          const runBackups = () => {
+            try {
+              const r1 = threatBackup.backup();
+              const r2 = authBackup.backup();
+              console.log(`  [Backup] threat-cloud.db (${tc2.BackupManager.formatSize(r1.sizeBytes)}), auth.db (${tc2.BackupManager.formatSize(r2.sizeBytes)})`);
+            } catch (err: unknown) {
+              console.error(`  [Backup] Failed: ${err instanceof Error ? err.message : String(err)}`);
+            }
+          };
+
+          // Initial backup on startup
+          runBackups();
+
+          // Every 6 hours
+          backupTimer = setInterval(runBackups, 6 * 60 * 60 * 1000);
+          if (backupTimer.unref) backupTimer.unref();
+        } catch {
+          console.log(`  ${c.dim('Backup manager not available — auto-backups disabled')}`);
+        }
+      }
 
       // Build config from environment
       // Prefer Resend API when RESEND_API_KEY is set; fall back to raw SMTP
@@ -194,7 +255,7 @@ export function serveCommand(): Command {
       const adminDir = adminDirs.find((d) => existsSync(d));
 
       const server = createServer((req, res) => {
-        void handleRequest(req, res, handlers, db, adminDir, managerProxy);
+        void handleRequest(req, res, handlers, db, adminDir, managerProxy, threatDb);
       });
 
       // Build Manager config from environment / 從環境變數建構 Manager 設定
@@ -227,6 +288,11 @@ export function serveCommand(): Command {
         console.log(`    ${c.dim('/openapi.json')}    OpenAPI 3.0 Spec`);
         console.log(`    ${c.dim('/health')}         Health check`);
         console.log(`    ${c.dim('/api/manager/*')}  Manager API (port ${managerPort})`);
+        if (threatDb) {
+          console.log(`    ${c.dim('/api/threats')}     Threat Cloud API (POST)`);
+          console.log(`    ${c.dim('/api/rules')}       Rule Distribution (GET/POST)`);
+          console.log(`    ${c.dim('/api/stats')}       Threat Statistics (GET)`);
+        }
         console.log('');
         console.log(`  Services:`);
         console.log(
@@ -296,9 +362,11 @@ export function serveCommand(): Command {
       const shutdown = () => {
         console.log('\n  Shutting down...');
         clearInterval(planCheckTimer);
+        if (backupTimer) clearInterval(backupTimer);
         managerServer.stop().catch(() => {});
         server.close(() => {
           db.close();
+          if (threatDb) threatDb.close();
           process.exit(0);
         });
       };
@@ -313,7 +381,8 @@ async function handleRequest(
   handlers: ReturnType<typeof createAuthHandlers>,
   _db: AuthDB,
   adminDir: string | undefined,
-  managerProxy: ManagerProxy
+  managerProxy: ManagerProxy,
+  threatDb: ThreatCloudDBInstance
 ): Promise<void> {
   const url = req.url ?? '/';
   const pathname = url.split('?')[0] ?? '/';
@@ -373,7 +442,15 @@ async function handleRequest(
         oauth: !!process.env['GOOGLE_CLIENT_ID'],
         billing: !!process.env['LEMON_SQUEEZY_API_KEY'],
         errorTracking: !!process.env['SENTRY_DSN'],
+        threatCloud: !!threatDb,
       };
+      let threatStats = null;
+      if (threatDb) {
+        try {
+          const s = threatDb.getStats();
+          threatStats = { rules: s.totalRules, threats: s.totalThreats };
+        } catch { /* ignore */ }
+      }
       try {
         _db.healthCheck();
         sendJson(res, 200, {
@@ -383,6 +460,8 @@ async function handleRequest(
             version: process.env['npm_package_version'] ?? '0.0.0',
             uptime: Math.round(process.uptime()),
             db: 'connected',
+            threatCloud: threatStats ? 'connected' : 'unavailable',
+            threatStats,
             memory: {
               rss: Math.round(mem.rss / 1024 / 1024),
               heapUsed: Math.round(mem.heapUsed / 1024 / 1024),
@@ -401,6 +480,161 @@ async function handleRequest(
           },
         });
       }
+      return;
+    }
+
+    // ── Threat Cloud API Routes ────────────────────────────────────
+    // POST /api/threats - Upload anonymized threat data
+    if (pathname === '/api/threats' && req.method === 'POST') {
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
+      // API key auth (optional — check TC_API_KEY env)
+      const tcApiKey = process.env['TC_API_KEY'];
+      if (tcApiKey) {
+        const authHeader = req.headers.authorization ?? '';
+        const token = authHeader.replace('Bearer ', '');
+        if (token !== tcApiKey) {
+          sendJson(res, 401, { ok: false, error: 'Invalid API key' });
+          return;
+        }
+      }
+      const body = await readRequestBody(req);
+      const data = JSON.parse(body);
+      if (!data.attackSourceIP || !data.attackType || !data.mitreTechnique || !data.sigmaRuleMatched || !data.timestamp || !data.region) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields' });
+        return;
+      }
+      // Anonymize IP (zero last octet)
+      if (data.attackSourceIP.includes('.')) {
+        const parts = data.attackSourceIP.split('.');
+        if (parts.length === 4) { parts[3] = '0'; data.attackSourceIP = parts.join('.'); }
+      }
+      threatDb.insertThreat(data);
+      sendJson(res, 201, { ok: true, data: { message: 'Threat data received' } });
+      return;
+    }
+
+    // GET /api/rules - Fetch rules (optional ?since= filter)
+    if (pathname === '/api/rules' && req.method === 'GET') {
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
+      const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
+      const since = urlObj.searchParams.get('since');
+      const rules = since ? threatDb.getRulesSince(since) : threatDb.getAllRules();
+      sendJson(res, 200, { ok: true, data: rules });
+      return;
+    }
+
+    // POST /api/rules - Publish a new community rule
+    if (pathname === '/api/rules' && req.method === 'POST') {
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
+      const tcApiKey = process.env['TC_API_KEY'];
+      if (tcApiKey) {
+        const authHeader = req.headers.authorization ?? '';
+        const token = authHeader.replace('Bearer ', '');
+        if (token !== tcApiKey) {
+          sendJson(res, 401, { ok: false, error: 'Invalid API key' });
+          return;
+        }
+      }
+      const body = await readRequestBody(req);
+      const rule = JSON.parse(body);
+      if (!rule.ruleId || !rule.ruleContent || !rule.source) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields: ruleId, ruleContent, source' });
+        return;
+      }
+      rule.publishedAt = rule.publishedAt || new Date().toISOString();
+      threatDb.upsertRule(rule);
+      sendJson(res, 201, { ok: true, data: { message: 'Rule published', ruleId: rule.ruleId } });
+      return;
+    }
+
+    // GET /api/stats - Threat statistics
+    if (pathname === '/api/stats' && req.method === 'GET') {
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
+      const stats = threatDb.getStats();
+      sendJson(res, 200, { ok: true, data: stats });
+      return;
+    }
+
+    // POST /api/atr-proposals - Submit ATR rule proposal
+    if (pathname === '/api/atr-proposals' && req.method === 'POST') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      const body = await readRequestBody(req);
+      const proposal = JSON.parse(body);
+      if (!proposal.patternHash || !proposal.ruleContent || !proposal.llmProvider || !proposal.llmModel || !proposal.selfReviewVerdict) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields' }); return;
+      }
+      // Extract client ID from header
+      proposal.clientId = req.headers['x-panguard-client-id'] ?? null;
+
+      // Check if this pattern already has a proposal - if so, increment confirmation
+      const existing = threatDb.getATRProposals().find((p: Record<string, unknown>) => p['pattern_hash'] === proposal.patternHash);
+      if (existing) {
+        threatDb.confirmATRProposal(proposal.patternHash);
+        sendJson(res, 200, { ok: true, data: { message: 'Confirmation recorded', patternHash: proposal.patternHash } });
+      } else {
+        threatDb.insertATRProposal(proposal);
+        sendJson(res, 201, { ok: true, data: { message: 'Proposal submitted', patternHash: proposal.patternHash } });
+      }
+      return;
+    }
+
+    // GET /api/atr-proposals - List proposals (admin)
+    if (pathname === '/api/atr-proposals' && req.method === 'GET') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
+      const status = urlObj.searchParams.get('status') ?? undefined;
+      const proposals = threatDb.getATRProposals(status);
+      sendJson(res, 200, { ok: true, data: proposals });
+      return;
+    }
+
+    // POST /api/atr-feedback - Report ATR rule match feedback
+    if (pathname === '/api/atr-feedback' && req.method === 'POST') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      const body = await readRequestBody(req);
+      const feedback = JSON.parse(body);
+      if (!feedback.ruleId || feedback.isTruePositive === undefined) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields: ruleId, isTruePositive' }); return;
+      }
+      const clientId = req.headers['x-panguard-client-id'] as string ?? null;
+      threatDb.insertATRFeedback(feedback.ruleId, feedback.isTruePositive, clientId);
+      sendJson(res, 201, { ok: true, data: { message: 'Feedback recorded' } });
+      return;
+    }
+
+    // POST /api/skill-threats - Submit skill audit result
+    if (pathname === '/api/skill-threats' && req.method === 'POST') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      const body = await readRequestBody(req);
+      const submission = JSON.parse(body);
+      if (!submission.skillHash || !submission.skillName || submission.riskScore === undefined || !submission.riskLevel) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields' }); return;
+      }
+      submission.clientId = req.headers['x-panguard-client-id'] ?? null;
+      threatDb.insertSkillThreat(submission);
+      sendJson(res, 201, { ok: true, data: { message: 'Skill threat recorded' } });
+      return;
+    }
+
+    // GET /api/skill-threats - List skill threats (admin)
+    if (pathname === '/api/skill-threats' && req.method === 'GET') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
+      const limit = parseInt(urlObj.searchParams.get('limit') ?? '50', 10);
+      const threats = threatDb.getSkillThreats(limit);
+      sendJson(res, 200, { ok: true, data: threats });
       return;
     }
 
@@ -883,4 +1117,126 @@ function serveStaticFile(
 function sendJson(res: ServerResponse, status: number, data: unknown): void {
   res.writeHead(status, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(data));
+}
+
+/** Read request body with 1MB size limit */
+function readRequestBody(req: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let size = 0;
+    const MAX_BODY = 1_048_576; // 1MB
+
+    req.on('data', (chunk: Buffer) => {
+      size += chunk.length;
+      if (size > MAX_BODY) {
+        req.destroy();
+        reject(new Error('Request body too large'));
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+    req.on('error', reject);
+  });
+}
+
+/**
+ * Seed rules from bundled config/ directory into Threat Cloud DB.
+ * Reads Sigma YAML, YARA, and ATR YAML files.
+ * Returns count of rules seeded.
+ */
+async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<number> {
+  const { readdirSync, readFileSync: readFs, statSync } = await import('node:fs');
+  const { join: joinPath, basename, relative } = await import('node:path');
+
+  let seeded = 0;
+  const now = new Date().toISOString();
+
+  // Resolve config directory (Docker: /app/config, monorepo: ../../config)
+  const configDirs = [
+    join(process.cwd(), 'config'),
+    join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'config'),
+  ];
+  const configDir = configDirs.find((d) => {
+    try { return statSync(d).isDirectory(); } catch { return false; }
+  });
+
+  if (!configDir) {
+    console.log(`  ${c.dim('  No config/ directory found — skipping rule seeding')}`);
+    return 0;
+  }
+
+  /** Recursively collect files matching extensions */
+  function collectFiles(dir: string, extensions: string[]): string[] {
+    const results: string[] = [];
+    try {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const fullPath = joinPath(dir, entry.name);
+        if (entry.isDirectory()) {
+          results.push(...collectFiles(fullPath, extensions));
+        } else if (extensions.some((ext) => entry.name.endsWith(ext))) {
+          results.push(fullPath);
+        }
+      }
+    } catch { /* skip unreadable dirs */ }
+    return results;
+  }
+
+  // 1. Sigma rules (.yml, .yaml)
+  const sigmaDir = joinPath(configDir, 'sigma-rules');
+  try {
+    const sigmaFiles = collectFiles(sigmaDir, ['.yml', '.yaml']);
+    for (const file of sigmaFiles) {
+      const content = readFs(file, 'utf-8');
+      const ruleId = `sigma:${relative(sigmaDir, file).replace(/\//g, ':')}`;
+      threatDb.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'sigma' });
+      seeded++;
+    }
+  } catch { /* no sigma rules */ }
+
+  // 2. YARA rules (.yar, .yara)
+  const yaraDir = joinPath(configDir, 'yara-rules');
+  try {
+    const yaraFiles = collectFiles(yaraDir, ['.yar', '.yara']);
+    for (const file of yaraFiles) {
+      const content = readFs(file, 'utf-8');
+      // Split multi-rule YARA files
+      const ruleMatches = content.match(/rule\s+\w+/g);
+      if (ruleMatches && ruleMatches.length > 1) {
+        // Multi-rule file: store each rule name as sub-ID
+        for (const match of ruleMatches) {
+          const ruleName = match.replace('rule ', '');
+          const ruleId = `yara:${basename(file, '.yar').replace('.yara', '')}:${ruleName}`;
+          threatDb.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'yara' });
+          seeded++;
+        }
+      } else {
+        const ruleId = `yara:${relative(yaraDir, file).replace(/\//g, ':')}`;
+        threatDb.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'yara' });
+        seeded++;
+      }
+    }
+  } catch { /* no yara rules */ }
+
+  // 3. ATR rules (.yaml, .yml) from atr package
+  const atrDirs = [
+    joinPath(process.cwd(), 'node_modules', 'agent-threat-rules', 'rules'),
+    joinPath(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'packages', 'atr', 'rules'),
+  ];
+  const atrDir = atrDirs.find((d) => {
+    try { return statSync(d).isDirectory(); } catch { return false; }
+  });
+  if (atrDir) {
+    try {
+      const atrFiles = collectFiles(atrDir, ['.yaml', '.yml']);
+      for (const file of atrFiles) {
+        const content = readFs(file, 'utf-8');
+        const ruleId = `atr:${relative(atrDir, file).replace(/\//g, ':')}`;
+        threatDb.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'atr' });
+        seeded++;
+      }
+    } catch { /* no atr rules */ }
+  }
+
+  return seeded;
 }

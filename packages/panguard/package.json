@@ -47,6 +47,7 @@
     "@panguard-ai/security-hardening": "workspace:*",
     "@panguard-ai/panguard-skill-auditor": "workspace:*",
     "@panguard-ai/panguard-mcp": "workspace:*",
+    "@panguard-ai/threat-cloud": "workspace:*",
     "commander": "^12.0.0"
   },
   "devDependencies": {

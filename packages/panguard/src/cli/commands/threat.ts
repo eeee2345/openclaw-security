@@ -172,5 +172,241 @@ export function threatCommand(): Command {
       }
     });
 
+  cmd
+    .command('seed')
+    .description('Seed rules from bundled config into Threat Cloud DB / 將內建規則種入威脅雲資料庫')
+    .option('--db <path>', 'SQLite database path / 資料庫路徑', './threat-cloud.db')
+    .action(async (opts: { db: string }) => {
+      const tc = await loadThreatCloud();
+      if (!tc) return;
+
+      const sp = spinner('Opening Threat Cloud database...');
+      const db = new tc.ThreatCloudDB(opts.db);
+
+      const existingStats = db.getStats();
+      sp.succeed(`Database opened (${existingStats.totalRules} existing rules)`);
+
+      const seedSp = spinner('Seeding rules from bundled config...');
+
+      const { readdirSync, readFileSync: readFs, statSync } = await import('node:fs');
+      const { join, basename, relative, dirname } = await import('node:path');
+      const { fileURLToPath } = await import('node:url');
+
+      const now = new Date().toISOString();
+      let seeded = 0;
+
+      // Resolve config directory
+      const thisDir = dirname(fileURLToPath(import.meta.url));
+      const configDirs = [
+        join(process.cwd(), 'config'),
+        join(thisDir, '..', '..', '..', '..', '..', 'config'),
+      ];
+      const configDir = configDirs.find((d) => {
+        try { return statSync(d).isDirectory(); } catch { return false; }
+      });
+
+      if (!configDir) {
+        seedSp.fail('No config/ directory found');
+        db.close();
+        return;
+      }
+
+      /** Recursively collect files matching extensions */
+      function collectFiles(dir: string, extensions: string[]): string[] {
+        const results: string[] = [];
+        try {
+          for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            const fullPath = join(dir, entry.name);
+            if (entry.isDirectory()) {
+              results.push(...collectFiles(fullPath, extensions));
+            } else if (extensions.some((ext) => entry.name.endsWith(ext))) {
+              results.push(fullPath);
+            }
+          }
+        } catch { /* skip */ }
+        return results;
+      }
+
+      // Sigma rules
+      const sigmaDir = join(configDir, 'sigma-rules');
+      try {
+        const sigmaFiles = collectFiles(sigmaDir, ['.yml', '.yaml']);
+        for (const file of sigmaFiles) {
+          const content = readFs(file, 'utf-8');
+          const ruleId = `sigma:${relative(sigmaDir, file).replace(/\//g, ':')}`;
+          db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'sigma' });
+          seeded++;
+        }
+        console.log(`  ${symbols.pass} Sigma: ${sigmaFiles.length} rules`);
+      } catch { /* skip */ }
+
+      // YARA rules
+      const yaraDir = join(configDir, 'yara-rules');
+      try {
+        const yaraFiles = collectFiles(yaraDir, ['.yar', '.yara']);
+        let yaraCount = 0;
+        for (const file of yaraFiles) {
+          const content = readFs(file, 'utf-8');
+          const ruleMatches = content.match(/rule\s+\w+/g);
+          if (ruleMatches && ruleMatches.length > 1) {
+            for (const match of ruleMatches) {
+              const ruleName = match.replace('rule ', '');
+              const ruleId = `yara:${basename(file, '.yar').replace('.yara', '')}:${ruleName}`;
+              db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'yara' });
+              yaraCount++;
+            }
+          } else {
+            const ruleId = `yara:${relative(yaraDir, file).replace(/\//g, ':')}`;
+            db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'yara' });
+            yaraCount++;
+          }
+        }
+        seeded += yaraCount;
+        console.log(`  ${symbols.pass} YARA: ${yaraCount} rules (from ${yaraFiles.length} files)`);
+      } catch { /* skip */ }
+
+      // ATR rules
+      const atrDirs = [
+        join(process.cwd(), 'node_modules', 'agent-threat-rules', 'rules'),
+        join(thisDir, '..', '..', '..', '..', '..', 'packages', 'atr', 'rules'),
+      ];
+      const atrDir = atrDirs.find((d) => {
+        try { return statSync(d).isDirectory(); } catch { return false; }
+      });
+      if (atrDir) {
+        try {
+          const atrFiles = collectFiles(atrDir, ['.yaml', '.yml']);
+          for (const file of atrFiles) {
+            const content = readFs(file, 'utf-8');
+            const ruleId = `atr:${relative(atrDir, file).replace(/\//g, ':')}`;
+            db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'atr' });
+            seeded++;
+          }
+          console.log(`  ${symbols.pass} ATR: ${atrFiles.length} rules`);
+        } catch { /* skip */ }
+      }
+
+      seedSp.succeed(`Seeded ${seeded} rules into Threat Cloud DB`);
+
+      const finalStats = db.getStats();
+      console.log(
+        statusPanel('Threat Cloud Database', [
+          { label: 'Total Rules', value: String(finalStats.totalRules) },
+          { label: 'Total Threats', value: String(finalStats.totalThreats) },
+          { label: 'Database', value: c.dim(opts.db) },
+        ])
+      );
+
+      db.close();
+    });
+
+  cmd
+    .command('backup')
+    .description('Backup Threat Cloud and auth databases / 備份威脅雲及認證資料庫')
+    .option('--db <path>', 'Auth database path / 認證資料庫路徑', '/data/auth.db')
+    .option('--threat-db <path>', 'Threat Cloud database path / 威脅雲資料庫路徑', '/data/threat-cloud.db')
+    .option('--backup-dir <path>', 'Backup directory / 備份目錄', '/data/backups')
+    .option('--max-backups <number>', 'Maximum backups to keep / 最多保留備份數', '7')
+    .option('--list', 'List existing backups / 列出現有備份', false)
+    .action(
+      async (opts: {
+        db: string;
+        threatDb: string;
+        backupDir: string;
+        maxBackups: string;
+        list: boolean;
+      }) => {
+        const tc = await loadThreatCloud();
+        if (!tc) return;
+
+        const maxBackups = parseInt(opts.maxBackups, 10);
+
+        if (opts.list) {
+          // List mode: show existing backups
+          const mgr = new tc.BackupManager(opts.threatDb, opts.backupDir, maxBackups);
+          const backups = mgr.listBackups();
+          if (backups.length === 0) {
+            console.log(`\n  ${symbols.info} ${c.dim('No backups found.')}`);
+            console.log('');
+            return;
+          }
+          console.log(divider('Existing Backups'));
+          console.log('');
+          const backupColumns = [
+            { header: '#', key: 'rank', width: 4, align: 'right' as const },
+            { header: 'File', key: 'file', width: 50 },
+          ];
+          const backupRows = backups.map((f: string, i: number) => ({
+            rank: String(i + 1),
+            file: f,
+          }));
+          console.log(table(backupColumns, backupRows));
+          console.log('');
+          return;
+        }
+
+        // Backup mode
+        const results: Array<{
+          label: string;
+          value: string;
+          status?: 'safe' | 'caution' | 'alert' | 'critical';
+        }> = [];
+
+        // Backup threat-cloud.db
+        try {
+          const threatMgr = new tc.BackupManager(opts.threatDb, opts.backupDir, maxBackups);
+          const sp1 = spinner('Backing up threat-cloud.db...');
+          const r1 = threatMgr.backup();
+          sp1.succeed(
+            `threat-cloud.db backed up (${tc.BackupManager.formatSize(r1.sizeBytes)})`
+          );
+          results.push({
+            label: 'Threat Cloud',
+            value: c.sage(r1.path),
+            status: 'safe',
+          });
+        } catch (err) {
+          console.error(
+            `  ${symbols.fail} threat-cloud.db backup failed: ${err instanceof Error ? err.message : String(err)}`
+          );
+          results.push({
+            label: 'Threat Cloud',
+            value: c.red('FAILED'),
+            status: 'critical',
+          });
+        }
+
+        // Backup auth.db
+        try {
+          const authMgr = new tc.BackupManager(opts.db, opts.backupDir, maxBackups);
+          const sp2 = spinner('Backing up auth.db...');
+          const r2 = authMgr.backup();
+          sp2.succeed(`auth.db backed up (${tc.BackupManager.formatSize(r2.sizeBytes)})`);
+          results.push({
+            label: 'Auth DB',
+            value: c.sage(r2.path),
+            status: 'safe',
+          });
+        } catch (err) {
+          console.error(
+            `  ${symbols.fail} auth.db backup failed: ${err instanceof Error ? err.message : String(err)}`
+          );
+          results.push({
+            label: 'Auth DB',
+            value: c.red('FAILED'),
+            status: 'critical',
+          });
+        }
+
+        console.log(
+          statusPanel('Database Backup', [
+            ...results,
+            { label: 'Backup Dir', value: c.dim(opts.backupDir) },
+            { label: 'Retention', value: `${maxBackups} backups` },
+          ])
+        );
+      }
+    );
+
   return cmd;
 }

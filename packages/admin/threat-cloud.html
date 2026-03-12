@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panguard Admin - Threat Cloud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/admin/icons.js"></script>
+    <script src="/admin/shared.js"></script>
+    <script>
+      tailwind.config = PG.TAILWIND_CONFIG;
+    </script>
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fade-in 0.4s ease-out forwards;
+      }
+      .fade-in-delay-1 {
+        animation-delay: 0.1s;
+        opacity: 0;
+      }
+      .fade-in-delay-2 {
+        animation-delay: 0.2s;
+        opacity: 0;
+      }
+      .fade-in-delay-3 {
+        animation-delay: 0.3s;
+        opacity: 0;
+      }
+      .stat-card {
+        transition:
+          border-color 0.2s,
+          transform 0.15s;
+      }
+      .stat-card:hover {
+        border-color: #8b9a8e;
+        transform: translateY(-1px);
+      }
+      .bar-col {
+        transition: height 0.6s ease-out;
+      }
+    </style>
+  </head>
+  <body class="bg-surface-0 text-text-primary min-h-screen">
+    <div id="nav"></div>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6 fade-in">
+        <div>
+          <h1 class="text-xl font-bold flex items-center gap-2">
+            <span id="pageIcon"></span>
+            Threat Cloud
+          </h1>
+          <p class="text-sm text-text-tertiary mt-1">
+            Community threat intelligence, ATR proposals, and skill threat reports
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            id="statusBadge"
+            class="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase"
+          >
+            <span id="statusDot"></span>
+            <span id="statusText">Checking...</span>
+          </span>
+          <button
+            onclick="loadAll()"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-border text-text-secondary hover:border-sage hover:text-sage transition-colors"
+          >
+            <span id="refreshIcon"></span>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div
+          class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-1"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Total Rules</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center"
+              id="kpiIconRules"
+            ></div>
+          </div>
+          <p id="kpiRules" class="text-2xl font-bold">--</p>
+          <p class="text-xs text-text-tertiary mt-1">distributed rules</p>
+        </div>
+        <div
+          class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-1"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Threats Received</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-caution/10 flex items-center justify-center"
+              id="kpiIconThreats"
+            ></div>
+          </div>
+          <p id="kpiThreats" class="text-2xl font-bold text-caution">--</p>
+          <p id="kpiThreats24h" class="text-xs text-text-tertiary mt-1">-- in last 24h</p>
+        </div>
+        <div
+          class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">ATR Proposals</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-sage/10 flex items-center justify-center"
+              id="kpiIconProposals"
+            ></div>
+          </div>
+          <p id="kpiProposals" class="text-2xl font-bold">--</p>
+          <p id="kpiProposalsInfo" class="text-xs text-text-tertiary mt-1">-- pending, -- confirmed</p>
+        </div>
+        <div
+          class="stat-card bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs text-text-tertiary uppercase tracking-wider">Skill Threats</p>
+            <div
+              class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center"
+              id="kpiIconSkillThreats"
+            ></div>
+          </div>
+          <p id="kpiSkillThreats" class="text-2xl font-bold text-danger">--</p>
+          <p class="text-xs text-text-tertiary mt-1">reported skill threats</p>
+        </div>
+      </div>
+
+      <!-- Top Attack Types + Top MITRE Techniques -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Top Attack Types (bar chart) -->
+        <div class="bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2">
+          <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+            <span id="attackIcon"></span>
+            Top Attack Types
+          </h3>
+          <div id="attackBars" class="space-y-3">
+            <p class="text-xs text-text-muted text-center py-4">Loading...</p>
+          </div>
+        </div>
+
+        <!-- Top MITRE Techniques -->
+        <div class="bg-surface-1 border border-border rounded-xl p-5 fade-in fade-in-delay-2">
+          <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+            <span id="mitreIcon"></span>
+            Top MITRE Techniques
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-border text-text-tertiary text-xs uppercase">
+                  <th class="pb-2 text-left">Technique</th>
+                  <th class="pb-2 text-right">Count</th>
+                </tr>
+              </thead>
+              <tbody id="mitreTableBody">
+                <tr>
+                  <td colspan="2" class="py-4 text-center text-text-muted text-xs">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rule Distribution -->
+      <div class="bg-surface-1 border border-border rounded-xl p-5 mb-6 fade-in fade-in-delay-2">
+        <h3 class="text-sm font-semibold flex items-center gap-2 mb-4">
+          <span id="distIcon"></span>
+          Rule Distribution
+        </h3>
+        <div id="ruleDistBars" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <p class="text-xs text-text-muted text-center py-4 col-span-3">Loading...</p>
+        </div>
+      </div>
+
+      <!-- Recent ATR Proposals -->
+      <div class="bg-surface-1 border border-border rounded-xl mb-6 fade-in fade-in-delay-3">
+        <div class="p-5 border-b border-border flex items-center justify-between">
+          <h3 class="text-sm font-semibold flex items-center gap-2">
+            <span id="proposalIcon"></span>
+            Recent ATR Proposals
+          </h3>
+          <span id="proposalCount" class="text-xs text-text-tertiary"></span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-text-tertiary text-xs uppercase">
+                <th class="px-5 py-3 text-left">Pattern Hash</th>
+                <th class="px-5 py-3 text-left">Status</th>
+                <th class="px-5 py-3 text-right">Confirmations</th>
+                <th class="px-5 py-3 text-left">LLM Provider</th>
+                <th class="px-5 py-3 text-left">Created At</th>
+              </tr>
+            </thead>
+            <tbody id="proposalTableBody">
+              <tr>
+                <td colspan="5" class="px-5 py-8 text-center text-text-muted">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="proposalPagination" class="px-5 pb-4"></div>
+      </div>
+
+      <!-- Recent Skill Threats -->
+      <div class="bg-surface-1 border border-border rounded-xl mb-6 fade-in fade-in-delay-3">
+        <div class="p-5 border-b border-border flex items-center justify-between">
+          <h3 class="text-sm font-semibold flex items-center gap-2">
+            <span id="skillIcon"></span>
+            Recent Skill Threats
+          </h3>
+          <span id="skillCount" class="text-xs text-text-tertiary"></span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-text-tertiary text-xs uppercase">
+                <th class="px-5 py-3 text-left">Skill Name</th>
+                <th class="px-5 py-3 text-right">Risk Score</th>
+                <th class="px-5 py-3 text-left">Risk Level</th>
+                <th class="px-5 py-3 text-left">Findings</th>
+                <th class="px-5 py-3 text-left">Created At</th>
+              </tr>
+            </thead>
+            <tbody id="skillTableBody">
+              <tr>
+                <td colspan="5" class="px-5 py-8 text-center text-text-muted">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="skillPagination" class="px-5 pb-4"></div>
+      </div>
+
+      <!-- Offline notice -->
+      <div
+        id="offlineNotice"
+        class="hidden mt-4 bg-caution/10 border border-caution/20 rounded-xl p-4 text-sm text-caution flex items-center gap-2"
+      >
+        <span id="offlineIcon"></span>
+        <span>Threat Cloud is not available. Ensure the server is running with threat cloud enabled.</span>
+      </div>
+    </main>
+
+    <script>
+      if (!PG.requireAuth()) throw new Error('Not authenticated');
+
+      (async () => {
+        const admin = await PG.requireAdminRole();
+        if (!admin) return;
+      })();
+
+      // Render nav
+      document.getElementById('nav').innerHTML = PG.renderNav('threat-cloud');
+
+      // Icons
+      document.getElementById('pageIcon').innerHTML = Icons.cloud(20, '#8B9A8E');
+      document.getElementById('refreshIcon').innerHTML = Icons.refresh(14);
+      document.getElementById('kpiIconRules').innerHTML = Icons.layers(16, '#8B9A8E');
+      document.getElementById('kpiIconThreats').innerHTML = Icons.zap(16, '#FBBF24');
+      document.getElementById('kpiIconProposals').innerHTML = Icons.fileText(16, '#8B9A8E');
+      document.getElementById('kpiIconSkillThreats').innerHTML = Icons.alertTriangle(16, '#EF4444');
+      document.getElementById('attackIcon').innerHTML = Icons.barChart(16, '#8B9A8E');
+      document.getElementById('mitreIcon').innerHTML = Icons.shield(16, '#8B9A8E');
+      document.getElementById('distIcon').innerHTML = Icons.layers(16, '#8B9A8E');
+      document.getElementById('proposalIcon').innerHTML = Icons.fileText(16, '#8B9A8E');
+      document.getElementById('skillIcon').innerHTML = Icons.alertTriangle(16, '#8B9A8E');
+      document.getElementById('offlineIcon').innerHTML = Icons.alertTriangle(16);
+
+      // State
+      let proposalPage = 1;
+      let skillPage = 1;
+      const perPage = 20;
+      let allProposals = [];
+      let allSkillThreats = [];
+
+      // Status badge helper
+      function setStatus(online) {
+        const badge = document.getElementById('statusBadge');
+        const dot = document.getElementById('statusDot');
+        const text = document.getElementById('statusText');
+        if (online) {
+          badge.className = 'flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-safe/10 text-safe border border-safe/20';
+          dot.innerHTML = Icons.dot(6, '#2ED573');
+          text.textContent = 'Online';
+        } else {
+          badge.className = 'flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-text-muted/10 text-text-muted border border-text-muted/20';
+          dot.innerHTML = Icons.dot(6, '#4A4540');
+          text.textContent = 'Offline';
+        }
+      }
+
+      // Load all data
+      async function loadAll() {
+        const [statsRes, proposalsRes, skillRes, rulesRes] = await Promise.all([
+          PG.apiFetch('/api/stats'),
+          PG.apiFetch('/api/atr-proposals'),
+          PG.apiFetch('/api/skill-threats?limit=100'),
+          PG.apiFetch('/api/rules'),
+        ]);
+
+        const isOnline = statsRes && statsRes.ok;
+        setStatus(isOnline);
+
+        if (!isOnline) {
+          document.getElementById('offlineNotice').classList.remove('hidden');
+          document.getElementById('kpiRules').textContent = '0';
+          document.getElementById('kpiThreats').textContent = '0';
+          document.getElementById('kpiThreats24h').textContent = '0 in last 24h';
+          document.getElementById('kpiProposals').textContent = '0';
+          document.getElementById('kpiProposalsInfo').textContent = '0 pending, 0 confirmed';
+          document.getElementById('kpiSkillThreats').textContent = '0';
+          return;
+        }
+
+        document.getElementById('offlineNotice').classList.add('hidden');
+        const stats = statsRes.data;
+
+        // KPI cards
+        document.getElementById('kpiRules').textContent = PG.formatNumber(stats.totalRules);
+        document.getElementById('kpiThreats').textContent = PG.formatNumber(stats.totalThreats);
+        document.getElementById('kpiThreats24h').textContent = PG.formatNumber(stats.last24hThreats) + ' in last 24h';
+
+        if (stats.proposalStats) {
+          const ps = stats.proposalStats;
+          document.getElementById('kpiProposals').textContent = PG.formatNumber(ps.total);
+          document.getElementById('kpiProposalsInfo').textContent = ps.pending + ' pending, ' + ps.confirmed + ' confirmed';
+        }
+
+        document.getElementById('kpiSkillThreats').textContent = PG.formatNumber(stats.skillThreatsTotal || 0);
+
+        // Top Attack Types
+        renderAttackBars(stats.topAttackTypes || []);
+
+        // Top MITRE Techniques
+        renderMitreTable(stats.topMitreTechniques || []);
+
+        // Rule Distribution
+        renderRuleDistribution(rulesRes);
+
+        // ATR Proposals
+        if (proposalsRes && proposalsRes.ok) {
+          allProposals = proposalsRes.data || [];
+          document.getElementById('proposalCount').textContent = allProposals.length + ' proposals';
+          renderProposalTable();
+        } else {
+          allProposals = [];
+          renderProposalTable();
+        }
+
+        // Skill Threats
+        if (skillRes && skillRes.ok) {
+          allSkillThreats = skillRes.data || [];
+          document.getElementById('skillCount').textContent = allSkillThreats.length + ' reports';
+          renderSkillTable();
+        } else {
+          allSkillThreats = [];
+          renderSkillTable();
+        }
+      }
+
+      function renderAttackBars(types) {
+        const container = document.getElementById('attackBars');
+        if (!types.length) {
+          container.innerHTML = '<p class="text-xs text-text-muted text-center py-4">No attack data yet</p>';
+          return;
+        }
+
+        const max = Math.max(...types.map(function(t) { return t.count; }), 1);
+        const colors = ['#EF4444', '#FBBF24', '#8B9A8E', '#A3B0A6', '#A09890'];
+
+        container.innerHTML = types.map(function(t, i) {
+          var pct = Math.max(3, Math.round((t.count / max) * 100));
+          var color = colors[i % colors.length];
+          return '<div>' +
+            '<div class="flex items-center justify-between mb-1">' +
+              '<span class="text-xs text-text-secondary">' + PG.escapeHtml(t.type) + '</span>' +
+              '<span class="text-xs font-mono text-text-tertiary">' + PG.formatNumber(t.count) + '</span>' +
+            '</div>' +
+            '<div class="bg-surface-2 rounded-full h-1.5">' +
+              '<div class="h-1.5 rounded-full transition-all duration-700" style="width:' + pct + '%;background:' + color + '"></div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      function renderMitreTable(techniques) {
+        var tbody = document.getElementById('mitreTableBody');
+        if (!techniques.length) {
+          tbody.innerHTML = '<tr><td colspan="2" class="py-4 text-center text-text-muted text-xs">No MITRE data yet</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = techniques.map(function(t) {
+          return '<tr class="border-b border-border">' +
+            '<td class="py-2 text-text-secondary text-xs font-mono">' + PG.escapeHtml(t.technique) + '</td>' +
+            '<td class="py-2 text-right text-xs font-mono text-text-tertiary">' + PG.formatNumber(t.count) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function renderRuleDistribution(rulesRes) {
+        var container = document.getElementById('ruleDistBars');
+
+        // Count rules by prefix from the response
+        var sigmaCount = 0;
+        var yaraCount = 0;
+        var atrCount = 0;
+
+        if (rulesRes && Array.isArray(rulesRes)) {
+          rulesRes.forEach(function(r) {
+            var id = (r.ruleId || r.rule_id || '').toLowerCase();
+            if (id.startsWith('sigma-') || id.startsWith('sigma_')) sigmaCount++;
+            else if (id.startsWith('yara-') || id.startsWith('yara_')) yaraCount++;
+            else if (id.startsWith('atr-') || id.startsWith('atr_')) atrCount++;
+          });
+        } else if (rulesRes && rulesRes.ok && Array.isArray(rulesRes.data)) {
+          rulesRes.data.forEach(function(r) {
+            var id = (r.ruleId || r.rule_id || '').toLowerCase();
+            if (id.startsWith('sigma-') || id.startsWith('sigma_')) sigmaCount++;
+            else if (id.startsWith('yara-') || id.startsWith('yara_')) yaraCount++;
+            else if (id.startsWith('atr-') || id.startsWith('atr_')) atrCount++;
+          });
+        }
+
+        var total = sigmaCount + yaraCount + atrCount;
+
+        var items = [
+          { label: 'Sigma', count: sigmaCount, color: '#8B9A8E' },
+          { label: 'YARA', count: yaraCount, color: '#FBBF24' },
+          { label: 'ATR', count: atrCount, color: '#2ED573' },
+        ];
+
+        container.innerHTML = items.map(function(item) {
+          var pct = total > 0 ? Math.round((item.count / total) * 100) : 0;
+          return '<div class="bg-surface-2/50 rounded-lg p-4">' +
+            '<div class="flex items-center justify-between mb-2">' +
+              '<span class="text-xs font-semibold" style="color:' + item.color + '">' + item.label + '</span>' +
+              '<span class="text-xs text-text-tertiary">' + PG.formatNumber(item.count) + (total > 0 ? ' (' + pct + '%)' : '') + '</span>' +
+            '</div>' +
+            '<div class="bg-surface-0 rounded-full h-2">' +
+              '<div class="h-2 rounded-full transition-all duration-700" style="width:' + Math.max(2, pct) + '%;background:' + item.color + '"></div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Proposal status badge
+      function proposalStatusBadge(status) {
+        var cfg = {
+          pending: { cls: 'bg-caution/10 text-caution border-caution/20', color: '#FBBF24' },
+          confirmed: { cls: 'bg-safe/10 text-safe border-safe/20', color: '#2ED573' },
+          rejected: { cls: 'bg-danger/10 text-danger border-danger/20', color: '#EF4444' },
+        };
+        var c = cfg[status] || { cls: 'bg-surface-2 text-text-tertiary border-border', color: '#706860' };
+        return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase border ' + c.cls + '">' +
+          Icons.dot(6, c.color) +
+          PG.escapeHtml(status || 'unknown') +
+        '</span>';
+      }
+
+      function renderProposalTable() {
+        var tbody = document.getElementById('proposalTableBody');
+        if (!allProposals.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-text-muted">No ATR proposals yet</td></tr>';
+          document.getElementById('proposalPagination').innerHTML = '';
+          return;
+        }
+
+        var p = PG.paginate(allProposals, proposalPage, perPage);
+        tbody.innerHTML = p.items.map(function(row) {
+          var hash = row.pattern_hash || row.patternHash || '-';
+          var status = row.status || 'pending';
+          var confirmations = row.confirmations != null ? row.confirmations : 0;
+          var llm = row.llm_provider || row.llmProvider || '-';
+          var created = row.created_at || row.createdAt || '';
+          return '<tr class="border-b border-border hover:bg-surface-2/30 transition-colors">' +
+            '<td class="px-5 py-3 font-mono text-xs text-text-secondary">' + PG.escapeHtml(hash.substring(0, 16)) + (hash.length > 16 ? '...' : '') + '</td>' +
+            '<td class="px-5 py-3">' + proposalStatusBadge(status) + '</td>' +
+            '<td class="px-5 py-3 text-right font-mono text-xs">' + confirmations + '</td>' +
+            '<td class="px-5 py-3 text-text-secondary text-xs">' + PG.escapeHtml(llm) + '</td>' +
+            '<td class="px-5 py-3 text-text-tertiary text-xs whitespace-nowrap">' + PG.formatRelativeTime(created) + '</td>' +
+          '</tr>';
+        }).join('');
+
+        document.getElementById('proposalPagination').innerHTML = PG.renderPagination(p, function(pg) {
+          proposalPage = pg;
+          renderProposalTable();
+        });
+      }
+
+      // Skill risk level badge
+      function riskLevelBadge(level) {
+        var cfg = {
+          LOW: { cls: 'bg-safe/10 text-safe border-safe/20', color: '#2ED573' },
+          MEDIUM: { cls: 'bg-caution/10 text-caution border-caution/20', color: '#FBBF24' },
+          HIGH: { cls: 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20', color: '#F97316' },
+          CRITICAL: { cls: 'bg-danger/10 text-danger border-danger/20', color: '#EF4444' },
+        };
+        var upper = (level || '').toUpperCase();
+        var c = cfg[upper] || { cls: 'bg-surface-2 text-text-tertiary border-border', color: '#706860' };
+        return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase border ' + c.cls + '">' +
+          Icons.dot(6, c.color) +
+          PG.escapeHtml(upper || 'UNKNOWN') +
+        '</span>';
+      }
+
+      function renderSkillTable() {
+        var tbody = document.getElementById('skillTableBody');
+        if (!allSkillThreats.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-text-muted">No skill threats reported yet</td></tr>';
+          document.getElementById('skillPagination').innerHTML = '';
+          return;
+        }
+
+        var p = PG.paginate(allSkillThreats, skillPage, perPage);
+        tbody.innerHTML = p.items.map(function(row) {
+          var name = row.skill_name || row.skillName || '-';
+          var score = row.risk_score != null ? row.risk_score : (row.riskScore != null ? row.riskScore : '-');
+          var level = row.risk_level || row.riskLevel || '';
+          var findings = row.finding_summaries || row.findingSummaries || '';
+          var created = row.created_at || row.createdAt || '';
+
+          // Parse findings if JSON string
+          var findingsText = '';
+          if (findings) {
+            try {
+              var parsed = typeof findings === 'string' ? JSON.parse(findings) : findings;
+              if (Array.isArray(parsed)) {
+                findingsText = parsed.length + ' finding' + (parsed.length !== 1 ? 's' : '');
+              } else {
+                findingsText = String(findings).substring(0, 50);
+              }
+            } catch (e) {
+              findingsText = String(findings).substring(0, 50);
+            }
+          } else {
+            findingsText = '-';
+          }
+
+          return '<tr class="border-b border-border hover:bg-surface-2/30 transition-colors">' +
+            '<td class="px-5 py-3 text-text-secondary text-xs">' + PG.escapeHtml(name) + '</td>' +
+            '<td class="px-5 py-3 text-right font-mono text-xs">' + score + '</td>' +
+            '<td class="px-5 py-3">' + riskLevelBadge(level) + '</td>' +
+            '<td class="px-5 py-3 text-text-tertiary text-xs">' + PG.escapeHtml(findingsText) + '</td>' +
+            '<td class="px-5 py-3 text-text-tertiary text-xs whitespace-nowrap">' + PG.formatRelativeTime(created) + '</td>' +
+          '</tr>';
+        }).join('');
+
+        document.getElementById('skillPagination').innerHTML = PG.renderPagination(p, function(pg) {
+          skillPage = pg;
+          renderSkillTable();
+        });
+      }
+
+      loadAll();
+
+      // Auto-refresh every 60 seconds
+      setInterval(loadAll, 60000);
+    </script>
+  </body>
+</html>

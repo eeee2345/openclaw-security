@@ -1,0 +1,27 @@
+{
+  "name": "@panguard-ai/threat-cloud",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Threat Cloud backend API for collective threat intelligence / 威脅雲後端 API",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "threat-cloud": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "tsc --build --watch",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/node": "^22.14.0",
+    "typescript": "~5.7.3"
+  }
+}

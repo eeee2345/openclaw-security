@@ -173,6 +173,7 @@ window.PG = (() => {
     { id: 'sessions', label: 'Sessions', href: '/admin/sessions', icon: 'key' },
     { id: 'audit', label: 'Audit Log', href: '/admin/audit', icon: 'fileText' },
     { id: 'usage', label: 'Usage', href: '/admin/usage', icon: 'activity' },
+    { id: 'threat-cloud', label: 'Threat Cloud', href: '/admin/threat-cloud', icon: 'cloud' },
     { id: 'settings', label: 'Settings', href: '/admin/settings', icon: 'settings' },
   ];
 
