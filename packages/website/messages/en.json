@@ -857,12 +857,12 @@
         "trap": {
           "name": "Panguard Trap",
           "tagline": "Honeypots that feed intelligence to Threat Cloud.",
-          "badge": "Feature"
+          "badge": "Coming Soon"
         },
         "report": {
           "name": "Panguard Report",
           "tagline": "Compliance reports in one command.",
-          "badge": "Feature"
+          "badge": "Coming Soon"
         },
         "mcp": {
           "name": "MCP Server",
@@ -1563,9 +1563,9 @@
       },
       "cta": {
         "title": "Scale your security.",
-        "desc": "Start with one server. Scale to 25+ with Manager on the Business plan.",
+        "desc": "Start with one server. Scale to any number with Manager. 100% free.",
         "cta1": "Get Started",
-        "cta2": "View Pricing"
+        "cta2": "View on GitHub"
       }
     },
     "skillAuditor": {
@@ -1787,7 +1787,7 @@
         "title": "Stop trusting. Start scanning.",
         "desc": "One command. Seven checks. Zero blind spots.",
         "cta1": "Get Started Free",
-        "cta2": "View Pricing",
+        "cta2": "View on GitHub",
         "installTitle": "Install Panguard"
       }
     }
@@ -2467,11 +2467,6 @@
         "name": "Cloudflare",
         "purpose": "CDN & DDoS Protection",
         "location": "Global"
-      },
-      "lemonSqueezy": {
-        "name": "Lemon Squeezy",
-        "purpose": "Payment Processing (Merchant of Record)",
-        "location": "US"
       },
       "resend": {
         "name": "Resend",
@@ -5191,16 +5186,7 @@
     "upgradeDescription": "All Panguard features are free and open source.",
     "viewPlans": "View Plans",
     "tierFeatures": {
-      "community": ["Unlimited scans", "Unlimited endpoints", "Unlimited API calls"],
-      "solo": ["Unlimited scans", "Unlimited endpoints", "Unlimited API calls"],
-      "pro": ["Unlimited scans", "Unlimited endpoints", "Unlimited API calls"],
-      "business": [
-        "Unlimited scans",
-        "Unlimited endpoints",
-        "Unlimited API calls",
-        "All features included"
-      ],
-      "enterprise": ["All features included", "Community support", "MIT License"]
+      "all": ["Unlimited scans", "Unlimited endpoints", "Unlimited API calls", "All features included", "Community support", "MIT License"]
     }
   },
   "atrPage": {

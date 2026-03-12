@@ -450,8 +450,6 @@ curl -H "Authorization: Bearer your-secure-token" \
 | `JWT_SECRET`                  | (none)  | JWT signing secret (required in production) |
 | `GOOGLE_CLIENT_ID`            | (none)  | Google OAuth client ID                      |
 | `GOOGLE_CLIENT_SECRET`        | (none)  | Google OAuth client secret                  |
-| `LEMONSQUEEZY_API_KEY`        | (none)  | LemonSqueezy billing API key                |
-| `LEMONSQUEEZY_WEBHOOK_SECRET` | (none)  | LemonSqueezy webhook signing secret         |
 
 ### Threat Cloud Server
 

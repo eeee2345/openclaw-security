@@ -740,15 +740,15 @@
     "now": "現在",
     "nowLabel": "所有功能免費開源 -- 搶先體驗報名中",
     "q2": "2026 Q2",
-    "q2Label": "Pro 功能搶先體驗",
+    "q2Label": "Report + Trap 搶先體驗",
     "q3": "2026 Q3",
-    "q3Label": "Enterprise 功能正式上線"
+    "q3Label": "Dashboard 正式上線"
   },
   "howItWorks": {
     "overline": "運作原理",
     "title": "Panguard 怎麼",
     "titleHighlight": "保護你",
-    "subtitle": "五層防禦。三層 AI。一行指令部署。",
+    "subtitle": "五層防禦。三級 AI 分析。一行指令部署。",
     "overview": {
       "overline": "一目了然",
       "title": "層層遞進的安全思維",
@@ -1451,7 +1451,7 @@
     },
     "howItWorks": {
       "title": "運作原理 -- Panguard AI",
-      "description": "五層防禦、三層 AI、一行指令部署。了解 Panguard 如何從偵測到自動回應保護你的基礎設施。"
+      "description": "五層防禦、三級 AI 分析、一行指令部署。了解 Panguard 如何從偵測到自動回應保護你的基礎設施。"
     },
     "threatCloud": {
       "title": "威脅雲端 -- Panguard AI",
@@ -1671,12 +1671,12 @@
         "trap": {
           "name": "Panguard Trap",
           "tagline": "蜜罐情報回饋至 Threat Cloud。",
-          "badge": "功能"
+          "badge": "即將推出"
         },
         "report": {
           "name": "Panguard Report",
           "tagline": "一行指令產出合規報告。",
-          "badge": "功能"
+          "badge": "即將推出"
         },
         "mcp": {
           "name": "MCP Server",
@@ -2377,9 +2377,9 @@
       },
       "cta": {
         "title": "擴展你的安全。",
-        "desc": "從一台伺服器開始。透過 Business 方案使用 Manager 擴展到 25 台以上。",
+        "desc": "從一台伺服器開始。使用 Manager 擴展到任意數量。100% 免費。",
         "cta1": "開始使用",
-        "cta2": "查看方案價格"
+        "cta2": "在 GitHub 上查看"
       }
     },
     "skillAuditor": {
@@ -3281,11 +3281,6 @@
         "name": "Cloudflare",
         "purpose": "CDN 及 DDoS 防護",
         "location": "全球"
-      },
-      "lemonSqueezy": {
-        "name": "Lemon Squeezy",
-        "purpose": "支付處理（委託商務代理）",
-        "location": "美國"
       },
       "resend": {
         "name": "Resend",
@@ -5224,13 +5219,9 @@
     "endsOn": "到期日期：{date}",
     "upgradeHeading": "所有功能已包含",
     "upgradeDescription": "所有 Panguard 功能皆免費開源。",
-    "viewPlans": "查看方案",
+    "viewPlans": "在 GitHub 上查看",
     "tierFeatures": {
-      "community": ["無限次掃描", "無限端點", "無限次 API 呼叫"],
-      "solo": ["無限次掃描", "無限端點", "無限次 API 呼叫"],
-      "pro": ["無限次掃描", "無限端點", "無限次 API 呼叫"],
-      "business": ["無限次掃描", "無限端點", "無限次 API 呼叫", "所有功能包含"],
-      "enterprise": ["所有功能包含", "社群支援", "MIT 授權"]
+      "all": ["無限次掃描", "無限端點", "無限次 API 呼叫", "所有功能包含", "社群支援", "MIT 授權"]
     }
   },
   "atrPage": {

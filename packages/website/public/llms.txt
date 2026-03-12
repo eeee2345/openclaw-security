@@ -19,9 +19,9 @@
 - [Panguard Trap](https://panguard.ai/product/trap): Intelligent honeypot system (under development)
 - [Panguard Report](https://panguard.ai/product/report): AI compliance reports for ISO 27001, SOC 2, TCSA (under development)
 
-## Pricing
+## License
 
-- [Pricing](https://panguard.ai/pricing): 100% free. All features. No paywalls. MIT License.
+- 100% free and open source. MIT License. All features included. No paywalls.
 
 ## Technology
 
