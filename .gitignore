@@ -32,3 +32,4 @@ packages/website/.next/
 .vercel/
 .vercel
 pancore/
+railway.toml
