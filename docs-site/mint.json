@@ -73,8 +73,6 @@
         "guides/first-scan",
         "guides/real-time-protection",
         "guides/notifications-setup",
-        "guides/honeypots",
-        "guides/compliance-reports",
         "guides/threat-cloud-deployment",
         "guides/claw-setup",
         "guides/mcp-integration",
@@ -136,19 +134,10 @@
       ]
     },
     {
-      "group": "Panguard Trap",
+      "group": "Coming Soon",
       "pages": [
         "products/trap/overview",
-        "products/trap/honeypot-types",
-        "products/trap/attacker-profiling"
-      ]
-    },
-    {
-      "group": "Panguard Report",
-      "pages": [
-        "products/report/overview",
-        "products/report/frameworks",
-        "products/report/output-formats"
+        "products/report/overview"
       ]
     },
     {
@@ -181,7 +170,7 @@
     },
     {
       "group": "Protection",
-      "pages": ["cli/guard", "cli/trap", "cli/chat", "cli/report"]
+      "pages": ["cli/guard", "cli/chat"]
     },
     {
       "group": "System",
