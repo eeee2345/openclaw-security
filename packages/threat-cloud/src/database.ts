@@ -98,12 +98,25 @@ export class ThreatCloudDB {
         sighting_count INTEGER DEFAULT 1
       );
 
+      CREATE TABLE IF NOT EXISTS skill_whitelist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        skill_name TEXT NOT NULL,
+        normalized_name TEXT NOT NULL UNIQUE,
+        fingerprint_hash TEXT,
+        confirmations INTEGER NOT NULL DEFAULT 1,
+        status TEXT NOT NULL DEFAULT 'pending',
+        first_reported TEXT DEFAULT (datetime('now')),
+        last_reported TEXT DEFAULT (datetime('now'))
+      );
+
       CREATE INDEX IF NOT EXISTS idx_atr_proposals_status ON atr_proposals(status);
       CREATE INDEX IF NOT EXISTS idx_atr_proposals_pattern ON atr_proposals(pattern_hash);
       CREATE INDEX IF NOT EXISTS idx_skill_threats_hash ON skill_threats(skill_hash);
       CREATE INDEX IF NOT EXISTS idx_atr_feedback_rule ON atr_feedback(rule_id);
       CREATE INDEX IF NOT EXISTS idx_ioc_entries_type ON ioc_entries(type);
       CREATE INDEX IF NOT EXISTS idx_ioc_entries_reputation ON ioc_entries(reputation);
+      CREATE INDEX IF NOT EXISTS idx_skill_whitelist_status ON skill_whitelist(status);
+      CREATE INDEX IF NOT EXISTS idx_skill_whitelist_name ON skill_whitelist(normalized_name);
     `);
   }
 
@@ -410,6 +423,30 @@ export class ThreatCloudDB {
       WHERE source = ?
       ORDER BY published_at ASC
     `).all(source) as ThreatCloudRule[];
+  }
+
+  /** Report a safe skill (increment confirmations, auto-confirm at 3+) / 回報安全 skill */
+  reportSafeSkill(skillName: string, fingerprintHash?: string): void {
+    const normalized = skillName.toLowerCase().trim().replace(/\s+/g, '-');
+    this.db.prepare(`
+      INSERT INTO skill_whitelist (skill_name, normalized_name, fingerprint_hash)
+      VALUES (?, ?, ?)
+      ON CONFLICT(normalized_name) DO UPDATE SET
+        confirmations = confirmations + 1,
+        status = CASE WHEN confirmations + 1 >= 3 THEN 'confirmed' ELSE status END,
+        fingerprint_hash = COALESCE(excluded.fingerprint_hash, fingerprint_hash),
+        last_reported = datetime('now')
+    `).run(skillName, normalized, fingerprintHash ?? null);
+  }
+
+  /** Get confirmed community whitelist / 取得社群白名單 */
+  getSkillWhitelist(): Array<{ name: string; hash: string | null; confirmations: number }> {
+    return this.db.prepare(`
+      SELECT skill_name as name, fingerprint_hash as hash, confirmations
+      FROM skill_whitelist
+      WHERE status = 'confirmed'
+      ORDER BY confirmations DESC
+    `).all() as Array<{ name: string; hash: string | null; confirmations: number }>;
   }
 
   /** Close the database / 關閉資料庫 */

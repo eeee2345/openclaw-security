@@ -380,6 +380,44 @@ export class ThreatCloudClient {
   }
 
   /**
+   * Report a safe skill to Threat Cloud (audit passed)
+   * 回報安全 skill 到 Threat Cloud（審計通過）
+   */
+  async reportSafeSkill(skillName: string, fingerprintHash?: string): Promise<void> {
+    if (this.status === 'offline' || !this.endpoint) return;
+
+    try {
+      const url = `${this.endpoint}/api/skill-whitelist`;
+      const body = JSON.stringify({ skillName, fingerprintHash });
+      await this.httpPost(url, body);
+      logger.info(`Reported safe skill: ${skillName}`);
+    } catch (err: unknown) {
+      logger.warn(`Report safe skill failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  /**
+   * Fetch community skill whitelist from Threat Cloud
+   * 從 Threat Cloud 取得社群 skill 白名單
+   */
+  async fetchSkillWhitelist(): Promise<Array<{ name: string; hash?: string }>> {
+    if (this.status === 'offline' || !this.endpoint) return [];
+
+    try {
+      const url = `${this.endpoint}/api/skill-whitelist`;
+      const response = await this.httpGet(url);
+      const parsed = JSON.parse(response) as { ok?: boolean; data?: Array<{ name: string; hash?: string }> };
+      const skills = parsed.data ?? [];
+      this.status = 'connected';
+      logger.info(`Fetched ${skills.length} skills from community whitelist`);
+      return skills;
+    } catch (err: unknown) {
+      logger.warn(`Fetch skill whitelist failed: ${err instanceof Error ? err.message : String(err)}`);
+      return [];
+    }
+  }
+
+  /**
    * Get cached rules without network call / 取得快取規則（不進行網路呼叫）
    */
   getCachedRules(): ThreatCloudUpdate[] {

@@ -227,6 +227,16 @@ export class ThreatCloudServer {
           }
           break;
 
+        case '/api/skill-whitelist':
+          if (req.method === 'GET') {
+            this.handleGetSkillWhitelist(res);
+          } else if (req.method === 'POST') {
+            await this.handlePostSkillWhitelist(req, res);
+          } else {
+            this.sendJson(res, 405, { ok: false, error: 'Method not allowed' });
+          }
+          break;
+
         default:
           this.sendJson(res, 404, { ok: false, error: 'Not found' });
       }
@@ -416,6 +426,31 @@ export class ThreatCloudServer {
     res.setHeader('Content-Type', 'text/plain');
     res.writeHead(200);
     res.end(domains.join('\n'));
+  }
+
+  /** POST /api/skill-whitelist - Report a safe skill (audit passed) */
+  private async handlePostSkillWhitelist(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    const body = await this.readBody(req);
+    const data = JSON.parse(body) as { skillName: string; fingerprintHash?: string } | { skills: Array<{ skillName: string; fingerprintHash?: string }> };
+
+    const skills = 'skills' in data && Array.isArray(data.skills)
+      ? data.skills
+      : [data as { skillName: string; fingerprintHash?: string }];
+
+    let count = 0;
+    for (const skill of skills) {
+      if (!skill.skillName || typeof skill.skillName !== 'string') continue;
+      this.db.reportSafeSkill(skill.skillName, skill.fingerprintHash);
+      count++;
+    }
+
+    this.sendJson(res, 201, { ok: true, data: { message: `${count} skill(s) reported`, count } });
+  }
+
+  /** GET /api/skill-whitelist - Fetch community-confirmed safe skills */
+  private handleGetSkillWhitelist(res: ServerResponse): void {
+    const whitelist = this.db.getSkillWhitelist();
+    this.sendJson(res, 200, { ok: true, data: whitelist });
   }
 
   /** Anonymize IP by zeroing last octet / 匿名化 IP */

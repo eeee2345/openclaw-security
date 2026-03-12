@@ -755,6 +755,38 @@ async function handleRequest(
       return;
     }
 
+    // POST /api/skill-whitelist - Report safe skill (audit passed)
+    if (pathname === '/api/skill-whitelist' && req.method === 'POST') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!requireTCWriteAuth(req, res)) return;
+      if (!requireJsonContentType(req, res)) return;
+      const body = await readRequestBody(req);
+      let data: Record<string, unknown>;
+      try { data = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
+
+      const skills = 'skills' in data && Array.isArray(data['skills'])
+        ? data['skills'] as Array<Record<string, unknown>>
+        : [data];
+
+      let count = 0;
+      for (const skill of skills) {
+        const name = skill['skillName'];
+        if (!name || typeof name !== 'string') continue;
+        threatDb.reportSafeSkill(name, typeof skill['fingerprintHash'] === 'string' ? skill['fingerprintHash'] : undefined);
+        count++;
+      }
+      sendJson(res, 201, { ok: true, data: { message: `${count} skill(s) reported`, count } });
+      return;
+    }
+
+    // GET /api/skill-whitelist - Fetch community whitelist
+    if (pathname === '/api/skill-whitelist' && req.method === 'GET') {
+      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      const whitelist = threatDb.getSkillWhitelist();
+      sendJson(res, 200, { ok: true, data: whitelist });
+      return;
+    }
+
     // Auth API routes
     if (pathname === '/api/auth/register') {
       await handlers.handleRegister(req, res);
