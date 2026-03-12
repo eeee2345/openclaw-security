@@ -28,6 +28,9 @@ jobs:
           restore-keys: ${{ runner.os }}-pnpm-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Security audit
+        run: pnpm audit --audit-level high
+        continue-on-error: true
       - name: Run ESLint
         run: pnpm run lint
       - name: Check formatting
