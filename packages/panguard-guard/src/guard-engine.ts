@@ -592,6 +592,10 @@ export class GuardEngine {
       60 * 60 * 1000
     ); // 1 hour
 
+    // Initial sync on startup (non-blocking)
+    // 啟動時立即同步一次（非阻塞）
+    void this.syncThreatCloud();
+
     // Start monitor engine / 啟動監控引擎
     this.monitorEngine = new MonitorEngine({
       networkPollInterval: this.config.monitors.networkPollInterval,

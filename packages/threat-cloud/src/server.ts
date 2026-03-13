@@ -24,6 +24,12 @@ import { ThreatCloudDB } from './database.js';
 import { LLMReviewer } from './llm-reviewer.js';
 import type { ServerConfig, ApiResponse, AnonymizedThreatData, ThreatCloudRule, ATRProposal, SkillThreatSubmission } from './types.js';
 
+/** Simple structured logger for threat-cloud (no core dependency) */
+const log = {
+  info: (msg: string) => { process.stdout.write(`[threat-cloud] ${msg}\n`); },
+  error: (msg: string, err?: unknown) => { process.stderr.write(`[threat-cloud] ERROR ${msg}${err ? `: ${err instanceof Error ? err.message : String(err)}` : ''}\n`); },
+};
+
 /** Rate limiter state / 速率限制狀態 */
 interface RateLimitEntry {
   count: number;
@@ -61,19 +67,30 @@ export class ThreatCloudServer {
       });
 
       this.server.listen(this.config.port, this.config.host, () => {
-        console.log(`Threat Cloud server started on ${this.config.host}:${this.config.port}`);
+        log.info(`Server started on ${this.config.host}:${this.config.port}`);
         if (this.llmReviewer) {
-          console.log('LLM reviewer enabled for ATR proposal review');
+          log.info('LLM reviewer enabled for ATR proposal review');
         }
+        // Backfill classification for existing unclassified rules (one-time on startup)
+        // 啟動時回填未分類規則的分類資訊
+        try {
+          const backfilled = this.db.backfillClassification();
+          if (backfilled > 0) {
+            log.info(`Backfilled classification for ${backfilled} rules`);
+          }
+        } catch (err) {
+          log.error('Classification backfill failed', err);
+        }
+
         // Start promotion cron (every 15 minutes)
         this.promotionTimer = setInterval(() => {
           try {
             const promoted = this.db.promoteConfirmedProposals();
             if (promoted > 0) {
-              console.log(`Promotion cycle: ${promoted} proposal(s) promoted to rules`);
+              log.info(`Promotion cycle: ${promoted} proposal(s) promoted to rules`);
             }
           } catch (err) {
-            console.error('Promotion cycle error:', err);
+            log.error('Promotion cycle failed', err);
           }
         }, ThreatCloudServer.PROMOTION_INTERVAL_MS);
         resolve();
@@ -125,7 +142,7 @@ export class ThreatCloudServer {
     }
 
     // CORS — restrict to known origins
-    const allowedOrigins = (process.env['CORS_ALLOWED_ORIGINS'] ?? 'https://panguard.ai,https://www.panguard.ai').split(',');
+    const allowedOrigins = (process.env['CORS_ALLOWED_ORIGINS'] ?? 'https://panguard.ai,https://www.panguard.ai,https://tc.panguard.ai,https://get.panguard.ai,https://docs.panguard.ai').split(',');
     const origin = req.headers.origin ?? '';
     if (allowedOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -157,6 +174,10 @@ export class ThreatCloudServer {
           if (req.method === 'GET') {
             this.handleGetRules(url, res);
           } else if (req.method === 'POST') {
+            if (!this.checkAdminAuth(req)) {
+              this.sendJson(res, 403, { ok: false, error: 'Admin API key required for rule publishing' });
+              break;
+            }
             await this.handlePostRule(req, res);
           } else {
             this.sendJson(res, 405, { ok: false, error: 'Method not allowed' });
@@ -241,7 +262,7 @@ export class ThreatCloudServer {
           this.sendJson(res, 404, { ok: false, error: 'Not found' });
       }
     } catch (err) {
-      console.error('Request error:', err);
+      log.error('Request failed', err);
       this.sendJson(res, 500, { ok: false, error: 'Internal server error' });
     }
   }
@@ -271,12 +292,22 @@ export class ThreatCloudServer {
     this.sendJson(res, 201, { ok: true, data: { message: 'Threat data received', count: events.length } });
   }
 
-  /** GET /api/rules?since=<ISO timestamp> */
+  /** GET /api/rules?since=<ISO>&category=<cat>&severity=<sev>&source=<src> */
   private handleGetRules(url: string, res: ServerResponse): void {
     const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
     const since = params.get('since');
+    const filters = {
+      category: params.get('category') ?? undefined,
+      severity: params.get('severity') ?? undefined,
+      source: params.get('source') ?? undefined,
+    };
 
-    const rules = since ? this.db.getRulesSince(since) : this.db.getAllRules();
+    // Cache for 1 hour — rules rarely change, let CDN absorb traffic
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+
+    const rules = since
+      ? this.db.getRulesSince(since, filters)
+      : this.db.getAllRules(5000, filters);
     this.sendJson(res, 200, rules);
   }
 
@@ -304,6 +335,7 @@ export class ThreatCloudServer {
 
   /** GET /api/stats */
   private handleGetStats(res: ServerResponse): void {
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
     const stats = this.db.getStats();
     this.sendJson(res, 200, { ok: true, data: stats });
   }
@@ -338,7 +370,7 @@ export class ThreatCloudServer {
       // Fire-and-forget LLM review on first submission only
       if (this.llmReviewer?.isAvailable()) {
         void this.llmReviewer.reviewProposal(data.patternHash, data.ruleContent).catch((err) => {
-          console.error(`LLM review error for ${data.patternHash}:`, err);
+          log.error(`LLM review failed for ${data.patternHash}`, err);
         });
       }
 
@@ -392,6 +424,7 @@ export class ThreatCloudServer {
 
   /** GET /api/atr-rules?since=<ISO> - Fetch confirmed/promoted ATR rules */
   private handleGetATRRules(url: string, res: ServerResponse): void {
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
     const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
     const since = params.get('since') ?? undefined;
     const rules = this.db.getConfirmedATRRules(since);
@@ -400,6 +433,7 @@ export class ThreatCloudServer {
 
   /** GET /api/yara-rules?since=<ISO> - Fetch YARA rules */
   private handleGetYaraRules(url: string, res: ServerResponse): void {
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
     const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
     const since = params.get('since') ?? undefined;
     const rules = this.db.getRulesBySource('yara', since);
@@ -413,6 +447,7 @@ export class ThreatCloudServer {
 
     const ips = this.db.getIPBlocklist(minReputation);
     res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Cache-Control', 'public, max-age=1800, s-maxage=1800');
     res.writeHead(200);
     res.end(ips.join('\n'));
   }
@@ -424,6 +459,7 @@ export class ThreatCloudServer {
 
     const domains = this.db.getDomainBlocklist(minReputation);
     res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Cache-Control', 'public, max-age=1800, s-maxage=1800');
     res.writeHead(200);
     res.end(domains.join('\n'));
   }
@@ -469,6 +505,14 @@ export class ThreatCloudServer {
       return parts.join(':');
     }
     return ip;
+  }
+
+  /** Check admin API key for write-protected endpoints / 檢查管理員 API 金鑰 */
+  private checkAdminAuth(req: IncomingMessage): boolean {
+    if (!this.config.adminApiKey) return true; // no admin key configured = open
+    const authHeader = req.headers.authorization ?? '';
+    const token = authHeader.replace('Bearer ', '');
+    return token === this.config.adminApiKey;
   }
 
   /** Rate limit check / 速率限制檢查 */

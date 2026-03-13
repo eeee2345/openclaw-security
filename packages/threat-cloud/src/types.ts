@@ -20,6 +20,14 @@ export interface ThreatCloudRule {
   ruleContent: string;
   publishedAt: string;
   source: string;
+  /** Rule category extracted from content / 從內容提取的規則分類 */
+  category?: string;
+  /** Rule severity extracted from content / 從內容提取的嚴重等級 */
+  severity?: string;
+  /** Comma-separated MITRE technique IDs / 逗號分隔的 MITRE 技術 ID */
+  mitreTechniques?: string;
+  /** Comma-separated tags / 逗號分隔的標籤 */
+  tags?: string;
 }
 
 /** API response envelope / API 回應封套 */
@@ -38,6 +46,12 @@ export interface ThreatStats {
   last24hThreats: number;
   proposalStats?: { pending: number; confirmed: number; rejected: number; total: number };
   skillThreatsTotal?: number;
+  /** Rule distribution by category / 規則分類分布 */
+  rulesByCategory?: Array<{ category: string; count: number }>;
+  /** Rule distribution by severity / 規則嚴重等級分布 */
+  rulesBySeverity?: Array<{ severity: string; count: number }>;
+  /** Rule distribution by source / 規則來源分布 */
+  rulesBySource?: Array<{ source: string; count: number }>;
 }
 
 /** ATR rule proposal from client / 客戶端 ATR 規則提案 */
@@ -77,4 +91,6 @@ export interface ServerConfig {
   rateLimitPerMinute: number;
   /** Optional Anthropic API key for LLM review of ATR proposals */
   anthropicApiKey?: string;
+  /** Admin API key for write operations (POST /api/rules). If set, only this key can publish rules. */
+  adminApiKey?: string;
 }

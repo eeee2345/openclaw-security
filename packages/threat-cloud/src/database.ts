@@ -44,6 +44,10 @@ export class ThreatCloudDB {
         rule_content TEXT NOT NULL,
         published_at TEXT NOT NULL,
         source TEXT NOT NULL,
+        category TEXT,
+        severity TEXT,
+        mitre_techniques TEXT,
+        tags TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         updated_at TEXT NOT NULL DEFAULT (datetime('now'))
       );
@@ -52,6 +56,9 @@ export class ThreatCloudDB {
       CREATE INDEX IF NOT EXISTS idx_threats_attack_type ON threats(attack_type);
       CREATE INDEX IF NOT EXISTS idx_threats_mitre ON threats(mitre_technique);
       CREATE INDEX IF NOT EXISTS idx_rules_published ON rules(published_at);
+      CREATE INDEX IF NOT EXISTS idx_rules_category ON rules(category);
+      CREATE INDEX IF NOT EXISTS idx_rules_severity ON rules(severity);
+      CREATE INDEX IF NOT EXISTS idx_rules_source ON rules(source);
 
       CREATE TABLE IF NOT EXISTS atr_proposals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,6 +116,14 @@ export class ThreatCloudDB {
         last_reported TEXT DEFAULT (datetime('now'))
       );
 
+      -- Migration: add classification columns to existing rules table
+      -- SQLite allows ADD COLUMN on existing tables; IF NOT EXISTS not supported,
+      -- so we catch errors for already-existing columns in migrate().
+    `);
+
+    this.migrate();
+
+    this.db.exec(`
       CREATE INDEX IF NOT EXISTS idx_atr_proposals_status ON atr_proposals(status);
       CREATE INDEX IF NOT EXISTS idx_atr_proposals_pattern ON atr_proposals(pattern_hash);
       CREATE INDEX IF NOT EXISTS idx_skill_threats_hash ON skill_threats(skill_hash);
@@ -118,6 +133,21 @@ export class ThreatCloudDB {
       CREATE INDEX IF NOT EXISTS idx_skill_whitelist_status ON skill_whitelist(status);
       CREATE INDEX IF NOT EXISTS idx_skill_whitelist_name ON skill_whitelist(normalized_name);
     `);
+  }
+
+  /** Run schema migrations for existing databases / 執行既有資料庫的 schema 遷移 */
+  private migrate(): void {
+    const addColumn = (table: string, column: string, type: string): void => {
+      try {
+        this.db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+      } catch {
+        // Column already exists — safe to ignore
+      }
+    };
+    addColumn('rules', 'category', 'TEXT');
+    addColumn('rules', 'severity', 'TEXT');
+    addColumn('rules', 'mitre_techniques', 'TEXT');
+    addColumn('rules', 'tags', 'TEXT');
   }
 
   /** Insert anonymized threat data / 插入匿名化威脅數據 */
@@ -137,40 +167,159 @@ export class ThreatCloudDB {
     );
   }
 
+  /** Extract classification metadata from rule content / 從規則內容提取分類元資料 */
+  private extractMetadata(ruleContent: string, source: string): {
+    category: string;
+    severity: string;
+    mitreTechniques: string;
+    tags: string;
+  } {
+    let category = 'unknown';
+    let severity = 'medium';
+    let mitreTechniques = '';
+    let tags = '';
+
+    try {
+      if (source === 'yara') {
+        // YARA rules: extract from meta section
+        const metaMatch = ruleContent.match(/meta\s*:\s*([\s\S]*?)(?:strings|condition)\s*:/);
+        if (metaMatch) {
+          const meta = metaMatch[1];
+          const catMatch = meta.match(/category\s*=\s*"([^"]+)"/);
+          if (catMatch) category = catMatch[1];
+          const sevMatch = meta.match(/severity\s*=\s*"([^"]+)"/);
+          if (sevMatch) severity = sevMatch[1];
+          const mitreMatch = meta.match(/mitre_att(?:ack|&ck)\s*=\s*"([^"]+)"/i);
+          if (mitreMatch) mitreTechniques = mitreMatch[1];
+          // Fallback: infer category from rule name
+          if (category === 'unknown') {
+            if (/malware|trojan|ransom|backdoor/i.test(ruleContent)) category = 'malware';
+            else if (/exploit|cve-/i.test(ruleContent)) category = 'exploit';
+            else if (/hack_?tool|offensive/i.test(ruleContent)) category = 'hacktool';
+            else if (/webshell/i.test(ruleContent)) category = 'webshell';
+            else if (/packer|obfusc/i.test(ruleContent)) category = 'packer';
+          }
+        }
+      } else {
+        // Sigma / ATR: parse as JSON or YAML-like extraction
+        let parsed: Record<string, unknown> | null = null;
+        try {
+          parsed = JSON.parse(ruleContent) as Record<string, unknown>;
+        } catch {
+          // YAML-like extraction for non-JSON rules
+          const sevMatch = ruleContent.match(/severity\s*:\s*(\w+)/);
+          if (sevMatch) severity = sevMatch[1].toLowerCase();
+          const tagMatch = ruleContent.match(/tags\s*:\s*\n((?:\s*-\s*.+\n?)+)/);
+          if (tagMatch) {
+            const tagLines = tagMatch[1].match(/-\s*(.+)/g) ?? [];
+            tags = tagLines.map((t) => t.replace(/^-\s*/, '').trim()).join(',');
+          }
+        }
+
+        if (parsed) {
+          if (typeof parsed['severity'] === 'string') severity = parsed['severity'].toLowerCase();
+
+          // Extract tags
+          if (Array.isArray(parsed['tags'])) {
+            tags = (parsed['tags'] as string[]).join(',');
+          }
+
+          // Extract MITRE from tags (attack.tXXXX) or dedicated field
+          if (typeof parsed['mitre_technique'] === 'string') {
+            mitreTechniques = parsed['mitre_technique'];
+          } else if (tags) {
+            const mitreTags = tags.split(',').filter((t) => /^attack\.t\d+/i.test(t));
+            mitreTechniques = mitreTags.map((t) => t.replace('attack.', '').toUpperCase()).join(',');
+          }
+
+          // Derive category from tags or logsource
+          if (Array.isArray(parsed['tags'])) {
+            const attackTags = (parsed['tags'] as string[]).filter((t) => t.startsWith('attack.'));
+            for (const tag of attackTags) {
+              if (/initial.access/i.test(tag)) { category = 'initial-access'; break; }
+              if (/execution/i.test(tag)) { category = 'execution'; break; }
+              if (/persistence/i.test(tag)) { category = 'persistence'; break; }
+              if (/privilege.escalation/i.test(tag)) { category = 'privilege-escalation'; break; }
+              if (/defense.evasion/i.test(tag)) { category = 'defense-evasion'; break; }
+              if (/credential.access/i.test(tag)) { category = 'credential-access'; break; }
+              if (/discovery/i.test(tag)) { category = 'discovery'; break; }
+              if (/lateral.movement/i.test(tag)) { category = 'lateral-movement'; break; }
+              if (/collection/i.test(tag)) { category = 'collection'; break; }
+              if (/exfiltration/i.test(tag)) { category = 'exfiltration'; break; }
+              if (/command.and.control|c2/i.test(tag)) { category = 'command-and-control'; break; }
+              if (/impact/i.test(tag)) { category = 'impact'; break; }
+            }
+          }
+
+          // Fallback: infer from logsource for sigma rules
+          if (category === 'unknown' && parsed['logsource']) {
+            const ls = parsed['logsource'] as Record<string, string>;
+            if (ls.category) category = ls.category;
+            else if (ls.product) category = ls.product;
+          }
+        }
+      }
+    } catch {
+      // Extraction failed — keep defaults
+    }
+
+    return { category, severity, mitreTechniques, tags };
+  }
+
   /** Insert or update a community rule / 插入或更新社群規則 */
   upsertRule(rule: ThreatCloudRule): void {
+    // Extract classification from content if not provided
+    const meta = this.extractMetadata(rule.ruleContent, rule.source);
+    const category = rule.category ?? meta.category;
+    const severity = rule.severity ?? meta.severity;
+    const mitreTechniques = rule.mitreTechniques ?? meta.mitreTechniques;
+    const tags = rule.tags ?? meta.tags;
+
     const stmt = this.db.prepare(`
-      INSERT INTO rules (rule_id, rule_content, published_at, source)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO rules (rule_id, rule_content, published_at, source, category, severity, mitre_techniques, tags)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(rule_id) DO UPDATE SET
         rule_content = excluded.rule_content,
         published_at = excluded.published_at,
         source = excluded.source,
+        category = excluded.category,
+        severity = excluded.severity,
+        mitre_techniques = excluded.mitre_techniques,
+        tags = excluded.tags,
         updated_at = datetime('now')
     `);
-    stmt.run(rule.ruleId, rule.ruleContent, rule.publishedAt, rule.source);
+    stmt.run(rule.ruleId, rule.ruleContent, rule.publishedAt, rule.source, category, severity, mitreTechniques, tags);
   }
 
   /** Fetch rules published after a given timestamp / 取得指定時間後發佈的規則 */
-  getRulesSince(since: string): ThreatCloudRule[] {
-    const stmt = this.db.prepare(`
-      SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source
-      FROM rules
-      WHERE published_at > ?
-      ORDER BY published_at ASC
-    `);
-    return stmt.all(since) as ThreatCloudRule[];
+  getRulesSince(since: string, filters?: { category?: string; severity?: string; source?: string }): ThreatCloudRule[] {
+    let sql = `SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
+      category, severity, mitre_techniques as mitreTechniques, tags
+      FROM rules WHERE published_at > ?`;
+    const params: unknown[] = [since];
+
+    if (filters?.category) { sql += ' AND category = ?'; params.push(filters.category); }
+    if (filters?.severity) { sql += ' AND severity = ?'; params.push(filters.severity); }
+    if (filters?.source) { sql += ' AND source = ?'; params.push(filters.source); }
+
+    sql += ' ORDER BY published_at ASC';
+    return this.db.prepare(sql).all(...params) as ThreatCloudRule[];
   }
 
   /** Fetch all rules with limit / 取得所有規則（含限制） */
-  getAllRules(limit = 5000): ThreatCloudRule[] {
-    const stmt = this.db.prepare(`
-      SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source
-      FROM rules
-      ORDER BY published_at DESC
-      LIMIT ?
-    `);
-    return stmt.all(limit) as ThreatCloudRule[];
+  getAllRules(limit = 5000, filters?: { category?: string; severity?: string; source?: string }): ThreatCloudRule[] {
+    let sql = `SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
+      category, severity, mitre_techniques as mitreTechniques, tags
+      FROM rules WHERE 1=1`;
+    const params: unknown[] = [];
+
+    if (filters?.category) { sql += ' AND category = ?'; params.push(filters.category); }
+    if (filters?.severity) { sql += ' AND severity = ?'; params.push(filters.severity); }
+    if (filters?.source) { sql += ' AND source = ?'; params.push(filters.source); }
+
+    sql += ' ORDER BY published_at DESC LIMIT ?';
+    params.push(limit);
+    return this.db.prepare(sql).all(...params) as ThreatCloudRule[];
   }
 
   /** Insert ATR rule proposal / 插入 ATR 規則提案 */
@@ -287,6 +436,21 @@ export class ThreatCloudDB {
     const proposalStats = this.getProposalStats();
     const skillThreatsTotal = (this.db.prepare('SELECT COUNT(*) as count FROM skill_threats').get() as { count: number }).count;
 
+    const rulesByCategory = this.db.prepare(`
+      SELECT COALESCE(category, 'unknown') as category, COUNT(*) as count
+      FROM rules GROUP BY category ORDER BY count DESC LIMIT 20
+    `).all() as Array<{ category: string; count: number }>;
+
+    const rulesBySeverity = this.db.prepare(`
+      SELECT COALESCE(severity, 'unknown') as severity, COUNT(*) as count
+      FROM rules GROUP BY severity ORDER BY count DESC
+    `).all() as Array<{ severity: string; count: number }>;
+
+    const rulesBySource = this.db.prepare(`
+      SELECT source, COUNT(*) as count
+      FROM rules GROUP BY source ORDER BY count DESC
+    `).all() as Array<{ source: string; count: number }>;
+
     return {
       totalThreats,
       totalRules,
@@ -295,6 +459,9 @@ export class ThreatCloudDB {
       last24hThreats: last24h,
       proposalStats,
       skillThreatsTotal,
+      rulesByCategory,
+      rulesBySeverity,
+      rulesBySource,
     };
   }
 
@@ -411,14 +578,16 @@ export class ThreatCloudDB {
   getRulesBySource(source: string, since?: string): ThreatCloudRule[] {
     if (since) {
       return this.db.prepare(`
-        SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source
+        SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
+          category, severity, mitre_techniques as mitreTechniques, tags
         FROM rules
         WHERE source = ? AND published_at > ?
         ORDER BY published_at ASC
       `).all(source, since) as ThreatCloudRule[];
     }
     return this.db.prepare(`
-      SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source
+      SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
+        category, severity, mitre_techniques as mitreTechniques, tags
       FROM rules
       WHERE source = ?
       ORDER BY published_at ASC
@@ -447,6 +616,26 @@ export class ThreatCloudDB {
       WHERE status = 'confirmed'
       ORDER BY confirmations DESC
     `).all() as Array<{ name: string; hash: string | null; confirmations: number }>;
+  }
+
+  /** Backfill classification for rules with NULL category / 回填缺少分類的規則 */
+  backfillClassification(): number {
+    const unclassified = this.db.prepare(
+      `SELECT rule_id, rule_content, source FROM rules WHERE category IS NULL`
+    ).all() as Array<{ rule_id: string; rule_content: string; source: string }>;
+
+    let updated = 0;
+    const stmt = this.db.prepare(`
+      UPDATE rules SET category = ?, severity = ?, mitre_techniques = ?, tags = ?, updated_at = datetime('now')
+      WHERE rule_id = ?
+    `);
+
+    for (const row of unclassified) {
+      const meta = this.extractMetadata(row.rule_content, row.source);
+      stmt.run(meta.category, meta.severity, meta.mitreTechniques, meta.tags, row.rule_id);
+      updated++;
+    }
+    return updated;
   }
 
   /** Close the database / 關閉資料庫 */
