@@ -1005,8 +1005,8 @@
           "desc": "Pre-built adapters for Windows Defender, Syslog, and Wazuh. 7-day learning period builds a behavioral baseline for your system. Supports Linux, macOS, Windows, Docker, and Kubernetes."
         },
         "item7": {
-          "title": "8 Response Actions",
-          "desc": "Guard executes 8 distinct response actions: block_ip (firewall rules), kill_process (process tree cleanup), isolate_file (SHA-256 quarantine), block_tool (prevent MCP tool invocation), kill_agent (terminate rogue AI agent), quarantine_session (isolate compromised session), revoke_skill (remove from whitelist), and reduce_permissions (downgrade access). Every action is logged and reversible."
+          "title": "11 Response Actions",
+          "desc": "Guard executes 11 distinct response actions: log_only (audit trail), notify (alert with evidence), block_ip (firewall rules), kill_process (process tree cleanup), disable_account (suspend user account), isolate_file (SHA-256 quarantine), block_tool (prevent MCP tool invocation), kill_agent (terminate rogue AI agent), quarantine_session (isolate compromised session), revoke_skill (remove from whitelist), and reduce_permissions (downgrade access). Every action is logged and reversible."
         },
         "item8": {
           "title": "Rate Limiting and Safety Rails",
@@ -2782,8 +2782,8 @@
     },
     "agents": {
       "overline": "Agent Architecture",
-      "title": "Five agents. One mission.",
-      "subtitle": "Each agent is a specialist. Together they form an autonomous security operations pipeline that detects, analyzes, responds, reports, and notifies -- keeping you informed in real time.",
+      "title": "Four agents. One mission.",
+      "subtitle": "Each agent is a specialist. Together they form an autonomous security operations pipeline that detects, analyzes, responds, and reports -- keeping you informed in real time.",
       "detect": {
         "name": "Detect Agent",
         "role": "First Responder",
@@ -2803,11 +2803,6 @@
         "name": "Report Agent",
         "role": "Compliance Writer",
         "desc": "Transforms raw incident data into structured reports mapped to ISO 27001, SOC 2, and other frameworks. Generates executive summaries, timeline visualizations, and audit-ready evidence packages automatically."
-      },
-      "chat": {
-        "name": "Chat Agent",
-        "role": "Security Copilot",
-        "desc": "The human interface. Users ask questions in plain language and receive answers backed by real telemetry. Integrated with Slack and Telegram. Sends proactive weekly summaries and real-time breach notifications."
       }
     },
     "contextMemory": {
@@ -4177,7 +4172,7 @@
       "layer5": {
         "badge": "Layer 5",
         "name": "Automated Response",
-        "desc": "8 response actions: block_ip, kill_process, isolate_file, block_tool, kill_agent, quarantine_session, revoke_skill, reduce_permissions. ATR-specific actions for AI agent threats.",
+        "desc": "11 response actions: log_only, notify, block_ip, kill_process, disable_account, isolate_file, block_tool, kill_agent, quarantine_session, revoke_skill, reduce_permissions. ATR-specific actions for AI agent threats.",
         "detail": "Confidence >= 85%: automatic. 50-84%: alerts with evidence, suggests action. < 50%: logs for investigation. Rate limited: kill_agent 3/min, block_tool 10/min."
       }
     },

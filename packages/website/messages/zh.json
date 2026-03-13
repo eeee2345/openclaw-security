@@ -797,7 +797,7 @@
       "layer5": {
         "badge": "第五層",
         "name": "自動回應",
-        "desc": "8 種回應動作：block_ip、kill_process、isolate_file、block_tool、kill_agent、quarantine_session、revoke_skill、reduce_permissions。針對 AI agent 威脅的 ATR 專用動作。",
+        "desc": "11 種回應動作：log_only、notify、block_ip、kill_process、disable_account、isolate_file、block_tool、kill_agent、quarantine_session、revoke_skill、reduce_permissions。針對 AI agent 威脅的 ATR 專用動作。",
         "detail": "信心值 >= 85%：自動執行。50-84%：附證據警報，建議動作。< 50%：記錄供調查。速率限制：kill_agent 3 次/分鐘、block_tool 10 次/分鐘。"
       }
     },
@@ -1819,8 +1819,8 @@
           "desc": "預建 Windows Defender、Syslog 和 Wazuh 適配器。7 天學習期為你的系統建立行為基線。支援 Linux、macOS、Windows、Docker 和 Kubernetes。"
         },
         "item7": {
-          "title": "8 種回應動作",
-          "desc": "Guard 執行 8 種回應動作：block_ip（防火牆規則）、kill_process（程序樹清理）、isolate_file（SHA-256 隔離）、block_tool（阻止 MCP 工具呼叫）、kill_agent（終止失控 AI agent）、quarantine_session（隔離受損 session）、revoke_skill（從白名單移除）、reduce_permissions（降級存取權限）。每個動作都有日誌且可逆。"
+          "title": "11 種回應動作",
+          "desc": "Guard 執行 11 種回應動作：log_only（審計記錄）、notify（附證據警報）、block_ip（防火牆規則）、kill_process（程序樹清理）、disable_account（暫停用戶帳號）、isolate_file（SHA-256 隔離）、block_tool（阻止 MCP 工具呼叫）、kill_agent（終止失控 AI agent）、quarantine_session（隔離受損 session）、revoke_skill（從白名單移除）、reduce_permissions（降級存取權限）。每個動作都有日誌且可逆。"
         },
         "item8": {
           "title": "速率限制與安全護欄",
@@ -3596,8 +3596,8 @@
     },
     "agents": {
       "overline": "代理架構",
-      "title": "五個代理。一個使命。",
-      "subtitle": "每個代理都是專家。它們共同組成自主安全運營管線：偵測、分析、回應、報告、通知 -- 即時掌握所有狀況。",
+      "title": "四個代理。一個使命。",
+      "subtitle": "每個代理都是專家。它們共同組成自主安全運營管線：偵測、分析、回應、報告 -- 即時掌握所有狀況。",
       "detect": {
         "name": "偵測代理",
         "role": "第一線反應者",
@@ -3617,11 +3617,6 @@
         "name": "報告代理",
         "role": "合規撰寫者",
         "desc": "將原始事件資料轉換為對應 ISO 27001、SOC 2 等框架的結構化報告。自動生成高管摘要、時間線視覺化和稽核就緒證據包。"
-      },
-      "chat": {
-        "name": "聊天代理",
-        "role": "資安副駕",
-        "desc": "人機介面。用戶用人話提問，獲得以真實遙測為依據的回答。整合 Slack 和 Telegram。主動發送每週摘要和即時入侵通知。"
       }
     },
     "contextMemory": {

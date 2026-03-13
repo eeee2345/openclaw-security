@@ -97,7 +97,6 @@ const agentConfigs = [
   { key: 'analyze' as const, icon: SettingsIcon },
   { key: 'respond' as const, icon: ResponseIcon },
   { key: 'report' as const, icon: AnalyticsIcon },
-  { key: 'chat' as const, icon: TerminalIcon },
 ];
 
 /* ─── Confidence Scoring ─── */
@@ -393,14 +392,14 @@ export default function TechnologyContent() {
         </div>
       </SectionWrapper>
 
-      {/* -- Five Agent Architecture -- */}
+      {/* -- Four Agent Architecture -- */}
       <SectionWrapper dark>
         <SectionTitle
           overline={t('agents.overline')}
           title={t('agents.title')}
           subtitle={t('agents.subtitle')}
         />
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {agentConfigs.map((a, i) => (
             <FadeInUp key={a.key} delay={i * 0.08}>
               <div className="bg-surface-2 rounded-xl p-6 border border-border h-full flex flex-col">
@@ -420,12 +419,12 @@ export default function TechnologyContent() {
         {/* Flow arrows (desktop) */}
         <FadeInUp delay={0.4}>
           <div className="hidden lg:flex items-center justify-center gap-2 mt-6 text-text-muted">
-            {['detect', 'analyze', 'respond', 'report', 'chat'].map((step, i) => (
+            {['detect', 'analyze', 'respond', 'report'].map((step, i) => (
               <span key={step} className="flex items-center gap-2">
                 <span className="text-xs font-medium text-text-tertiary">
                   {t(`agents.${step}.name`)}
                 </span>
-                {i < 4 && <ArrowRight className="w-3.5 h-3.5 text-text-muted" />}
+                {i < 3 && <ArrowRight className="w-3.5 h-3.5 text-text-muted" />}
               </span>
             ))}
           </div>

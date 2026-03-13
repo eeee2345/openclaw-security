@@ -35,7 +35,7 @@ export const STATS = {
   detectionLayers: 3,
   responseActions: 11,
   cliCommands: 23,
-  products: 3,
+  products: 6,
   aiAgents: 5,
   mcpTools: 11,
   playbookTemplates: 3,
