@@ -64,9 +64,13 @@ export class ThreatCloudServer {
   private readonly llmReviewer: LLMReviewer | null;
   private promotionTimer: ReturnType<typeof setInterval> | null = null;
   private rateLimits: Map<string, RateLimitEntry> = new Map();
+  private rateLimitCleanupTimer: ReturnType<typeof setInterval> | null = null;
+  private statsCache: { data: unknown; expiresAt: number } | null = null;
 
   /** Promotion interval: 15 minutes / 推廣間隔：15 分鐘 */
   private static readonly PROMOTION_INTERVAL_MS = 15 * 60 * 1000;
+  /** Stats cache TTL: 60 seconds */
+  private static readonly STATS_CACHE_TTL_MS = 60_000;
 
   constructor(config: ServerConfig) {
     this.config = config;
@@ -123,6 +127,15 @@ export class ThreatCloudServer {
             log.error('Promotion cycle failed', err);
           }
         }, ThreatCloudServer.PROMOTION_INTERVAL_MS);
+
+        // Rate limiter cleanup (every 60s, purge expired entries)
+        this.rateLimitCleanupTimer = setInterval(() => {
+          const now = Date.now();
+          for (const [ip, entry] of this.rateLimits) {
+            if (now > entry.resetAt) this.rateLimits.delete(ip);
+          }
+        }, 60_000);
+
         resolve();
       });
     });
@@ -134,6 +147,10 @@ export class ThreatCloudServer {
       if (this.promotionTimer) {
         clearInterval(this.promotionTimer);
         this.promotionTimer = null;
+      }
+      if (this.rateLimitCleanupTimer) {
+        clearInterval(this.rateLimitCleanupTimer);
+        this.rateLimitCleanupTimer = null;
       }
       this.db.close();
       if (this.server) {
@@ -203,7 +220,13 @@ export class ThreatCloudServer {
           break;
 
         case '/api/threats':
-          if (req.method === 'POST') {
+          if (req.method === 'GET') {
+            if (!this.checkAdminAuth(req)) {
+              this.sendJson(res, 403, { ok: false, error: 'Admin API key required' });
+              break;
+            }
+            this.handleGetThreats(url, res);
+          } else if (req.method === 'POST') {
             await this.handlePostThreat(req, res);
           } else {
             this.sendJson(res, 405, { ok: false, error: 'Method not allowed' });
@@ -236,7 +259,13 @@ export class ThreatCloudServer {
           break;
 
         case '/api/atr-proposals':
-          if (req.method === 'POST') {
+          if (req.method === 'GET') {
+            if (!this.checkAdminAuth(req)) {
+              this.sendJson(res, 403, { ok: false, error: 'Admin API key required' });
+              break;
+            }
+            this.handleGetATRProposals(url, res);
+          } else if (req.method === 'POST') {
             await this.handlePostATRProposal(req, res);
           } else {
             this.sendJson(res, 405, { ok: false, error: 'Method not allowed' });
@@ -252,7 +281,13 @@ export class ThreatCloudServer {
           break;
 
         case '/api/skill-threats':
-          if (req.method === 'POST') {
+          if (req.method === 'GET') {
+            if (!this.checkAdminAuth(req)) {
+              this.sendJson(res, 403, { ok: false, error: 'Admin API key required' });
+              break;
+            }
+            this.handleGetSkillThreats(url, res);
+          } else if (req.method === 'POST') {
             await this.handlePostSkillThreat(req, res);
           } else {
             this.sendJson(res, 405, { ok: false, error: 'Method not allowed' });
@@ -398,11 +433,48 @@ export class ThreatCloudServer {
     this.sendJson(res, 201, { ok: true, data: { message: `${count} rule(s) published`, count } });
   }
 
-  /** GET /api/stats */
+  /** GET /api/stats (cached 60s) */
   private handleGetStats(res: ServerResponse): void {
-    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60');
+    const now = Date.now();
+    if (this.statsCache && now < this.statsCache.expiresAt) {
+      this.sendJson(res, 200, { ok: true, data: this.statsCache.data });
+      return;
+    }
     const stats = this.db.getStats();
+    this.statsCache = { data: stats, expiresAt: now + ThreatCloudServer.STATS_CACHE_TTL_MS };
     this.sendJson(res, 200, { ok: true, data: stats });
+  }
+
+  /** GET /api/threats?page=1&limit=50 (admin-only, paginated) */
+  private handleGetThreats(url: string, res: ServerResponse): void {
+    const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
+    const page = Math.max(1, parseInt(params.get('page') ?? '1', 10));
+    const limit = Math.min(200, Math.max(1, parseInt(params.get('limit') ?? '50', 10)));
+    const offset = (page - 1) * limit;
+    const threats = this.db.getThreats(limit, offset);
+    const total = this.db.getThreatCount();
+    this.sendJson(res, 200, {
+      ok: true,
+      data: threats,
+      meta: { total, page, limit, pages: Math.ceil(total / limit) },
+    });
+  }
+
+  /** GET /api/atr-proposals?status=pending (admin-only) */
+  private handleGetATRProposals(url: string, res: ServerResponse): void {
+    const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
+    const status = params.get('status') ?? undefined;
+    const proposals = this.db.getATRProposals(status);
+    this.sendJson(res, 200, { ok: true, data: proposals });
+  }
+
+  /** GET /api/skill-threats?limit=50 (admin-only) */
+  private handleGetSkillThreats(url: string, res: ServerResponse): void {
+    const params = new URL(url, `http://localhost:${this.config.port}`).searchParams;
+    const limit = Math.min(500, Math.max(1, parseInt(params.get('limit') ?? '50', 10)));
+    const threats = this.db.getSkillThreats(limit);
+    this.sendJson(res, 200, { ok: true, data: threats });
   }
 
   /** POST /api/atr-proposals - Submit or confirm an ATR rule proposal */
@@ -603,8 +675,19 @@ export class ThreatCloudServer {
     return ip;
   }
 
-  /** Serve admin dashboard HTML (requires admin key or returns login page) */
-  private serveAdminDashboard(_req: IncomingMessage, res: ServerResponse): void {
+  /** Serve admin dashboard HTML -- requires admin auth via query param or header */
+  private serveAdminDashboard(req: IncomingMessage, res: ServerResponse): void {
+    // Server-side auth: require admin key via ?key= param or Authorization header
+    if (this.config.adminApiKey) {
+      const url = new URL(req.url ?? '/', `http://localhost:${this.config.port}`);
+      const queryKey = url.searchParams.get('key');
+      const headerKey = (req.headers.authorization ?? '').replace('Bearer ', '');
+      if (queryKey !== this.config.adminApiKey && headerKey !== this.config.adminApiKey) {
+        res.writeHead(401, { 'Content-Type': 'text/plain' });
+        res.end('Unauthorized: admin API key required. Use ?key=YOUR_KEY or Authorization header.');
+        return;
+      }
+    }
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow');
@@ -637,7 +720,7 @@ export class ThreatCloudServer {
     return new Promise((resolve, reject) => {
       const chunks: Buffer[] = [];
       let size = 0;
-      const MAX_BODY = 52_428_800; // 50MB (for batch rule uploads)
+      const MAX_BODY = 5_242_880; // 5MB (reasonable limit for JSON payloads)
 
       req.on('data', (chunk: Buffer) => {
         size += chunk.length;

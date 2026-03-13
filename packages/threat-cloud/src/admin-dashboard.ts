@@ -332,23 +332,50 @@ function renderRules(){
   });
 }
 
-// Threats (via stats - no direct GET /api/threats endpoint for list)
+// Threats (paginated via GET /api/threats)
+let threatsPage=1;
 function renderThreats(){
-  api('/api/stats').then(d=>{
-    const s=d.data;
+  $('content').innerHTML='<div class="loading">Loading threats...</div>';
+  Promise.all([api('/api/threats?page='+threatsPage+'&limit=50'),api('/api/stats')]).then(([td,sd])=>{
+    const threats=td.data||[];
+    const meta=td.meta||{total:0,page:1,pages:1};
+    const s=sd.data;
     let html='<div class="cards">';
     html+='<div class="card"><div class="label">Total Threats</div><div class="value blue">'+num(s.totalThreats)+'</div></div>';
     html+='<div class="card"><div class="label">Last 24h</div><div class="value orange">'+num(s.last24hThreats)+'</div></div>';
     html+='</div>';
     html+='<div class="chart-row">';
     html+='<div class="chart-box"><h3>Attack Types</h3>';
-    if(!s.topAttackTypes.length)html+='<div class="empty">No threat data collected yet. Threats are submitted by Guard instances.</div>';
+    if(!s.topAttackTypes.length)html+='<div class="empty">No threat data yet.</div>';
     else{html+='<table><tr><th>Type</th><th>Count</th></tr>';s.topAttackTypes.forEach(t=>{html+='<tr><td>'+h(t.type)+'</td><td>'+num(t.count)+'</td></tr>';});html+='</table>';}
     html+='</div>';
     html+='<div class="chart-box"><h3>MITRE Techniques</h3>';
-    if(!s.topMitreTechniques.length)html+='<div class="empty">No MITRE technique data yet.</div>';
+    if(!s.topMitreTechniques.length)html+='<div class="empty">No MITRE data yet.</div>';
     else{html+='<table><tr><th>Technique</th><th>Count</th></tr>';s.topMitreTechniques.forEach(t=>{html+='<tr><td><a href="https://attack.mitre.org/techniques/'+h(t.technique).replace('.','/')+'" target="_blank">'+h(t.technique)+'</a></td><td>'+num(t.count)+'</td></tr>';});html+='</table>';}
     html+='</div></div>';
+    // Threat events table
+    html+='<div class="table-wrap"><div class="table-header"><h2>Threat Events ('+num(meta.total)+')</h2></div>';
+    if(!threats.length){html+='<div class="empty">No threat events collected yet. Threats are submitted by Guard instances.</div>';}
+    else{
+      html+='<table><tr><th>Source IP</th><th>Attack Type</th><th>MITRE</th><th>Sigma Rule</th><th>Region</th><th>Time</th></tr>';
+      threats.forEach(t=>{
+        html+='<tr><td>'+h(t.attack_source_ip)+'</td>';
+        html+='<td>'+h(t.attack_type)+'</td>';
+        html+='<td>'+h(t.mitre_technique)+'</td>';
+        html+='<td title="'+h(t.sigma_rule_matched)+'">'+h((t.sigma_rule_matched||'').slice(0,30))+'</td>';
+        html+='<td>'+h(t.region||'-')+'</td>';
+        html+='<td>'+timeAgo(t.timestamp)+'</td></tr>';
+      });
+      html+='</table>';
+      html+='<div class="pagination">';
+      html+='<button onclick="threatsPage=1;renderThreats()" '+(meta.page<=1?'disabled':'')+'>First</button>';
+      html+='<button onclick="threatsPage--;renderThreats()" '+(meta.page<=1?'disabled':'')+'>Prev</button>';
+      html+='<span>Page '+meta.page+' of '+meta.pages+'</span>';
+      html+='<button onclick="threatsPage++;renderThreats()" '+(meta.page>=meta.pages?'disabled':'')+'>Next</button>';
+      html+='<button onclick="threatsPage='+meta.pages+';renderThreats()" '+(meta.page>=meta.pages?'disabled':'')+'>Last</button>';
+      html+='</div>';
+    }
+    html+='</div>';
     $('content').innerHTML=html;
   });
 }

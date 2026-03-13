@@ -8,7 +8,14 @@
  */
 
 import Database from 'better-sqlite3';
-import type { AnonymizedThreatData, ThreatCloudRule, ThreatStats, ATRProposal, SkillThreatSubmission, SkillBlacklistEntry } from './types.js';
+import type {
+  AnonymizedThreatData,
+  ThreatCloudRule,
+  ThreatStats,
+  ATRProposal,
+  SkillThreatSubmission,
+  SkillBlacklistEntry,
+} from './types.js';
 
 /**
  * Threat Cloud database backed by SQLite
@@ -163,12 +170,27 @@ export class ThreatCloudDB {
       data.sigmaRuleMatched,
       data.timestamp,
       data.industry ?? null,
-      data.region,
+      data.region
     );
   }
 
+  /** Get paginated threat events (admin) / 取得分頁威脅事件 */
+  getThreats(limit: number = 50, offset: number = 0): unknown[] {
+    return this.db
+      .prepare('SELECT * FROM threats ORDER BY timestamp DESC LIMIT ? OFFSET ?')
+      .all(limit, offset);
+  }
+
+  /** Get total threat count / 取得威脅總數 */
+  getThreatCount(): number {
+    return (this.db.prepare('SELECT COUNT(*) as count FROM threats').get() as { count: number }).count;
+  }
+
   /** Extract classification metadata from rule content / 從規則內容提取分類元資料 */
-  private extractMetadata(ruleContent: string, source: string): {
+  private extractMetadata(
+    ruleContent: string,
+    source: string
+  ): {
     category: string;
     severity: string;
     mitreTechniques: string;
@@ -194,7 +216,8 @@ export class ThreatCloudDB {
         }
         // Fallback: infer category from rule content keywords
         if (category === 'unknown') {
-          if (/malware|trojan|ransom|backdoor|rat_|infostealer/i.test(ruleContent)) category = 'malware';
+          if (/malware|trojan|ransom|backdoor|rat_|infostealer/i.test(ruleContent))
+            category = 'malware';
           else if (/exploit|cve-/i.test(ruleContent)) category = 'exploit';
           else if (/hack_?tool|offensive|cobalt/i.test(ruleContent)) category = 'hacktool';
           else if (/webshell/i.test(ruleContent)) category = 'webshell';
@@ -216,36 +239,84 @@ export class ThreatCloudDB {
           // Derive MITRE techniques from tags (attack.tXXXX)
           const mitreTags = tagList.filter((t) => /^attack\.t\d+/i.test(t));
           if (mitreTags.length > 0) {
-            mitreTechniques = mitreTags.map((t) => t.replace(/^attack\./i, '').toUpperCase()).join(',');
+            mitreTechniques = mitreTags
+              .map((t) => t.replace(/^attack\./i, '').toUpperCase())
+              .join(',');
           }
 
           // Derive category from MITRE ATT&CK tactic tags
           const attackTags = tagList.filter((t) => t.startsWith('attack.'));
           for (const tag of attackTags) {
-            if (/initial.access/i.test(tag)) { category = 'initial-access'; break; }
-            if (/execution/i.test(tag)) { category = 'execution'; break; }
-            if (/persistence/i.test(tag)) { category = 'persistence'; break; }
-            if (/privilege.escalation/i.test(tag)) { category = 'privilege-escalation'; break; }
-            if (/defense.evasion/i.test(tag)) { category = 'defense-evasion'; break; }
-            if (/credential.access/i.test(tag)) { category = 'credential-access'; break; }
-            if (/discovery/i.test(tag)) { category = 'discovery'; break; }
-            if (/lateral.movement/i.test(tag)) { category = 'lateral-movement'; break; }
-            if (/collection/i.test(tag)) { category = 'collection'; break; }
-            if (/exfiltration/i.test(tag)) { category = 'exfiltration'; break; }
-            if (/command.and.control|c2/i.test(tag)) { category = 'command-and-control'; break; }
-            if (/impact/i.test(tag)) { category = 'impact'; break; }
-            if (/resource.development/i.test(tag)) { category = 'resource-development'; break; }
-            if (/reconnaissance/i.test(tag)) { category = 'reconnaissance'; break; }
+            if (/initial.access/i.test(tag)) {
+              category = 'initial-access';
+              break;
+            }
+            if (/execution/i.test(tag)) {
+              category = 'execution';
+              break;
+            }
+            if (/persistence/i.test(tag)) {
+              category = 'persistence';
+              break;
+            }
+            if (/privilege.escalation/i.test(tag)) {
+              category = 'privilege-escalation';
+              break;
+            }
+            if (/defense.evasion/i.test(tag)) {
+              category = 'defense-evasion';
+              break;
+            }
+            if (/credential.access/i.test(tag)) {
+              category = 'credential-access';
+              break;
+            }
+            if (/discovery/i.test(tag)) {
+              category = 'discovery';
+              break;
+            }
+            if (/lateral.movement/i.test(tag)) {
+              category = 'lateral-movement';
+              break;
+            }
+            if (/collection/i.test(tag)) {
+              category = 'collection';
+              break;
+            }
+            if (/exfiltration/i.test(tag)) {
+              category = 'exfiltration';
+              break;
+            }
+            if (/command.and.control|c2/i.test(tag)) {
+              category = 'command-and-control';
+              break;
+            }
+            if (/impact/i.test(tag)) {
+              category = 'impact';
+              break;
+            }
+            if (/resource.development/i.test(tag)) {
+              category = 'resource-development';
+              break;
+            }
+            if (/reconnaissance/i.test(tag)) {
+              category = 'reconnaissance';
+              break;
+            }
           }
         }
 
         // Fallback: infer from logsource (Sigma)
         if (category === 'unknown') {
-          const lsCatMatch = ruleContent.match(/(?:^|\n)\s*logsource\s*:\s*\n(?:\s+\w+\s*:.+\n)*?\s+category\s*:\s*(\S+)/);
+          const lsCatMatch = ruleContent.match(
+            /(?:^|\n)\s*logsource\s*:\s*\n(?:\s+\w+\s*:.+\n)*?\s+category\s*:\s*(\S+)/
+          );
           if (lsCatMatch) {
             category = lsCatMatch[1].toLowerCase();
           } else {
-            const lsProdMatch = ruleContent.match(/(?:^|\n)\s*logsource\s*:\s*\n(?:\s+\w+\s*:.+\n)*?\s+product\s*:\s*(\S+)/);
+            const lsProdMatch = ruleContent.match(
+              /(?:^|\n)\s*logsource\s*:\s*\n(?:\s+\w+\s*:.+\n)*?\s+product\s*:\s*(\S+)/
+            );
             if (lsProdMatch) category = lsProdMatch[1].toLowerCase();
           }
         }
@@ -283,34 +354,67 @@ export class ThreatCloudDB {
         tags = excluded.tags,
         updated_at = datetime('now')
     `);
-    stmt.run(rule.ruleId, rule.ruleContent, rule.publishedAt, rule.source, category, severity, mitreTechniques, tags);
+    stmt.run(
+      rule.ruleId,
+      rule.ruleContent,
+      rule.publishedAt,
+      rule.source,
+      category,
+      severity,
+      mitreTechniques,
+      tags
+    );
   }
 
   /** Fetch rules published after a given timestamp / 取得指定時間後發佈的規則 */
-  getRulesSince(since: string, filters?: { category?: string; severity?: string; source?: string }): ThreatCloudRule[] {
+  getRulesSince(
+    since: string,
+    filters?: { category?: string; severity?: string; source?: string }
+  ): ThreatCloudRule[] {
     let sql = `SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
       category, severity, mitre_techniques as mitreTechniques, tags
       FROM rules WHERE published_at > ?`;
     const params: unknown[] = [since];
 
-    if (filters?.category) { sql += ' AND category = ?'; params.push(filters.category); }
-    if (filters?.severity) { sql += ' AND severity = ?'; params.push(filters.severity); }
-    if (filters?.source) { sql += ' AND source = ?'; params.push(filters.source); }
+    if (filters?.category) {
+      sql += ' AND category = ?';
+      params.push(filters.category);
+    }
+    if (filters?.severity) {
+      sql += ' AND severity = ?';
+      params.push(filters.severity);
+    }
+    if (filters?.source) {
+      sql += ' AND source = ?';
+      params.push(filters.source);
+    }
 
     sql += ' ORDER BY published_at ASC';
     return this.db.prepare(sql).all(...params) as ThreatCloudRule[];
   }
 
   /** Fetch all rules with limit / 取得所有規則（含限制） */
-  getAllRules(limit = 5000, filters?: { category?: string; severity?: string; source?: string }): ThreatCloudRule[] {
+  getAllRules(
+    limit = 5000,
+    filters?: { category?: string; severity?: string; source?: string }
+  ): ThreatCloudRule[] {
     let sql = `SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
       category, severity, mitre_techniques as mitreTechniques, tags
       FROM rules WHERE 1=1`;
     const params: unknown[] = [];
 
-    if (filters?.category) { sql += ' AND category = ?'; params.push(filters.category); }
-    if (filters?.severity) { sql += ' AND severity = ?'; params.push(filters.severity); }
-    if (filters?.source) { sql += ' AND source = ?'; params.push(filters.source); }
+    if (filters?.category) {
+      sql += ' AND category = ?';
+      params.push(filters.category);
+    }
+    if (filters?.severity) {
+      sql += ' AND severity = ?';
+      params.push(filters.severity);
+    }
+    if (filters?.source) {
+      sql += ' AND source = ?';
+      params.push(filters.source);
+    }
 
     sql += ' ORDER BY published_at DESC LIMIT ?';
     params.push(limit);
@@ -329,47 +433,73 @@ export class ThreatCloudDB {
       proposal.llmProvider,
       proposal.llmModel,
       proposal.selfReviewVerdict,
-      proposal.clientId ?? null,
+      proposal.clientId ?? null
     );
   }
 
   /** Get ATR proposals, optionally filtered by status / 取得 ATR 提案 */
   getATRProposals(status?: string): unknown[] {
     if (status) {
-      return this.db.prepare('SELECT * FROM atr_proposals WHERE status = ? ORDER BY created_at DESC').all(status);
+      return this.db
+        .prepare('SELECT * FROM atr_proposals WHERE status = ? ORDER BY created_at DESC')
+        .all(status);
     }
     return this.db.prepare('SELECT * FROM atr_proposals ORDER BY created_at DESC').all();
   }
 
   /** Increment confirmations for a proposal; auto-confirm at >= 3 / 增加提案確認數 */
   confirmATRProposal(patternHash: string): void {
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       UPDATE atr_proposals
       SET confirmations = confirmations + 1,
           status = CASE WHEN confirmations + 1 >= 3 THEN 'confirmed' ELSE status END,
           updated_at = datetime('now')
       WHERE pattern_hash = ?
-    `).run(patternHash);
+    `
+      )
+      .run(patternHash);
   }
 
   /** Update LLM review verdict for a proposal / 更新 LLM 審查結果 */
   updateATRProposalLLMReview(patternHash: string, verdict: string): void {
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       UPDATE atr_proposals SET llm_review_verdict = ?, updated_at = datetime('now') WHERE pattern_hash = ?
-    `).run(verdict, patternHash);
+    `
+      )
+      .run(verdict, patternHash);
   }
 
   /** Insert ATR feedback / 插入 ATR 回饋 */
   insertATRFeedback(ruleId: string, isTruePositive: boolean, clientId?: string): void {
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       INSERT INTO atr_feedback (rule_id, is_true_positive, client_id) VALUES (?, ?, ?)
-    `).run(ruleId, isTruePositive ? 1 : 0, clientId ?? null);
+    `
+      )
+      .run(ruleId, isTruePositive ? 1 : 0, clientId ?? null);
   }
 
   /** Get feedback stats for a rule / 取得規則回饋統計 */
   getATRFeedbackStats(ruleId: string): { truePositives: number; falsePositives: number } {
-    const tp = (this.db.prepare('SELECT COUNT(*) as count FROM atr_feedback WHERE rule_id = ? AND is_true_positive = 1').get(ruleId) as { count: number }).count;
-    const fp = (this.db.prepare('SELECT COUNT(*) as count FROM atr_feedback WHERE rule_id = ? AND is_true_positive = 0').get(ruleId) as { count: number }).count;
+    const tp = (
+      this.db
+        .prepare(
+          'SELECT COUNT(*) as count FROM atr_feedback WHERE rule_id = ? AND is_true_positive = 1'
+        )
+        .get(ruleId) as { count: number }
+    ).count;
+    const fp = (
+      this.db
+        .prepare(
+          'SELECT COUNT(*) as count FROM atr_feedback WHERE rule_id = ? AND is_true_positive = 0'
+        )
+        .get(ruleId) as { count: number }
+    ).count;
     return { truePositives: tp, falsePositives: fp };
   }
 
@@ -385,68 +515,114 @@ export class ThreatCloudDB {
       submission.riskScore,
       submission.riskLevel,
       submission.findingSummaries ? JSON.stringify(submission.findingSummaries) : null,
-      submission.clientId ?? null,
+      submission.clientId ?? null
     );
   }
 
   /** Get recent skill threats / 取得最近技能威脅 */
   getSkillThreats(limit: number = 50): unknown[] {
-    return this.db.prepare('SELECT * FROM skill_threats ORDER BY created_at DESC LIMIT ?').all(limit);
+    return this.db
+      .prepare('SELECT * FROM skill_threats ORDER BY created_at DESC LIMIT ?')
+      .all(limit);
   }
 
   /** Get proposal statistics / 取得提案統計 */
   getProposalStats(): { pending: number; confirmed: number; rejected: number; total: number } {
-    const pending = (this.db.prepare("SELECT COUNT(*) as count FROM atr_proposals WHERE status = 'pending'").get() as { count: number }).count;
-    const confirmed = (this.db.prepare("SELECT COUNT(*) as count FROM atr_proposals WHERE status = 'confirmed'").get() as { count: number }).count;
-    const rejected = (this.db.prepare("SELECT COUNT(*) as count FROM atr_proposals WHERE status = 'rejected'").get() as { count: number }).count;
-    const total = (this.db.prepare('SELECT COUNT(*) as count FROM atr_proposals').get() as { count: number }).count;
+    const pending = (
+      this.db
+        .prepare("SELECT COUNT(*) as count FROM atr_proposals WHERE status = 'pending'")
+        .get() as { count: number }
+    ).count;
+    const confirmed = (
+      this.db
+        .prepare("SELECT COUNT(*) as count FROM atr_proposals WHERE status = 'confirmed'")
+        .get() as { count: number }
+    ).count;
+    const rejected = (
+      this.db
+        .prepare("SELECT COUNT(*) as count FROM atr_proposals WHERE status = 'rejected'")
+        .get() as { count: number }
+    ).count;
+    const total = (
+      this.db.prepare('SELECT COUNT(*) as count FROM atr_proposals').get() as { count: number }
+    ).count;
     return { pending, confirmed, rejected, total };
   }
 
   /** Get threat statistics / 取得威脅統計 */
   getStats(): ThreatStats {
-    const totalThreats = (this.db.prepare('SELECT COUNT(*) as count FROM threats').get() as { count: number }).count;
-    const totalRules = (this.db.prepare('SELECT COUNT(*) as count FROM rules').get() as { count: number }).count;
+    const totalThreats = (
+      this.db.prepare('SELECT COUNT(*) as count FROM threats').get() as { count: number }
+    ).count;
+    const totalRules = (
+      this.db.prepare('SELECT COUNT(*) as count FROM rules').get() as { count: number }
+    ).count;
 
-    const last24h = (this.db.prepare(
-      "SELECT COUNT(*) as count FROM threats WHERE received_at > datetime('now', '-1 day')"
-    ).get() as { count: number }).count;
+    const last24h = (
+      this.db
+        .prepare(
+          "SELECT COUNT(*) as count FROM threats WHERE received_at > datetime('now', '-1 day')"
+        )
+        .get() as { count: number }
+    ).count;
 
-    const topAttackTypes = this.db.prepare(`
+    const topAttackTypes = this.db
+      .prepare(
+        `
       SELECT attack_type as type, COUNT(*) as count
       FROM threats
       GROUP BY attack_type
       ORDER BY count DESC
       LIMIT 10
-    `).all() as Array<{ type: string; count: number }>;
+    `
+      )
+      .all() as Array<{ type: string; count: number }>;
 
-    const topMitreTechniques = this.db.prepare(`
+    const topMitreTechniques = this.db
+      .prepare(
+        `
       SELECT mitre_technique as technique, COUNT(*) as count
       FROM threats
       GROUP BY mitre_technique
       ORDER BY count DESC
       LIMIT 10
-    `).all() as Array<{ technique: string; count: number }>;
+    `
+      )
+      .all() as Array<{ technique: string; count: number }>;
 
     const proposalStats = this.getProposalStats();
-    const skillThreatsTotal = (this.db.prepare('SELECT COUNT(*) as count FROM skill_threats').get() as { count: number }).count;
+    const skillThreatsTotal = (
+      this.db.prepare('SELECT COUNT(*) as count FROM skill_threats').get() as { count: number }
+    ).count;
 
     const skillBlacklistTotal = this.getSkillBlacklist().length;
 
-    const rulesByCategory = this.db.prepare(`
+    const rulesByCategory = this.db
+      .prepare(
+        `
       SELECT COALESCE(category, 'unknown') as category, COUNT(*) as count
       FROM rules GROUP BY category ORDER BY count DESC LIMIT 20
-    `).all() as Array<{ category: string; count: number }>;
+    `
+      )
+      .all() as Array<{ category: string; count: number }>;
 
-    const rulesBySeverity = this.db.prepare(`
+    const rulesBySeverity = this.db
+      .prepare(
+        `
       SELECT COALESCE(severity, 'unknown') as severity, COUNT(*) as count
       FROM rules GROUP BY severity ORDER BY count DESC
-    `).all() as Array<{ severity: string; count: number }>;
+    `
+      )
+      .all() as Array<{ severity: string; count: number }>;
 
-    const rulesBySource = this.db.prepare(`
+    const rulesBySource = this.db
+      .prepare(
+        `
       SELECT source, COUNT(*) as count
       FROM rules GROUP BY source ORDER BY count DESC
-    `).all() as Array<{ source: string; count: number }>;
+    `
+      )
+      .all() as Array<{ source: string; count: number }>;
 
     return {
       totalThreats,
@@ -464,39 +640,62 @@ export class ThreatCloudDB {
   }
 
   /** Get confirmed/promoted ATR rules, optionally filtered by date / 取得已確認 ATR 規則 */
-  getConfirmedATRRules(since?: string): Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }> {
+  getConfirmedATRRules(
+    since?: string
+  ): Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }> {
     if (since) {
-      return this.db.prepare(`
+      return this.db
+        .prepare(
+          `
         SELECT pattern_hash as ruleId, rule_content as ruleContent, updated_at as publishedAt, 'atr-community' as source
         FROM atr_proposals
         WHERE (status = 'confirmed' OR status = 'promoted') AND updated_at > ?
         ORDER BY updated_at ASC
-      `).all(since) as Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }>;
+      `
+        )
+        .all(since) as Array<{
+        ruleId: string;
+        ruleContent: string;
+        publishedAt: string;
+        source: string;
+      }>;
     }
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT pattern_hash as ruleId, rule_content as ruleContent, updated_at as publishedAt, 'atr-community' as source
       FROM atr_proposals
       WHERE status = 'confirmed' OR status = 'promoted'
       ORDER BY updated_at ASC
-    `).all() as Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }>;
+    `
+      )
+      .all() as Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }>;
   }
 
   /** Get IP blocklist from IoC entries and aggregated threat data / 取得 IP 封鎖清單 */
   getIPBlocklist(minReputation: number): string[] {
     // IoC entries with sufficient reputation
-    const iocIPs = this.db.prepare(`
+    const iocIPs = this.db
+      .prepare(
+        `
       SELECT value FROM ioc_entries
       WHERE type = 'ip' AND reputation >= ?
       ORDER BY reputation DESC
-    `).all(minReputation) as Array<{ value: string }>;
+    `
+      )
+      .all(minReputation) as Array<{ value: string }>;
 
     // Aggregate from threats table: distinct IPs with >= 3 occurrences
-    const threatIPs = this.db.prepare(`
+    const threatIPs = this.db
+      .prepare(
+        `
       SELECT attack_source_ip as value
       FROM threats
       GROUP BY attack_source_ip
       HAVING COUNT(*) >= 3
-    `).all() as Array<{ value: string }>;
+    `
+      )
+      .all() as Array<{ value: string }>;
 
     // Merge and deduplicate
     const ipSet = new Set<string>();
@@ -507,18 +706,24 @@ export class ThreatCloudDB {
 
   /** Get domain blocklist from IoC entries / 取得域名封鎖清單 */
   getDomainBlocklist(minReputation: number): string[] {
-    const iocDomains = this.db.prepare(`
+    const iocDomains = this.db
+      .prepare(
+        `
       SELECT value FROM ioc_entries
       WHERE type = 'domain' AND reputation >= ?
       ORDER BY reputation DESC
-    `).all(minReputation) as Array<{ value: string }>;
+    `
+      )
+      .all(minReputation) as Array<{ value: string }>;
 
     return iocDomains.map((row) => row.value);
   }
 
   /** Upsert an IoC entry / 插入或更新 IoC 條目 */
   upsertIoC(type: string, value: string, reputation: number, source: string): void {
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       INSERT INTO ioc_entries (type, value, reputation, source)
       VALUES (?, ?, ?, ?)
       ON CONFLICT(value) DO UPDATE SET
@@ -526,16 +731,22 @@ export class ThreatCloudDB {
         source = excluded.source,
         last_seen = datetime('now'),
         sighting_count = sighting_count + 1
-    `).run(type, value, reputation, source);
+    `
+      )
+      .run(type, value, reputation, source);
   }
 
   /** Promote confirmed proposals with approved LLM review to rules / 推廣已確認提案為規則 */
   promoteConfirmedProposals(): number {
-    const proposals = this.db.prepare(`
+    const proposals = this.db
+      .prepare(
+        `
       SELECT pattern_hash, rule_content, llm_review_verdict
       FROM atr_proposals
       WHERE status = 'confirmed' AND llm_review_verdict IS NOT NULL
-    `).all() as Array<{ pattern_hash: string; rule_content: string; llm_review_verdict: string }>;
+    `
+      )
+      .all() as Array<{ pattern_hash: string; rule_content: string; llm_review_verdict: string }>;
 
     let promoted = 0;
     for (const proposal of proposals) {
@@ -550,10 +761,14 @@ export class ThreatCloudDB {
           source: 'atr-community',
         });
 
-        this.db.prepare(`
+        this.db
+          .prepare(
+            `
           UPDATE atr_proposals SET status = 'promoted', updated_at = datetime('now')
           WHERE pattern_hash = ?
-        `).run(proposal.pattern_hash);
+        `
+          )
+          .run(proposal.pattern_hash);
 
         promoted++;
       } catch {
@@ -566,36 +781,50 @@ export class ThreatCloudDB {
 
   /** Reject an ATR proposal / 拒絕 ATR 提案 */
   rejectATRProposal(patternHash: string): void {
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       UPDATE atr_proposals SET status = 'rejected', updated_at = datetime('now')
       WHERE pattern_hash = ?
-    `).run(patternHash);
+    `
+      )
+      .run(patternHash);
   }
 
   /** Get rules by source type, optionally filtered by date / 依來源取得規則 */
   getRulesBySource(source: string, since?: string): ThreatCloudRule[] {
     if (since) {
-      return this.db.prepare(`
+      return this.db
+        .prepare(
+          `
         SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
           category, severity, mitre_techniques as mitreTechniques, tags
         FROM rules
         WHERE source = ? AND published_at > ?
         ORDER BY published_at ASC
-      `).all(source, since) as ThreatCloudRule[];
+      `
+        )
+        .all(source, since) as ThreatCloudRule[];
     }
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT rule_id as ruleId, rule_content as ruleContent, published_at as publishedAt, source,
         category, severity, mitre_techniques as mitreTechniques, tags
       FROM rules
       WHERE source = ?
       ORDER BY published_at ASC
-    `).all(source) as ThreatCloudRule[];
+    `
+      )
+      .all(source) as ThreatCloudRule[];
   }
 
   /** Report a safe skill (increment confirmations, auto-confirm at 3+) / 回報安全 skill */
   reportSafeSkill(skillName: string, fingerprintHash?: string): void {
     const normalized = skillName.toLowerCase().trim().replace(/\s+/g, '-');
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       INSERT INTO skill_whitelist (skill_name, normalized_name, fingerprint_hash)
       VALUES (?, ?, ?)
       ON CONFLICT(normalized_name) DO UPDATE SET
@@ -603,17 +832,23 @@ export class ThreatCloudDB {
         status = CASE WHEN confirmations + 1 >= 3 THEN 'confirmed' ELSE status END,
         fingerprint_hash = COALESCE(excluded.fingerprint_hash, fingerprint_hash),
         last_reported = datetime('now')
-    `).run(skillName, normalized, fingerprintHash ?? null);
+    `
+      )
+      .run(skillName, normalized, fingerprintHash ?? null);
   }
 
   /** Get confirmed community whitelist / 取得社群白名單 */
   getSkillWhitelist(): Array<{ name: string; hash: string | null; confirmations: number }> {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT skill_name as name, fingerprint_hash as hash, confirmations
       FROM skill_whitelist
       WHERE status = 'confirmed'
       ORDER BY confirmations DESC
-    `).all() as Array<{ name: string; hash: string | null; confirmations: number }>;
+    `
+      )
+      .all() as Array<{ name: string; hash: string | null; confirmations: number }>;
   }
 
   /**
@@ -621,7 +856,9 @@ export class ThreatCloudDB {
    * 取得技能黑名單：3+ 不同客戶端回報且平均風險 >= 70 的技能
    */
   getSkillBlacklist(minReports: number = 3, minAvgRisk: number = 70): SkillBlacklistEntry[] {
-    return this.db.prepare(`
+    return this.db
+      .prepare(
+        `
       SELECT
         skill_hash as skillHash,
         skill_name as skillName,
@@ -634,14 +871,16 @@ export class ThreatCloudDB {
       GROUP BY skill_hash
       HAVING reportCount >= ? AND AVG(risk_score) >= ?
       ORDER BY avgRiskScore DESC
-    `).all(minReports, minAvgRisk) as SkillBlacklistEntry[];
+    `
+      )
+      .all(minReports, minAvgRisk) as SkillBlacklistEntry[];
   }
 
   /** Backfill classification for rules with NULL category / 回填缺少分類的規則 */
   backfillClassification(): number {
-    const unclassified = this.db.prepare(
-      `SELECT rule_id, rule_content, source FROM rules WHERE category IS NULL`
-    ).all() as Array<{ rule_id: string; rule_content: string; source: string }>;
+    const unclassified = this.db
+      .prepare(`SELECT rule_id, rule_content, source FROM rules WHERE category IS NULL`)
+      .all() as Array<{ rule_id: string; rule_content: string; source: string }>;
 
     let updated = 0;
     const stmt = this.db.prepare(`
