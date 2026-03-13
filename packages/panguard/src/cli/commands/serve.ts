@@ -144,8 +144,13 @@ export function serveCommand(): Command {
           console.log(`  ${c.dim(`Threat Cloud: ${stats.totalRules} rules, ${stats.totalThreats} threats`)}`);
         }
         console.log('');
-      } catch {
-        console.log(`  ${c.dim('Threat Cloud DB not available — threat API routes disabled')}`);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(`  [ERROR] Threat Cloud initialization failed: ${msg}`);
+        if (err instanceof Error && err.stack) {
+          console.error(`  ${err.stack}`);
+        }
+        console.log(`  ${c.dim('Threat Cloud API routes disabled due to error above')}`);
         console.log('');
       }
 
@@ -1393,8 +1398,12 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
 
   if (!configDir) {
     console.log(`  ${c.dim('  No config/ directory found — skipping rule seeding')}`);
+    console.log(`  ${c.dim(`  Searched: ${configDirs.join(', ')}`)}`);
     return 0;
   }
+
+  console.log(`  ${c.dim(`  Using config directory: ${configDir}`)}`);
+
 
   /** Recursively collect files matching extensions */
   function collectFiles(dir: string, extensions: string[]): string[] {
@@ -1408,7 +1417,9 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
           results.push(fullPath);
         }
       }
-    } catch { /* skip unreadable dirs */ }
+    } catch (err: unknown) {
+      console.error(`  [WARN] Cannot read directory ${dir}: ${err instanceof Error ? err.message : String(err)}`);
+    }
     return results;
   }
 
@@ -1422,7 +1433,10 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
       threatDb.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'sigma' });
       seeded++;
     }
-  } catch { /* no sigma rules */ }
+    console.log(`  ${c.dim(`  Sigma: ${sigmaFiles.length} files processed`)}`);
+  } catch (err: unknown) {
+    console.error(`  [WARN] Sigma rule seeding failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
 
   // 2. YARA rules (.yar, .yara)
   const yaraDir = joinPath(configDir, 'yara-rules');
@@ -1446,7 +1460,10 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
         seeded++;
       }
     }
-  } catch { /* no yara rules */ }
+    console.log(`  ${c.dim(`  YARA: ${yaraFiles.length} files processed`)}`);
+  } catch (err: unknown) {
+    console.error(`  [WARN] YARA rule seeding failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
 
   // 3. ATR rules (.yaml, .yml) from atr package
   const atrDirs = [
@@ -1465,7 +1482,10 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
         threatDb.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'atr' });
         seeded++;
       }
-    } catch { /* no atr rules */ }
+      console.log(`  ${c.dim(`  ATR: ${atrFiles.length} files processed`)}`);
+    } catch (err: unknown) {
+      console.error(`  [WARN] ATR rule seeding failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   return seeded;

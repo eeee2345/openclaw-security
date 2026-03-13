@@ -2,6 +2,11 @@
   "name": "@panguard-ai/panguard-chat",
   "version": "0.2.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "type": "module",
   "description": "AI security assistant via messaging platforms / 透過通訊軟體管理資安的 AI 助手",
   "main": "./dist/index.js",

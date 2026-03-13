@@ -134,11 +134,12 @@ export default function DashboardContent() {
   const [onboarding, setOnboarding] = useState<OnboardingState>(DEFAULT_ONBOARDING);
   const [dismissed, setDismissed] = useState(true);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login?redirect=/dashboard');
-    }
-  }, [loading, user, router]);
+  // Open source: no login required. If auth is available, use it; otherwise show dashboard directly.
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     router.push('/login?redirect=/dashboard');
+  //   }
+  // }, [loading, user, router]);
 
   useEffect(() => {
     setOnboarding(getOnboardingState());
@@ -184,7 +185,7 @@ export default function DashboardContent() {
     setOnboardingDismissed(false);
   }, []);
 
-  if (loading || !user) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-surface-0 flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-brand-sage animate-spin" />
@@ -192,9 +193,10 @@ export default function DashboardContent() {
     );
   }
 
-  const tierDisplay = user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
-  const tierKey = user.tier.toLowerCase();
-  const isCommunity = tierKey === 'community';
+  // Open source: default to community tier, no login required
+  const tierDisplay = user ? user.tier.charAt(0).toUpperCase() + user.tier.slice(1) : 'Community';
+  const tierKey = user ? user.tier.toLowerCase() : 'community';
+  const isCommunity = true; // All features are free
   const completedCount = Object.values(onboarding).filter(Boolean).length;
   const totalChecklist = Object.keys(onboarding).length;
   const allComplete = completedCount === totalChecklist;
@@ -209,7 +211,7 @@ export default function DashboardContent() {
             <span className="font-semibold tracking-wider text-text-primary text-sm">PANGUARD</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-text-secondary">{user.email}</span>
+            <span className="text-sm text-text-secondary">{user?.email ?? 'Open Source'}</span>
             <button
               onClick={() => {
                 void logout();
@@ -233,11 +235,11 @@ export default function DashboardContent() {
           transition={{ duration: 0.4, ease }}
         >
           <h1 className="text-2xl font-bold text-text-primary">
-            {t('welcome', { name: user.name })}
+            {t('welcome', { name: user?.name ?? 'User' })}
           </h1>
           <p className="text-sm text-text-secondary mt-1">
             {t('planLabel')} <span className="text-brand-sage font-medium">{tierDisplay}</span>
-            {user.planExpiresAt && (
+            {user?.planExpiresAt && (
               <span className="text-text-tertiary">
                 {' '}
                 {t('planExpires', { date: new Date(user.planExpiresAt).toLocaleDateString() })}
@@ -299,42 +301,21 @@ export default function DashboardContent() {
               </span>
             </div>
 
-            {/* Tier Limits */}
-            {TIER_LIMITS[tierKey] && (
-              <div className="space-y-2.5 mb-5">
-                <TierLimitRow
-                  label={t('currentPlan.machines')}
-                  value={t(
-                    `currentPlan.${TIER_LIMITS[tierKey].machines}` as 'currentPlan.communityMachines'
-                  )}
-                />
-                <TierLimitRow
-                  label={t('currentPlan.scansPerMonth')}
-                  value={t(
-                    `currentPlan.${TIER_LIMITS[tierKey].scans}` as 'currentPlan.communityScans'
-                  )}
-                />
-                <TierLimitRow
-                  label={t('currentPlan.guardEndpoints')}
-                  value={t(
-                    `currentPlan.${TIER_LIMITS[tierKey].guard}` as 'currentPlan.communityGuard'
-                  )}
-                />
-              </div>
-            )}
-
-            {isCommunity && (
-              <div className="pt-3 border-t border-border">
-                <p className="text-xs text-text-tertiary mb-3">{t('currentPlan.upgradeMessage')}</p>
-                <Link
-                  href="/pricing"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-sage text-surface-0 text-sm font-medium hover:bg-brand-sage/90 transition-colors"
-                >
-                  {t('currentPlan.upgradeButton')}
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            )}
+            {/* All features free - no tier limits */}
+            <div className="space-y-2.5 mb-5">
+              <TierLimitRow
+                label={t('currentPlan.machines')}
+                value="Unlimited"
+              />
+              <TierLimitRow
+                label={t('currentPlan.scansPerMonth')}
+                value="Unlimited"
+              />
+              <TierLimitRow
+                label={t('currentPlan.guardEndpoints')}
+                value="Unlimited"
+              />
+            </div>
           </div>
 
           {/* Onboarding Checklist */}
@@ -495,7 +476,7 @@ function QuickStartGuide({ onDismiss }: { onDismiss: () => void }) {
       num: 2,
       title: t('onboarding.step2Title'),
       desc: t('onboarding.step2Desc'),
-      commands: [{ label: null, cmd: 'panguard login' }],
+      commands: [{ label: null, cmd: 'panguard setup' }],
     },
     {
       num: 3,
@@ -507,7 +488,7 @@ function QuickStartGuide({ onDismiss }: { onDismiss: () => void }) {
       num: 4,
       title: t('onboarding.step4Title'),
       desc: t('onboarding.step4Desc'),
-      commands: [{ label: null, cmd: 'panguard guard start' }],
+      commands: [{ label: null, cmd: 'panguard guard start --dashboard' }],
     },
     {
       num: 5,

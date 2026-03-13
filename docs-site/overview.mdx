@@ -6,13 +6,13 @@ icon: "shield-check"
 
 ## What is Panguard AI?
 
-Panguard AI is an open-source security platform purpose-built for the AI agent era. As AI agents (Claude Code, Cursor, QClaw, OpenClaw, WorkBuddy) gain root access to systems, Panguard provides the first open standard for detecting and blocking agent-level threats.
+Panguard AI is an open-source security platform purpose-built for the AI agent era. As AI agents (Claude Code, Cursor, QClaw, OpenClaw, Codex CLI, WorkBuddy) gain root access to production systems, Panguard provides the first open standard for detecting and blocking agent-level threats.
 
 **Three pillars. One mission: secure every AI agent.**
 
-1. **ATR (Agent Threat Rules)** -- The open standard for AI agent threat detection
-2. **Threat Cloud** -- Collective immunity network that gets stronger with every install
-3. **Guard** -- The enforcement engine with skill audit, threat blocking, and auto-response
+1. **ATR (Agent Threat Rules)** -- The open standard for AI agent threat detection (69 rules, 9 categories)
+2. **Threat Cloud** -- Collective immunity network that gets stronger with every install (11 intel sources, hourly sync)
+3. **Guard** -- The enforcement engine with Skill Auditor, threat blocking, and auto-response (9,790 rules)
 
 ## Three Pillars
 
@@ -21,7 +21,7 @@ Panguard AI is an open-source security platform purpose-built for the AI agent e
     **69 rules across 9 threat categories.** The first open standard for AI agent threats -- like Sigma for network attacks, but for prompt injection, tool poisoning, skill compromise, and agent manipulation. YAML-based, human-readable, machine-enforceable.
   </Card>
   <Card title="Threat Cloud -- The Network" icon="globe">
-    **Collective immunity.** Every Panguard install contributes anonymized threat signals. The pipeline auto-generates Sigma, YARA, and ATR rules from real-world attacks. 11 threat intel sources, 5,000+ validated IoC records, synced every 1 hour.
+    **Collective immunity.** Every Panguard install contributes anonymized threat signals. The pipeline auto-generates Sigma, YARA, and ATR rules from real-world attacks via Claude Sonnet 4 LLM review. 11 threat intel sources, 5,000+ validated IoC records, synced every hour.
   </Card>
   <Card title="Guard -- The Engine" icon="shield-halved">
     **9,700+ detection rules.** A 4-agent AI pipeline (Detect, Analyze, Respond, Report) processes OS-level events through Sigma, YARA, and ATR rules. Built-in Skill Auditor gates every AI skill before install. Auto-response blocks IPs, kills processes, quarantines files.
@@ -80,6 +80,23 @@ For a deep dive into the AI architecture, see [Three-Layer AI](/concepts/three-l
 | Internationalization | English + Traditional Chinese |
 | Encryption | AES-256-GCM |
 | License | MIT |
+
+## Platform Support
+
+Panguard integrates with 8 AI agent platforms via MCP or native Skill protocol:
+
+| Platform | Protocol | Config Path |
+| --- | --- | --- |
+| **OpenClaw** | Native Skill | `~/.openclaw/skills/panguard/SKILL.md` |
+| **QClaw** | MCP | `~/.qclaw/mcp.json` |
+| **Claude Code** | MCP | `~/.claude/settings.local.json` |
+| **Cursor** | MCP | `~/.cursor/mcp.json` |
+| **Codex CLI** | MCP | `~/.codex/mcp.json` |
+| **Claude Desktop** | MCP | `~/Library/.../claude_desktop_config.json` |
+| **Windsurf** | MCP | `~/.windsurf/mcp.json` |
+| **WorkBuddy** | MCP | `~/.workbuddy/mcp.json` |
+
+All platforms are auto-configured with a single `panguard setup` command.
 
 ## 100% Open Source
 

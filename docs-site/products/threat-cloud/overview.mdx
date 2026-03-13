@@ -30,29 +30,39 @@ When a Guard agent detects a threat:
 | **Feed distribution** | IP and domain blocklists pushed to agents |
 | **Sighting store** | Track how many agents have seen each indicator |
 | **Reputation engine** | Confidence scoring based on sighting frequency and source diversity |
+| **ATR rule sharing** | Community-contributed AI agent threat detection rules |
+| **LLM review** | Claude Sonnet 4 automated review of submitted ATR proposals |
 | **Sigma rule sharing** | Community-contributed detection rules |
 | **Audit logging** | Full audit trail of all submissions and queries |
-| **RESTful API** | Query and submit threat intelligence programmatically |
 
 ## Quick Start
-
-### Using Public Threat Cloud (Default)
 
 No configuration needed. Guard automatically connects to the public Threat Cloud when started:
 
 ```bash
-panguard guard start
+panguard guard start --dashboard
 ```
 
-### Deploying a Private Instance
+Threat Cloud sync happens automatically every hour in the background. Your agent contributes anonymized threat data and receives updated rules, IoC feeds, and blocklists.
 
-Enterprises can deploy their own Threat Cloud server:
+<Info>
+  **Zero configuration required.** The public Threat Cloud at `tc.panguard.ai` is free for all Panguard users. No API key needed for standard agent sync.
+</Info>
 
-```bash
-panguard threat start --port 8080 --api-key your-secret-key
-```
+## What Gets Synced
 
-See [Deployment](/products/threat-cloud/deployment) for full setup instructions.
+Every hour, your Guard agent exchanges data with Threat Cloud:
+
+| Direction | Data | Description |
+|-----------|------|-------------|
+| **Upload** | Anonymized threat events | IP /16 masked, no hostnames, no file contents |
+| **Upload** | ATR proposals | New AI agent threat patterns detected locally |
+| **Upload** | Skill audit results | Safe/unsafe skill fingerprints |
+| **Download** | Sigma rules | Community detection rules |
+| **Download** | YARA rules | Malware signatures |
+| **Download** | ATR rules | Confirmed AI agent threat rules |
+| **Download** | IP blocklist | Known malicious IPs |
+| **Download** | Domain blocklist | Known malicious domains |
 
 ## IoC Types
 
@@ -63,24 +73,19 @@ See [Deployment](/products/threat-cloud/deployment) for full setup instructions.
 | **File Hash** | `sha256:abc123...` | Known malware signature |
 | **URL** | `http://evil.example.com/payload` | Malware distribution URL |
 
-## Campaign Tracking
+## Feed Sources
 
-Related IoCs are grouped into campaigns for contextual analysis:
+Threat Cloud aggregates intelligence from 11 external sources including:
 
-```json
-{
-  "campaign": "SCATTERED_SPIDER_2025",
-  "firstSeen": "2025-01-01T00:00:00Z",
-  "lastSeen": "2025-01-15T14:23:01Z",
-  "iocs": [
-    { "type": "ip", "value": "203.0.113.50", "confidence": 95 },
-    { "type": "domain", "value": "c2.evil.example.com", "confidence": 90 },
-    { "type": "hash", "value": "sha256:abc123...", "confidence": 98 }
-  ],
-  "mitre": ["T1566", "T1059", "T1071"],
-  "description": "Social engineering campaign targeting cloud infrastructure"
-}
-```
+| Feed | Data Type |
+|------|-----------|
+| **ThreatFox** (abuse.ch) | Malware, C2, botnet IoCs |
+| **URLhaus** (abuse.ch) | Malware distribution URLs |
+| **Feodo Tracker** (abuse.ch) | Botnet C2 server IPs |
+| **GreyNoise** | Mass scanning and internet noise IPs |
+| **AbuseIPDB** | Community-reported malicious IPs |
+
+Plus 6 additional specialized feeds for AI agent threats, supply chain attacks, and regional threat intelligence.
 
 ## Guard Integration
 
@@ -91,54 +96,29 @@ The Guard `DetectAgent` queries Threat Cloud during event processing:
 3. If matched, the indicator's confidence score contributes to the `AnalyzeAgent`'s weighted verdict
 4. Threat intel matches have a fixed confidence contribution of 85
 
-## API Endpoints
+## ATR Community Pipeline
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/v1/ioc` | Submit a new IoC |
-| `GET` | `/api/v1/ioc` | Query a single IoC by type and value |
-| `POST` | `/api/v1/ioc/batch` | Batch query multiple indicators |
-| `GET` | `/api/v1/ioc/recent` | Get recently reported IoCs |
-| `GET` | `/api/v1/health` | Health check |
-| `GET` | `/api/v1/campaigns/:id` | Get campaign details |
-| `GET` | `/api/v1/feeds/status` | Check feed sync status |
-| `GET` | `/api/v1/stats` | Aggregate statistics |
+When your Guard detects a new AI agent threat pattern:
 
-## Feed Sources
+1. Guard drafts an ATR rule locally
+2. Rule proposal is submitted to Threat Cloud (anonymized)
+3. **Claude Sonnet 4** reviews the proposal for quality and accuracy
+4. Community sightings confirm or reject the pattern
+5. Confirmed rules are promoted and distributed to all agents
 
-Threat Cloud syncs with 5 external threat intelligence feeds:
+## Private Instances
 
-| Feed | Data Type |
-|------|-----------|
-| **ThreatFox** (abuse.ch) | Malware, C2, botnet IoCs |
-| **URLhaus** (abuse.ch) | Malware distribution URLs |
-| **Feodo Tracker** (abuse.ch) | Botnet C2 server IPs |
-| **GreyNoise** | Mass scanning and internet noise IPs |
-| **AbuseIPDB** | Community-reported malicious IPs |
+For organizations requiring isolated threat intelligence infrastructure, private Threat Cloud instances are available. Contact us for deployment options.
 
-## CLI Options
-
-```
-panguard threat <command> [options]
-
-Commands:
-  start              Start Threat Cloud server
-  stop               Stop Threat Cloud server
-  status             Show server status
-  lookup <indicator> Look up an IoC
-
-Options:
-  --port <number>    Listen port (default: 8080)
-  --host <string>    Bind address (default: 127.0.0.1)
-  --db <path>        SQLite database path
-  --api-key <keys>   API key(s), comma-separated
-```
+<Card title="Contact for Private Instance" icon="envelope" href="https://panguard.ai/contact">
+  Enterprise and government organizations can deploy dedicated Threat Cloud infrastructure.
+</Card>
 
 <CardGroup cols={2}>
-  <Card title="Deployment" icon="rocket" href="/products/threat-cloud/deployment">
-    Deploy your own private Threat Cloud server.
-  </Card>
   <Card title="Privacy" icon="shield-check" href="/products/threat-cloud/privacy">
     Anonymized data, zero telemetry, and opt-out controls.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/threat-cloud/ioc">
+    REST API for querying and submitting threat intelligence.
   </Card>
 </CardGroup>

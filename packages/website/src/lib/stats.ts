@@ -6,7 +6,7 @@
  *   config/yara-rules/        -> 5,961 rule definitions across 969 files (923 community + 3 custom + 43 auto-generated)
  *   packages/panguard-guard/src/types.ts       -> ResponseAction union (11 types)
  *   packages/core/src/ai/funnel-router.ts      -> 3 layers
- *   vitest run (165 test files)                -> 3,583 test cases
+ *   vitest run (159 test files)                -> 3,490 test cases
  *   packages/panguard/src/cli/index.ts         -> 23 top-level commands
  *   packages/panguard-mcp/src/server.ts        -> 11 MCP tools
  *   packages/panguard-skill-auditor/src/checks/ -> 6 audit checks
@@ -19,16 +19,19 @@
  */
 export const STATS = {
   /** Must match packages/panguard/package.json "version" */
-  cliVersion: '0.3.3',
+  cliVersion: '0.3.4',
   sigmaRules: 3_760,
   yaraRules: 5_961,
   atrRules: 69,
   totalRules: 3_760 + 5_961 + 69,
   /** Use this for all user-facing display — avoids stale hardcoded counts */
   totalRulesDisplay: '9,700+' as const,
+  /** Separate display for honest breakdown */
+  atrRulesDisplay: '69' as const,
+  integratedRulesDisplay: '9,700+' as const,
   falcoConfigs: 1,
-  testsPassing: 3_583,
-  testFiles: 165,
+  testsPassing: 3_490,
+  testFiles: 159,
   detectionLayers: 3,
   responseActions: 11,
   cliCommands: 23,
@@ -52,7 +55,7 @@ export const STATS = {
     lastSync: '2026-03-12',
     syncInterval: '1h',
   },
-  lastUpdated: '2026-03-12',
+  lastUpdated: '2026-03-13',
 } as const;
 
 export type Stats = typeof STATS;

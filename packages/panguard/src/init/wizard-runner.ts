@@ -426,8 +426,7 @@ export async function runInitWizard(
             `  ${c.sage('panguard setup')}      \u9023\u63A5 AI \u4EE3\u7406 (MCP)`,
             `  ${c.sage('panguard audit skill .')} \u5BE9\u8A08 AI \u6280\u80FD\u5B89\u5168`,
             `  ${c.sage('panguard scan')}       \u57F7\u884C\u5B8C\u6574\u5B89\u5168\u6383\u63CF`,
-            `  ${c.sage('panguard guard start')}\u555F\u52D5 24/7 \u5373\u6642\u9632\u8B77`,
-            `  ${c.sage('panguard')}            \u958B\u555F\u4E92\u52D5\u6A21\u5F0F`,
+            `  ${c.sage('panguard guard start --dashboard')} \u555F\u52D5 Guard + Dashboard`,
           ].join('\n')
         : [
             `${symbols.pass} Panguard AI setup complete!`,
@@ -437,8 +436,7 @@ export async function runInitWizard(
             `  ${c.sage('panguard setup')}       Connect AI agents (MCP)`,
             `  ${c.sage('panguard audit skill .')} Audit AI skill security`,
             `  ${c.sage('panguard scan')}        Run a full security scan`,
-            `  ${c.sage('panguard guard start')} Start 24/7 protection`,
-            `  ${c.sage('panguard')}             Open interactive mode`,
+            `  ${c.sage('panguard guard start --dashboard')} Start Guard + Dashboard`,
           ].join('\n'),
       { borderColor: c.safe }
     )

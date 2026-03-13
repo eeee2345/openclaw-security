@@ -12,6 +12,56 @@ Panguard AI 的所有重要變更，按版本組織。
 
 ---
 
+## v0.8.0
+
+**發佈日期：2026-03-13** -- 儀表板、AI 平台整合與技能審計器
+
+### 內建儀表板
+
+- 本地 Web 儀表板 `http://127.0.0.1:9100`，透過 `panguard guard start --dashboard` 啟動
+- 7 個頁面：總覽、技能與信任、AI 設定、規則、Threat Cloud、威脅、指南
+- WebSocket 即時推送狀態、事件與規則數量
+- Token 驗證搭配自動開啟瀏覽器
+- 深色主題搭配 Sage Green 色系，支援英文與繁體中文
+
+### AI 平台自動設定
+
+- `panguard setup` 一行指令自動偵測並配置 8 個 AI 平台
+- **OpenClaw**：原生 Skill 整合至 `~/.openclaw/skills/panguard/SKILL.md`
+- **QClaw**：MCP 伺服器註冊至 `~/.qclaw/mcp.json`
+- Claude Code、Cursor、Codex CLI、Claude Desktop、Windsurf、WorkBuddy 透過 MCP
+- 平台特定設定注入，零手動編輯
+
+### 技能審計器為預設入口
+
+- 7 層安裝前安全閘門
+- 偵測提示詞注入、工具投毒、秘密與不安全依賴
+- 技能白名單：審計通過自動信任，偏移自動 revoke
+- 整合至 Guard 儀表板（技能與信任頁面）
+
+### 規則分發
+
+- 安裝即附帶 9,790 偵測規則
+- Sigma：3,760（3,110 社群 + 605 自動生成 + 45 自訂）
+- YARA：5,961（969 檔案，多規則拆分）
+- ATR：69（52 穩定版 + 17 預測草案）
+- 每小時自動從 Threat Cloud 同步
+
+### Threat Cloud LLM 審查
+
+- Claude Sonnet 4 API 整合，自動化規則審查
+- 社群投票管線處理提交的威脅情報
+- 種子管線搭配 11 個威脅情報來源
+
+### 一行安裝流程
+
+- `curl -fsSL https://get.panguard.ai | bash` 觸發互動式設定
+- 自動執行 `panguard setup` 配置 AI 平台
+- 完成後自動啟動 Guard 與儀表板
+- 瀏覽器自動開啟已驗證的儀表板頁面
+
+---
+
 ## v0.7.0
 
 **發佈日期：2025-02-25** -- Sigma 增強與 osquery 整合

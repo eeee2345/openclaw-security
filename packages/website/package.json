@@ -4,6 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Panguard AI official website - Next.js 14 with bilingual support (EN/ZH)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

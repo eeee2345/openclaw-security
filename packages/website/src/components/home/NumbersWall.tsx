@@ -30,10 +30,10 @@ const statIcons = [
 ];
 
 const statKeys = [
-  'totalRules',
+  'atrRules',
+  'integratedRules',
   'tests',
   'layers',
-  'actions',
   'skillChecks',
   'mcpTools',
   'cliCommands',
@@ -45,10 +45,10 @@ export default function NumbersWall() {
   const t = useTranslations('home.numbersWall');
 
   const statValues: (number | string)[] = [
-    STATS.totalRulesDisplay,
+    STATS.atrRules,
+    STATS.integratedRulesDisplay,
     STATS.testsPassing,
     STATS.detectionLayers,
-    STATS.responseActions,
     STATS.skillAuditChecks,
     STATS.mcpTools,
     STATS.cliCommands,

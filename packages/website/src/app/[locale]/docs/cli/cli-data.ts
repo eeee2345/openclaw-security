@@ -16,7 +16,7 @@ export interface Command {
   flags?: Flag[];
   example: string;
   tier: 'Free' | 'Pro' | 'Enterprise';
-  maturity: 'GA' | 'Beta';
+  maturity: 'GA' | 'Beta' | 'Deprecated';
 }
 
 export interface CommandCategory {
@@ -431,7 +431,7 @@ export const CATEGORIES: CommandCategory[] = [
         descKey: 'cli.commands.login.desc',
         example: 'panguard login',
         tier: 'Free',
-        maturity: 'GA',
+        maturity: 'Deprecated',
       },
       {
         id: 'logout',
@@ -439,7 +439,7 @@ export const CATEGORIES: CommandCategory[] = [
         descKey: 'cli.commands.logout.desc',
         example: 'panguard logout',
         tier: 'Free',
-        maturity: 'GA',
+        maturity: 'Deprecated',
       },
       {
         id: 'whoami',

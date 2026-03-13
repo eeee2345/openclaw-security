@@ -388,7 +388,7 @@ export interface LicenseInfo {
 
 /** Feature gates per tier / 各等級功能閘 */
 export const TIER_FEATURES: Record<LicenseTier, string[]> = {
-  free: ['basic_monitoring', 'rule_matching', 'auto_respond', 'threat_cloud_upload'],
+  free: ['basic_monitoring', 'rule_matching', 'auto_respond', 'threat_cloud_upload', 'dashboard'],
   pro: [
     'basic_monitoring',
     'rule_matching',

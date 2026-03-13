@@ -6,6 +6,11 @@
   "description": "AI-driven adaptive cybersecurity platform / AI 驅動的自適應資安防護平台",
   "author": "Panguard AI Team",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "engines": {
     "node": ">=20",
     "pnpm": ">=9.0.0"

@@ -1,211 +1,94 @@
 ---
-title: "部署"
-description: "使用獨立、Docker 或 systemd 部署選項部署您自己的私有 Threat Cloud 伺服器。"
-icon: "rocket"
+title: "連接 Threat Cloud"
+description: "Panguard Agent 如何連接 Threat Cloud 取得集體威脅情報。"
+icon: "plug"
 ---
 
-Panguard Threat Cloud 可以作為獨立處理程序、Docker 容器或 systemd 服務部署。本頁涵蓋所有部署方法、設定選項及生產環境建議。
+每個 Panguard Agent 自動連接公開 Threat Cloud。不需設定、不需 API 金鑰、不需帳號。
 
-## 獨立部署
+## 預設連線
 
-### 基本啟動
-
-```bash
-# 僅限本地存取（預設）
-panguard threat start --port 8080
-
-# 外部存取搭配 API 金鑰認證
-panguard threat start --host 0.0.0.0 --port 8080 --api-key your-secret-key
-
-# 自訂資料庫路徑
-panguard threat start --port 8080 --db /var/lib/threat-cloud/data.db
-```
-
-預設情況下，伺服器綁定至 `127.0.0.1`（僅限本地存取）。設定 `--host 0.0.0.0` 以接受外部連線。
-
-### API 金鑰認證
-
-在對外暴露伺服器時強烈建議：
+啟動 Guard 時，自動連接 `tc.panguard.ai`：
 
 ```bash
-# 單一 API 金鑰
-panguard threat start --api-key my-secret-key
-
-# 多個 API 金鑰（供不同客戶端團隊使用）
-panguard threat start --api-key key-team-a,key-team-b,key-team-c
+panguard guard start --dashboard
 ```
 
-客戶端在請求標頭中包含金鑰：
+就這樣。您的 Agent 已加入集體情報網路。
 
+## 自動執行的動作
+
+| 間隔 | 動作 |
+|------|------|
+| **啟動時** | 從本地安裝載入內建規則（Sigma + YARA + ATR） |
+| **每 1 小時** | 與 Threat Cloud 同步：下載新規則、上傳匿名化威脅 |
+| **偵測到威脅時** | 提交匿名化事件資料到 Threat Cloud |
+| **技能審計時** | 回報安全/不安全的技能指紋 |
+
+## 自訂端點
+
+將 Agent 指向不同的 Threat Cloud 實例：
+
+```bash
+panguard guard start --threat-cloud https://your-server:8080
 ```
-Authorization: Bearer your-api-key
+
+或設定環境變數：
+
+```bash
+export TC_ENDPOINT=https://your-server:8080
+panguard guard start
 ```
 
-### 設定選項
-
-| 旗標 | 預設值 | 描述 |
-|------|---------|-------------|
-| `--port` | `8080` | 伺服器監聽埠 |
-| `--host` | `127.0.0.1` | 綁定位址 |
-| `--db` | `./threat-cloud.db` | SQLite 資料庫路徑 |
-| `--api-key` | （無） | API 金鑰，以逗號分隔 |
-
-### 設定檔
-
-如需持久化設定，建立 `~/.panguard/threat-cloud.json`：
+或在 `~/.panguard/config.json` 中設定：
 
 ```json
 {
-  "server": {
-    "port": 8080,
-    "host": "0.0.0.0"
-  },
-  "database": {
-    "path": "/var/lib/panguard/threat-cloud.db"
-  },
-  "feeds": {
-    "syncInterval": "6h",
-    "sources": ["threatfox", "urlhaus", "feodo", "greynoise", "abuseipdb"]
-  },
-  "api": {
-    "rateLimit": 100,
-    "rateLimitWindow": "1m"
-  }
+  "threatCloudEndpoint": "https://your-server:8080",
+  "threatCloudApiKey": "your-api-key"
 }
 ```
 
----
+## 離線模式
 
-## Docker 部署
+Guard 完全支援離線運作。如果 Threat Cloud 無法連線：
 
-### 快速開始
-
-```bash
-docker run -d \
-  --name panguard-threat-cloud \
-  -p 8080:8080 \
-  -v panguard-data:/data \
-  -e PANGUARD_TC_API_KEY=your-secret-key \
-  panguard/threat-cloud:latest
-```
-
-### Docker Compose
-
-```yaml
-version: "3.8"
-services:
-  threat-cloud:
-    image: panguard/threat-cloud:latest
-    ports:
-      - "8080:8080"
-    volumes:
-      - threat-data:/data
-    environment:
-      - PANGUARD_TC_PORT=8080
-      - PANGUARD_TC_DB=/data/threat-cloud.db
-      - PANGUARD_TC_API_KEY=your-secret-key
-    restart: unless-stopped
-
-volumes:
-  threat-data:
-```
-
-### 環境變數
-
-| 變數 | 預設值 | 描述 |
-|----------|---------|-------------|
-| `PANGUARD_TC_PORT` | `8080` | 伺服器埠 |
-| `PANGUARD_TC_HOST` | `0.0.0.0` | 綁定位址 |
-| `PANGUARD_TC_DB` | `/data/threat-cloud.db` | 資料庫路徑 |
-| `PANGUARD_TC_API_KEY` | （無） | API 金鑰，以逗號分隔 |
-| `PANGUARD_TC_FEED_INTERVAL` | `6h` | 饋送同步間隔 |
-| `PANGUARD_TC_RATE_LIMIT` | `100` | 每個視窗的 API 請求數 |
-
----
-
-## 連接代理
-
-設定 Guard 代理使用您的私有 Threat Cloud 實例：
+- 內建規則（9,790 條）持續運作
+- 本地 AI（Ollama）處理分析
+- 事件在本地排隊，恢復連線後同步
+- 防護永不中斷
 
 ```bash
-panguard guard start --threat-cloud http://your-server:8080
+# 明確停用 Threat Cloud 同步
+panguard guard start --no-cloud
 ```
 
----
+## 私人部署
 
-## 部署規模
+需要隔離基礎設施或資料主權合規的組織，可使用私人 Threat Cloud 託管服務。
 
-| 規模 | 端點數 | CPU | 記憶體 | 磁碟 |
-|-------|-----------|-----|--------|------|
-| **小型** | < 50 | 1 核心 | 256 MB | 1 GB |
-| **中型** | 50--500 | 2 核心 | 512 MB | 5 GB |
-| **大型** | 500+ | 4 核心 | 1 GB | 20 GB |
+<Card title="聯繫私人部署" icon="envelope" href="https://panguard.ai/contact">
+  企業和政府組織可部署專屬 Threat Cloud 基礎設施，包含自訂 feed、保留策略和網路隔離。
+</Card>
 
----
+## 驗證連線
 
-## 饋送同步
-
-Threat Cloud 與 5 個外部饋送來源同步：
-
-| 饋送 | 類型 | 同步間隔 | 資料 |
-|------|------|---------------|------|
-| **ThreatFox** | IoC 資料庫 | 每 6 小時 | 惡意軟體、C2、殭屍網路指標 |
-| **URLhaus** | URL 封鎖清單 | 每 6 小時 | 惡意軟體分發 URL |
-| **Feodo Tracker** | 殭屍網路 C2 | 每 6 小時 | 殭屍網路命令與控制 IP |
-| **GreyNoise** | 網際網路掃描資料 | 每 6 小時 | 大規模掃描 IP |
-| **AbuseIPDB** | IP 信譽 | 每 6 小時 | 已報告的惡意 IP |
-
-<Info>
-  部分饋送（GreyNoise、AbuseIPDB）需要 API 金鑰才能完整存取。如果未提供 API 金鑰，伺服器會以降低的覆蓋率運作。
-</Info>
-
----
-
-## 健康檢查
+檢查 Agent 的 Threat Cloud 狀態：
 
 ```bash
-# CLI
-panguard threat status
-
-# HTTP
-curl http://localhost:8080/api/v1/health
+panguard status --json
 ```
 
 ```json
 {
-  "status": "healthy",
-  "uptime": "14d 6h 33m",
-  "database": { "size": "42 MB", "iocs": 125000 },
-  "feeds": {
-    "lastSync": "2025-01-15T12:00:00Z",
-    "sources": 5,
-    "healthy": 5
+  "threatCloud": {
+    "connected": true,
+    "endpoint": "https://tc.panguard.ai/api",
+    "lastSync": "2026-03-13T08:00:00Z",
+    "rulesReceived": 247,
+    "threatsSubmitted": 12
   }
 }
 ```
 
----
-
-## 生產環境建議
-
-<Steps>
-  <Step title="使用持久化儲存">
-    為資料庫掛載磁碟區以在容器重啟後保存。永遠不要對 IoC 資料庫使用臨時儲存。
-  </Step>
-  <Step title="啟用 API 金鑰認證">
-    當伺服器可從網路存取時，務必使用 `--api-key`。
-  </Step>
-  <Step title="放置在反向代理後方">
-    在生產環境中使用 nginx 或 Caddy 進行 TLS 終止和存取控制。
-  </Step>
-  <Step title="設定速率限制">
-    預設的每分鐘 100 個請求適合小型設備群組。較大的部署請增加此值。
-  </Step>
-  <Step title="監控磁碟使用量">
-    SQLite 資料庫會隨著 IoC 累積而增長。IoC 保留期預設為 90 天，並自動清理。
-  </Step>
-</Steps>
-
-<Warning>
-  不要在沒有認證和 TLS 的情況下將 Threat Cloud 直接暴露至公共網際網路。使用搭配 TLS 終止的反向代理，並將存取限制在您的代理網路。
-</Warning>
+或在儀表板 `http://127.0.0.1:9100`（Threat Cloud 頁面）查看。

@@ -2,6 +2,11 @@
   "name": "@panguard-ai/panguard-report",
   "version": "0.2.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "type": "module",
   "description": "AI-powered security incident report generator / AI 自動產生資安事件報告",
   "main": "./dist/index.js",

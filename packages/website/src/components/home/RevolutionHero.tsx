@@ -9,7 +9,7 @@ import BrandLogo from '@/components/ui/BrandLogo';
 import { CheckIcon } from '@/components/ui/BrandIcons';
 import { STATS } from '@/lib/stats';
 
-const INSTALL_CMD = 'npx panguard guard --watch';
+const INSTALL_CMD = 'curl -fsSL https://get.panguard.ai | bash';
 
 function InstallBar() {
   const t = useTranslations('revolution.hero');
@@ -107,7 +107,7 @@ export default function RevolutionHero() {
             {t('subtitleLine1')}
           </p>
           <p className="text-lg sm:text-xl text-text-primary font-medium leading-relaxed">
-            {t('subtitleLine2', { totalRules: STATS.totalRulesDisplay })}
+            {t('subtitleLine2', { atrRules: STATS.atrRulesDisplay, integratedRules: STATS.integratedRulesDisplay })}
           </p>
           <p className="text-lg sm:text-xl text-panguard-green font-semibold leading-relaxed">
             {t('subtitleLine3')}

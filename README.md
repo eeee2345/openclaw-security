@@ -4,9 +4,9 @@
 
 <br>
 
-### The First Open-Source Security Platform Built for AI Agents
+### The App Store Gatekeeper for AI Agents
 
-AI Agent 時代的第一個開源安全平台 -- 100% 免費，MIT 授權
+AI Agent 的 App Store 守門員 -- 100% 免費，MIT 授權
 
 <br>
 
@@ -14,8 +14,8 @@ AI Agent 時代的第一個開源安全平台 -- 100% 免費，MIT 授權
 [![GitHub Forks](https://img.shields.io/github/forks/panguard-ai/panguard-ai?style=flat-square)](https://github.com/panguard-ai/panguard-ai/network)
 [![npm version](https://img.shields.io/npm/v/@panguard-ai/panguard?style=flat-square&color=cb3837&logo=npm)](https://www.npmjs.com/package/@panguard-ai/panguard)
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
-[![Rules](https://img.shields.io/badge/detection%20rules-9%2C700%2B-f97316.svg?style=flat-square)](#detection-rules)
-[![ATR](https://img.shields.io/badge/ATR%20Standard-69%20rules-8b5cf6.svg?style=flat-square)](https://github.com/Agent-Threat-Rule/agent-threat-rules)
+[![ATR](https://img.shields.io/badge/ATR-69%20AI%20agent%20rules-8b5cf6.svg?style=flat-square)](https://github.com/Agent-Threat-Rule/agent-threat-rules)
+[![Sigma+YARA](https://img.shields.io/badge/Sigma%20%2B%20YARA-9%2C700%2B%20integrated-f97316.svg?style=flat-square)](#detection-rules)
 [![Made in Taiwan](https://img.shields.io/badge/Made%20in-Taiwan-e11d48.svg?style=flat-square)](https://panguard.ai)
 
 [Quick Start](#quick-start) | [Documentation](docs/) | [ATR Standard](https://github.com/Agent-Threat-Rule/agent-threat-rules) | [Threat Cloud](#threat-cloud)
@@ -137,7 +137,7 @@ Each layer catches what the previous one missed. If any layer goes down, the oth
 
 | Layer | Engine | Coverage | Latency | Cost | Network |
 | ----- | ------ | -------- | ------- | ---- | ------- |
-| **1** | **Rules Engine** -- 9,700+ Sigma / YARA / ATR rules | ~90% of known threats | < 50ms | $0 | Offline |
+| **1** | **Rules Engine** -- 69 ATR + 9,700+ integrated Sigma/YARA rules | ~90% of known threats | < 50ms | $0 | Offline |
 | **2** | **Local AI** -- Ollama on your machine | ~7% (ambiguous cases) | ~ 2s | $0 | Offline |
 | **3** | **Cloud AI** -- Claude / OpenAI | ~3% (novel attacks) | ~ 5s | ~$0.008 | Optional |
 
@@ -169,7 +169,7 @@ Everything is **free and open source**. MIT licensed.
 
 ## Detection Rules
 
-9,700+ open-source rules. Bundled with npm. No cloud required.
+69 ATR rules purpose-built for AI agent threats + 9,700+ integrated Sigma/YARA rules. All bundled with npm. No cloud required.
 
 | Rule Type | Count | Purpose |
 | --------- | ----- | ------- |
@@ -235,7 +235,7 @@ panguard-ai/
 | Language | TypeScript 5.7 (strict mode) |
 | Runtime | Node.js 18+ |
 | Monorepo | pnpm workspaces (16 packages) |
-| Testing | Vitest 3 + v8 coverage (3,480+ tests) |
+| Testing | Vitest 3 + v8 coverage (3,490+ tests) |
 | AI | Ollama (local) + Claude / OpenAI (cloud) |
 | Encryption | AES-256-GCM |
 

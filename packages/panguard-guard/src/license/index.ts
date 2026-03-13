@@ -2,9 +2,9 @@
  * License Key Validation and Feature Gating
  * 授權金鑰驗證與功能閘
  *
- * Validates license keys in the format CLAW-TIER-XXXX-XXXX-XXXX,
+ * Validates license keys in the format PG-TIER-XXXX-XXXX-XXXX,
  * determines tier (Free/Pro/Enterprise), and gates features accordingly.
- * 驗證格式為 CLAW-TIER-XXXX-XXXX-XXXX 的授權金鑰，
+ * 驗證格式為 PG-TIER-XXXX-XXXX-XXXX 的授權金鑰，
  * 判定等級（Free/Pro/Enterprise），並據此控制功能閘。
  *
  * @module @panguard-ai/panguard-guard/license
@@ -16,8 +16,8 @@ import { TIER_FEATURES } from '../types.js';
 
 const logger = createLogger('panguard-guard:license');
 
-/** License key format: CLAW-TIER-XXXX-XXXX-XXXX / 授權金鑰格式 */
-const LICENSE_PATTERN = /^CLAW-(FREE|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+/** License key format: PG-TIER-XXXX-XXXX-XXXX (also accepts legacy CLAW- prefix) / 授權金鑰格式 */
+const LICENSE_PATTERN = /^(?:PG|CLAW)-(FREE|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
 /** Tier mapping from key prefix / 從金鑰前綴映射等級 */
 const TIER_MAP: Record<string, LicenseTier> = {
@@ -30,7 +30,7 @@ const TIER_MAP: Record<string, LicenseTier> = {
  * Validate a license key and return license information
  * 驗證授權金鑰並回傳授權資訊
  *
- * Key format: CLAW-{TIER}-{XXXX}-{XXXX}-{XXXX}
+ * Key format: PG-{TIER}-{XXXX}-{XXXX}-{XXXX}
  * - TIER: FREE, PRO, or ENT
  * - X: Alphanumeric characters
  * - Last 4 characters contain a checksum
@@ -136,7 +136,7 @@ export function generateTestLicenseKey(tier: LicenseTier): string {
   const seg4base = randomChar() + randomChar() + randomChar();
   const checkChar = calculateCheckChar(tierCode, seg2, seg3, seg4base);
 
-  return `CLAW-${tierCode}-${seg2}-${seg3}-${seg4base}${checkChar}`;
+  return `PG-${tierCode}-${seg2}-${seg3}-${seg4base}${checkChar}`;
 }
 
 // ---------------------------------------------------------------------------

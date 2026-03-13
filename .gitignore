@@ -32,4 +32,8 @@ packages/website/.next/
 .vercel/
 .vercel
 pancore/
-railway.toml
+
+# Internal files (not for public release)
+marketing/
+progress.md
+.env.production

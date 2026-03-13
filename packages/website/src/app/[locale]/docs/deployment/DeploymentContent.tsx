@@ -126,13 +126,13 @@ echo "Done. All endpoints deployed."`}
             <p className="text-text-secondary mb-6">{t('threatCloudDesc')}</p>
             <CodeBlock
               code={`# On each endpoint, after install:
-panguard login
+panguard setup
+
+# Start Guard with dashboard
+panguard guard start --dashboard
 
 # Verify connection
-panguard status
-
-# View all endpoints in Threat Cloud dashboard
-# https://cloud.panguard.ai/endpoints`}
+panguard status`}
               label="Terminal"
             />
             <p className="text-xs text-text-muted mt-3">{t('threatCloudNote')}</p>

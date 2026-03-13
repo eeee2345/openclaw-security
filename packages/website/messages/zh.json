@@ -1166,15 +1166,15 @@
     "overline": "關於 PANGUARD AI",
     "title": "我們相信資安是基本權利，",
     "titleHighlight": "不是奢侈品。",
-    "oneLiner": "我們正在為那被忽略的 99% 建造他們應得的資安基礎設施。",
+    "oneLiner": "AI Agent 安裝 Skill 時擁有完整系統權限，卻零審查。我們正在建造那個缺失的守門員。",
     "origin": {
       "overline": "為什麼有 PANGUARD",
       "title": "為什麼有 Panguard",
-      "p1": "最初的想法很簡單：做一個開源的主動防禦框架，讓 AI agent 保護 AI agent。但當我們研究市場時，發現了一件事。",
-      "p2": "每一家拿到大額融資的 AI 資安公司 -- Wiz、CrowdStrike、SentinelOne -- 都在服務 Fortune 500。最低合約從五位數到六位數美金起跳。產品需要專業資安團隊來操作。",
-      "p3a": "然後我們看了另一邊：全球 4 億家中小企業。數百萬獨立開發者每天在部署程式碼。Vibe coding 世代 -- 用 AI 寫程式、部署到生產環境，速度比以往任何時候都快。",
-      "p3b": "他們都沒有資安團隊。大多數連一個資安工具都負擔不起。不是因為他們不在乎。是因為產業從來沒有為他們做過任何東西。",
-      "p3c": "那一刻我們決定：我們不是在做另一個企業資安產品。我們是在為所有人建造資安基礎設施。"
+      "p1": "AI Agent 正在安裝擁有完整系統權限的 Skill -- 讀檔案、執行程式碼、發送網路請求、存取憑證 -- 卻沒有任何審查機制。一個惡意 Skill 就夠了。",
+      "p2": "App Store 有審核。瀏覽器擴充功能有審核。NPM 套件有稽核。但 AI Agent 的 Skill？什麼都沒有。沒有審核、沒有稽核、沒有守門員。而這些 Skill 擁有的存取權限比以上所有都大。",
+      "p3a": "我們看了看誰在解決這個問題。大型資安公司還在追雲端負載和端點偵測。沒有人在為 AI Agent 建造缺失的審核層。",
+      "p3b": "所以我們來建。Panguard 在每個 Skill 執行前審計、24/7 監控 Agent 行為、並將每個使用者的威脅發現轉化為所有人的防護。",
+      "p3c": "100% 免費。MIT 授權。不需帳號。因為 AI Agent 的安全不應該是奢侈品。"
     },
     "beliefs": {
       "overline": "我們的信念",
@@ -1202,32 +1202,32 @@
       "title": "嚴謹打造",
       "stats": [
         {
-          "value": "3,017",
+          "value": "69",
+          "label": "ATR 規則 (AI Agent 威脅)"
+        },
+        {
+          "value": "9,700+",
+          "label": "整合 Sigma/YARA 規則"
+        },
+        {
+          "value": "3,490+",
           "label": "測試通過"
         },
         {
-          "value": "3,760",
-          "label": "Sigma 規則"
+          "value": "3",
+          "label": "偵測層"
         },
         {
-          "value": "5,961",
-          "label": "YARA 規則"
-        },
-        {
-          "value": "8",
-          "label": "產品"
-        },
-        {
-          "value": "22",
+          "value": "23",
           "label": "CLI 指令"
         },
         {
-          "value": "50",
-          "label": "合規控制項"
+          "value": "11",
+          "label": "MCP 工具"
         },
         {
-          "value": "8",
-          "label": "蜜罐協議"
+          "value": "6",
+          "label": "Skill 審計檢查"
         },
         {
           "value": "MIT",
@@ -5507,7 +5507,7 @@
           { "label": "洩漏憑證", "detail": "SSH 金鑰、Token、雲端密鑰 -- 全部可存取" }
         ]
       },
-      "subtitleLine2": "Panguard 就是那個缺失的守門員。每個 Skill 執行前先審核 -- 就像 App Store 審核，但專為 AI Agent 設計。{totalRules}+ 社群規則與 AI，全天候運作。",
+      "subtitleLine2": "Panguard 就是那個缺失的守門員。每個 Skill 執行前先審核 -- 就像 App Store 審核，但專為 AI Agent 設計。{atrRules} 條 ATR 規則偵測 AI Agent 威脅 + {integratedRules} 條整合 Sigma/YARA 規則。全天候運作。",
       "subtitleLine3": "一行安裝。全天候守護。使用者越多越聰明。",
       "viewATR": "GitHub 上的 ATR 標準",
       "install": "開始使用",
@@ -5516,7 +5516,7 @@
       "badges": {
         "mit": "MIT 開源",
         "rules": "ATR 規則",
-        "tests": "3,500+ 測試",
+        "tests": "3,490+ 測試",
         "taiwan": "台灣製造"
       }
     },
@@ -5528,7 +5528,7 @@
           "number": "1",
           "title": "安裝 Panguard",
           "desc": "一行指令。搭配 Claude Code、Cursor、OpenClaw 或任何 AI Agent。",
-          "detail": "npx panguard guard --watch"
+          "detail": "curl -fsSL https://get.panguard.ai | bash"
         },
         "scan": {
           "number": "2",

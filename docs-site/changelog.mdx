@@ -12,6 +12,56 @@ For the complete changelog including patch notes, see the [GitHub releases page]
 
 ---
 
+## v0.8.0
+
+**Released: 2026-03-13** -- Dashboard, AI Platform Integration, and Skill Auditor
+
+### Built-in Dashboard
+
+- Local web dashboard at `http://127.0.0.1:9100` with `panguard guard start --dashboard`
+- 7 pages: Overview, Skills & Trust, AI Setup, Rules, Threat Cloud, Threats, Guide
+- Real-time WebSocket push for status, events, and rule counts
+- Token-based authentication with auto-open browser
+- Dark theme with sage green accent, English and Traditional Chinese
+
+### AI Platform Auto-Setup
+
+- `panguard setup` auto-detects and configures 8 AI platforms in one command
+- **OpenClaw**: native Skill integration at `~/.openclaw/skills/panguard/SKILL.md`
+- **QClaw**: MCP server registration in `~/.qclaw/mcp.json`
+- Claude Code, Cursor, Codex CLI, Claude Desktop, Windsurf, WorkBuddy via MCP
+- Platform-specific config injection with zero manual editing
+
+### Skill Auditor as Default Entry Point
+
+- 7-layer pre-install security gate for AI skills
+- Detects prompt injection, tool poisoning, secrets, and unsafe dependencies
+- Skill whitelist: approved skills are auto-trusted, drift triggers revoke
+- Integrated into Guard dashboard (Skills & Trust page)
+
+### Rule Distribution
+
+- 9,790 total detection rules shipped with install
+- Sigma: 3,760 (3,110 community + 605 auto-gen + 45 custom)
+- YARA: 5,961 (969 files, multi-rule split)
+- ATR: 69 (52 stable + 17 predicted drafts)
+- Auto-sync from Threat Cloud every hour
+
+### Threat Cloud LLM Review
+
+- Claude Sonnet 4 API integration for automated rule review
+- Community voting pipeline for submitted threat intelligence
+- Seed pipeline with 11 threat intel sources
+
+### One-Line Install Flow
+
+- `curl -fsSL https://get.panguard.ai | bash` triggers interactive setup
+- Auto-runs `panguard setup` to configure AI platforms
+- Auto-starts Guard with dashboard on completion
+- Browser opens automatically with authenticated dashboard session
+
+---
+
 ## v0.7.0
 
 **Released: 2025-02-25** -- Sigma Enhancements and osquery Integration

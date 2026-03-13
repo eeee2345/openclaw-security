@@ -50,8 +50,8 @@ packages/
   panguard-mcp/           # MCP server for AI assistants
   panguard-skill-auditor/ # AI agent skill auditor
 config/
-  sigma-rules/            # 3,754+ Sigma detection rules
-  yara-rules/             # 4,369+ YARA detection rules
+  sigma-rules/            # 3,760 Sigma detection rules
+  yara-rules/             # 5,961 YARA detection rules
 ```
 
 ---

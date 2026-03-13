@@ -94,7 +94,7 @@ export const blogPosts: BlogPost[] = [
       'ATR covers all three because it was designed around the agent interaction model, not the server interaction model. The field names -- user_prompt, tool_description, model_response -- map directly to where attacks actually manifest.',
       '## Getting Started',
       'One command. 69 rules. Zero configuration.',
-      '```\nnpx panguard guard --watch\n```',
+      '```\ncurl -fsSL https://get.panguard.ai | bash\n```',
       'This starts Panguard Guard in watch mode. Every agent interaction is evaluated against the full ATR rule set in real time. Matches trigger the action specified in each rule: block, alert, or quarantine.',
       'You do not need to write rules. You do not need to configure detection patterns. The default rule set covers the most common attack patterns across all 9 ATR threat categories. As new threats emerge, updated rules are distributed automatically.',
       '## The Flywheel',

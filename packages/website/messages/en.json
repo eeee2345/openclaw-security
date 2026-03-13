@@ -545,10 +545,10 @@
       "title": "Don't take our word for it. Read the code.",
       "subtitle": "Every number below is verifiable in our open-source repository. No black boxes.",
       "stats": {
-        "totalRules": "Detection rules",
+        "atrRules": "ATR rules (AI agent threats)",
+        "integratedRules": "Integrated Sigma/YARA rules",
         "tests": "Tests passing",
         "layers": "Detection layers",
-        "actions": "Response actions",
         "skillChecks": "Skill audit checks",
         "mcpTools": "MCP tools",
         "cliCommands": "CLI commands",
@@ -563,7 +563,7 @@
         },
         "security": {
           "title": "Security First",
-          "desc": "3,583 tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
+          "desc": "3,490+ tests. Strict TypeScript. ESLint security plugin. Credential storage encryption. Sandboxed execution."
         },
         "privacy": {
           "title": "Privacy by Design",
@@ -4542,15 +4542,15 @@
     "overline": "ABOUT PANGUARD AI",
     "title": "We believe security is a right,",
     "titleHighlight": "not a luxury.",
-    "oneLiner": "We're building the security infrastructure the other 99% of businesses deserve.",
+    "oneLiner": "AI agents install skills with full system access -- zero review process. We're building the missing gatekeeper.",
     "origin": {
       "overline": "WHY PANGUARD EXISTS",
       "title": "Why Panguard Exists",
-      "p1": "The original idea was simple: build an open-source security framework that enables active defense -- where AI agents protect AI agents. But as we researched the market, we noticed something.",
-      "p2": "Every cybersecurity company that raised serious funding -- Wiz, CrowdStrike, SentinelOne -- they all serve the Fortune 500. Their minimum contracts start at five or six figures. Their products require dedicated security teams to operate.",
-      "p3a": "And then we looked at the other side: 400 million small and medium businesses worldwide. Millions of independent developers shipping code every day. The vibe coding generation -- building with AI, deploying to production, moving faster than ever.",
-      "p3b": "None of them have security teams. Most can't afford a single security tool. Not because they don't care. Because the industry never built anything for them.",
-      "p3c": "That's when we decided: we're not building another security product for enterprises. We're building security infrastructure for everyone."
+      "p1": "AI agents are installing skills with full system access -- file read, code execution, network requests, credential access -- with zero review process. One malicious skill is all it takes.",
+      "p2": "The App Store has review. Browser extensions have review. NPM packages have audits. But AI agent skills? Nothing. No review, no audit, no gatekeeper. And these skills get more access than any of those.",
+      "p3a": "We looked at who's working on this. The big security companies are still chasing cloud workloads and endpoint detection. Nobody is building the missing review layer for AI agents.",
+      "p3b": "So we built it. Panguard audits every skill before it runs, monitors agent behavior 24/7, and turns every user's threat discovery into protection for everyone.",
+      "p3c": "100% free. MIT licensed. No account required. Because security for AI agents shouldn't be a luxury."
     },
     "beliefs": {
       "overline": "WHAT WE BELIEVE",
@@ -4578,32 +4578,32 @@
       "title": "Built with rigor",
       "stats": [
         {
-          "value": "3,017",
+          "value": "69",
+          "label": "ATR rules (AI agent threats)"
+        },
+        {
+          "value": "9,700+",
+          "label": "Integrated Sigma/YARA rules"
+        },
+        {
+          "value": "3,490+",
           "label": "Tests passing"
         },
         {
-          "value": "3,760",
-          "label": "Sigma rules"
+          "value": "3",
+          "label": "Detection layers"
         },
         {
-          "value": "5,961",
-          "label": "YARA rules"
-        },
-        {
-          "value": "8",
-          "label": "Products"
-        },
-        {
-          "value": "22",
+          "value": "23",
           "label": "CLI commands"
         },
         {
-          "value": "50",
-          "label": "Compliance controls"
+          "value": "11",
+          "label": "MCP tools"
         },
         {
-          "value": "8",
-          "label": "Honeypot protocols"
+          "value": "6",
+          "label": "Skill audit checks"
         },
         {
           "value": "MIT",
@@ -5494,7 +5494,7 @@
           }
         ]
       },
-      "subtitleLine2": "Panguard is the missing gatekeeper. It reviews every skill before it runs -- just like App Store review, but for AI agents. {totalRules}+ community rules and AI, always on.",
+      "subtitleLine2": "Panguard is the missing gatekeeper. It reviews every skill before it runs -- just like App Store review, but for AI agents. {atrRules} ATR rules for AI agent threats + {integratedRules} integrated Sigma/YARA rules. Always on.",
       "subtitleLine3": "One install. Always on. Gets smarter with every user.",
       "viewATR": "ATR Standard on GitHub",
       "install": "Get Started",
@@ -5503,7 +5503,7 @@
       "badges": {
         "mit": "MIT Licensed",
         "rules": "ATR Rules",
-        "tests": "3,500+ Tests",
+        "tests": "3,490+ Tests",
         "taiwan": "Built in Taiwan"
       }
     },
@@ -5515,7 +5515,7 @@
           "number": "1",
           "title": "Install Panguard",
           "desc": "One command. Works with Claude Code, Cursor, OpenClaw, or any AI agent.",
-          "detail": "npx panguard guard --watch"
+          "detail": "curl -fsSL https://get.panguard.ai | bash"
         },
         "scan": {
           "number": "2",

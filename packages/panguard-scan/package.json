@@ -2,6 +2,11 @@
   "name": "@panguard-ai/panguard-scan",
   "version": "0.2.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "type": "module",
   "description": "60-second security scanning CLI tool / 60 秒資安健檢工具",
   "main": "./dist/index.js",

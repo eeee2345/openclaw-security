@@ -14,7 +14,7 @@ FROM node:22-slim AS builder
 
 # Build tools for native modules (better-sqlite3)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 make g++ && \
+    apt-get install -y --no-install-recommends python3 make g++ git && \
     rm -rf /var/lib/apt/lists/*
 
 ENV PNPM_HOME="/pnpm"
@@ -63,6 +63,12 @@ COPY packages/atr/ packages/atr/
 COPY security-hardening/ security-hardening/
 COPY config/ config/
 COPY packages/admin/ packages/admin/
+
+# Download community rules at build time (gitignored, not in repo)
+COPY scripts/update-sigma-rules.sh scripts/update-sigma-rules.sh
+COPY scripts/update-yara-rules.sh scripts/update-yara-rules.sh
+RUN bash scripts/update-sigma-rules.sh || echo "WARNING: Sigma community rules download failed"
+RUN bash scripts/update-yara-rules.sh || echo "WARNING: YARA community rules download failed"
 
 # Build all backend packages (skip website)
 RUN pnpm --filter '!@panguard-ai/website' -r run build

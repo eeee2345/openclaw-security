@@ -302,94 +302,78 @@ export function setupCommand(): Command {
           divider();
         }
 
-        // ── 5. Start guard ─────────────────────────────────────────────
+        // ── 5. Install guard as system service (auto-start on boot) ───
         if (!options.remove && !options.skipGuard) {
           console.log();
-          const startGuard =
+          const installGuard =
             options.yes ||
             (await promptConfirm({
               message: {
-                en: 'Start Panguard Guard now? (24/7 protection)',
-                'zh-TW': '現在啟動 Panguard Guard 嗎？（24/7 防護）',
+                en: 'Install Panguard Guard as system service? (auto-start on boot, 24/7 protection)',
+                'zh-TW': '安裝 Panguard Guard 為系統服務？（開機自動啟動，24/7 防護）',
               },
               defaultValue: true,
               lang: 'en',
             }));
 
-          if (startGuard) {
+          if (installGuard) {
             console.log();
-            console.log(c.dim('  Starting Panguard Guard in background...'));
+            console.log(c.dim('  Installing Panguard Guard as system service...'));
 
+            // Resolve the guard CLI binary path (outside try so fallback can use it)
+            let guardBin: string | undefined;
             try {
-              // Resolve the guard CLI entry point directly instead of relying on npx
-              let guardBin: string | undefined;
+              const require = createRequire(import.meta.url);
+              guardBin = require.resolve('@panguard-ai/panguard-guard/dist/cli/index.js');
+            } catch {
+              // Fallback: check common global/local paths
+            }
+
+            if (!guardBin) {
+              console.log(c.yellow(`  ${symbols.warn} Could not locate panguard-guard binary.`));
+              console.log(c.dim('    Run manually: panguard guard install'));
+            } else {
               try {
-                const require = createRequire(import.meta.url);
-                guardBin = require.resolve('@panguard-ai/panguard-guard/dist/cli/index.js');
-              } catch {
-                // Fallback: check common global/local paths
-              }
+                const guardExec = `${process.execPath} ${guardBin}`;
+                const dataDir = join(homedir(), '.panguard-guard');
 
-              if (!guardBin) {
-                console.log(c.yellow(`  ${symbols.warn} Could not locate panguard-guard binary.`));
-                console.log(c.dim('    Run manually: panguard guard --watch'));
-              } else {
-                const child = spawn(process.execPath, [guardBin, 'start', '--dashboard'], {
-                  detached: true,
-                  stdio: ['ignore', 'pipe', 'pipe'],
-                });
+                const { installService } = await import('@panguard-ai/panguard-guard');
+                const servicePath = await installService(guardExec, dataDir);
 
-                let stderrData = '';
-                child.stderr?.on('data', (chunk: Buffer) => {
-                  stderrData += chunk.toString();
-                });
+                const osPlatform = process.platform;
+                const serviceType =
+                  osPlatform === 'darwin' ? 'launchd' :
+                  osPlatform === 'linux' ? 'systemd' :
+                  osPlatform === 'win32' ? 'Windows Service' : 'system service';
 
-                // Capture dashboard URL from stdout
-                child.stdout?.on('data', (chunk: Buffer) => {
-                  const line = chunk.toString();
-                  const urlMatch = line.match(/Dashboard:\s*(http\S+)/);
-                  if (urlMatch) {
-                    console.log(c.green(`  ${symbols.pass} Dashboard: ${urlMatch[1]}`));
-                  }
-                });
-
-                // Wait briefly to confirm the process didn't crash immediately
-                const launched = await new Promise<boolean>((resolve) => {
-                  const timer = setTimeout(() => {
-                    child.stderr?.removeAllListeners();
-                    child.unref();
-                    resolve(true);
-                  }, 1500);
-
-                  child.on('error', (err) => {
-                    clearTimeout(timer);
-                    console.log(c.yellow(`  ${symbols.warn} Guard failed to start: ${err.message}`));
-                    resolve(false);
-                  });
-
-                  child.on('exit', (code) => {
-                    clearTimeout(timer);
-                    if (code !== null && code !== 0) {
-                      const detail = stderrData.trim().slice(0, 200);
-                      console.log(c.yellow(`  ${symbols.warn} Guard exited with code ${code}.`));
-                      if (detail) console.log(c.dim(`    ${detail}`));
-                      resolve(false);
-                    }
-                    // If exit code is 0 or null (still running), treat as success
-                  });
-                });
-
-                if (launched) {
-                  console.log(c.green(`  ${symbols.pass} Guard started with dashboard (PID: ${child.pid}).`));
-                  console.log(c.dim('    Dashboard will open in your browser automatically.'));
-                  console.log(c.dim('    If not, run: panguard guard start --dashboard'));
+                console.log(c.green(`  ${symbols.pass} Guard installed as ${serviceType} service.`));
+                console.log(c.dim(`    ${servicePath}`));
+                console.log(c.green(`  ${symbols.pass} Guard will auto-start on boot and restart on crash.`));
+                console.log(c.dim('    Run "panguard guard status" to check.'));
+                console.log(c.dim('    Run "panguard guard uninstall" to remove.'));
+              } catch (err) {
+                const msg = err instanceof Error ? err.message : String(err);
+                if (msg.includes('EACCES') || msg.includes('permission')) {
+                  console.log(c.yellow(`  ${symbols.warn} Needs elevated privileges to install system service.`));
+                  console.log(c.dim('    Run: sudo panguard guard install'));
                 } else {
+                  console.log(c.yellow(`  ${symbols.warn} Could not install as system service: ${msg}`));
+                  console.log(c.dim('    Run manually: panguard guard install'));
+                }
+                // Fallback: start Guard for this session only
+                console.log();
+                console.log(c.dim('  Starting Guard for this session instead...'));
+                try {
+                  const child = spawn(process.execPath, [guardBin, 'start', '--dashboard'], {
+                    detached: true,
+                    stdio: 'ignore',
+                  });
+                  child.unref();
+                  console.log(c.green(`  ${symbols.pass} Guard started (PID: ${child.pid}). Will stop when system restarts.`));
+                } catch {
                   console.log(c.dim('    Run manually: panguard guard start --dashboard'));
                 }
               }
-            } catch {
-              console.log(c.yellow(`  ${symbols.warn} Could not start guard automatically.`));
-              console.log(c.dim('    Run manually: panguard guard --watch'));
             }
           }
         }

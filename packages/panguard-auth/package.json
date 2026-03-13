@@ -2,6 +2,11 @@
   "name": "@panguard-ai/panguard-auth",
   "version": "0.2.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "type": "module",
   "description": "Authentication and waitlist system for Panguard AI",
   "main": "./dist/index.js",

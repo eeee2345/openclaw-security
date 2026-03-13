@@ -2,6 +2,11 @@
   "name": "@panguard-ai/core",
   "version": "0.3.2",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panguard-ai/panguard-ai"
+  },
+  "homepage": "https://panguard.ai",
   "type": "module",
   "description": "Core shared modules for Panguard AI / Panguard 安全平台核心共用模組",
   "main": "./dist/index.js",

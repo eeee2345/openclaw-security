@@ -1,80 +1,176 @@
 ---
-title: "Welcome to Panguard AI"
-description: "AI-driven adaptive endpoint protection for developers and small businesses. From install to security in one command."
-icon: "hand-wave"
+title: "Panguard AI"
+sidebarTitle: "Introduction"
+description: "The first open standard for AI agent security. 9,790 detection rules. One-line install. 100% free and open source."
+icon: "shield-check"
 ---
 
-Panguard AI is an open-source AI agent security platform that brings automated threat detection to developers and small businesses -- without requiring a security team. Install the CLI, run setup, and let AI protect your machines automatically. No account required.
+<Note>
+  **v0.8.0 released** -- Built-in dashboard, OpenClaw & QClaw native support, Skill Auditor as default entry point. [See changelog](/changelog).
+</Note>
 
-The core philosophy is simple: **when something happens, Panguard tells you. When nothing happens, you do nothing.**
+Panguard AI is the first open-source security platform built for the AI agent era. As AI agents gain root-level access to production systems, Panguard provides the detection rules, enforcement engine, and collective intelligence network to keep them in check.
 
-<CardGroup cols={2}>
-  <Card title="Quick Start" icon="rocket" href="/quickstart">
-    Get from zero to your first security scan in under 5 minutes.
-  </Card>
-  <Card title="Product Overview" icon="shield-check" href="/overview">
-    Explore the full product suite: Scan, Guard, Chat, Trap, Report, and more.
-  </Card>
-  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
-    Complete command reference for every Panguard CLI tool.
-  </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/overview">
-    REST API documentation for Threat Cloud, Manager, and Auth services.
-  </Card>
-</CardGroup>
-
-## Who is Panguard AI for?
-
-<CardGroup cols={3}>
-  <Card title="Developers" icon="laptop-code">
-    Secure your personal servers, VPS instances, and development machines with zero configuration. Run one command and move on with your day.
-  </Card>
-  <Card title="Small Businesses" icon="building">
-    Get compliance-ready security without hiring a dedicated team. Auto-generate ISO 27001, SOC 2, and Taiwan TCSA audit reports.
-  </Card>
-  <Card title="Managed Service Providers" icon="server">
-    Monitor and protect multiple client endpoints from a single dashboard. Deploy agents across fleets with centralized policy management.
-  </Card>
-</CardGroup>
-
-## Why Panguard AI?
-
-Traditional security tools require deep expertise, generate thousands of un-prioritized alerts, and cost six figures for enterprise licenses. Free tools exist but are effectively unusable without dedicated security engineers.
-
-Panguard AI takes a different approach:
-
-- **One command install** -- no configuration files, no tuning, no jargon
-- **Plain language notifications** -- receive alerts via Telegram, Slack, or Email in language you understand
-- **AI auto-judges severity** -- the system triages, responds, and reports without human intervention
-- **Gets smarter over time** -- behavioral baselines adapt to your specific environment
-
-## Quick install
+**One command. Full protection. No account required.**
 
 ```bash
 curl -fsSL https://get.panguard.ai | bash
 ```
 
-Then set up and run your first scan:
+---
+
+## By the Numbers
+
+| | |
+| --- | --- |
+| **9,790** detection rules | Sigma (3,760) + YARA (5,961) + ATR (69) |
+| **8** AI platforms | OpenClaw, QClaw, Claude Code, Cursor, Codex CLI, Claude Desktop, Windsurf, WorkBuddy |
+| **3-layer** AI pipeline | Rules engine, local AI (Ollama), cloud AI (Claude/OpenAI) |
+| **11** MCP tools | Scan, audit, guard, threat search, and more |
+| **7-layer** Skill Auditor | Gates every AI skill before install |
+| **0** accounts required | No login, no signup, no API key needed to start |
+
+---
+
+## Three Pillars
+
+<CardGroup cols={3}>
+  <Card title="ATR -- The Standard" icon="file-code" href="/overview">
+    **69 rules across 9 threat categories.** The first open standard for AI agent threats -- prompt injection, tool poisoning, skill compromise, agent manipulation. YAML-based, human-readable, machine-enforceable.
+  </Card>
+  <Card title="Threat Cloud -- The Network" icon="globe" href="/products/threat-cloud/overview">
+    **Collective immunity.** Every install contributes anonymized threat signals. The pipeline auto-generates rules from real-world attacks. 11 intel sources. Synced every hour.
+  </Card>
+  <Card title="Guard -- The Engine" icon="shield-halved" href="/products/guard/overview">
+    **4-agent AI pipeline.** Detect, Analyze, Respond, Report. Processes OS-level events through 9,790 rules. Built-in Skill Auditor. Auto-response blocks IPs, kills processes, quarantines files.
+  </Card>
+</CardGroup>
+
+---
+
+## Quick Start
+
+Install, scan, and protect in 4 commands:
 
 ```bash
+curl -fsSL https://get.panguard.ai | bash
 panguard setup
 panguard scan --quick
+panguard guard start --dashboard
 ```
 
+`panguard setup` auto-detects all AI platforms on your machine (OpenClaw, QClaw, Claude Code, Cursor, etc.) and injects the correct MCP or native Skill configuration for each.
 
-## Next steps
+`panguard guard start --dashboard` starts 24/7 protection and opens a local dashboard in your browser at `http://127.0.0.1:9100`.
 
 <CardGroup cols={2}>
-  <Card title="Installation" icon="download" href="/installation">
-    Detailed platform-specific installation instructions for macOS, Linux, and Windows.
+  <Card title="Step-by-step Quick Start" icon="rocket" href="/quickstart">
+    Detailed walkthrough with expected output for each step.
   </Card>
-  <Card title="Quick Start" icon="play" href="/quickstart">
-    Install, set up, and run your first scan in under 5 minutes.
+  <Card title="Installation Guide" icon="download" href="/installation">
+    Platform-specific instructions for macOS, Linux, and Windows.
+  </Card>
+</CardGroup>
+
+---
+
+## OpenClaw & QClaw
+
+<Tabs>
+  <Tab title="OpenClaw">
+    ```bash
+    curl -fsSL https://get.panguard.ai | bash && panguard setup --platform openclaw
+    ```
+
+    Installs as a native **Skill** at `~/.openclaw/skills/panguard/SKILL.md`. Restart OpenClaw, then:
+
+    ```
+    > Audit the skills in this project
+    > Scan my machine for vulnerabilities
+    > Start real-time protection
+    ```
+  </Tab>
+  <Tab title="QClaw">
+    ```bash
+    curl -fsSL https://get.panguard.ai | bash && panguard setup --platform qclaw
+    ```
+
+    Registers as an **MCP server** in `~/.qclaw/mcp.json`. Restart QClaw to access 11 security tools.
+  </Tab>
+  <Tab title="Auto-detect all platforms">
+    ```bash
+    curl -fsSL https://get.panguard.ai | bash && panguard setup
+    ```
+
+    Auto-detects and configures all 8 supported AI platforms in one command.
+  </Tab>
+</Tabs>
+
+<Tip>
+  For manual configuration and troubleshooting, see the [OpenClaw & QClaw setup guide](/guides/claw-setup).
+</Tip>
+
+---
+
+## Who is Panguard AI for?
+
+<CardGroup cols={3}>
+  <Card title="Developers" icon="laptop-code">
+    Secure your servers, VPS, and dev machines with zero configuration. One command, then back to work.
+  </Card>
+  <Card title="Small Businesses" icon="building">
+    Compliance-ready security without a dedicated team. Auto-generate ISO 27001, SOC 2, and Taiwan TCSA audit reports.
+  </Card>
+  <Card title="MSPs" icon="server">
+    Monitor and protect client endpoints from a single Manager dashboard. Deploy across fleets with centralized policy.
+  </Card>
+</CardGroup>
+
+---
+
+## Why Panguard AI?
+
+Traditional security tools cost six figures and require dedicated teams. Free tools exist but are unusable without security engineers.
+
+Panguard takes a different approach:
+
+- **One command install** -- no config files, no tuning, no jargon
+- **Plain language alerts** -- Telegram, Slack, Email, LINE in your preferred language
+- **AI auto-triage** -- the system judges severity, responds, and reports autonomously
+- **Gets smarter over time** -- behavioral baselines adapt to your environment
+- **Skill Auditor** -- gates every AI skill before install, prevents supply chain attacks
+- **100% free** -- MIT licensed, no paid tiers, no feature gates, no paywalls
+
+---
+
+## 100% Open Source
+
+Every feature is free. Full source code. Zero black boxes. Every line is auditable.
+
+<CardGroup cols={2}>
+  <Card title="Panguard AI on GitHub" icon="github" href="https://github.com/panguard-ai/panguard-ai">
+    Star the repo, browse source, report issues, or contribute.
+  </Card>
+  <Card title="ATR Rules on GitHub" icon="file-code" href="https://github.com/Agent-Threat-Rule/agent-threat-rules">
+    The open standard for AI agent threat detection. Contribute rules to strengthen collective immunity.
+  </Card>
+</CardGroup>
+
+---
+
+## Explore
+
+<CardGroup cols={2}>
+  <Card title="Product Overview" icon="shield-check" href="/overview">
+    Deep dive into the three pillars: ATR, Threat Cloud, and Guard.
+  </Card>
+  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
+    Complete command reference for every Panguard CLI tool.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/overview">
+    REST API docs for Threat Cloud, Manager, and Auth services.
   </Card>
   <Card title="Concepts" icon="lightbulb" href="/concepts/three-layer-ai">
-    Understand the three-layer AI architecture that powers Panguard.
-  </Card>
-  <Card title="Guides" icon="book-open" href="/guides/first-scan">
-    Step-by-step guides for every feature, from scanning to honeypots.
+    Understand the three-layer AI architecture powering Panguard.
   </Card>
 </CardGroup>

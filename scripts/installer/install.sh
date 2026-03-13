@@ -44,7 +44,7 @@ print_header() {
   echo -e "  ${BOLD}Panguard AI Installer${NC}"
   echo -e "  ${DIM}=====================${NC}"
   echo ""
-  echo -e "  ${DIM}AI-driven adaptive cybersecurity platform${NC}"
+  echo -e "  ${DIM}The App Store Gatekeeper for AI Agents${NC}"
   echo ""
 }
 
@@ -580,22 +580,24 @@ main() {
 
   BINARY_INSTALLED=false
   NPM_INSTALLED=false
-  if download_binary; then
-    success "Prebuilt binary installed to ${INSTALL_DIR}"
-    BINARY_INSTALLED=true
-  else
-    # Try npm global install before heavy source build
-    warn "No prebuilt binary available for ${PLATFORM}. Trying npm install..."
-    if command -v npm &>/dev/null; then
-      if npm install -g @panguard-ai/panguard 2>/dev/null; then
-        success "Panguard AI installed via npm"
-        NPM_INSTALLED=true
-      else
-        warn "npm global install failed. Falling back to source build..."
-        build_from_source
-      fi
+
+  # Strategy: npm first (fastest & most reliable), then prebuilt binary, then source build
+  if command -v npm &>/dev/null; then
+    info "Installing via npm..."
+    if npm install -g @panguard-ai/panguard 2>/dev/null; then
+      success "Panguard AI installed via npm"
+      NPM_INSTALLED=true
     else
-      warn "npm not found. Falling back to source build..."
+      warn "npm global install failed. Trying prebuilt binary..."
+    fi
+  fi
+
+  if [ "$NPM_INSTALLED" = "false" ]; then
+    if download_binary; then
+      success "Prebuilt binary installed to ${INSTALL_DIR}"
+      BINARY_INSTALLED=true
+    else
+      warn "No prebuilt binary available for ${PLATFORM}. Falling back to source build..."
       build_from_source
     fi
   fi

@@ -33,7 +33,7 @@ describe('license', () => {
 
   it('should generate and validate a community (free) key', () => {
     const key = generateTestLicenseKey('free');
-    expect(key).toMatch(/^CLAW-FREE-/);
+    expect(key).toMatch(/^PG-FREE-/);
     const license = validateLicense(key);
     expect(license.isValid).toBe(true);
     expect(license.tier).toBe('free');
@@ -41,7 +41,7 @@ describe('license', () => {
 
   it('should still parse legacy pro keys', () => {
     const key = generateTestLicenseKey('pro');
-    expect(key).toMatch(/^CLAW-PRO-/);
+    expect(key).toMatch(/^PG-PRO-/);
     const license = validateLicense(key);
     expect(license.isValid).toBe(true);
     expect(license.tier).toBe('pro');
@@ -50,7 +50,7 @@ describe('license', () => {
 
   it('should still parse legacy enterprise keys', () => {
     const key = generateTestLicenseKey('enterprise');
-    expect(key).toMatch(/^CLAW-ENT-/);
+    expect(key).toMatch(/^PG-ENT-/);
     const license = validateLicense(key);
     expect(license.isValid).toBe(true);
     expect(license.tier).toBe('enterprise');
@@ -64,9 +64,9 @@ describe('license', () => {
     expect(hasFeature(license, 'auto_respond')).toBe(true);
   });
 
-  it('should handle legacy key with checksum', () => {
+  it('should accept legacy CLAW- prefix keys', () => {
     const license = validateLicense('CLAW-PRO-AAAA-BBBB-CCCC');
-    // Format is accepted, checksum may or may not pass
+    // Format is accepted (legacy prefix), checksum may or may not pass
     expect(license.key).toBe('CLAW-PRO-AAAA-BBBB-CCCC');
   });
 });

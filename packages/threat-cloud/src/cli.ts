@@ -29,6 +29,9 @@ function parseArgs(args: string[]): Partial<ServerConfig> {
       case '--anthropic-api-key':
         config.anthropicApiKey = args[++i];
         break;
+      case '--admin-api-key':
+        config.adminApiKey = args[++i];
+        break;
       case '--help':
         console.log(`
 Threat Cloud Server - Collective Threat Intelligence Backend
@@ -41,6 +44,7 @@ Options:
   --db <path>                  SQLite database path (default: ./threat-cloud.db)
   --api-key <keys>             Comma-separated API keys (enables auth)
   --anthropic-api-key <key>    Anthropic API key for LLM review of ATR proposals
+  --admin-api-key <key>        Admin key for write-protected endpoints (POST /api/rules)
   --help                       Show this help
 `);
         process.exit(0);
@@ -60,6 +64,7 @@ async function main(): Promise<void> {
     apiKeys: args.apiKeys ?? [],
     rateLimitPerMinute: 120,
     anthropicApiKey: args.anthropicApiKey ?? process.env['ANTHROPIC_API_KEY'],
+    adminApiKey: args.adminApiKey ?? process.env['TC_ADMIN_API_KEY'],
   };
 
   const server = new ThreatCloudServer(config);

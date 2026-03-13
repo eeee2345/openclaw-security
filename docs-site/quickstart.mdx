@@ -4,7 +4,7 @@ description: "Install the CLI, scan your system, and start real-time protection 
 icon: "rocket"
 ---
 
-This guide walks you through the fastest path to securing your first machine with Panguard AI.
+From zero to full protection in 4 steps. No account, no login, no configuration files. Works on macOS, Linux, and Windows.
 
 <Steps>
   <Step title="Install the CLI">
@@ -117,11 +117,13 @@ This guide walks you through the fastest path to securing your first machine wit
   </Step>
 
   <Step title="Start real-time protection">
-    A scan is a one-time check. For continuous protection, start the Guard engine:
+    A scan is a one-time check. For continuous protection, start the Guard engine with the built-in dashboard:
 
     ```bash
-    panguard guard start
+    panguard guard start --dashboard
     ```
+
+    This starts real-time monitoring and opens a local dashboard in your browser:
 
     ```
       PANGUARD AI - Guard Engine
@@ -133,11 +135,11 @@ This guide walks you through the fastest path to securing your first machine wit
       Mode:       Learning (Day 1/7)
       Monitoring: processes, network, files
       Rules:      3,760 Sigma rules loaded
+      Dashboard:  http://127.0.0.1:9100
       Score:      --/100 (building baseline)
 
       Guard is now protecting your system.
-      Learning mode: AI is observing normal behavior.
-      Protection mode activates automatically after 7 days.
+      Dashboard opened in browser.
     ```
 
     <Info>
@@ -148,14 +150,14 @@ This guide walks you through the fastest path to securing your first machine wit
 
 ## What to do next
 
-Now that your system is scanned and protected, explore these features:
+Your system is now scanned and protected with 9,790 detection rules. The dashboard at `http://127.0.0.1:9100` shows real-time status, detected threats, loaded rules, and skill trust status.
 
 <CardGroup cols={2}>
   <Card title="Set up notifications" icon="bell" href="/guides/notifications-setup">
-    Receive alerts via Telegram, Slack, or Email when threats are detected.
+    Receive alerts via Telegram, Slack, Email, or LINE when threats are detected.
   </Card>
-  <Card title="Deploy honeypots" icon="honey-pot" href="/guides/honeypots">
-    Catch attackers with 8 types of decoy services.
+  <Card title="Install on OpenClaw & QClaw" icon="bolt" href="/guides/claw-setup">
+    One-line setup for OpenClaw (native Skill) and QClaw (MCP).
   </Card>
   <Card title="Generate compliance reports" icon="file-chart-column" href="/guides/compliance-reports">
     Auto-generate ISO 27001, SOC 2, and Taiwan TCSA audit reports.
