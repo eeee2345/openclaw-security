@@ -20,6 +20,9 @@
  */
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, basename, relative, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ThreatCloudDB } from './database.js';
 import { LLMReviewer } from './llm-reviewer.js';
 import type { ServerConfig, ApiResponse, AnonymizedThreatData, ThreatCloudRule, ATRProposal, SkillThreatSubmission } from './types.js';
@@ -71,8 +74,21 @@ export class ThreatCloudServer {
         if (this.llmReviewer) {
           log.info('LLM reviewer enabled for ATR proposal review');
         }
+        // Auto-seed rules from bundled config/ if DB is empty (first startup)
+        const stats = this.db.getStats();
+        if (stats.totalRules === 0) {
+          log.info('First startup detected — seeding bundled rules...');
+          try {
+            const seeded = this.seedFromBundled();
+            log.info(`Seeded ${seeded} rules into database`);
+          } catch (err) {
+            log.error('Rule seeding failed', err);
+          }
+        } else {
+          log.info(`Database: ${stats.totalRules} rules, ${stats.totalThreats} threats`);
+        }
+
         // Backfill classification for existing unclassified rules (one-time on startup)
-        // 啟動時回填未分類規則的分類資訊
         try {
           const backfilled = this.db.backfillClassification();
           if (backfilled > 0) {
@@ -552,5 +568,114 @@ export class ThreatCloudServer {
   private sendJson(res: ServerResponse, status: number, data: unknown): void {
     res.writeHead(status);
     res.end(JSON.stringify(data));
+  }
+
+  /**
+   * Seed rules from bundled config/ directory on first startup.
+   * Looks for config/ in cwd, relative to this file, or common Docker paths.
+   */
+  private seedFromBundled(): number {
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const candidates = [
+      join(process.cwd(), 'config'),
+      join(__dirname, '..', '..', '..', 'config'),         // monorepo: packages/threat-cloud/dist -> config
+      join(__dirname, '..', '..', '..', '..', 'config'),   // deeper nesting
+      '/app/config',                                        // Docker standard
+    ];
+    const configDir = candidates.find((d) => {
+      try { return statSync(d).isDirectory(); } catch { return false; }
+    });
+
+    if (!configDir) {
+      log.info(`No config/ directory found (searched: ${candidates.join(', ')})`);
+      return 0;
+    }
+
+    log.info(`Using config directory: ${configDir}`);
+    const now = new Date().toISOString();
+    let seeded = 0;
+
+    const collectFiles = (dir: string, extensions: string[]): string[] => {
+      const results: string[] = [];
+      try {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+          const fullPath = join(dir, entry.name);
+          if (entry.isDirectory()) {
+            results.push(...collectFiles(fullPath, extensions));
+          } else if (extensions.some((ext) => entry.name.endsWith(ext))) {
+            results.push(fullPath);
+          }
+        }
+      } catch (err: unknown) {
+        log.error(`Cannot read directory ${dir}`, err);
+      }
+      return results;
+    };
+
+    // Sigma rules
+    const sigmaDir = join(configDir, 'sigma-rules');
+    try {
+      const files = collectFiles(sigmaDir, ['.yml', '.yaml']);
+      for (const file of files) {
+        const content = readFileSync(file, 'utf-8');
+        const ruleId = `sigma:${relative(sigmaDir, file).replace(/\//g, ':')}`;
+        this.db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'sigma' });
+        seeded++;
+      }
+      log.info(`  Sigma: ${files.length} files`);
+    } catch (err: unknown) {
+      log.error('Sigma seeding failed', err);
+    }
+
+    // YARA rules (split multi-rule files)
+    const yaraDir = join(configDir, 'yara-rules');
+    try {
+      const files = collectFiles(yaraDir, ['.yar', '.yara']);
+      for (const file of files) {
+        const content = readFileSync(file, 'utf-8');
+        const ruleMatches = content.match(/rule\s+\w+/g);
+        if (ruleMatches && ruleMatches.length > 1) {
+          for (const match of ruleMatches) {
+            const ruleName = match.replace('rule ', '');
+            const ruleId = `yara:${basename(file, '.yar').replace('.yara', '')}:${ruleName}`;
+            this.db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'yara' });
+            seeded++;
+          }
+        } else {
+          const ruleId = `yara:${relative(yaraDir, file).replace(/\//g, ':')}`;
+          this.db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'yara' });
+          seeded++;
+        }
+      }
+      log.info(`  YARA: ${files.length} files`);
+    } catch (err: unknown) {
+      log.error('YARA seeding failed', err);
+    }
+
+    // ATR rules
+    const atrCandidates = [
+      join(process.cwd(), 'node_modules', 'agent-threat-rules', 'rules'),
+      join(__dirname, '..', '..', 'atr', 'rules'),
+      join(__dirname, '..', '..', '..', 'packages', 'atr', 'rules'),
+    ];
+    const atrDir = atrCandidates.find((d) => {
+      try { return statSync(d).isDirectory(); } catch { return false; }
+    });
+    if (atrDir) {
+      try {
+        const files = collectFiles(atrDir, ['.yaml', '.yml']);
+        for (const file of files) {
+          const content = readFileSync(file, 'utf-8');
+          const ruleId = `atr:${relative(atrDir, file).replace(/\//g, ':')}`;
+          this.db.upsertRule({ ruleId, ruleContent: content, publishedAt: now, source: 'atr' });
+          seeded++;
+        }
+        log.info(`  ATR: ${files.length} files`);
+      } catch (err: unknown) {
+        log.error('ATR seeding failed', err);
+      }
+    }
+
+    return seeded;
   }
 }
