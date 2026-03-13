@@ -127,7 +127,11 @@ export class ThreatCloudDB {
       -- Migrations are handled by the numbered migration system in migrations.ts
     `);
 
-    runMigrations(this.db);
+    try {
+      runMigrations(this.db);
+    } catch (err) {
+      console.error('[threat-cloud] Migration failed (non-fatal):', err instanceof Error ? err.message : String(err));
+    }
 
     this.db.exec(`
       CREATE INDEX IF NOT EXISTS idx_rules_category ON rules(category);
