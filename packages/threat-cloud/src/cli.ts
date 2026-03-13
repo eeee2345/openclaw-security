@@ -59,9 +59,9 @@ async function main(): Promise<void> {
   const config: ServerConfig = {
     port: args.port ?? Number(process.env['PORT'] ?? '8080'),
     host: args.host ?? '0.0.0.0',
-    dbPath: args.dbPath ?? process.env['DB_PATH'] ?? './threat-cloud.db',
+    dbPath: args.dbPath ?? process.env['TC_DB_PATH'] ?? process.env['DB_PATH'] ?? './threat-cloud.db',
     apiKeyRequired: args.apiKeyRequired ?? false,
-    apiKeys: args.apiKeys ?? [],
+    apiKeys: args.apiKeys ?? (process.env['TC_API_KEYS']?.split(',') ?? []),
     rateLimitPerMinute: 120,
     anthropicApiKey: args.anthropicApiKey ?? process.env['ANTHROPIC_API_KEY'],
     adminApiKey: args.adminApiKey ?? process.env['TC_ADMIN_API_KEY'],
