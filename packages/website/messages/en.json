@@ -52,7 +52,7 @@
       "scan": "Panguard Scan",
       "scanDesc": "60-second AI security audit",
       "guard": "Panguard Guard",
-      "guardDesc": "24/7 AI endpoint protection",
+      "guardDesc": "24/7 skill behavior monitoring",
       "chat": "Panguard Chat",
       "chatDesc": "AI security copilot",
       "trap": "Panguard Trap",
@@ -342,17 +342,17 @@
           {
             "pct": 7,
             "label": "Local AI",
-            "sub": "Ollama on your GPU. Offline. Private.",
+            "sub": "Fingerprint & Heuristic. Local. Zero-config.",
             "speed": "~2s"
           },
           {
             "pct": 3,
             "label": "Cloud AI",
-            "sub": "Only when needed. $0.008/analysis",
+            "sub": "Only when needed. Server-side. Free.",
             "speed": "~5s"
           }
         ],
-        "fallback": "Cloud fails → local AI. Local fails → rules engine. Protection never stops."
+        "fallback": "Cloud fails → local heuristics. Heuristics fail → rules engine. Protection never stops."
       },
       "confidence": {
         "title": "Smart enough to act. Honest enough to ask.",
@@ -976,7 +976,7 @@
       },
       "features": {
         "title": "What Panguard Guard does.",
-        "subtitle": "Enterprise-grade endpoint protection, designed for teams that do not have a dedicated security team.",
+        "subtitle": "Enterprise-grade AI agent security, designed for teams that do not have a dedicated security team.",
         "overline": "Features"
       },
       "featuresList": {
@@ -998,7 +998,7 @@
         },
         "item5": {
           "title": "Graceful Degradation",
-          "desc": "Cloud AI down? Local LLM (Ollama) takes over. LLM offline? The rule engine with 3,760 Sigma and 5,961 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
+          "desc": "Cloud AI down? Local fingerprint & heuristic analysis takes over. Heuristics offline? The rule engine with 3,760 Sigma and 5,961 YARA rules handles it. Guard never stops protecting, regardless of network conditions."
         },
         "item6": {
           "title": "Integration Adapters",
@@ -2765,19 +2765,19 @@
       },
       "layer2": {
         "badge": "Layer 2",
-        "name": "Edge AI",
-        "tech": "Local LLM via Ollama",
+        "name": "Fingerprint & Heuristic",
+        "tech": "Local behavioral analysis",
         "pct": "~7 %",
-        "cost": "~$0",
-        "desc": "Events that rules cannot confidently classify are escalated to a local large-language model running on Ollama. This keeps sensitive data on the device, avoids network latency, and adds contextual reasoning without cloud dependency."
+        "cost": "$0",
+        "desc": "Events that rules cannot confidently classify are escalated to local fingerprint matching and heuristic analysis. Zero-config, fully offline, keeps sensitive data on the device, and adds contextual reasoning without cloud dependency."
       },
       "layer3": {
         "badge": "Layer 3",
-        "name": "Cloud AI",
-        "tech": "Claude / GPT",
+        "name": "Cloud LLM-as-Judge",
+        "tech": "Claude Sonnet 4 on Threat Cloud",
         "pct": "~3 %",
-        "cost": "~$0.02",
-        "desc": "Only the most ambiguous or novel threats reach cloud AI for deep reasoning. The payload is scrubbed of PII before transmission. Cloud AI returns a structured verdict with a confidence score and a plain-language explanation."
+        "cost": "$0 (server-side)",
+        "desc": "Only the most ambiguous or novel threats reach the Cloud LLM for deep reasoning. The payload is scrubbed of PII before transmission. Analysis runs server-side on Threat Cloud -- free for all users. Returns a structured verdict with confidence score and plain-language explanation."
       }
     },
     "agents": {
@@ -4041,7 +4041,7 @@
     "currentStatus": "Current Status",
     "currentStatusDesc": "All services monitored in real time across global regions.",
     "services": {
-      "guard": "Panguard Guard -- Endpoint Protection",
+      "guard": "Panguard Guard -- Skill Behavior Monitoring",
       "scan": "Panguard Scan -- Security Audits",
       "chat": "Panguard Chat -- AI Copilot",
       "trap": "Panguard Trap -- Honeypot System",
@@ -4171,8 +4171,8 @@
       "layer4": {
         "badge": "Layer 4",
         "name": "AI Analysis",
-        "desc": "When rules can't explain a behavior, AI steps in. Local first (Ollama on your GPU, fully offline). Cloud only when needed.",
-        "detail": "Three-tier funnel: 90% rules / 7% local AI / 3% cloud AI. Cost: ~$0.008 per cloud analysis."
+        "desc": "When rules can't explain a behavior, AI steps in. Local fingerprint & heuristic analysis first (zero-config, fully offline). Cloud LLM only when needed.",
+        "detail": "Three-tier funnel: 90% rules / 7% local heuristic / 3% cloud AI. Cloud analysis runs server-side on Threat Cloud -- free for all users."
       },
       "layer5": {
         "badge": "Layer 5",
@@ -4194,13 +4194,13 @@
       "tier2": {
         "name": "Local AI",
         "pct": "7%",
-        "items": "Ollama running on your machine|Runs on NVIDIA GPU for acceleration|Fully offline -- data never leaves|Handles ambiguous events rules can't classify",
+        "items": "Fingerprint & heuristic analysis|Zero-config -- works out of the box|Fully offline -- data never leaves|Handles ambiguous events rules can't classify",
         "speed": "~2s per analysis"
       },
       "tier3": {
         "name": "Cloud AI",
         "pct": "3%",
-        "items": "Claude / OpenAI (configurable)|Only invoked when local AI is uncertain|Cost: ~$0.008 per analysis|Multi-step reasoning chains (up to 8 steps)",
+        "items": "Claude Sonnet 4 on Threat Cloud|Only invoked when local analysis is uncertain|Server-side -- free for all users|Multi-step reasoning chains (up to 8 steps)",
         "speed": "~5s per analysis"
       }
     },
@@ -4763,7 +4763,7 @@
     },
     "productGuard": {
       "title": "Panguard Guard",
-      "description": "24/7 AI endpoint protection. One command to install. The always-on security agent that detects, analyzes, and responds to threats automatically."
+      "description": "24/7 skill behavior monitoring. One command to install. The always-on security agent that detects, analyzes, and responds to AI agent threats automatically."
     },
     "devSecurityReview": {
       "title": "Dev Security Review -- AI Agent Security",
@@ -4783,7 +4783,7 @@
     },
     "developers": {
       "title": "For Developers",
-      "description": "Enterprise security with developer simplicity. AI-powered endpoint protection for solo devs and indie hackers. One command setup, zero overhead."
+      "description": "Enterprise security with developer simplicity. AI-powered skill monitoring for solo devs and indie hackers. One command setup, zero overhead."
     },
     "smb": {
       "title": "For Small Business",

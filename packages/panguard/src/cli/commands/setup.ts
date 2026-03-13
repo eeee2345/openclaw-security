@@ -8,18 +8,26 @@
  */
 
 import { Command } from 'commander';
-import { spawn } from 'node:child_process';
+import { exec, spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
+import { homedir, platform } from 'node:os';
 import { createRequire } from 'node:module';
 import { c, banner, divider, symbols, promptConfirm } from '@panguard-ai/core';
 import {
   scanInstalledSkills,
   renderSkillScanResults,
   reviewFlaggedSkills,
-  collectSafeSkillNames,
 } from './setup-skill-scan.js';
+
+/** Open URL in the default browser (cross-platform) */
+function openBrowser(url: string): void {
+  const os = platform();
+  const cmd = os === 'darwin' ? 'open' : os === 'win32' ? 'start' : 'xdg-open';
+  exec(`${cmd} ${url}`, () => {
+    // Ignore errors — browser open is best-effort
+  });
+}
 
 /** Persist skill names into the Guard whitelist JSON file */
 function persistToWhitelist(skillNames: readonly string[], source: 'manual' | 'static'): void {
@@ -32,7 +40,14 @@ function persistToWhitelist(skillNames: readonly string[], source: 'manual' | 's
 
   // Load existing whitelist if present
   let existing: {
-    whitelist: Array<{ name: string; normalizedName: string; source: string; addedAt: string; fingerprintHash?: string; reason?: string }>;
+    whitelist: Array<{
+      name: string;
+      normalizedName: string;
+      source: string;
+      addedAt: string;
+      fingerprintHash?: string;
+      reason?: string;
+    }>;
     revoked: string[];
   } = { whitelist: [], revoked: [] };
 
@@ -56,7 +71,8 @@ function persistToWhitelist(skillNames: readonly string[], source: 'manual' | 's
       normalizedName: normalized,
       source,
       addedAt: now,
-      reason: source === 'manual' ? 'User-approved during setup' : 'Auto-whitelisted during setup (safe)',
+      reason:
+        source === 'manual' ? 'User-approved during setup' : 'Auto-whitelisted during setup (safe)',
     });
     existingNames.add(normalized);
   }
@@ -254,22 +270,24 @@ export function setupCommand(): Command {
               renderSkillScanResults(scanResults);
 
               // Whitelist only safe (LOW risk) skills — caution (MEDIUM) needs review
-              const safeOnly = scanResults.filter((r) => r.status === 'safe').map((r) => r.entry.name);
+              const safeOnly = scanResults
+                .filter((r) => r.status === 'safe')
+                .map((r) => r.entry.name);
               if (safeOnly.length > 0) {
                 persistToWhitelist(safeOnly, 'static');
                 console.log();
                 console.log(
                   c.green(`  ${symbols.pass} ${safeOnly.length} safe skill(s) auto-whitelisted.`)
                 );
-                console.log(
-                  c.dim(`    Saved to ~/.panguard-guard/skill-whitelist.json`)
-                );
+                console.log(c.dim(`    Saved to ~/.panguard-guard/skill-whitelist.json`));
               }
 
               const caution = scanResults.filter((r) => r.status === 'caution');
               if (caution.length > 0) {
                 console.log(
-                  c.yellow(`  ${symbols.warn} ${caution.length} skill(s) at MEDIUM risk — monitored but not whitelisted.`)
+                  c.yellow(
+                    `  ${symbols.warn} ${caution.length} skill(s) at MEDIUM risk — monitored but not whitelisted.`
+                  )
                 );
               }
 
@@ -342,22 +360,43 @@ export function setupCommand(): Command {
 
                 const osPlatform = process.platform;
                 const serviceType =
-                  osPlatform === 'darwin' ? 'launchd' :
-                  osPlatform === 'linux' ? 'systemd' :
-                  osPlatform === 'win32' ? 'Windows Service' : 'system service';
+                  osPlatform === 'darwin'
+                    ? 'launchd'
+                    : osPlatform === 'linux'
+                      ? 'systemd'
+                      : osPlatform === 'win32'
+                        ? 'Windows Service'
+                        : 'system service';
 
-                console.log(c.green(`  ${symbols.pass} Guard installed as ${serviceType} service.`));
+                console.log(
+                  c.green(`  ${symbols.pass} Guard installed as ${serviceType} service.`)
+                );
                 console.log(c.dim(`    ${servicePath}`));
-                console.log(c.green(`  ${symbols.pass} Guard will auto-start on boot and restart on crash.`));
+                console.log(
+                  c.green(`  ${symbols.pass} Guard will auto-start on boot and restart on crash.`)
+                );
                 console.log(c.dim('    Run "panguard guard status" to check.'));
                 console.log(c.dim('    Run "panguard guard uninstall" to remove.'));
+
+                // Open Dashboard in browser
+                const dashUrl = 'http://127.0.0.1:3847';
+                console.log();
+                console.log(c.green(`  ${symbols.pass} Opening Guard Dashboard...`));
+                console.log(c.dim(`    ${dashUrl}`));
+                openBrowser(dashUrl);
               } catch (err) {
                 const msg = err instanceof Error ? err.message : String(err);
                 if (msg.includes('EACCES') || msg.includes('permission')) {
-                  console.log(c.yellow(`  ${symbols.warn} Needs elevated privileges to install system service.`));
+                  console.log(
+                    c.yellow(
+                      `  ${symbols.warn} Needs elevated privileges to install system service.`
+                    )
+                  );
                   console.log(c.dim('    Run: sudo panguard guard install'));
                 } else {
-                  console.log(c.yellow(`  ${symbols.warn} Could not install as system service: ${msg}`));
+                  console.log(
+                    c.yellow(`  ${symbols.warn} Could not install as system service: ${msg}`)
+                  );
                   console.log(c.dim('    Run manually: panguard guard install'));
                 }
                 // Fallback: start Guard for this session only
@@ -369,7 +408,17 @@ export function setupCommand(): Command {
                     stdio: 'ignore',
                   });
                   child.unref();
-                  console.log(c.green(`  ${symbols.pass} Guard started (PID: ${child.pid}). Will stop when system restarts.`));
+                  console.log(
+                    c.green(
+                      `  ${symbols.pass} Guard started (PID: ${child.pid}). Will stop when system restarts.`
+                    )
+                  );
+                  // Open Dashboard in browser
+                  const fallbackUrl = 'http://127.0.0.1:3847';
+                  console.log();
+                  console.log(c.green(`  ${symbols.pass} Opening Guard Dashboard...`));
+                  console.log(c.dim(`    ${fallbackUrl}`));
+                  openBrowser(fallbackUrl);
                 } catch {
                   console.log(c.dim('    Run manually: panguard guard start --dashboard'));
                 }

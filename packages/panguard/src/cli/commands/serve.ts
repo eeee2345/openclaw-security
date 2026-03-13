@@ -141,7 +141,9 @@ export function serveCommand(): Command {
           const seeded = await seedRulesFromBundled(threatDb);
           console.log(`  ${c.safe(`Seeded ${seeded} rules`)} into Threat Cloud DB`);
         } else {
-          console.log(`  ${c.dim(`Threat Cloud: ${stats.totalRules} rules, ${stats.totalThreats} threats`)}`);
+          console.log(
+            `  ${c.dim(`Threat Cloud: ${stats.totalRules} rules, ${stats.totalThreats} threats`)}`
+          );
         }
         console.log('');
       } catch (err: unknown) {
@@ -170,16 +172,21 @@ export function serveCommand(): Command {
       // Promotion cron: every 15 minutes, promote confirmed + LLM-approved proposals to rules
       let promotionTimer: ReturnType<typeof setInterval> | null = null;
       if (threatDb) {
-        promotionTimer = setInterval(() => {
-          try {
-            const promoted = threatDb.promoteConfirmedProposals();
-            if (promoted > 0) {
-              console.log(`  [Promotion] ${promoted} proposal(s) promoted to rules`);
+        promotionTimer = setInterval(
+          () => {
+            try {
+              const promoted = threatDb.promoteConfirmedProposals();
+              if (promoted > 0) {
+                console.log(`  [Promotion] ${promoted} proposal(s) promoted to rules`);
+              }
+            } catch (err: unknown) {
+              console.error(
+                `  [Promotion] Error: ${err instanceof Error ? err.message : String(err)}`
+              );
             }
-          } catch (err: unknown) {
-            console.error(`  [Promotion] Error: ${err instanceof Error ? err.message : String(err)}`);
-          }
-        }, 15 * 60 * 1000);
+          },
+          15 * 60 * 1000
+        );
       }
 
       // Periodic database backup (every 6 hours)
@@ -190,7 +197,9 @@ export function serveCommand(): Command {
           const tc2 = await import(/* webpackIgnore: true */ tcMod2);
           const backupDir = join(dirname(options.db), 'backups');
           const threatBackup = new tc2.BackupManager(
-            join(dirname(options.db), 'threat-cloud.db'), backupDir, 7
+            join(dirname(options.db), 'threat-cloud.db'),
+            backupDir,
+            7
           );
           const authBackup = new tc2.BackupManager(options.db, backupDir, 7);
 
@@ -198,9 +207,13 @@ export function serveCommand(): Command {
             try {
               const r1 = threatBackup.backup();
               const r2 = authBackup.backup();
-              console.log(`  [Backup] threat-cloud.db (${tc2.BackupManager.formatSize(r1.sizeBytes)}), auth.db (${tc2.BackupManager.formatSize(r2.sizeBytes)})`);
+              console.log(
+                `  [Backup] threat-cloud.db (${tc2.BackupManager.formatSize(r1.sizeBytes)}), auth.db (${tc2.BackupManager.formatSize(r2.sizeBytes)})`
+              );
             } catch (err: unknown) {
-              console.error(`  [Backup] Failed: ${err instanceof Error ? err.message : String(err)}`);
+              console.error(
+                `  [Backup] Failed: ${err instanceof Error ? err.message : String(err)}`
+              );
             }
           };
 
@@ -515,7 +528,9 @@ async function handleRequest(
         try {
           const s = threatDb.getStats();
           threatStats = { rules: s.totalRules, threats: s.totalThreats };
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
       }
       sendJson(res, 200, {
         ok: true,
@@ -525,7 +540,10 @@ async function handleRequest(
           uptime: Math.round(process.uptime()),
           db: 'connected',
           threatStats,
-          memory: { rss: Math.round(mem.rss / 1024 / 1024), heapUsed: Math.round(mem.heapUsed / 1024 / 1024) },
+          memory: {
+            rss: Math.round(mem.rss / 1024 / 1024),
+            heapUsed: Math.round(mem.heapUsed / 1024 / 1024),
+          },
           services,
         },
       });
@@ -536,7 +554,22 @@ async function handleRequest(
     // Security: rate limiting, auth, input validation
 
     // Rate limit for Threat Cloud endpoints (per-IP, shared state)
-    if (threatDb && pathname.startsWith('/api/') && ['/api/threats', '/api/rules', '/api/stats', '/api/atr-proposals', '/api/atr-feedback', '/api/skill-threats', '/api/atr-rules', '/api/yara-rules', '/api/feeds/ip-blocklist', '/api/feeds/domain-blocklist'].some((p) => pathname === p)) {
+    if (
+      threatDb &&
+      pathname.startsWith('/api/') &&
+      [
+        '/api/threats',
+        '/api/rules',
+        '/api/stats',
+        '/api/atr-proposals',
+        '/api/atr-feedback',
+        '/api/skill-threats',
+        '/api/atr-rules',
+        '/api/yara-rules',
+        '/api/feeds/ip-blocklist',
+        '/api/feeds/domain-blocklist',
+      ].some((p) => pathname === p)
+    ) {
       const clientIP = req.socket.remoteAddress ?? 'unknown';
       if (!checkTCRateLimit(clientIP)) {
         sendJson(res, 429, { ok: false, error: 'Rate limit exceeded. Try again later.' });
@@ -546,20 +579,39 @@ async function handleRequest(
 
     // POST /api/threats - Upload anonymized threat data
     if (pathname === '/api/threats' && req.method === 'POST') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCWriteAuth(req, res)) return;
       if (!requireJsonContentType(req, res)) return;
       const body = await readRequestBody(req);
       let data: Record<string, unknown>;
-      try { data = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
-      if (!data['attackSourceIP'] || !data['attackType'] || !data['mitreTechnique'] || !data['sigmaRuleMatched'] || !data['timestamp'] || !data['region']) {
-        sendJson(res, 400, { ok: false, error: 'Missing required fields' }); return;
+      try {
+        data = JSON.parse(body) as Record<string, unknown>;
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        return;
+      }
+      if (
+        !data['attackSourceIP'] ||
+        !data['attackType'] ||
+        !data['mitreTechnique'] ||
+        !data['sigmaRuleMatched'] ||
+        !data['timestamp'] ||
+        !data['region']
+      ) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields' });
+        return;
       }
       // Anonymize IP (zero last octet)
       const ip = String(data['attackSourceIP']);
       if (ip.includes('.')) {
         const parts = ip.split('.');
-        if (parts.length === 4) { parts[3] = '0'; data['attackSourceIP'] = parts.join('.'); }
+        if (parts.length === 4) {
+          parts[3] = '0';
+          data['attackSourceIP'] = parts.join('.');
+        }
       }
       threatDb.insertThreat(data);
       sendJson(res, 201, { ok: true, data: { message: 'Threat data received' } });
@@ -568,12 +620,16 @@ async function handleRequest(
 
     // GET /api/rules - Fetch rules (optional ?since= filter, paginated)
     if (pathname === '/api/rules' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const since = urlObj.searchParams.get('since');
       // Validate since parameter format (ISO 8601)
       if (since && !/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?/.test(since)) {
-        sendJson(res, 400, { ok: false, error: 'Invalid since parameter: must be ISO 8601' }); return;
+        sendJson(res, 400, { ok: false, error: 'Invalid since parameter: must be ISO 8601' });
+        return;
       }
       const rawLimit = parseInt(urlObj.searchParams.get('limit') ?? '1000', 10);
       const limit = isNaN(rawLimit) || rawLimit < 1 ? 1000 : Math.min(rawLimit, 5000);
@@ -584,21 +640,35 @@ async function handleRequest(
 
     // POST /api/rules - Publish a new community rule
     if (pathname === '/api/rules' && req.method === 'POST') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCWriteAuth(req, res)) return;
       if (!requireJsonContentType(req, res)) return;
       const body = await readRequestBody(req);
       let rule: Record<string, unknown>;
-      try { rule = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
+      try {
+        rule = JSON.parse(body) as Record<string, unknown>;
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        return;
+      }
       if (!rule['ruleId'] || !rule['ruleContent'] || !rule['source']) {
-        sendJson(res, 400, { ok: false, error: 'Missing required fields: ruleId, ruleContent, source' }); return;
+        sendJson(res, 400, {
+          ok: false,
+          error: 'Missing required fields: ruleId, ruleContent, source',
+        });
+        return;
       }
       // Field-level size limits
       if (String(rule['ruleContent']).length > 65_536) {
-        sendJson(res, 400, { ok: false, error: 'ruleContent exceeds maximum size of 64KB' }); return;
+        sendJson(res, 400, { ok: false, error: 'ruleContent exceeds maximum size of 64KB' });
+        return;
       }
       if (String(rule['ruleId']).length > 256) {
-        sendJson(res, 400, { ok: false, error: 'ruleId exceeds maximum length of 256' }); return;
+        sendJson(res, 400, { ok: false, error: 'ruleId exceeds maximum length of 256' });
+        return;
       }
       rule['publishedAt'] = rule['publishedAt'] || new Date().toISOString();
       threatDb.upsertRule(rule);
@@ -608,7 +678,10 @@ async function handleRequest(
 
     // GET /api/stats - Threat statistics
     if (pathname === '/api/stats' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const stats = threatDb.getStats();
       sendJson(res, 200, { ok: true, data: stats });
       return;
@@ -616,42 +689,73 @@ async function handleRequest(
 
     // POST /api/atr-proposals - Submit ATR rule proposal
     if (pathname === '/api/atr-proposals' && req.method === 'POST') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCWriteAuth(req, res)) return;
       if (!requireJsonContentType(req, res)) return;
       const body = await readRequestBody(req);
       let proposal: Record<string, unknown>;
-      try { proposal = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
-      if (!proposal['patternHash'] || !proposal['ruleContent'] || !proposal['llmProvider'] || !proposal['llmModel'] || !proposal['selfReviewVerdict']) {
-        sendJson(res, 400, { ok: false, error: 'Missing required fields' }); return;
+      try {
+        proposal = JSON.parse(body) as Record<string, unknown>;
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        return;
+      }
+      if (
+        !proposal['patternHash'] ||
+        !proposal['ruleContent'] ||
+        !proposal['llmProvider'] ||
+        !proposal['llmModel'] ||
+        !proposal['selfReviewVerdict']
+      ) {
+        sendJson(res, 400, { ok: false, error: 'Missing required fields' });
+        return;
       }
       // Validate and sanitize client ID
       const rawClientId = req.headers['x-panguard-client-id'];
-      const clientId = typeof rawClientId === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(rawClientId) ? rawClientId : null;
+      const clientId =
+        typeof rawClientId === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(rawClientId)
+          ? rawClientId
+          : null;
       proposal['clientId'] = clientId;
 
       // Check if this pattern already has a proposal - if so, increment confirmation
       const pHash = String(proposal['patternHash']);
-      const existing = threatDb.getATRProposals().find((p: Record<string, unknown>) => p['pattern_hash'] === pHash);
+      const existing = threatDb
+        .getATRProposals()
+        .find((p: Record<string, unknown>) => p['pattern_hash'] === pHash);
       if (existing) {
         threatDb.confirmATRProposal(pHash);
-        sendJson(res, 200, { ok: true, data: { message: 'Confirmation recorded', patternHash: pHash } });
+        sendJson(res, 200, {
+          ok: true,
+          data: { message: 'Confirmation recorded', patternHash: pHash },
+        });
       } else {
         threatDb.insertATRProposal(proposal);
         // Fire-and-forget LLM review on first submission
         if (llmReviewer?.isAvailable()) {
-          void llmReviewer.reviewProposal(pHash, String(proposal['ruleContent'])).catch((err: unknown) => {
-            console.error(`LLM review error for ${pHash}:`, err);
-          });
+          void llmReviewer
+            .reviewProposal(pHash, String(proposal['ruleContent']))
+            .catch((err: unknown) => {
+              console.error(`LLM review error for ${pHash}:`, err);
+            });
         }
-        sendJson(res, 201, { ok: true, data: { message: 'Proposal submitted', patternHash: pHash } });
+        sendJson(res, 201, {
+          ok: true,
+          data: { message: 'Proposal submitted', patternHash: pHash },
+        });
       }
       return;
     }
 
     // GET /api/atr-proposals - List proposals (admin-only)
     if (pathname === '/api/atr-proposals' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCAdminAuth(req, res, _db)) return;
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const status = urlObj.searchParams.get('status') ?? undefined;
@@ -662,43 +766,80 @@ async function handleRequest(
 
     // POST /api/atr-feedback - Report ATR rule match feedback
     if (pathname === '/api/atr-feedback' && req.method === 'POST') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCWriteAuth(req, res)) return;
       if (!requireJsonContentType(req, res)) return;
       const body = await readRequestBody(req);
       let feedback: Record<string, unknown>;
-      try { feedback = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
+      try {
+        feedback = JSON.parse(body) as Record<string, unknown>;
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        return;
+      }
       if (!feedback['ruleId'] || typeof feedback['isTruePositive'] !== 'boolean') {
-        sendJson(res, 400, { ok: false, error: 'Missing or invalid fields: ruleId (string), isTruePositive (boolean)' }); return;
+        sendJson(res, 400, {
+          ok: false,
+          error: 'Missing or invalid fields: ruleId (string), isTruePositive (boolean)',
+        });
+        return;
       }
       const rawCid = req.headers['x-panguard-client-id'];
-      const cid = typeof rawCid === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(rawCid) ? rawCid : null;
-      threatDb.insertATRFeedback(String(feedback['ruleId']), feedback['isTruePositive'] as boolean, cid);
+      const cid =
+        typeof rawCid === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(rawCid) ? rawCid : null;
+      threatDb.insertATRFeedback(
+        String(feedback['ruleId']),
+        feedback['isTruePositive'] as boolean,
+        cid
+      );
       sendJson(res, 201, { ok: true, data: { message: 'Feedback recorded' } });
       return;
     }
 
     // POST /api/skill-threats - Submit skill audit result
     if (pathname === '/api/skill-threats' && req.method === 'POST') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCWriteAuth(req, res)) return;
       if (!requireJsonContentType(req, res)) return;
       const body = await readRequestBody(req);
       let submission: Record<string, unknown>;
-      try { submission = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
+      try {
+        submission = JSON.parse(body) as Record<string, unknown>;
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        return;
+      }
       const VALID_RISK_LEVELS = new Set(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
       if (!submission['skillHash'] || !submission['skillName']) {
-        sendJson(res, 400, { ok: false, error: 'Missing required fields: skillHash, skillName' }); return;
+        sendJson(res, 400, { ok: false, error: 'Missing required fields: skillHash, skillName' });
+        return;
       }
       const riskScore = submission['riskScore'];
-      if (typeof riskScore !== 'number' || !isFinite(riskScore) || riskScore < 0 || riskScore > 100) {
-        sendJson(res, 400, { ok: false, error: 'riskScore must be a number between 0 and 100' }); return;
+      if (
+        typeof riskScore !== 'number' ||
+        !isFinite(riskScore) ||
+        riskScore < 0 ||
+        riskScore > 100
+      ) {
+        sendJson(res, 400, { ok: false, error: 'riskScore must be a number between 0 and 100' });
+        return;
       }
       if (!VALID_RISK_LEVELS.has(String(submission['riskLevel']))) {
-        sendJson(res, 400, { ok: false, error: 'riskLevel must be one of: LOW, MEDIUM, HIGH, CRITICAL' }); return;
+        sendJson(res, 400, {
+          ok: false,
+          error: 'riskLevel must be one of: LOW, MEDIUM, HIGH, CRITICAL',
+        });
+        return;
       }
       const rawCid2 = req.headers['x-panguard-client-id'];
-      submission['clientId'] = typeof rawCid2 === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(rawCid2) ? rawCid2 : null;
+      submission['clientId'] =
+        typeof rawCid2 === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(rawCid2) ? rawCid2 : null;
       threatDb.insertSkillThreat(submission);
       sendJson(res, 201, { ok: true, data: { message: 'Skill threat recorded' } });
       return;
@@ -706,7 +847,10 @@ async function handleRequest(
 
     // GET /api/skill-threats - List skill threats (admin-only)
     if (pathname === '/api/skill-threats' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCAdminAuth(req, res, _db)) return;
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const rawLimit = parseInt(urlObj.searchParams.get('limit') ?? '50', 10);
@@ -718,7 +862,10 @@ async function handleRequest(
 
     // GET /api/atr-rules - Fetch confirmed ATR rules (for Guard sync)
     if (pathname === '/api/atr-rules' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const since = urlObj.searchParams.get('since') ?? undefined;
       const rules = threatDb.getConfirmedATRRules(since);
@@ -728,7 +875,10 @@ async function handleRequest(
 
     // GET /api/yara-rules - Fetch YARA rules (for Guard sync)
     if (pathname === '/api/yara-rules' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const since = urlObj.searchParams.get('since') ?? undefined;
       const rules = threatDb.getRulesBySource('yara', since);
@@ -738,7 +888,10 @@ async function handleRequest(
 
     // GET /api/feeds/ip-blocklist - IP blocklist feed (plain text)
     if (pathname === '/api/feeds/ip-blocklist' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const minReputation = Number(urlObj.searchParams.get('minReputation') ?? '70');
       const ips = threatDb.getIPBlocklist(minReputation);
@@ -750,7 +903,10 @@ async function handleRequest(
 
     // GET /api/feeds/domain-blocklist - Domain blocklist feed (plain text)
     if (pathname === '/api/feeds/domain-blocklist' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const urlObj = new URL(url, `http://${req.headers.host ?? 'localhost'}`);
       const minReputation = Number(urlObj.searchParams.get('minReputation') ?? '70');
       const domains = threatDb.getDomainBlocklist(minReputation);
@@ -762,22 +918,34 @@ async function handleRequest(
 
     // POST /api/skill-whitelist - Report safe skill (audit passed)
     if (pathname === '/api/skill-whitelist' && req.method === 'POST') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       if (!requireTCWriteAuth(req, res)) return;
       if (!requireJsonContentType(req, res)) return;
       const body = await readRequestBody(req);
       let data: Record<string, unknown>;
-      try { data = JSON.parse(body) as Record<string, unknown>; } catch { sendJson(res, 400, { ok: false, error: 'Invalid JSON body' }); return; }
+      try {
+        data = JSON.parse(body) as Record<string, unknown>;
+      } catch {
+        sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        return;
+      }
 
-      const skills = 'skills' in data && Array.isArray(data['skills'])
-        ? data['skills'] as Array<Record<string, unknown>>
-        : [data];
+      const skills =
+        'skills' in data && Array.isArray(data['skills'])
+          ? (data['skills'] as Array<Record<string, unknown>>)
+          : [data];
 
       let count = 0;
       for (const skill of skills) {
         const name = skill['skillName'];
         if (!name || typeof name !== 'string') continue;
-        threatDb.reportSafeSkill(name, typeof skill['fingerprintHash'] === 'string' ? skill['fingerprintHash'] : undefined);
+        threatDb.reportSafeSkill(
+          name,
+          typeof skill['fingerprintHash'] === 'string' ? skill['fingerprintHash'] : undefined
+        );
         count++;
       }
       sendJson(res, 201, { ok: true, data: { message: `${count} skill(s) reported`, count } });
@@ -786,7 +954,10 @@ async function handleRequest(
 
     // GET /api/skill-whitelist - Fetch community whitelist
     if (pathname === '/api/skill-whitelist' && req.method === 'GET') {
-      if (!threatDb) { sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' }); return; }
+      if (!threatDb) {
+        sendJson(res, 503, { ok: false, error: 'Threat Cloud not available' });
+        return;
+      }
       const whitelist = threatDb.getSkillWhitelist();
       sendJson(res, 200, { ok: true, data: whitelist });
       return;
@@ -1276,6 +1447,7 @@ function sendJson(res: ServerResponse, status: number, data: unknown): void {
 
 /** Timing-safe string comparison to prevent side-channel attacks */
 function timingSafeCompare(a: string, b: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { timingSafeEqual } = require('node:crypto') as typeof import('node:crypto');
   const ab = Buffer.from(a);
   const bb = Buffer.from(b);
@@ -1296,7 +1468,10 @@ function requireTCWriteAuth(req: IncomingMessage, res: ServerResponse): boolean 
   const tcApiKey = process.env['TC_API_KEY'];
   if (!tcApiKey) {
     if (process.env['NODE_ENV'] === 'production') {
-      sendJson(res, 503, { ok: false, error: 'Threat Cloud write API not configured (TC_API_KEY missing)' });
+      sendJson(res, 503, {
+        ok: false,
+        error: 'Threat Cloud write API not configured (TC_API_KEY missing)',
+      });
       return false;
     }
     return true; // dev passthrough
@@ -1314,11 +1489,7 @@ function requireTCWriteAuth(req: IncomingMessage, res: ServerResponse): boolean 
  * Require admin session auth for admin-only GET endpoints.
  * Verifies the Bearer token is a valid session with admin role.
  */
-function requireTCAdminAuth(
-  req: IncomingMessage,
-  res: ServerResponse,
-  db: AuthDB
-): boolean {
+function requireTCAdminAuth(req: IncomingMessage, res: ServerResponse, db: AuthDB): boolean {
   const user = authenticateRequest(req, db);
   if (!user) {
     sendJson(res, 401, { ok: false, error: 'Authentication required' });
@@ -1393,7 +1564,11 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
     join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'config'),
   ];
   const configDir = configDirs.find((d) => {
-    try { return statSync(d).isDirectory(); } catch { return false; }
+    try {
+      return statSync(d).isDirectory();
+    } catch {
+      return false;
+    }
   });
 
   if (!configDir) {
@@ -1403,7 +1578,6 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
   }
 
   console.log(`  ${c.dim(`  Using config directory: ${configDir}`)}`);
-
 
   /** Recursively collect files matching extensions */
   function collectFiles(dir: string, extensions: string[]): string[] {
@@ -1418,7 +1592,9 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
         }
       }
     } catch (err: unknown) {
-      console.error(`  [WARN] Cannot read directory ${dir}: ${err instanceof Error ? err.message : String(err)}`);
+      console.error(
+        `  [WARN] Cannot read directory ${dir}: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
     return results;
   }
@@ -1435,7 +1611,9 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
     }
     console.log(`  ${c.dim(`  Sigma: ${sigmaFiles.length} files processed`)}`);
   } catch (err: unknown) {
-    console.error(`  [WARN] Sigma rule seeding failed: ${err instanceof Error ? err.message : String(err)}`);
+    console.error(
+      `  [WARN] Sigma rule seeding failed: ${err instanceof Error ? err.message : String(err)}`
+    );
   }
 
   // 2. YARA rules (.yar, .yara)
@@ -1462,16 +1640,32 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
     }
     console.log(`  ${c.dim(`  YARA: ${yaraFiles.length} files processed`)}`);
   } catch (err: unknown) {
-    console.error(`  [WARN] YARA rule seeding failed: ${err instanceof Error ? err.message : String(err)}`);
+    console.error(
+      `  [WARN] YARA rule seeding failed: ${err instanceof Error ? err.message : String(err)}`
+    );
   }
 
   // 3. ATR rules (.yaml, .yml) from atr package
   const atrDirs = [
     joinPath(process.cwd(), 'node_modules', 'agent-threat-rules', 'rules'),
-    joinPath(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'packages', 'atr', 'rules'),
+    joinPath(
+      dirname(fileURLToPath(import.meta.url)),
+      '..',
+      '..',
+      '..',
+      '..',
+      '..',
+      'packages',
+      'atr',
+      'rules'
+    ),
   ];
   const atrDir = atrDirs.find((d) => {
-    try { return statSync(d).isDirectory(); } catch { return false; }
+    try {
+      return statSync(d).isDirectory();
+    } catch {
+      return false;
+    }
   });
   if (atrDir) {
     try {
@@ -1484,7 +1678,9 @@ async function seedRulesFromBundled(threatDb: ThreatCloudDBInstance): Promise<nu
       }
       console.log(`  ${c.dim(`  ATR: ${atrFiles.length} files processed`)}`);
     } catch (err: unknown) {
-      console.error(`  [WARN] ATR rule seeding failed: ${err instanceof Error ? err.message : String(err)}`);
+      console.error(
+        `  [WARN] ATR rule seeding failed: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   }
 

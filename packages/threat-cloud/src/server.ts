@@ -26,12 +26,24 @@ import { join, basename, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ThreatCloudDB } from './database.js';
 import { LLMReviewer } from './llm-reviewer.js';
-import type { ServerConfig, ApiResponse, AnonymizedThreatData, ThreatCloudRule, ATRProposal, SkillThreatSubmission, SkillBlacklistEntry } from './types.js';
+import type {
+  ServerConfig,
+  AnonymizedThreatData,
+  ThreatCloudRule,
+  ATRProposal,
+  SkillThreatSubmission,
+} from './types.js';
 
 /** Simple structured logger for threat-cloud (no core dependency) */
 const log = {
-  info: (msg: string) => { process.stdout.write(`[threat-cloud] ${msg}\n`); },
-  error: (msg: string, err?: unknown) => { process.stderr.write(`[threat-cloud] ERROR ${msg}${err ? `: ${err instanceof Error ? err.message : String(err)}` : ''}\n`); },
+  info: (msg: string) => {
+    process.stdout.write(`[threat-cloud] ${msg}\n`);
+  },
+  error: (msg: string, err?: unknown) => {
+    process.stderr.write(
+      `[threat-cloud] ERROR ${msg}${err ? `: ${err instanceof Error ? err.message : String(err)}` : ''}\n`
+    );
+  },
 };
 
 /** Rate limiter state / 速率限制狀態 */
@@ -159,7 +171,10 @@ export class ThreatCloudServer {
     }
 
     // CORS — restrict to known origins
-    const allowedOrigins = (process.env['CORS_ALLOWED_ORIGINS'] ?? 'https://panguard.ai,https://www.panguard.ai,https://tc.panguard.ai,https://get.panguard.ai,https://docs.panguard.ai').split(',');
+    const allowedOrigins = (
+      process.env['CORS_ALLOWED_ORIGINS'] ??
+      'https://panguard.ai,https://www.panguard.ai,https://tc.panguard.ai,https://get.panguard.ai,https://docs.panguard.ai'
+    ).split(',');
     const origin = req.headers.origin ?? '';
     if (allowedOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -176,7 +191,10 @@ export class ThreatCloudServer {
     try {
       switch (pathname) {
         case '/health':
-          this.sendJson(res, 200, { ok: true, data: { status: 'healthy', uptime: process.uptime() } });
+          this.sendJson(res, 200, {
+            ok: true,
+            data: { status: 'healthy', uptime: process.uptime() },
+          });
           break;
 
         case '/api/threats':
@@ -192,7 +210,10 @@ export class ThreatCloudServer {
             this.handleGetRules(url, res);
           } else if (req.method === 'POST') {
             if (!this.checkAdminAuth(req)) {
-              this.sendJson(res, 403, { ok: false, error: 'Admin API key required for rule publishing' });
+              this.sendJson(res, 403, {
+                ok: false,
+                error: 'Admin API key required for rule publishing',
+              });
               break;
             }
             await this.handlePostRule(req, res);
@@ -298,14 +319,26 @@ export class ThreatCloudServer {
     const parsed = JSON.parse(body) as AnonymizedThreatData | { events: AnonymizedThreatData[] };
 
     // Support both single object and batch { events: [...] } format
-    const events: AnonymizedThreatData[] = 'events' in parsed && Array.isArray(parsed.events)
-      ? parsed.events
-      : [parsed as AnonymizedThreatData];
+    const events: AnonymizedThreatData[] =
+      'events' in parsed && Array.isArray(parsed.events)
+        ? parsed.events
+        : [parsed as AnonymizedThreatData];
 
     for (const data of events) {
       // Validate required fields
-      if (!data.attackSourceIP || !data.attackType || !data.mitreTechnique || !data.sigmaRuleMatched || !data.timestamp || !data.region) {
-        this.sendJson(res, 400, { ok: false, error: 'Missing required fields: attackSourceIP, attackType, mitreTechnique, sigmaRuleMatched, timestamp, region' });
+      if (
+        !data.attackSourceIP ||
+        !data.attackType ||
+        !data.mitreTechnique ||
+        !data.sigmaRuleMatched ||
+        !data.timestamp ||
+        !data.region
+      ) {
+        this.sendJson(res, 400, {
+          ok: false,
+          error:
+            'Missing required fields: attackSourceIP, attackType, mitreTechnique, sigmaRuleMatched, timestamp, region',
+        });
         return;
       }
 
@@ -314,7 +347,10 @@ export class ThreatCloudServer {
       this.db.insertThreat(data);
     }
 
-    this.sendJson(res, 201, { ok: true, data: { message: 'Threat data received', count: events.length } });
+    this.sendJson(res, 201, {
+      ok: true,
+      data: { message: 'Threat data received', count: events.length },
+    });
   }
 
   /** GET /api/rules?since=<ISO>&category=<cat>&severity=<sev>&source=<src> */
@@ -342,9 +378,8 @@ export class ThreatCloudServer {
     const parsed = JSON.parse(body) as ThreatCloudRule | { rules: ThreatCloudRule[] };
 
     // Support both single object and batch { rules: [...] } format
-    const rules: ThreatCloudRule[] = 'rules' in parsed && Array.isArray(parsed.rules)
-      ? parsed.rules
-      : [parsed as ThreatCloudRule];
+    const rules: ThreatCloudRule[] =
+      'rules' in parsed && Array.isArray(parsed.rules) ? parsed.rules : [parsed as ThreatCloudRule];
 
     const now = new Date().toISOString();
     let count = 0;
@@ -372,19 +407,23 @@ export class ThreatCloudServer {
     const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
 
     if (!data.patternHash || !data.ruleContent) {
-      this.sendJson(res, 400, { ok: false, error: 'Missing required fields: patternHash, ruleContent' });
+      this.sendJson(res, 400, {
+        ok: false,
+        error: 'Missing required fields: patternHash, ruleContent',
+      });
       return;
     }
 
     // Check if a proposal with the same patternHash already exists
     const proposals = this.db.getATRProposals() as Array<Record<string, unknown>>;
-    const existing = proposals.find(
-      (p) => p['pattern_hash'] === data.patternHash,
-    );
+    const existing = proposals.find((p) => p['pattern_hash'] === data.patternHash);
 
     if (existing) {
       this.db.confirmATRProposal(data.patternHash);
-      this.sendJson(res, 200, { ok: true, data: { message: 'Proposal confirmed', patternHash: data.patternHash } });
+      this.sendJson(res, 200, {
+        ok: true,
+        data: { message: 'Proposal confirmed', patternHash: data.patternHash },
+      });
     } else {
       const proposal: ATRProposal = {
         ...data,
@@ -399,7 +438,10 @@ export class ThreatCloudServer {
         });
       }
 
-      this.sendJson(res, 201, { ok: true, data: { message: 'Proposal submitted', patternHash: data.patternHash } });
+      this.sendJson(res, 201, {
+        ok: true,
+        data: { message: 'Proposal submitted', patternHash: data.patternHash },
+      });
     }
   }
 
@@ -410,7 +452,10 @@ export class ThreatCloudServer {
     const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
 
     if (!data.ruleId || typeof data.isTruePositive !== 'boolean') {
-      this.sendJson(res, 400, { ok: false, error: 'Missing required fields: ruleId (string), isTruePositive (boolean)' });
+      this.sendJson(res, 400, {
+        ok: false,
+        error: 'Missing required fields: ruleId (string), isTruePositive (boolean)',
+      });
       return;
     }
 
@@ -425,7 +470,10 @@ export class ThreatCloudServer {
     const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
 
     if (!data.skillHash || !data.skillName) {
-      this.sendJson(res, 400, { ok: false, error: 'Missing required fields: skillHash, skillName' });
+      this.sendJson(res, 400, {
+        ok: false,
+        error: 'Missing required fields: skillHash, skillName',
+      });
       return;
     }
 
@@ -492,11 +540,14 @@ export class ThreatCloudServer {
   /** POST /api/skill-whitelist - Report a safe skill (audit passed) */
   private async handlePostSkillWhitelist(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const body = await this.readBody(req);
-    const data = JSON.parse(body) as { skillName: string; fingerprintHash?: string } | { skills: Array<{ skillName: string; fingerprintHash?: string }> };
+    const data = JSON.parse(body) as
+      | { skillName: string; fingerprintHash?: string }
+      | { skills: Array<{ skillName: string; fingerprintHash?: string }> };
 
-    const skills = 'skills' in data && Array.isArray(data.skills)
-      ? data.skills
-      : [data as { skillName: string; fingerprintHash?: string }];
+    const skills =
+      'skills' in data && Array.isArray(data.skills)
+        ? data.skills
+        : [data as { skillName: string; fingerprintHash?: string }];
 
     let count = 0;
     for (const skill of skills) {
@@ -602,12 +653,16 @@ export class ThreatCloudServer {
     const __dirname = dirname(fileURLToPath(import.meta.url));
     const candidates = [
       join(process.cwd(), 'config'),
-      join(__dirname, '..', '..', '..', 'config'),         // monorepo: packages/threat-cloud/dist -> config
-      join(__dirname, '..', '..', '..', '..', 'config'),   // deeper nesting
-      '/app/config',                                        // Docker standard
+      join(__dirname, '..', '..', '..', 'config'), // monorepo: packages/threat-cloud/dist -> config
+      join(__dirname, '..', '..', '..', '..', 'config'), // deeper nesting
+      '/app/config', // Docker standard
     ];
     const configDir = candidates.find((d) => {
-      try { return statSync(d).isDirectory(); } catch { return false; }
+      try {
+        return statSync(d).isDirectory();
+      } catch {
+        return false;
+      }
     });
 
     if (!configDir) {
@@ -683,7 +738,11 @@ export class ThreatCloudServer {
       join(__dirname, '..', '..', '..', 'packages', 'atr', 'rules'),
     ];
     const atrDir = atrCandidates.find((d) => {
-      try { return statSync(d).isDirectory(); } catch { return false; }
+      try {
+        return statSync(d).isDirectory();
+      } catch {
+        return false;
+      }
     });
     if (atrDir) {
       try {

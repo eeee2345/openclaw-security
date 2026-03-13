@@ -16,7 +16,7 @@ import {
   Terminal,
   Copy,
   Check,
-  ArrowUpRight,
+  // ArrowUpRight,
   Eye,
   Bell,
   Download,
@@ -110,7 +110,7 @@ interface TierLimits {
   guard: string;
 }
 
-const TIER_LIMITS: Record<string, TierLimits> = {
+const _TIER_LIMITS: Record<string, TierLimits> = {
   community: { machines: 'communityMachines', scans: 'communityScans', guard: 'communityGuard' },
   solo: { machines: 'soloMachines', scans: 'soloScans', guard: 'soloGuard' },
   pro: { machines: 'proMachines', scans: 'proScans', guard: 'proGuard' },
@@ -303,18 +303,9 @@ export default function DashboardContent() {
 
             {/* All features free - no tier limits */}
             <div className="space-y-2.5 mb-5">
-              <TierLimitRow
-                label={t('currentPlan.machines')}
-                value="Unlimited"
-              />
-              <TierLimitRow
-                label={t('currentPlan.scansPerMonth')}
-                value="Unlimited"
-              />
-              <TierLimitRow
-                label={t('currentPlan.guardEndpoints')}
-                value="Unlimited"
-              />
+              <TierLimitRow label={t('currentPlan.machines')} value="Unlimited" />
+              <TierLimitRow label={t('currentPlan.scansPerMonth')} value="Unlimited" />
+              <TierLimitRow label={t('currentPlan.guardEndpoints')} value="Unlimited" />
             </div>
           </div>
 

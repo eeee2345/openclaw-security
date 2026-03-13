@@ -41,6 +41,8 @@ export default tseslint.config(
       '!eslint.config.js',
       '!vitest.config.ts',
       'pancore/**',
+      '**/next-env.d.ts',
+      'packages/website/**',
     ],
   }
 );
