@@ -1,22 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Link } from '@/navigation';
 import BrandLogo from '@/components/ui/BrandLogo';
-import { useAuth } from '@/lib/auth';
 import {
   LayoutDashboard,
   Monitor,
   ShieldAlert,
   FileText,
   Settings,
-  LogOut,
   Menu,
   X,
   ChevronLeft,
-  Loader2,
-  ShieldOff,
 } from 'lucide-react';
 
 interface NavItem {
@@ -52,40 +48,8 @@ function getActiveNavId(pathname: string): string {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const activeId = getActiveNavId(pathname);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, loading, logout } = useAuth();
-
-  useEffect(() => {
-    if (loading) return;
-    if (!user) {
-      router.replace('/login');
-      return;
-    }
-    if (user.role !== 'admin') {
-      router.replace('/dashboard');
-    }
-  }, [user, loading, router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-surface-0 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-brand-sage animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user || user.role !== 'admin') {
-    return (
-      <div className="min-h-screen bg-surface-0 flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <ShieldOff className="w-8 h-8 text-text-tertiary mx-auto" />
-          <p className="text-sm text-text-tertiary">Access denied</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-surface-0 flex">
@@ -162,31 +126,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        {/* User footer */}
+        {/* Footer */}
         <div className="border-t border-border px-4 py-3 shrink-0">
-          {user && (
-            <div className="flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-text-primary truncate">{user.name}</p>
-                <p className="text-xs text-text-tertiary truncate">{user.email}</p>
-              </div>
-              <button
-                onClick={() => void logout()}
-                className="text-text-tertiary hover:text-status-danger transition-colors shrink-0 ml-2"
-                aria-label="Log out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-          {!user && (
-            <Link
-              href="/login"
-              className="text-sm text-brand-sage hover:text-brand-sage-light transition-colors"
-            >
-              Sign in
-            </Link>
-          )}
+          <p className="text-xs text-text-tertiary">Open Source Edition</p>
         </div>
       </aside>
 

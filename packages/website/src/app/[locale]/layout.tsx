@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono, Noto_Sans_TC } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { AuthProvider } from '@/lib/auth';
 import { buildAlternates } from '@/lib/seo';
 import { CookieBannerLazy } from '@/components/CookieBannerLazy';
 
@@ -202,7 +201,7 @@ export default async function LocaleLayout(
           Skip to content
         </a>
         <NextIntlClientProvider messages={messages}>
-          <AuthProvider>{children}</AuthProvider>
+          {children}
           <CookieBannerLazy />
         </NextIntlClientProvider>
       </body>

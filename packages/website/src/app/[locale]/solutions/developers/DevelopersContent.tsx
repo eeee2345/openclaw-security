@@ -50,7 +50,7 @@ export default function DevelopersContent() {
             <FadeInUp delay={0.3}>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  href="/register"
+                  href="/docs/getting-started"
                   className="bg-brand-sage text-surface-0 font-semibold text-sm rounded-full px-8 py-3.5 hover:bg-brand-sage-light transition-all duration-200 active:scale-[0.98]"
                 >
                   Install Free
