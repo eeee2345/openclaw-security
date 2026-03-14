@@ -1259,7 +1259,7 @@ function toast(m){var t=document.getElementById('toast');t.textContent=m;t.class
 function fUp(ms){var s=Math.floor(ms/1000);if(s<60)return s+'s';var m=Math.floor(s/60);s%=60;if(m<60)return m+'m '+s+'s';var h=Math.floor(m/60);m%=60;return h+'h '+m+'m'}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
 
-function gTk(){var h=location.hash;if(h.indexOf('token=')!==-1){tk=h.split('token=')[1].split('&')[0];try{localStorage.setItem('panguard_token',tk)}catch(e){}}if(!tk){try{tk=localStorage.getItem('panguard_token')||''}catch(e){}}}
+function gTk(){var h=location.hash;if(h.indexOf('token=')!==-1){tk=h.split('token=')[1].split('&')[0];try{localStorage.setItem('panguard_token',tk)}catch(e){}try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}if(!tk){try{tk=localStorage.getItem('panguard_token')||''}catch(e){}}}
 function af(p,o){o=o||{};o.headers=o.headers||{};if(tk)o.headers['Authorization']='Bearer '+tk;return fetch(p,o).then(function(r){if(r.status===401){document.getElementById('wl').textContent=lang==='zh'?'Token 無效':'Invalid token';document.getElementById('wd').classList.remove('on')}return r})}
 
 /* WS */

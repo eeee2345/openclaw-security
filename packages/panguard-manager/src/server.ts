@@ -529,8 +529,15 @@ export class ManagerServer {
 
   /** Verify Bearer token authentication */
   private verifyAuth(req: IncomingMessage): boolean {
-    // If no auth token configured, allow all (dev mode)
-    if (this.hashedAuthToken.length === 0) return true;
+    // If no auth token configured, only allow loopback (dev safety)
+    if (this.hashedAuthToken.length === 0) {
+      const remoteAddr = req.socket.remoteAddress ?? '';
+      return (
+        remoteAddr === '127.0.0.1' ||
+        remoteAddr === '::1' ||
+        remoteAddr === '::ffff:127.0.0.1'
+      );
+    }
 
     const authHeader = req.headers.authorization ?? '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';

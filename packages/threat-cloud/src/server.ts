@@ -25,7 +25,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, basename, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { ThreatCloudDB } from './database.js';
 import { LLMReviewer } from './llm-reviewer.js';
 import { getAdminHTML } from './admin-dashboard.js';
@@ -794,7 +794,14 @@ export class ThreatCloudServer {
       const url = new URL(req.url ?? '/', `http://localhost:${this.config.port}`);
       const queryKey = url.searchParams.get('key');
       const headerKey = (req.headers.authorization ?? '').replace('Bearer ', '');
-      if (queryKey !== this.config.adminApiKey && headerKey !== this.config.adminApiKey) {
+      const keyMatch = (candidate: string | null): boolean => {
+        if (!candidate || candidate.length !== this.config.adminApiKey!.length) return false;
+        return timingSafeEqual(
+          Buffer.from(candidate, 'utf-8'),
+          Buffer.from(this.config.adminApiKey!, 'utf-8')
+        );
+      };
+      if (!keyMatch(queryKey) && !keyMatch(headerKey)) {
         res.writeHead(401, { 'Content-Type': 'text/plain' });
         res.end('Unauthorized: admin API key required. Use ?key=YOUR_KEY or Authorization header.');
         return;
@@ -809,10 +816,29 @@ export class ThreatCloudServer {
 
   /** Check admin API key for write-protected endpoints / 檢查管理員 API 金鑰 */
   private checkAdminAuth(req: IncomingMessage): boolean {
-    if (!this.config.adminApiKey) return true; // no admin key configured = open
+    if (!this.config.adminApiKey) {
+      // No admin key configured — only allow from loopback addresses
+      const remoteAddr = req.socket.remoteAddress ?? '';
+      const isLoopback =
+        remoteAddr === '127.0.0.1' ||
+        remoteAddr === '::1' ||
+        remoteAddr === '::ffff:127.0.0.1';
+      if (!isLoopback) {
+        log.info(
+          `Admin access denied: no TC_ADMIN_API_KEY configured and request from non-loopback address`,
+          { remoteAddr }
+        );
+      }
+      return isLoopback;
+    }
     const authHeader = req.headers.authorization ?? '';
     const token = authHeader.replace('Bearer ', '');
-    return token === this.config.adminApiKey;
+    // Use timing-safe comparison to prevent timing attacks
+    if (token.length !== this.config.adminApiKey.length) return false;
+    return timingSafeEqual(
+      Buffer.from(token, 'utf-8'),
+      Buffer.from(this.config.adminApiKey, 'utf-8')
+    );
   }
 
   /** Rate limit check / 速率限制檢查 */
