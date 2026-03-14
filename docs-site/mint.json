@@ -176,11 +176,11 @@
     },
     {
       "group": "Scanning",
-      "pages": ["cli/scan"]
+      "pages": ["cli/scan", "cli/report"]
     },
     {
       "group": "Protection",
-      "pages": ["cli/guard", "cli/chat"]
+      "pages": ["cli/guard", "cli/chat", "cli/trap"]
     },
     {
       "group": "System",
