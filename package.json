@@ -55,7 +55,11 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
-      "better-sqlite3"
+      "better-sqlite3",
+      "@swc/core",
+      "sharp",
+      "@parcel/watcher",
+      "unrs-resolver"
     ],
     "overrides": {
       "hono": ">=4.12.4",
