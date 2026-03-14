@@ -1,0 +1,44 @@
+---
+title: "Skill Auditor"
+description: "Scan MCP skills for security threats before installation. The App Store review process for the OpenClaw ecosystem."
+icon: "shield-check"
+---
+
+Panguard Skill Auditor scans third-party MCP skills for prompt injection, tool poisoning, hidden Unicode, encoded payloads, and other threats -- before they reach your agents.
+
+## How It Works
+
+```
+panguard audit skill /path/to/skill-directory
+```
+
+The auditor analyzes the skill's `SKILL.md` and produces a risk score (0-100) with detailed findings.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Install Panguard and run your first skill audit.
+  </Card>
+  <Card title="Scan Overview" icon="magnifying-glass" href="/products/scan/overview">
+    Deep dive into all scanning capabilities.
+  </Card>
+  <Card title="Risk Scoring" icon="chart-bar" href="/products/scan/risk-scoring">
+    Understand how risk scores are calculated.
+  </Card>
+  <Card title="Threat Cloud" icon="cloud" href="/products/threat-cloud/overview">
+    How audit results feed into collective defense.
+  </Card>
+</CardGroup>
+
+## The Flywheel
+
+Every skill audit contributes to the community:
+
+1. **Audit** -- Scan a skill locally for threats
+2. **Report** -- Anonymized findings are shared with Threat Cloud
+3. **Review** -- Community voting + LLM analysis confirms threats
+4. **Rules** -- Confirmed threats become ATR rules
+5. **Protect** -- New rules strengthen the next audit
+
+<Card title="CLI Reference" icon="terminal" href="/cli/scan">
+  Full `panguard audit skill` command reference.
+</Card>

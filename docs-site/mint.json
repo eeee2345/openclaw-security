@@ -54,7 +54,16 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["introduction", "overview", "quickstart", "installation"]
+      "pages": [
+        "introduction",
+        "getting-started",
+        "overview",
+        "quickstart",
+        "installation",
+        "skill-auditor",
+        "threat-cloud",
+        "atr"
+      ]
     },
     {
       "group": "Concepts",

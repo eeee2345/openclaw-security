@@ -1,0 +1,54 @@
+---
+title: "ATR (Agent Threat Rules)"
+description: "Open standard for detecting threats to AI agents. Community-maintained rules for prompt injection, tool poisoning, and more."
+icon: "shield-halved"
+---
+
+Agent Threat Rules (ATR) is an open standard for describing and detecting security threats targeting AI agents. Think of it as "Sigma rules, but for AI agents."
+
+## What is ATR?
+
+ATR rules detect threats that traditional security tools miss:
+
+- **Prompt injection** in MCP tool responses
+- **Tool poisoning** via hidden instructions
+- **Data exfiltration** through agent actions
+- **Privilege escalation** via skill manipulation
+- **Supply chain attacks** on skill registries
+
+## Three Detection Layers
+
+| Layer | Method | Speed | Coverage |
+|-------|--------|-------|----------|
+| Layer 1 | Regex pattern matching | Fast | Known patterns |
+| Layer 2 | Content fingerprinting | Medium | Variants |
+| Layer 3 | LLM-as-judge | Slow | Novel threats |
+
+## Rule Count
+
+- **52 stable rules** covering known AI agent threats
+- **17 predicted drafts** for emerging attack patterns
+- **3,760 Sigma rules** for traditional endpoint threats
+- **5,961 YARA rules** for malware detection
+
+## Getting Started
+
+```bash
+# Install Panguard (includes ATR engine)
+curl -fsSL https://get.panguard.ai | bash
+
+# Scan a skill with ATR rules
+panguard audit skill /path/to/skill
+
+# Start real-time protection with ATR
+panguard guard start
+```
+
+<CardGroup cols={2}>
+  <Card title="ATR on GitHub" icon="github" href="https://github.com/Agent-Threat-Rule/agent-threat-rules">
+    Browse rules, contribute, and star the project.
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Install Panguard and start using ATR rules.
+  </Card>
+</CardGroup>

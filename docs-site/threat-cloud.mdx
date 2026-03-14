@@ -1,0 +1,49 @@
+---
+title: "Threat Cloud"
+description: "Collective threat intelligence for AI agent security. Community-driven rules, anonymous sharing, real-time feeds."
+icon: "cloud"
+---
+
+Threat Cloud is Panguard's collective defense network. Every blocked threat becomes a new rule. Every rule is shared anonymously. Every user strengthens the network.
+
+## Architecture
+
+```
+Skill Audit → Threat Report → Community Vote → LLM Review → ATR Rule → Guard Sync
+```
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Anonymous Sharing" icon="user-secret">
+    Only SHA-256 hashes and risk scores are shared. No skill content or user data leaves your machine.
+  </Card>
+  <Card title="Community Voting" icon="thumbs-up">
+    Users confirm or reject threat reports through feedback, building consensus.
+  </Card>
+  <Card title="LLM Review" icon="brain">
+    Claude Sonnet reviews proposed rules for accuracy before promotion.
+  </Card>
+  <Card title="Real-time Feeds" icon="rss">
+    IP blocklist, domain blocklist, and ATR rules updated continuously.
+  </Card>
+</CardGroup>
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/stats` | GET | Threat intelligence statistics |
+| `/api/rules` | GET | Browse all community rules |
+| `/api/atr-rules` | GET | Fetch confirmed ATR rules |
+| `/api/skill-threats` | POST | Submit skill audit results |
+| `/api/feeds/ip-blocklist` | GET | IP blocklist feed |
+| `/api/feeds/domain-blocklist` | GET | Domain blocklist feed |
+
+<Card title="Deployment Guide" icon="server" href="/products/threat-cloud/deployment">
+  Deploy your own Threat Cloud instance.
+</Card>
+
+<Card title="Privacy" icon="lock" href="/products/threat-cloud/privacy">
+  How we protect your data.
+</Card>

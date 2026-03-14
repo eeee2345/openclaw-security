@@ -63,11 +63,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://plausible.io`,
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://plausible.io https://static.cloudflareinsights.com`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.panguard.ai https://*.vercel-insights.com https://*.vercel-analytics.com https://plausible.io",
+              "connect-src 'self' https://api.panguard.ai https://docs.panguard.ai https://tc.panguard.ai https://*.vercel-insights.com https://*.vercel-analytics.com https://plausible.io",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

@@ -638,33 +638,44 @@ export class ThreatCloudDB {
   getConfirmedATRRules(
     since?: string
   ): Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }> {
-    if (since) {
-      return this.db
-        .prepare(
-          `
-        SELECT pattern_hash as ruleId, rule_content as ruleContent, updated_at as publishedAt, 'atr-community' as source
-        FROM atr_proposals
-        WHERE (status = 'confirmed' OR status = 'promoted') AND updated_at > ?
-        ORDER BY updated_at ASC
-      `
-        )
-        .all(since) as Array<{
-        ruleId: string;
-        ruleContent: string;
-        publishedAt: string;
-        source: string;
-      }>;
-    }
-    return this.db
+    // Combine two sources:
+    // 1. Community-confirmed proposals from atr_proposals table
+    // 2. Seeded ATR rules from the rules table (source='atr')
+    const sinceParams = since ? [since] : [];
+
+    const proposals = this.db
       .prepare(
         `
-      SELECT pattern_hash as ruleId, rule_content as ruleContent, updated_at as publishedAt, 'atr-community' as source
-      FROM atr_proposals
-      WHERE status = 'confirmed' OR status = 'promoted'
-      ORDER BY updated_at ASC
-    `
+        SELECT pattern_hash as ruleId, rule_content as ruleContent, updated_at as publishedAt, 'atr-community' as source
+        FROM atr_proposals
+        WHERE (status = 'confirmed' OR status = 'promoted') ${since ? 'AND updated_at > ?' : ''}
+        ORDER BY updated_at ASC
+      `
       )
-      .all() as Array<{ ruleId: string; ruleContent: string; publishedAt: string; source: string }>;
+      .all(...sinceParams) as Array<{
+      ruleId: string;
+      ruleContent: string;
+      publishedAt: string;
+      source: string;
+    }>;
+
+    const seeded = this.db
+      .prepare(
+        `
+        SELECT rule_id as ruleId, rule_content as ruleContent, created_at as publishedAt, 'atr' as source
+        FROM rules
+        WHERE source = 'atr' ${since ? 'AND created_at > ?' : ''}
+        ORDER BY created_at ASC
+      `
+      )
+      .all(...sinceParams) as Array<{
+      ruleId: string;
+      ruleContent: string;
+      publishedAt: string;
+      source: string;
+    }>;
+
+    return [...seeded, ...proposals];
   }
 
   /** Get IP blocklist from IoC entries and aggregated threat data / 取得 IP 封鎖清單 */
