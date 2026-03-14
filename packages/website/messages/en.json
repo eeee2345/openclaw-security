@@ -571,6 +571,18 @@
         }
       }
     },
+    "ecosystemScanner": {
+      "title": "Scanning the MCP Ecosystem",
+      "subtitle": "We continuously crawl MCP registries, audit skills, and build a threat intelligence database so you don't have to.",
+      "discovered": "MCP Skills Discovered",
+      "scanned": "Skills Audited",
+      "builtInRules": "Built-in Detection Rules",
+      "atrRules": "ATR Agent Threat Rules",
+      "findingsTitle": "Audit Findings Distribution",
+      "lastScan": "Last scan: {date}",
+      "rules": "Rules",
+      "cta": "Every scan feeds the collective defense. Install one skill, protect the whole ecosystem."
+    },
     "homePricing": {
       "overline": "Open Source",
       "title": "100% free. 100% open source.",

@@ -14,6 +14,7 @@ const SkillProtection = dynamic(() => import('@/components/home/SkillProtection'
 const RealScenarios = dynamic(() => import('@/components/home/RealScenarios'));
 const SecurityStack = dynamic(() => import('@/components/home/SecurityStack'));
 const HowItWorksNew = dynamic(() => import('@/components/home/HowItWorksNew'));
+const EcosystemScanner = dynamic(() => import('@/components/home/EcosystemScanner'));
 const CommunityFlywheel = dynamic(() => import('@/components/home/CommunityFlywheel'));
 const FinalCTANew = dynamic(() => import('@/components/home/FinalCTANew'));
 
@@ -49,7 +50,9 @@ export default function Home() {
           <SecurityStack />
           {/* 7. Simple summary: Install / Review / Evolve */}
           <HowItWorksNew />
-          {/* 8. Collective immunity flywheel */}
+          {/* 8. Ecosystem scanning stats */}
+          <EcosystemScanner />
+          {/* 9. Collective immunity flywheel */}
           <CommunityFlywheel />
           {/* 9. Final CTA */}
           <FinalCTANew />

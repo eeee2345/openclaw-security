@@ -571,6 +571,18 @@
         }
       }
     },
+    "ecosystemScanner": {
+      "title": "持續掃描 MCP 生態系",
+      "subtitle": "我們持續爬取 MCP 註冊表、審計技能、建立威脅情報資料庫，讓你不必自己動手。",
+      "discovered": "已發現 MCP Skills",
+      "scanned": "已審計 Skills",
+      "builtInRules": "內建偵測規則",
+      "atrRules": "ATR Agent 威脅規則",
+      "findingsTitle": "審計結果分佈",
+      "lastScan": "最後掃描：{date}",
+      "rules": "規則",
+      "cta": "每一次掃描都強化集體防禦。安裝一個技能，保護整個生態系。"
+    },
     "homePricing": {
       "overline": "開源",
       "title": "100% 免費。100% 開源。",

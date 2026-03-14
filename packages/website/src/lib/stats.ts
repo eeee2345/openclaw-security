@@ -55,7 +55,19 @@ export const STATS = {
     lastSync: '2026-03-12',
     syncInterval: '1h',
   },
-  lastUpdated: '2026-03-13',
+  /** Ecosystem scanning stats (from crawl-mcp-registry + audit-npm-skills) */
+  ecosystem: {
+    mcpSkillsDiscovered: 2_576,
+    mcpSkillsScanned: 30,
+    npmPackagesAudited: 30,
+    findingsCritical: 21,
+    findingsHigh: 5,
+    findingsMedium: 3,
+    findingsClean: 1,
+    registrySources: 3,
+    lastCrawl: '2026-03-14',
+  },
+  lastUpdated: '2026-03-14',
 } as const;
 
 export type Stats = typeof STATS;
