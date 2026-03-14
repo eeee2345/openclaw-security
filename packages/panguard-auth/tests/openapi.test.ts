@@ -27,7 +27,6 @@ describe('OpenAPI', () => {
       const tags = (spec['tags'] as Array<{ name: string }>).map((t) => t.name);
       expect(tags).toContain('Auth');
       expect(tags).toContain('Account');
-      expect(tags).toContain('Billing');
       expect(tags).toContain('Usage');
       expect(tags).toContain('Admin');
       expect(tags).toContain('Threat Cloud');
@@ -50,14 +49,6 @@ describe('OpenAPI', () => {
       expect(paths['/api/auth/login']).toBeDefined();
       expect(paths['/api/auth/logout']).toBeDefined();
       expect(paths['/api/auth/me']).toBeDefined();
-    });
-
-    it('should include billing endpoints', () => {
-      const paths = spec['paths'] as Record<string, unknown>;
-      expect(paths['/api/billing/checkout']).toBeDefined();
-      expect(paths['/api/billing/portal']).toBeDefined();
-      expect(paths['/api/billing/status']).toBeDefined();
-      expect(paths['/api/billing/webhook']).toBeDefined();
     });
 
     it('should include usage endpoints', () => {

@@ -16,6 +16,19 @@ Deferred work items from pre-launch review (2026-03-14).
 
 **Effort:** L (3-5 sessions)
 
+## P2 - serve.ts Refactor
+
+**serve.ts** (1,649 lines) -- CLI server command, second largest file:
+
+- [ ] Extract auth route handlers into `serve-auth.ts`
+- [ ] Extract admin route handlers into `serve-admin.ts`
+- [ ] Extract Threat Cloud route handlers into `serve-tc.ts`
+- [ ] Extract health/static/middleware into `serve-core.ts`
+
+**Why:** Actively modified (billing removal touched it), growing. Hard to review at 1,600+ lines.
+
+**Effort:** M (1-2 sessions)
+
 ## P2 - Validation Consolidation
 
 Input validation is scattered across packages. Consolidate into `packages/core/src/validation.ts`:

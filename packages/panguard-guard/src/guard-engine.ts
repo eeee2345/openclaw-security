@@ -1173,8 +1173,10 @@ export class GuardEngine {
             this.ruleEngine.addRule(parsed);
             newRules++;
           }
-        } catch {
-          // skip invalid
+        } catch (parseErr: unknown) {
+          logger.warn(
+            `Skipping invalid Sigma rule from cloud: ${rule.ruleId ?? 'unknown'} — ${parseErr instanceof Error ? parseErr.message : String(parseErr)}`
+          );
         }
       }
 
@@ -1189,8 +1191,10 @@ export class GuardEngine {
               this.atrEngine.addCloudRule(parsed);
               newATRRules++;
             }
-          } catch {
-            // skip invalid ATR rules
+          } catch (parseErr: unknown) {
+            logger.warn(
+              `Skipping invalid ATR rule from cloud: ${rule.ruleId ?? 'unknown'} — ${parseErr instanceof Error ? parseErr.message : String(parseErr)}`
+            );
           }
         }
         if (newATRRules > 0) {
@@ -1215,8 +1219,10 @@ export class GuardEngine {
               const filename = `${rule.ruleId ?? 'unknown'}.yar`;
               writeFileSync(join(yaraCloudDir, filename), rule.ruleContent, 'utf-8');
               newYaraRules++;
-            } catch {
-              // skip invalid YARA rules
+            } catch (writeErr: unknown) {
+              logger.warn(
+                `Skipping invalid YARA rule from cloud: ${rule.ruleId ?? 'unknown'} — ${writeErr instanceof Error ? writeErr.message : String(writeErr)}`
+              );
             }
           }
           if (newYaraRules > 0) {

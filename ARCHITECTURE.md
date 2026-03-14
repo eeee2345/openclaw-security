@@ -25,8 +25,8 @@ Technical architecture of the Panguard AI platform. For product-level documentat
         |
    +----+----+----+
    |    |    |    |
-  Sigma YARA ATR Suricata/Falco
-  3760  5961  52
+  Sigma YARA ATR Builtin
+  3760  5961  52  20
         |
    Threat Cloud
    Collective Intelligence
@@ -78,9 +78,9 @@ All events pass through a cost-optimized detection funnel:
               +----------+----------+
               |                     |
          Layer 1: Rules        (no match)
-         3,754 Sigma                |
-         4,369 YARA            Layer 2: Local AI
-         32 ATR                Ollama on GPU
+         3,760 Sigma                |
+         5,961 YARA            Layer 2: Local AI
+         52 ATR                Ollama on GPU
          <50ms, $0             ~2s, $0
          Catches 90%                |
               |               (uncertain)
@@ -261,7 +261,7 @@ Vercel deployment. Next.js 14 with ISR. Bilingual (EN + zh-TW).
 | panguard-report        | @panguard-ai/panguard-report        | 0.2.0   | GA       | Compliance reports (CMA, ISO 27001, SOC 2)             |
 | panguard-mcp           | @panguard-ai/panguard-mcp           | 0.1.0   | Beta     | MCP server with 11 tools                               |
 | panguard-skill-auditor | @panguard-ai/panguard-skill-auditor | 0.1.1   | Beta     | 7-check skill security analysis                        |
-| panguard-auth          | @panguard-ai/panguard-auth          | 0.2.0   | GA       | Auth, licensing, payment (LemonSqueezy)                |
+| panguard-auth          | @panguard-ai/panguard-auth          | 0.2.0   | GA       | Auth, session management, usage metering               |
 | manager                | @panguard-ai/manager                | 0.2.0   | GA       | Distributed agent orchestration (500 max)              |
 | threat-cloud           | @panguard-ai/threat-cloud           | 0.2.0   | GA       | Collective threat intelligence backend                 |
 | panguard-web           | @panguard-ai/panguard-web           | 0.2.0   | GA       | Website content engine                                 |
@@ -283,4 +283,3 @@ Vercel deployment. Next.js 14 with ISR. Bilingual (EN + zh-TW).
 | installer-e2e.yml     | event       | E2E testing for installer                   |
 | cli-smoke.yml         | event       | CLI smoke tests                             |
 | release.yml           | manual      | Create GitHub releases                      |
-| uptime.yml            | scheduled   | Service health monitoring                   |
