@@ -110,38 +110,41 @@ export class LLMReviewer {
    * 建構 LLM 審查提示
    */
   private buildReviewPrompt(ruleContent: string): string {
-    return `You are a senior cybersecurity rule reviewer for the ATR (Agent Threat Rules) standard.
+    return `You are a cybersecurity rule reviewer for the ATR (Agent Threat Rules) standard.
 
-Review this auto-generated ATR rule for production readiness.
+Review this auto-generated ATR rule. These rules detect threats in MCP (Model Context Protocol) tool descriptions — a new attack surface where malicious tool descriptions manipulate LLM behavior.
 
 \`\`\`yaml
 ${ruleContent}
 \`\`\`
 
-Evaluate the following criteria:
+CONTEXT: This is an "experimental" rule for a NEW threat category (AI agent tool poisoning).
+Perfect coverage is NOT expected. Rules that detect even ONE specific attack pattern are valuable
+as early warning signals, even if attackers can easily evade them with rephrasing.
+
+Evaluation criteria:
 
 1. FALSE POSITIVE RISK (low/medium/high)
-   - How likely is this rule to trigger on benign activity?
-   - Are the detection conditions overly broad or vague?
+   - Would this trigger on NORMAL, LEGITIMATE tool descriptions?
+   - A rule that matches "always pass data without asking user confirmation" is LOW FP risk
+     because legitimate tools do NOT include such instructions.
+   - Only mark "high" if the regex would match common legitimate documentation phrases.
 
 2. COVERAGE SCORE (0-100)
-   - How well does this rule cover the intended attack pattern?
-   - Does it account for common variations and evasion techniques?
+   - Does it detect the SPECIFIC attack pattern described? (not all possible variations)
+   - 40+ is acceptable for experimental rules targeting new attack types.
+   - Do NOT penalize for being "too specific" — specific is GOOD for FP reduction.
 
-3. DETECTION SPECIFICITY
-   - Are the detection conditions specific enough to avoid false positives?
-   - Are regex patterns well-crafted and not overly greedy?
+3. YAML VALIDITY
+   - Required fields: title, id, severity, detection
+   - Test cases present with realistic examples
 
-4. RESPONSE PROPORTIONALITY
-   - Are the recommended response actions appropriate for the severity level?
-   - Would the response cause unnecessary disruption for false positives?
-
-5. YAML VALIDITY
-   - Is the YAML well-formed?
-   - Does it conform to ATR schema (required fields: title, id, severity, detection)?
+APPROVAL CRITERIA:
+- Approve if: FP risk is low/medium AND detects a real attack pattern AND YAML is valid
+- Reject ONLY if: regex matches common legitimate phrases OR detects no real attack
 
 Output ONLY valid JSON (no markdown, no explanation outside the JSON):
-{"approved": true/false, "falsePositiveRisk": "low"|"medium"|"high", "coverageScore": 0-100, "reasoning": "brief explanation of your decision"}`;
+{"approved": true/false, "falsePositiveRisk": "low"|"medium"|"high", "coverageScore": 0-100, "reasoning": "brief explanation"}`;
   }
 
   /**
