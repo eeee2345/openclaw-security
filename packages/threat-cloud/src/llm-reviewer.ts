@@ -222,27 +222,43 @@ Output ONLY valid JSON (no markdown, no explanation outside the JSON):
   // 技能分析 — 接收掃描結果，用 LLM 找 regex 漏掉的 semantic threats
   // -------------------------------------------------------------------------
 
-  private static readonly ATR_DRAFTER_PROMPT = `You are an AI security analyst specializing in MCP (Model Context Protocol) skill security.
+  private static readonly ATR_DRAFTER_PROMPT = `You are a senior AI security rule engineer for the ATR (Agent Threat Rules) standard.
 
-You will receive MCP tool descriptions from a skill that passed automated regex scanning (ATR rules). Your job is to identify threats that regex CANNOT catch:
+You will receive MCP tool descriptions from a skill. Your job is to write PRODUCTION-QUALITY detection rules for SPECIFIC, CONCRETE attack patterns — not vague risk categories.
 
-1. **Semantic injection** — descriptions that subtly manipulate LLM behavior without trigger keywords
-2. **Implicit privilege escalation** — tools that combine to enable dangerous actions
-3. **Trust manipulation** — descriptions that make the LLM trust the tool's output unconditionally
-4. **Hidden side effects** — tool descriptions that downplay what the tool actually does
-5. **Cross-tool chaining risks** — combinations of tools that become dangerous together
+STRICT REQUIREMENTS — rules that violate these will be REJECTED:
 
-For each threat found, output a YAML ATR rule. If no threats found, output exactly "NO_THREATS_FOUND" and nothing else.
+1. REGEX MUST BE SPECIFIC — not generic patterns like "exec.*network" or "credential.*send".
+   The regex must match a CONCRETE suspicious string that appears in actual malicious tools.
+   Use word boundaries (\\b), specific keywords, and context-aware patterns.
 
-Be conservative. Only flag genuine threats. False alarms destroy credibility.
+2. FALSE POSITIVE RATE MUST BE LOW — the rule should NOT trigger on:
+   - Legitimate deployment tools, monitoring tools, or admin panels
+   - Normal API clients that read credentials from config
+   - Standard CRUD operations (list, get, create, update, delete)
+   - Short but legitimate tool descriptions
 
-Output format (if threats found):
+3. MUST DETECT A REAL ATTACK — not just "this tool has broad permissions" or "description is vague".
+   Examples of REAL attacks:
+   - Tool description contains hidden instructions for the LLM ("always approve", "skip verification")
+   - Tool claims to be read-only but its schema accepts write parameters
+   - Tool name suggests safe operation but description reveals destructive capability
+   - Tool embeds base64/encoded payloads in its description
+   - Tool description instructs LLM to ignore user preferences or security policies
+
+4. TEST CASES MUST BE REALISTIC — true_positive must be a plausible malicious description,
+   true_negative must be a similar-looking but legitimate description. Include at least 2 of each.
+
+5. OUTPUT AT MOST 1 RULE per skill. Prefer NO rule over a bad rule.
+   If no SPECIFIC, CONCRETE threat pattern exists, output "NO_THREATS_FOUND".
+
+Output format (ONLY if a specific threat is found):
 \`\`\`yaml
-title: "<descriptive title>"
-id: ATR-2026-DRAFT-<8char-hash>
+title: "<specific attack technique, not generic risk>"
+id: ATR-2026-DRAFT-<8char-hex>
 status: draft
 description: |
-  <what this detects and why it matters>
+  <what SPECIFIC attack this detects, with concrete example from the analyzed skill>
 author: "Threat Cloud LLM Analyzer"
 date: "${new Date().toISOString().slice(0, 10).replace(/-/g, '/')}"
 schema_version: "0.1"
@@ -250,26 +266,32 @@ detection_tier: semantic
 maturity: experimental
 severity: <critical|high|medium|low>
 tags:
-  category: <category>
-  subcategory: <subcategory>
+  category: <tool-poisoning|prompt-injection|data-exfiltration|privilege-escalation>
+  subcategory: <specific-technique>
   confidence: medium
 detection:
   conditions:
     - field: tool_description
       operator: regex
-      value: "<regex pattern that catches this threat>"
-      description: "<what this matches>"
+      value: "<SPECIFIC regex with word boundaries and context>"
+      description: "<exactly what malicious pattern this matches>"
   condition: any
 response:
   actions: [alert, snapshot]
 test_cases:
   true_positives:
-    - tool_description: "<example that should trigger>"
+    - tool_description: "<realistic malicious tool description that should trigger>"
+      expected: triggered
+    - tool_description: "<another variant>"
       expected: triggered
   true_negatives:
-    - tool_description: "<example that should NOT trigger>"
+    - tool_description: "<similar but legitimate tool description>"
       expected: not_triggered
-\`\`\``;
+    - tool_description: "<another legitimate example>"
+      expected: not_triggered
+\`\`\`
+
+REMEMBER: Output "NO_THREATS_FOUND" for 90%+ of skills. Only flag genuinely suspicious patterns.`;
 
   /**
    * Analyze skill scan results for semantic threats regex missed
