@@ -16,8 +16,10 @@ import { checkCode } from './checks/code-check.js';
 import { checkDependencies } from './checks/dependency-check.js';
 import { checkPermissions } from './checks/permission-check.js';
 import { checkWithAI } from './checks/ai-check.js';
+import { checkWithATR } from './checks/atr-check.js';
+import { autoDetectSkillLLM } from './checks/llm-auto-detect.js';
 import { calculateRiskScore } from './risk-scorer.js';
-import type { AuditReport, AuditOptions, CheckResult } from './types.js';
+import type { AuditReport, AuditOptions, CheckResult, AuditFinding } from './types.js';
 
 export type {
   AuditReport,
@@ -54,12 +56,42 @@ export async function auditSkill(skillDir: string, options?: AuditOptions): Prom
     checks.push(checkPermissions(manifest));
   }
 
+  // ATR pattern detection (52+ rules including CJK-aware patterns)
+  if (manifest && !options?.skipATR) {
+    checks.push(await checkWithATR(manifest));
+  }
+
   // Code security (SAST + secrets)
   checks.push(await checkCode(skillDir));
 
-  // Layer 2: AI semantic analysis (optional)
+  // Layer 2: AI semantic analysis (default-on, auto-detects LLM if not provided)
   if (manifest && !options?.skipAI) {
-    checks.push(await checkWithAI(manifest.instructions, manifest.description, options?.llm));
+    let llm = options?.llm;
+
+    // Auto-detect an LLM when none was explicitly provided
+    if (!llm) {
+      llm = (await autoDetectSkillLLM()) ?? undefined;
+    }
+
+    if (llm) {
+      checks.push(await checkWithAI(manifest.instructions, manifest.description, llm));
+    } else {
+      // No LLM available at all — report as info finding so user knows
+      const noLlmFinding: AuditFinding = {
+        id: 'ai-no-llm',
+        title: 'AI check skipped -- no LLM configured',
+        description:
+          'No LLM provider was detected. Install Ollama or set ANTHROPIC_API_KEY / OPENAI_API_KEY for deeper semantic analysis.',
+        severity: 'info',
+        category: 'ai-analysis',
+        location: 'AI analysis',
+      };
+      checks.push({
+        status: 'info',
+        label: 'AI Analysis: Skipped (no LLM available)',
+        findings: [noLlmFinding],
+      });
+    }
   }
 
   // 3. Aggregate findings

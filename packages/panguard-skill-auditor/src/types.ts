@@ -51,11 +51,19 @@ export interface AuditFinding {
     | 'manifest'
     | 'prompt-injection'
     | 'tool-poisoning'
+    | 'context-exfiltration'
+    | 'agent-manipulation'
+    | 'privilege-escalation'
+    | 'excessive-autonomy'
+    | 'data-poisoning'
+    | 'model-abuse'
+    | 'skill-compromise'
     | 'code'
     | 'secrets'
     | 'dependency'
     | 'permission'
-    | 'ai-analysis';
+    | 'ai-analysis'
+    | 'atr';
   location?: string;
 }
 
@@ -68,10 +76,19 @@ export interface CheckResult {
 
 /** Options for auditSkill */
 export interface AuditOptions {
-  /** LLM provider for AI semantic analysis (Layer 2). Optional. */
+  /**
+   * LLM provider for AI semantic analysis (Layer 2).
+   * When omitted, the auditor auto-detects an available provider:
+   *   1. ANTHROPIC_API_KEY env var (Claude)
+   *   2. OPENAI_API_KEY env var (OpenAI)
+   *   3. Local Ollama instance
+   * If no provider is found, an info-level finding is added to the report.
+   */
   llm?: import('./checks/ai-check.js').SkillAnalysisLLM;
-  /** Skip AI analysis even if LLM is configured */
+  /** Skip AI analysis entirely (no auto-detection, no LLM call) */
   skipAI?: boolean;
+  /** Skip ATR pattern detection */
+  skipATR?: boolean;
 }
 
 /** Complete audit report */

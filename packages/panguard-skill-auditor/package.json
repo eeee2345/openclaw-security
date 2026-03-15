@@ -36,6 +36,7 @@
     "dev": "tsc --build --watch"
   },
   "dependencies": {
+    "@panguard-ai/atr": "workspace:*",
     "@panguard-ai/core": "workspace:*",
     "@panguard-ai/panguard-scan": "workspace:*",
     "js-yaml": "^4.1.0"
