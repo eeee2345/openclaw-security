@@ -378,9 +378,15 @@ importers:
 
   packages/threat-cloud:
     dependencies:
+      '@panguard-ai/core':
+        specifier: workspace:*
+        version: link:../core
       better-sqlite3:
         specifier: ^11.0.0
         version: 11.10.0
+      zod:
+        specifier: ^3.24.0
+        version: 3.25.76
     devDependencies:
       '@types/better-sqlite3':
         specifier: ^7.6.8
