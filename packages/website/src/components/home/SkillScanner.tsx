@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { Link } from '@/navigation';
 import { ShieldIcon, ScanIcon } from '@/components/ui/BrandIcons';
 
 interface ScanFinding {
@@ -280,12 +281,12 @@ export default function SkillScanner() {
                   <code className="text-xs bg-surface-2 border border-border rounded-lg px-3 py-2 text-panguard-green font-mono select-all">
                     curl -fsSL https://get.panguard.ai | bash
                   </code>
-                  <a
+                  <Link
                     href="/docs/getting-started"
                     className="inline-flex items-center gap-1 text-xs text-panguard-green hover:underline"
                   >
                     {t('learnMore')} <ArrowRight className="w-3 h-3" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.div>
