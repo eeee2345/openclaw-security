@@ -31,6 +31,10 @@ interface SkillAnalysisResult {
   package: string;
   threatsFound: boolean;
   proposals: Array<{ patternHash: string; ruleContent: string }>;
+  /** Analysis status: 'success' if LLM completed, 'error' if LLM failed */
+  status: 'success' | 'error';
+  /** Error reason when status is 'error' */
+  errorReason?: string;
 }
 
 /** Timeout for LLM API calls in milliseconds */
@@ -228,9 +232,10 @@ You will receive MCP tool descriptions from a skill. Your job is to write PRODUC
 
 STRICT REQUIREMENTS — rules that violate these will be REJECTED:
 
-1. REGEX MUST BE SPECIFIC — not generic patterns like "exec.*network" or "credential.*send".
-   The regex must match a CONCRETE suspicious string that appears in actual malicious tools.
-   Use word boundaries (\\b), specific keywords, and context-aware patterns.
+1. REGEX MUST BE HIGHLY SPECIFIC — require multi-word phrase matching.
+   GOOD: "without\\s+(?:asking|requiring)\\s+(?:user|human)\\s+(?:confirmation|approval)"
+   BAD:  "without asking" or "directly to \\w+" (too generic, matches normal docs).
+   Each regex must require 3+ specific words in sequence to avoid false positives.
 
 2. FALSE POSITIVE RATE MUST BE LOW — the rule should NOT trigger on:
    - Legitimate deployment tools, monitoring tools, or admin panels
@@ -318,14 +323,14 @@ REMEMBER: Output "NO_THREATS_FOUND" for 90%+ of skills. Only flag genuinely susp
         );
 
         if (responseText.includes('NO_THREATS_FOUND')) {
-          results.push({ package: skill.package, threatsFound: false, proposals: [] });
+          results.push({ package: skill.package, threatsFound: false, proposals: [], status: 'success' });
           continue;
         }
 
         // Extract YAML blocks
         const yamlBlocks = responseText.match(/```yaml\n([\s\S]*?)```/g);
         if (!yamlBlocks || yamlBlocks.length === 0) {
-          results.push({ package: skill.package, threatsFound: false, proposals: [] });
+          results.push({ package: skill.package, threatsFound: false, proposals: [], status: 'success' });
           continue;
         }
 
@@ -364,7 +369,12 @@ REMEMBER: Output "NO_THREATS_FOUND" for 90%+ of skills. Only flag genuinely susp
           });
 
           // Fire-and-forget: review the proposal we just created
-          void this.reviewProposal(patternHash, ruleContent).catch(() => {});
+          void this.reviewProposal(patternHash, ruleContent).catch((err: unknown) => {
+            console.error(
+              `LLM review failed for proposal ${patternHash} (skill: ${skill.package}):`,
+              err instanceof Error ? err.message : String(err)
+            );
+          });
 
           proposals.push({ patternHash, ruleContent });
         }
@@ -373,9 +383,20 @@ REMEMBER: Output "NO_THREATS_FOUND" for 90%+ of skills. Only flag genuinely susp
           package: skill.package,
           threatsFound: proposals.length > 0,
           proposals,
+          status: 'success',
         });
-      } catch {
-        results.push({ package: skill.package, threatsFound: false, proposals: [] });
+      } catch (err: unknown) {
+        const errorReason = err instanceof Error ? err.message : String(err);
+        console.error(
+          `LLM analysis error for skill "${skill.package}": ${errorReason}`
+        );
+        results.push({
+          package: skill.package,
+          threatsFound: false,
+          proposals: [],
+          status: 'error',
+          errorReason,
+        });
       }
     }
 
@@ -424,7 +445,10 @@ REMEMBER: Output "NO_THREATS_FOUND" for 90%+ of skills. Only flag genuinely susp
           : 'No reasoning provided';
 
       return { approved, falsePositiveRisk, coverageScore, reasoning };
-    } catch {
+    } catch (err: unknown) {
+      console.warn(
+        `LLM verdict parse error: ${err instanceof Error ? err.message : String(err)}`
+      );
       return defaultVerdict;
     }
   }
