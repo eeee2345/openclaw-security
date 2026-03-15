@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+/* eslint-disable no-console, security/detect-object-injection, security/detect-non-literal-fs-filename */
 /**
  * ATR CLI - Command-line interface for Agent Threat Rules
+ *
+ * Console output and dynamic filesystem access are expected in a CLI tool.
  *
  * Usage:
  *   npx agent-threat-rules scan <events.json>     Scan events against all rules
