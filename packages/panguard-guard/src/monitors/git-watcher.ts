@@ -54,7 +54,7 @@ const DIFF_SECRET_PATTERNS: readonly DiffSecretPattern[] = [
   { id: 'aws-key', name: 'AWS Access Key', pattern: /AKIA[0-9A-Z]{16}/, severity: 'high' },
   { id: 'github-token', name: 'GitHub Token', pattern: /gh[pousr]_[A-Za-z0-9_]{36,}/, severity: 'high' },
   { id: 'private-key', name: 'Private Key', pattern: /-----BEGIN (?:RSA |EC |DSA )?PRIVATE KEY-----/, severity: 'critical' },
-  { id: 'anthropic-key', name: 'Anthropic Key', pattern: /sk-ant-[A-Za-z0-9_\-]{20,}/, severity: 'high' },
+  { id: 'anthropic-key', name: 'Anthropic Key', pattern: /sk-ant-[A-Za-z0-9_-]{20,}/, severity: 'high' },
   { id: 'openai-key', name: 'OpenAI Key', pattern: /sk-[A-Za-z0-9]{20,}/, severity: 'high' },
   { id: 'stripe-live', name: 'Stripe Live Key', pattern: /sk_live_[0-9a-zA-Z]{24,}/, severity: 'high' },
   { id: 'db-connection', name: 'DB Connection String', pattern: /(?:mongodb|postgres|mysql|redis):\/\/[^\s'"]{10,}/, severity: 'high' },

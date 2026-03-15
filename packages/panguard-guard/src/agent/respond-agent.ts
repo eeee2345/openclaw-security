@@ -24,7 +24,7 @@ import { SAFETY_RULES } from './respond/safety-rules.js';
 import { ActionRateLimiter } from './respond/action-rate-limiter.js';
 import { ActionManifest } from './respond/action-manifest.js';
 import { EscalationTracker } from './respond/escalation-tracker.js';
-import { extractTarget, extractIP } from './respond/evidence-extractor.js';
+import { extractTarget } from './respond/evidence-extractor.js';
 import { blockIP, unblockIP, killProcess, disableAccount, isolateFile } from './respond/os-actions.js';
 import type { ActionManifestEntry } from './respond/types.js';
 

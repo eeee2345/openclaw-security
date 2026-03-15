@@ -14,7 +14,7 @@
 import { EventEmitter } from 'node:events';
 import { existsSync, readFileSync, watch } from 'node:fs';
 import { execFile } from 'node:child_process';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { createLogger } from '@panguard-ai/core';
 import type { SecurityEvent, Severity } from '@panguard-ai/core';
 

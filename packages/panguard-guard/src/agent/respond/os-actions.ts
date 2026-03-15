@@ -6,8 +6,9 @@
  */
 
 import { execFile } from 'node:child_process';
-import { platform } from 'node:os';
+import { platform, homedir } from 'node:os';
 import { appendFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { createLogger } from '@panguard-ai/core';
 import type { ThreatVerdict, ResponseResult } from '../../types.js';
 import { SAFETY_RULES } from './safety-rules.js';
@@ -357,7 +358,6 @@ const DENY_PATHS = ['/etc', '/usr', '/bin', '/sbin', '/lib', '/boot', '/System',
  * Must be within SAFE_PATHS or user home, and NOT within DENY_PATHS.
  */
 function isPathSafeToIsolate(filePath: string): { safe: boolean; reason?: string } {
-  const { resolve } = require('node:path') as { resolve: (...args: string[]) => string };
   const resolved = resolve(filePath);
 
   // Check deny list first
@@ -368,7 +368,6 @@ function isPathSafeToIsolate(filePath: string): { safe: boolean; reason?: string
   }
 
   // Check if within safe paths or user home
-  const { homedir } = require('node:os') as { homedir: () => string };
   const home = homedir();
   const allowedRoots = [...SAFE_PATHS, home];
 

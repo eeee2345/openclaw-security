@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod';
+import { resolve } from 'node:path';
 
 /**
  * Validate input data against a Zod schema
@@ -210,7 +211,6 @@ export function sanitizeFilename(filename: string): string {
  * @returns true if path is within baseDir
  */
 export function isPathWithinDir(filePath: string, baseDir: string): boolean {
-  const { resolve } = require('node:path') as { resolve: (...args: string[]) => string };
   const resolved = resolve(filePath);
   const resolvedBase = resolve(baseDir);
   return resolved.startsWith(resolvedBase + '/') || resolved === resolvedBase;

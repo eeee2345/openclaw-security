@@ -65,19 +65,19 @@ export const SECRET_PATTERNS: readonly SecretPattern[] = Object.freeze([
   {
     id: 'generic-api-key',
     name: 'Generic API Key Assignment',
-    pattern: /(?:api[_-]?key|apikey|api[_-]?secret|api[_-]?token)\s*[=:]\s*['"][A-Za-z0-9_\-]{20,}['"]/i,
+    pattern: /(?:api[_-]?key|apikey|api[_-]?secret|api[_-]?token)\s*[=:]\s*['"][A-Za-z0-9_-]{20,}['"]/i,
     severity: 'high',
   },
   {
     id: 'bearer-token',
     name: 'Bearer Token',
-    pattern: /['"]Bearer\s+[A-Za-z0-9_\-.]{20,}['"]/,
+    pattern: /['"]Bearer\s+[A-Za-z0-9_.-]{20,}['"]/,
     severity: 'high',
   },
   {
     id: 'anthropic-key',
     name: 'Anthropic API Key',
-    pattern: /sk-ant-[A-Za-z0-9_\-]{20,}/,
+    pattern: /sk-ant-[A-Za-z0-9_-]{20,}/,
     severity: 'critical',
   },
   {
