@@ -58,7 +58,7 @@ async function main(): Promise<void> {
 
   const config: ServerConfig = {
     port: args.port ?? Number(process.env['PORT'] ?? '8080'),
-    host: args.host ?? '0.0.0.0',
+    host: args.host ?? '127.0.0.1',
     dbPath:
       args.dbPath ?? process.env['TC_DB_PATH'] ?? process.env['DB_PATH'] ?? './threat-cloud.db',
     apiKeyRequired: args.apiKeyRequired ?? false,

@@ -7,6 +7,8 @@ import { describe, it, expect } from 'vitest';
 import {
   validateInput,
   tryValidateInput,
+  sanitizeFilename,
+  isPathWithinDir,
   ClientIdSchema,
   ISODateSchema,
   PaginationLimitSchema,
@@ -335,6 +337,72 @@ describe('SkillWhitelistSchema', () => {
         ],
       }).success
     ).toBe(true);
+  });
+});
+
+// -- sanitizeFilename --
+
+describe('sanitizeFilename', () => {
+  it('passes through safe filenames', () => {
+    expect(sanitizeFilename('my-rule_01.yar')).toBe('my-rule_01.yar');
+  });
+
+  it('strips directory components (forward slash)', () => {
+    expect(sanitizeFilename('../../etc/passwd')).toBe('passwd');
+  });
+
+  it('strips directory components (backslash)', () => {
+    expect(sanitizeFilename('..\\..\\windows\\system32')).toBe('system32');
+  });
+
+  it('replaces special characters with underscore', () => {
+    expect(sanitizeFilename('rule id with spaces!.yar')).toBe('rule_id_with_spaces_.yar');
+  });
+
+  it('returns "unknown" for empty string', () => {
+    expect(sanitizeFilename('')).toBe('unknown');
+  });
+
+  it('returns "unknown" for dot-only names', () => {
+    expect(sanitizeFilename('.')).toBe('unknown');
+    expect(sanitizeFilename('..')).toBe('unknown');
+  });
+
+  it('returns "unknown" for path-only input', () => {
+    expect(sanitizeFilename('/')).toBe('unknown');
+    expect(sanitizeFilename('//')).toBe('unknown');
+  });
+
+  it('handles unicode characters by replacing them', () => {
+    expect(sanitizeFilename('rule-\u4e2d\u6587.yar')).toBe('rule-__.yar');
+  });
+});
+
+// -- isPathWithinDir --
+
+describe('isPathWithinDir', () => {
+  it('returns true for path inside base dir', () => {
+    expect(isPathWithinDir('/var/data/file.txt', '/var/data')).toBe(true);
+  });
+
+  it('returns true for nested path inside base dir', () => {
+    expect(isPathWithinDir('/var/data/sub/deep/file.txt', '/var/data')).toBe(true);
+  });
+
+  it('returns true when path equals base dir', () => {
+    expect(isPathWithinDir('/var/data', '/var/data')).toBe(true);
+  });
+
+  it('returns false for path traversal attempt', () => {
+    expect(isPathWithinDir('/var/data/../etc/passwd', '/var/data')).toBe(false);
+  });
+
+  it('returns false for sibling directory', () => {
+    expect(isPathWithinDir('/var/other/file.txt', '/var/data')).toBe(false);
+  });
+
+  it('returns false for prefix-spoofing (e.g. /var/data2)', () => {
+    expect(isPathWithinDir('/var/data2/file.txt', '/var/data')).toBe(false);
   });
 });
 

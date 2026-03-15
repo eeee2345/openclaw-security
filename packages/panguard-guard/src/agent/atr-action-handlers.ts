@@ -8,7 +8,7 @@
  * @module @panguard-ai/panguard-guard/agent/atr-action-handlers
  */
 
-import { createLogger } from '@panguard-ai/core';
+import { createLogger, sanitizeFilename } from '@panguard-ai/core';
 import type { ThreatVerdict, ResponseResult } from '../types.js';
 import type { SkillWhitelistManager } from '../engines/skill-whitelist.js';
 
@@ -174,7 +174,8 @@ export class ATRActionHandlers {
         reasoning: verdict.reasoning,
       };
 
-      const markerPath = join(quarantineDir, `${label}.json`);
+      const safeLabel = sanitizeFilename(label);
+      const markerPath = join(quarantineDir, `${safeLabel}.json`);
       writeFileSync(markerPath, JSON.stringify(marker, null, 2), 'utf-8');
 
       logger.info(`ATR action: session "${label}" quarantined`);
@@ -272,7 +273,8 @@ export class ATRActionHandlers {
         restrictions: ['deny_write', 'deny_exec', 'deny_network'],
       };
 
-      const overridePath = join(configDir, `${label}.json`);
+      const safeLabel = sanitizeFilename(label);
+      const overridePath = join(configDir, `${safeLabel}.json`);
       writeFileSync(overridePath, JSON.stringify(override, null, 2), 'utf-8');
 
       logger.info(`ATR action: permissions reduced for "${label}"`);

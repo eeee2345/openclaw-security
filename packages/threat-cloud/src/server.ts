@@ -30,6 +30,16 @@ import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { ThreatCloudDB } from './database.js';
 import { LLMReviewer } from './llm-reviewer.js';
 import { getAdminHTML } from './admin-dashboard.js';
+import {
+  tryValidateInput,
+  ThreatDataSchema,
+  RulePublishSchema,
+  ATRProposalSchema,
+  ATRFeedbackSchema,
+  SkillThreatSchema,
+  SkillWhitelistItemSchema,
+} from '@panguard-ai/core';
+import { z } from 'zod';
 import type {
   ServerConfig,
   AnonymizedThreatData,
@@ -200,7 +210,7 @@ export class ThreatCloudServer {
 
     // API key verification (skip for health check)
     const url = req.url ?? '/';
-    const rawPathname = url.split('?')[0];
+    const rawPathname = url.split('?')[0] ?? '/';
 
     // API versioning: strip /v1 prefix for backward compatibility
     const pathname = rawPathname.startsWith('/v1/')
@@ -435,34 +445,34 @@ export class ThreatCloudServer {
   /** POST /api/threats - Upload anonymized threat data (single or batch) */
   private async handlePostThreat(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const body = await this.readBody(req);
-    const parsed = JSON.parse(body) as AnonymizedThreatData | { events: AnonymizedThreatData[] };
+    let raw: unknown;
+    try {
+      raw = JSON.parse(body);
+    } catch {
+      this.sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+      return;
+    }
 
     // Support both single object and batch { events: [...] } format
-    const events: AnonymizedThreatData[] =
-      'events' in parsed && Array.isArray(parsed.events)
-        ? parsed.events
-        : [parsed as AnonymizedThreatData];
+    const rawObj = raw as Record<string, unknown>;
+    const rawEvents: unknown[] =
+      'events' in rawObj && Array.isArray(rawObj['events'])
+        ? rawObj['events']
+        : [raw];
 
-    for (const data of events) {
-      // Validate required fields
-      if (
-        !data.attackSourceIP ||
-        !data.attackType ||
-        !data.mitreTechnique ||
-        !data.sigmaRuleMatched ||
-        !data.timestamp ||
-        !data.region
-      ) {
-        this.sendJson(res, 400, {
-          ok: false,
-          error:
-            'Missing required fields: attackSourceIP, attackType, mitreTechnique, sigmaRuleMatched, timestamp, region',
-        });
+    const validated: AnonymizedThreatData[] = [];
+    for (const event of rawEvents) {
+      const result = tryValidateInput(ThreatDataSchema, event);
+      if (!result.ok) {
+        this.sendJson(res, 400, { ok: false, error: result.error });
         return;
       }
+      const mutable = { ...result.data };
+      mutable.attackSourceIP = this.anonymizeIP(mutable.attackSourceIP);
+      validated.push(mutable as unknown as AnonymizedThreatData);
+    }
 
-      // Anonymize IP further (zero last octet if not already)
-      data.attackSourceIP = this.anonymizeIP(data.attackSourceIP);
+    for (const data of validated) {
       this.db.insertThreat(data);
     }
 
@@ -472,13 +482,13 @@ export class ThreatCloudServer {
       'threat.submit',
       'threat',
       undefined,
-      { count: events.length },
+      { count: validated.length },
       clientIP
     );
 
     this.sendJson(res, 201, {
       ok: true,
-      data: { message: 'Threat data received', count: events.length },
+      data: { message: 'Threat data received', count: validated.length },
     });
   }
 
@@ -505,18 +515,29 @@ export class ThreatCloudServer {
   /** POST /api/rules - Publish rules (single or batch) */
   private async handlePostRule(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const body = await this.readBody(req);
-    const parsed = JSON.parse(body) as ThreatCloudRule | { rules: ThreatCloudRule[] };
+    let raw: unknown;
+    try {
+      raw = JSON.parse(body);
+    } catch {
+      this.sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+      return;
+    }
 
     // Support both single object and batch { rules: [...] } format
-    const rules: ThreatCloudRule[] =
-      'rules' in parsed && Array.isArray(parsed.rules) ? parsed.rules : [parsed as ThreatCloudRule];
+    const rawObj = raw as Record<string, unknown>;
+    const rawRules: unknown[] =
+      'rules' in rawObj && Array.isArray(rawObj['rules']) ? rawObj['rules'] : [raw];
 
     const now = new Date().toISOString();
     let count = 0;
-    for (const rule of rules) {
-      if (!rule.ruleId || !rule.ruleContent || !rule.source) continue;
-      rule.publishedAt = rule.publishedAt || now;
-      this.db.upsertRule(rule);
+    for (const rawRule of rawRules) {
+      const result = tryValidateInput(RulePublishSchema, rawRule);
+      if (!result.ok) continue;
+      const ruleData = {
+        ...result.data,
+        publishedAt: result.data.publishedAt || now,
+      } as unknown as ThreatCloudRule;
+      this.db.upsertRule(ruleData);
       count++;
     }
 
@@ -572,94 +593,63 @@ export class ThreatCloudServer {
 
   /** POST /api/atr-proposals - Submit or confirm an ATR rule proposal */
   private async handlePostATRProposal(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const body = await this.readBody(req);
-    const data = JSON.parse(body) as ATRProposal;
-    const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
+    const data = await this.parseAndValidate(req, res, ATRProposalSchema);
+    if (!data) return;
 
-    if (!data.patternHash || !data.ruleContent) {
-      this.sendJson(res, 400, {
-        ok: false,
-        error: 'Missing required fields: patternHash, ruleContent',
-      });
-      return;
-    }
+    const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
 
     // Check if a proposal with the same patternHash already exists
     const proposals = this.db.getATRProposals() as Array<Record<string, unknown>>;
     const existing = proposals.find((p) => p['pattern_hash'] === data.patternHash);
 
+    const { patternHash, ruleContent } = data;
+
     if (existing) {
-      this.db.confirmATRProposal(data.patternHash);
+      this.db.confirmATRProposal(patternHash);
       this.sendJson(res, 200, {
         ok: true,
-        data: { message: 'Proposal confirmed', patternHash: data.patternHash },
+        data: { message: 'Proposal confirmed', patternHash },
       });
     } else {
-      const proposal: ATRProposal = {
+      const proposal = {
         ...data,
-        clientId: clientId ?? data.clientId,
-      };
+        clientId,
+      } as unknown as ATRProposal;
       this.db.insertATRProposal(proposal);
 
       // Fire-and-forget LLM review on first submission only
       if (this.llmReviewer?.isAvailable()) {
-        void this.llmReviewer.reviewProposal(data.patternHash, data.ruleContent).catch((err) => {
-          log.error(`LLM review failed for ${data.patternHash}`, err);
+        void this.llmReviewer.reviewProposal(patternHash, ruleContent).catch((err) => {
+          log.error(`LLM review failed for ${patternHash}`, err);
         });
       }
 
       this.sendJson(res, 201, {
         ok: true,
-        data: { message: 'Proposal submitted', patternHash: data.patternHash },
+        data: { message: 'Proposal submitted', patternHash },
       });
     }
   }
 
   /** POST /api/atr-feedback - Submit feedback on an ATR rule */
   private async handlePostATRFeedback(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const body = await this.readBody(req);
-    const data = JSON.parse(body) as { ruleId: string; isTruePositive: boolean };
+    const data = await this.parseAndValidate(req, res, ATRFeedbackSchema);
+    if (!data) return;
+
     const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
-
-    if (!data.ruleId || typeof data.isTruePositive !== 'boolean') {
-      this.sendJson(res, 400, {
-        ok: false,
-        error: 'Missing required fields: ruleId (string), isTruePositive (boolean)',
-      });
-      return;
-    }
-
     this.db.insertATRFeedback(data.ruleId, data.isTruePositive, clientId);
     this.sendJson(res, 201, { ok: true, data: { message: 'Feedback received' } });
   }
 
   /** POST /api/skill-threats - Submit skill threat from audit */
   private async handlePostSkillThreat(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const body = await this.readBody(req);
-    const data = JSON.parse(body) as SkillThreatSubmission;
+    const data = await this.parseAndValidate(req, res, SkillThreatSchema);
+    if (!data) return;
+
     const clientId = (req.headers['x-panguard-client-id'] as string) ?? undefined;
-
-    if (!data.skillHash || !data.skillName) {
-      this.sendJson(res, 400, {
-        ok: false,
-        error: 'Missing required fields: skillHash, skillName',
-      });
-      return;
-    }
-
-    if (typeof data.riskScore !== 'number' || data.riskScore < 0 || data.riskScore > 100) {
-      this.sendJson(res, 400, { ok: false, error: 'riskScore must be a number between 0 and 100' });
-      return;
-    }
-
-    if (!data.riskLevel || typeof data.riskLevel !== 'string') {
-      this.sendJson(res, 400, { ok: false, error: 'riskLevel is required and must be a string' });
-      return;
-    }
-
     const submission: SkillThreatSubmission = {
-      ...data,
-      clientId: clientId ?? data.clientId,
+      ...(data as unknown as SkillThreatSubmission),
+      clientId,
     };
     this.db.insertSkillThreat(submission);
 
@@ -723,19 +713,25 @@ export class ThreatCloudServer {
   /** POST /api/skill-whitelist - Report a safe skill (audit passed) */
   private async handlePostSkillWhitelist(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const body = await this.readBody(req);
-    const data = JSON.parse(body) as
-      | { skillName: string; fingerprintHash?: string }
-      | { skills: Array<{ skillName: string; fingerprintHash?: string }> };
+    let raw: unknown;
+    try {
+      raw = JSON.parse(body);
+    } catch {
+      this.sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+      return;
+    }
 
+    const rawObj = raw as Record<string, unknown>;
     const skills =
-      'skills' in data && Array.isArray(data.skills)
-        ? data.skills
-        : [data as { skillName: string; fingerprintHash?: string }];
+      'skills' in rawObj && Array.isArray(rawObj['skills'])
+        ? (rawObj['skills'] as unknown[])
+        : [raw];
 
     let count = 0;
     for (const skill of skills) {
-      if (!skill.skillName || typeof skill.skillName !== 'string') continue;
-      this.db.reportSafeSkill(skill.skillName, skill.fingerprintHash);
+      const result = SkillWhitelistItemSchema.safeParse(skill);
+      if (!result.success) continue;
+      this.db.reportSafeSkill(result.data.skillName, result.data.fingerprintHash);
       count++;
     }
 
@@ -782,21 +778,20 @@ export class ThreatCloudServer {
       return;
     }
 
-    const body = await this.readBody(req);
-    const data = JSON.parse(body) as {
-      skills?: Array<{ package: string; tools: Array<{ name: string; description: string }> }>;
-    };
+    const AnalyzeSkillsSchema = z.object({
+      skills: z.array(z.object({
+        package: z.string().min(1),
+        tools: z.array(z.object({
+          name: z.string().min(1),
+          description: z.string(),
+        })),
+      })).min(1, 'skills array must not be empty').max(10, 'Maximum 10 skills per request'),
+    });
 
-    if (!data.skills || !Array.isArray(data.skills) || data.skills.length === 0) {
-      this.sendJson(res, 400, {
-        ok: false,
-        error: 'Request body must contain "skills" array with package name and tools',
-      });
-      return;
-    }
+    const data = await this.parseAndValidate(req, res, AnalyzeSkillsSchema);
+    if (!data) return;
 
-    // Limit batch size to prevent abuse (max 10 skills per request)
-    const skills = data.skills.slice(0, 10);
+    const skills = data.skills;
 
     log.info(`Analyzing ${skills.length} skills with LLM`, {
       packages: skills.map(s => s.package),
@@ -818,6 +813,8 @@ export class ThreatCloudServer {
           threatsFound: r.threatsFound,
           proposalCount: r.proposals.length,
           patternHashes: r.proposals.map(p => p.patternHash),
+          status: r.status,
+          ...(r.errorReason ? { errorReason: r.errorReason } : {}),
         })),
       },
     });
@@ -918,6 +915,31 @@ export class ThreatCloudServer {
     }
     entry.count++;
     return entry.count <= this.config.rateLimitPerMinute;
+  }
+
+  /**
+   * Parse JSON body and validate against a Zod schema.
+   * Returns validated data or null (sends 400 on failure).
+   */
+  private async parseAndValidate<T>(
+    req: IncomingMessage,
+    res: ServerResponse,
+    schema: z.ZodSchema<T>
+  ): Promise<T | null> {
+    const body = await this.readBody(req);
+    let raw: unknown;
+    try {
+      raw = JSON.parse(body);
+    } catch {
+      this.sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+      return null;
+    }
+    const result = tryValidateInput(schema, raw);
+    if (!result.ok) {
+      this.sendJson(res, 400, { ok: false, error: result.error });
+      return null;
+    }
+    return result.data;
   }
 
   /** Read request body with size limit / 讀取請求主體（含大小限制） */

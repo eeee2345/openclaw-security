@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'commander';
-import { exec, spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir, platform } from 'node:os';
@@ -24,7 +24,7 @@ import {
 function openBrowser(url: string): void {
   const os = platform();
   const cmd = os === 'darwin' ? 'open' : os === 'win32' ? 'start' : 'xdg-open';
-  exec(`${cmd} ${url}`, () => {
+  execFile(cmd, [url], () => {
     // Ignore errors — browser open is best-effort
   });
 }

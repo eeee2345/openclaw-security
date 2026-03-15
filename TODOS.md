@@ -2,96 +2,54 @@
 
 Deferred work items from pre-launch review (2026-03-14).
 
-## P1 - Guard Engine Refactor
+## ~~P1 - Guard Engine Refactor~~ DONE (2026-03-14)
 
-**guard-engine.ts** (1,516 lines) is a god object. Extract into focused modules:
+Split guard-engine.ts (1,516 lines) into: rule-loader.ts, rule-sync.ts, event-processor.ts, response-engine.ts, guard-lifecycle.ts
 
-- [ ] `rule-loader.ts` -- Sigma/YARA/ATR rule loading and parsing
-- [ ] `rule-sync.ts` -- Threat Cloud sync (1-hour interval, retry logic)
-- [ ] `event-processor.ts` -- Event matching pipeline (Layer 1-3)
-- [ ] `response-engine.ts` -- Confidence-based response (log/notify/execute)
-- [ ] `guard-lifecycle.ts` -- Start/stop/health/status orchestration
+## ~~P2 - serve.ts Refactor~~ DONE (2026-03-14)
 
-**Why:** Single 1,500-line file is hard to test, review, and extend. Each module should be <400 lines.
+Split serve.ts (1,649 lines) into: serve-auth.ts, serve-admin.ts, serve-tc.ts, serve-core.ts, serve-types.ts
 
-**Effort:** L (3-5 sessions)
+## ~~P2 - Validation Consolidation~~ DONE (2026-03-14)
 
-## P2 - serve.ts Refactor
+Consolidated with Zod schemas in packages/core/src/validation.ts (commit 25f28cb3)
 
-**serve.ts** (1,649 lines) -- CLI server command, second largest file:
+## ~~P2 - CSP Nonce for Website~~ DONE (already implemented)
 
-- [ ] Extract auth route handlers into `serve-auth.ts`
-- [ ] Extract admin route handlers into `serve-admin.ts`
-- [ ] Extract Threat Cloud route handlers into `serve-tc.ts`
-- [ ] Extract health/static/middleware into `serve-core.ts`
+middleware.ts generates per-request nonce, builds CSP header, all inline scripts use nonce attribute via getNonce() helper.
 
-**Why:** Actively modified (billing removal touched it), growing. Hard to review at 1,600+ lines.
+## ~~P2 - Memory Monitoring for Guard~~ DONE (already implemented)
 
-**Effort:** M (1-2 sessions)
+All 3 items already exist in guard-engine.ts: checkMemoryPressure() with 60% warning / 80% critical thresholds, consecutive-check tracking, forced GC, and memory_critical event emission.
 
-## P2 - Validation Consolidation
+## ~~P3 - respond-agent.ts Refactor~~ DONE (2026-03-15)
 
-Input validation is scattered across packages. Consolidate into `packages/core/src/validation.ts`:
+Split respond-agent.ts (1,171 lines) into: types.ts, safety-rules.ts, action-rate-limiter.ts, evidence-extractor.ts, action-manifest.ts, escalation-tracker.ts, os-actions.ts (commit d2a35c82)
 
-- [ ] Rule schema validation (ATR, Sigma, YARA)
-- [ ] Config validation (guard, scan, CLI)
-- [ ] API input validation (threat-cloud endpoints)
+## ~~P3 - interactive.ts Refactor~~ DONE (2026-03-15)
 
-**Why:** DRY. Same validation logic duplicated in 3+ places.
+Split interactive.ts (1,912 lines) into: lang.ts, menu-defs.ts, render.ts + 5 action files (commit d2a35c82)
 
-**Effort:** M (1-2 sessions)
+## ~~P3 - E2E Test Coverage~~ DONE (2026-03-15)
 
-## P2 - CSP Nonce for Website
+Added: legal-pages.spec.ts (8 legal pages + zh variants), mobile-responsive.spec.ts (viewport, hamburger, overflow), locale-switch.spec.ts (EN/ZH switching, persistence), enhanced navigation.spec.ts (product pages, footer links, content pages).
 
-Add Content-Security-Policy with nonce-based script loading:
+## P2 - Merge TC Handler Dual Implementation (L)
 
-- [ ] Next.js middleware to generate nonce per request
-- [ ] Apply nonce to inline scripts (jsonLd, js-ready, Plausible)
-- [ ] Add CSP headers (script-src, style-src, connect-src)
+`threat-cloud/src/server.ts` and `panguard/src/cli/commands/serve-tc.ts` implement the same 7 API endpoints independently. Now that both share Zod schemas from `@panguard-ai/core`, refactor to extract shared handler logic into a common module to prevent future divergence. Key files: `packages/threat-cloud/src/server.ts`, `packages/panguard/src/cli/commands/serve-tc.ts`, `packages/core/src/utils/validation.ts`.
 
-**Why:** Hardens against XSS. Currently no CSP headers.
+## P2 - Flywheel Core Component Unit Tests (XL)
 
-**Effort:** S (1 session)
+The 6 flywheel core components currently have minimal direct test coverage:
+- `skill-watcher.ts` (SkillWatcher: config watch, auto-audit trigger, blacklist check)
+- `llm-reviewer.ts` (LLM reviewer: analyzeSkills, reviewProposal, parseVerdict)
+- `rule-sync.ts` (Rule sync: YARA download, rule file write, path sanitization)
+- `server.ts` (TC server: all 7 POST handlers with Zod validation)
+- `atr-action-handlers.ts` (ATR actions: quarantine, reduce permissions, path sanitization)
+- `os-actions.ts` (OS actions: isolateFile with SAFE_PATHS/DENY_PATHS)
 
-## P2 - Memory Monitoring for Guard
+Target: unit tests covering happy path, error path, and edge cases (path traversal, malformed input, LLM failure) for each component.
 
-Guard daemon runs long-lived. Add memory monitoring:
+## P3 - Dashboard WebSocket Token Auth (S)
 
-- [ ] Track heap usage in guard status output
-- [ ] Warn when heap exceeds 80% of limit
-- [ ] Graceful restart on OOM risk
-
-**Why:** Guard runs 24/7. Memory leaks will eventually crash it.
-
-**Effort:** S (1 session)
-
-## P3 - respond-agent.ts Refactor
-
-**respond-agent.ts** (1,171 lines) -- another god object:
-
-- [ ] Extract prompt templates into separate files
-- [ ] Extract tool definitions into a registry
-- [ ] Separate LLM call logic from response formatting
-
-**Effort:** M (1-2 sessions)
-
-## P3 - interactive.ts Refactor
-
-**interactive.ts** (1,912 lines) -- CLI interactive mode:
-
-- [ ] Extract command handlers into individual files
-- [ ] Extract prompt/display helpers
-- [ ] Add command registry pattern
-
-**Effort:** L (2-3 sessions)
-
-## P3 - E2E Test Coverage
-
-Current E2E covers public pages only. Add:
-
-- [ ] Navigation flow (header links, footer links, locale switch)
-- [ ] Mobile responsive checks (hamburger menu, layout)
-- [ ] 404 page verification
-- [ ] All legal pages (privacy, terms, SLA)
-
-**Effort:** M (1-2 sessions)
+Guard dashboard WebSocket endpoint (`/ws`) has no authentication. Add token-based auth: generate a one-time token on dashboard page load, validate on WS upgrade, reject unauthenticated connections. Low risk since dashboard binds to localhost, but needed for defense-in-depth.

@@ -180,3 +180,38 @@ export function validateFilePath(filePath: string): string {
   }
   return normalized;
 }
+
+/**
+ * Sanitize a filename to prevent path traversal attacks.
+ * Strips path separators and allows only safe characters.
+ * 清理檔案名稱以防止路徑穿越攻擊。
+ *
+ * @param filename - Raw filename (potentially from external source)
+ * @returns Safe filename with only alphanumeric, dash, underscore, and dot characters
+ */
+export function sanitizeFilename(filename: string): string {
+  // Extract basename (strip any directory components)
+  const base = filename.split(/[/\\]/).pop() ?? 'unknown';
+  // Allow only safe characters: alphanumeric, dash, underscore, dot
+  const sanitized = base.replace(/[^a-zA-Z0-9_.-]/g, '_');
+  // Prevent empty or dot-only filenames
+  if (!sanitized || sanitized === '.' || sanitized === '..') {
+    return 'unknown';
+  }
+  return sanitized;
+}
+
+/**
+ * Validate that a resolved file path stays within a given base directory.
+ * 驗證解析後的檔案路徑仍在指定基準目錄內。
+ *
+ * @param filePath - The file path to check
+ * @param baseDir - The directory it must stay within
+ * @returns true if path is within baseDir
+ */
+export function isPathWithinDir(filePath: string, baseDir: string): boolean {
+  const { resolve } = require('node:path') as { resolve: (...args: string[]) => string };
+  const resolved = resolve(filePath);
+  const resolvedBase = resolve(baseDir);
+  return resolved.startsWith(resolvedBase + '/') || resolved === resolvedBase;
+}

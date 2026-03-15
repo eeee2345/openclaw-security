@@ -346,6 +346,41 @@ export async function disableAccount(verdict: ThreatVerdict, manifest: ActionMan
 // Isolate File
 // ---------------------------------------------------------------------------
 
+/** Directories that are safe targets for file isolation (files within these can be moved) */
+const SAFE_PATHS = ['/tmp', '/var/tmp', '/var/panguard-guard'];
+
+/** Directories that must never be touched — system-critical paths */
+const DENY_PATHS = ['/etc', '/usr', '/bin', '/sbin', '/lib', '/boot', '/System', '/Library'];
+
+/**
+ * Check if a file path is safe to isolate.
+ * Must be within SAFE_PATHS or user home, and NOT within DENY_PATHS.
+ */
+function isPathSafeToIsolate(filePath: string): { safe: boolean; reason?: string } {
+  const { resolve } = require('node:path') as { resolve: (...args: string[]) => string };
+  const resolved = resolve(filePath);
+
+  // Check deny list first
+  for (const denied of DENY_PATHS) {
+    if (resolved.startsWith(denied + '/') || resolved === denied) {
+      return { safe: false, reason: `Path "${resolved}" is in deny list (${denied})` };
+    }
+  }
+
+  // Check if within safe paths or user home
+  const { homedir } = require('node:os') as { homedir: () => string };
+  const home = homedir();
+  const allowedRoots = [...SAFE_PATHS, home];
+
+  for (const allowed of allowedRoots) {
+    if (resolved.startsWith(resolve(allowed) + '/')) {
+      return { safe: true };
+    }
+  }
+
+  return { safe: false, reason: `Path "${resolved}" is not within allowed directories` };
+}
+
 export async function isolateFile(verdict: ThreatVerdict, manifest: ActionManifest): Promise<ResponseResult> {
   const filePath = extractFilePath(verdict);
   if (!filePath) {
@@ -354,6 +389,19 @@ export async function isolateFile(verdict: ThreatVerdict, manifest: ActionManife
       success: false,
       details: 'No file path found in verdict evidence',
       timestamp: new Date().toISOString(),
+    };
+  }
+
+  // Validate path is safe to isolate
+  const pathCheck = isPathSafeToIsolate(filePath);
+  if (!pathCheck.safe) {
+    logger.warn(`Refused to isolate file: ${pathCheck.reason}`);
+    return {
+      action: 'isolate_file',
+      success: false,
+      details: `Refused: ${pathCheck.reason}`,
+      timestamp: new Date().toISOString(),
+      target: filePath,
     };
   }
 

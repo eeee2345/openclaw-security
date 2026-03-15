@@ -12,6 +12,8 @@ export {
   tryValidateInput,
   sanitizeString,
   validateFilePath,
+  sanitizeFilename,
+  isPathWithinDir,
   ClientIdSchema,
   ISODateSchema,
   PaginationLimitSchema,

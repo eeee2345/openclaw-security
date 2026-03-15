@@ -91,8 +91,17 @@ export async function syncThreatCloud(deps: CloudSyncDeps): Promise<void> {
         mkdirSync(yaraCloudDir, { recursive: true });
         for (const rule of yaraRules) {
           try {
-            const filename = `${rule.ruleId ?? 'unknown'}.yar`;
-            writeFileSync(join(yaraCloudDir, filename), rule.ruleContent, 'utf-8');
+            const { sanitizeFilename } = await import('@panguard-ai/core');
+            const rawId = rule.ruleId ?? 'unknown';
+            const filename = `${sanitizeFilename(rawId)}.yar`;
+            const targetPath = join(yaraCloudDir, filename);
+            // Verify resolved path stays within yaraCloudDir
+            const { resolve } = await import('node:path');
+            if (!resolve(targetPath).startsWith(resolve(yaraCloudDir))) {
+              logger.warn(`Skipping YARA rule with suspicious ruleId: ${rawId}`);
+              continue;
+            }
+            writeFileSync(targetPath, rule.ruleContent, 'utf-8');
             newYaraRules++;
           } catch (writeErr: unknown) {
             logger.warn(
