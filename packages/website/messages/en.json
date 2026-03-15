@@ -1068,6 +1068,32 @@
           "title": "Multi-Server Fleet",
           "desc": "You manage 50 servers across multiple cloud providers. Install Panguard Guard once per server and get a unified security view. Collective intelligence means a threat seen on one server protects all of them."
         }
+      },
+      "flywheel": {
+        "overline": "AUTOMATED SECURITY FLYWHEEL",
+        "title": "Detect. Propose. Protect Everyone.",
+        "desc": "Guard doesn't just block threats locally -- it feeds them back into the community defense network. When Guard detects a malicious skill, it automatically generates an ATR rule proposal, uploads it to Threat Cloud, and after LLM review, the new rule protects every Panguard user. The entire loop runs without human intervention.",
+        "step1": {
+          "title": "Skill Watcher detects new skill installation",
+          "desc": "Guard monitors MCP config changes every 10 seconds. When a new skill is added (Claude Code, Cursor, OpenClaw, etc.), it triggers an immediate audit."
+        },
+        "step2": {
+          "title": "Auto-audit with ATR + Skill Auditor",
+          "desc": "The skill is scanned against 9,700+ detection rules (ATR + Sigma + YARA). Prompt injection, tool poisoning, hidden payloads, and excessive permissions are checked in under 1 second."
+        },
+        "step3": {
+          "title": "Anonymized threat submitted to Threat Cloud",
+          "desc": "If the risk score exceeds the threshold, an anonymized report (skill hash, risk score, finding summaries) is submitted to Threat Cloud. No raw data or PII leaves your machine."
+        },
+        "step4": {
+          "title": "LLM reviews and generates ATR rule",
+          "desc": "Threat Cloud's LLM reviewer (Claude Sonnet) analyzes the threat pattern, generates a new ATR detection rule in YAML, and validates it for false positive risk, coverage, and specificity."
+        },
+        "step5": {
+          "title": "New rule distributed to all users",
+          "desc": "Approved rules are promoted every 15 minutes. Guard syncs new rules every hour. The same attack that hit you will be blocked instantly for every other Panguard user."
+        },
+        "stats": "Pipeline results: {scanned} skills scanned, {malicious} malicious found, {rules} ATR rules auto-generated and distributed to the community."
       }
     },
     "devSecurityReview": {

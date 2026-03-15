@@ -1882,6 +1882,32 @@
           "title": "多伺服器叢集",
           "desc": "你管理分散在多個雲端供應商的 50 台伺服器。每台安裝一次 Panguard Guard，即可獲得統一的安全視圖。集體智慧意味著在一台伺服器上發現的威脅會保護所有伺服器。"
         }
+      },
+      "flywheel": {
+        "overline": "自動化安全飛輪",
+        "title": "偵測。提案。保護所有人。",
+        "desc": "Guard 不只是在本地攔截威脅 -- 它會自動將威脅回饋到社群防禦網路。當 Guard 偵測到惡意技能時，會自動產生 ATR 規則提案，上傳到 Threat Cloud，經過 LLM 審查後，新規則會保護每一個 Panguard 用戶。整個流程無需人工介入。",
+        "step1": {
+          "title": "Skill Watcher 偵測到新技能安裝",
+          "desc": "Guard 每 10 秒監控 MCP 設定檔變更。當新技能被加入（Claude Code、Cursor、OpenClaw 等），立即觸發審計。"
+        },
+        "step2": {
+          "title": "自動審計：ATR + Skill Auditor",
+          "desc": "技能會被 9,700+ 偵測規則掃描（ATR + Sigma + YARA）。Prompt injection、tool poisoning、隱藏 payload、過度權限，1 秒內完成檢查。"
+        },
+        "step3": {
+          "title": "匿名化威脅提交至 Threat Cloud",
+          "desc": "若風險分數超過閾值，匿名報告（技能 hash、風險分數、發現摘要）會提交至 Threat Cloud。不會傳送任何原始資料或個人資訊。"
+        },
+        "step4": {
+          "title": "LLM 審查並生成 ATR 規則",
+          "desc": "Threat Cloud 的 LLM 審查員（Claude Sonnet）分析威脅模式，以 YAML 格式生成新的 ATR 偵測規則，並驗證誤報率、覆蓋率和特異性。"
+        },
+        "step5": {
+          "title": "新規則分發給所有用戶",
+          "desc": "核准的規則每 15 分鐘提升。Guard 每小時同步新規則。攻擊你的同一手法，會在其他所有 Panguard 用戶那裡被即時攔截。"
+        },
+        "stats": "Pipeline 成果：已掃描 {scanned} 個技能，發現 {malicious} 個惡意技能，自動產生 {rules} 條 ATR 規則並分發至社群。"
       }
     },
     "devSecurityReview": {

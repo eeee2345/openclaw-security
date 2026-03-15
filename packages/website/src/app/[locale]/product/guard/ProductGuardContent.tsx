@@ -270,6 +270,57 @@ export default function ProductGuardContent() {
         </div>
       </SectionWrapper>
 
+      {/* ── Automated Flywheel ── */}
+      <SectionWrapper>
+        <div className="max-w-3xl mx-auto">
+          <FadeInUp>
+            <p className="text-[11px] uppercase tracking-[0.12em] text-brand-sage font-semibold mb-4">
+              {t('flywheel.overline')}
+            </p>
+            <h2 className="text-[clamp(20px,3vw,40px)] font-bold text-text-primary leading-[1.1]">
+              {t('flywheel.title')}
+            </h2>
+          </FadeInUp>
+          <FadeInUp delay={0.05}>
+            <p className="text-text-secondary mt-5 leading-relaxed">{t('flywheel.desc')}</p>
+          </FadeInUp>
+
+          {/* Pipeline steps */}
+          <div className="mt-10 space-y-4">
+            {(['step1', 'step2', 'step3', 'step4', 'step5'] as const).map((step, i) => (
+              <FadeInUp key={step} delay={0.1 + i * 0.08}>
+                <div className="flex items-start gap-4 bg-surface-2 rounded-xl border border-border p-5">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-brand-sage/10 border border-brand-sage/30 flex items-center justify-center text-sm font-bold text-brand-sage">
+                    {i + 1}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-text-primary">
+                      {t(`flywheel.${step}.title`)}
+                    </p>
+                    <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                      {t(`flywheel.${step}.desc`)}
+                    </p>
+                  </div>
+                </div>
+              </FadeInUp>
+            ))}
+          </div>
+
+          {/* Stats callout */}
+          <FadeInUp delay={0.5}>
+            <div className="mt-8 bg-brand-sage/5 border border-brand-sage/20 rounded-xl p-5 text-center">
+              <p className="text-sm text-text-secondary">
+                {t('flywheel.stats', {
+                  scanned: STATS.ecosystem.skillsScanned.toLocaleString(),
+                  malicious: STATS.ecosystem.maliciousFound,
+                  rules: STATS.ecosystem.atrRulesGenerated,
+                })}
+              </p>
+            </div>
+          </FadeInUp>
+        </div>
+      </SectionWrapper>
+
       {/* ── Use Cases ── */}
       <SectionWrapper>
         <SectionTitle overline={t('useCases.overline')} title={t('useCases.title')} />
